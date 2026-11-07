@@ -2,7 +2,7 @@
 
 Website xem phim trực tuyến giao diện **Minimalist Monochrome (Đen & Trắng)** lấy cảm hứng từ **Apple TV / Apple Music Liquid Glass UI**, kết hợp tính năng gợi ý **Nội Dung Tương Tự (Netflix More Like This)** và trình phát đa nguồn **4K UHD / 2K QHD / 1080p HLS (.m3u8) & Embed Vietsub**.
 
-- **Trải nghiệm trực tiếp (Live Web)**: [https://ngwyren.github.io/Ngwyren-Cinema/](https://ngwyren.github.io/Ngwyren-Cinema/)
+- **Trải nghiệm trực tiếp (Live Web)**: [https://ngwyren.github.io/Ngwyren_Cinema/](https://ngwyren.github.io/Ngwyren_Cinema/)
 - **Tải bản cài đặt / Release**: [GitHub Releases](https://github.com/ngwyren/Ngwyren-Cinema/releases)
 
 ## Tính năng nổi bật (v2.0.0)
