@@ -356,16 +356,26 @@ def fetch_kk_detail(slug):
             if not thumb:
                 thumb = poster
             eps = []
+            dub_eps = []
             if episodes_data:
-                server_data = episodes_data[0].get("server_data", [])
-                for ep in server_data:
-                    link = unwrap_m3u8_url(ep.get("link_m3u8", ""))
-                    if is_valid_m3u8(link):
-                        eps.append({
-                            "name": ep.get("name", "Tập 1"),
-                            "slug": ep.get("slug", "tap-1"),
-                            "source": link
-                        })
+                for idx, srv in enumerate(episodes_data):
+                    srv_name = (srv.get("server_name") or "").lower()
+                    server_data = srv.get("server_data", [])
+                    parsed_list = []
+                    for ep in server_data:
+                        link = unwrap_m3u8_url(ep.get("link_m3u8", ""))
+                        if is_valid_m3u8(link):
+                            parsed_list.append({
+                                "name": ep.get("name", "Tập 1"),
+                                "slug": ep.get("slug", "tap-1"),
+                                "source": link
+                            })
+                    if not parsed_list:
+                        continue
+                    if idx == 0 or not eps:
+                        eps = parsed_list
+                    elif any(k in srv_name for k in ["thuyết minh", "thuyet minh", "lồng tiếng", "long tieng"]) and not dub_eps:
+                        dub_eps = parsed_list
             if not eps:
                 return None
             genres = [c.get("name") for c in movie.get("category", []) if c.get("name")] or ["Chính Kịch"]
@@ -378,6 +388,8 @@ def fetch_kk_detail(slug):
                 director = ", ".join(director) if director else "Đang cập nhật"
             m_type = "series" if movie.get("type") == "series" or len(eps) > 1 else "single"
             section_tags = ["moi-cap-nhat", "hot", "vietsub", "phim-bo" if m_type == "series" else "phim-le"]
+            if dub_eps or any(k in (movie.get("lang") or "").lower() for k in ["thuyết minh", "lồng tiếng"]):
+                section_tags.append("thuyet-minh")
             if any(g.lower() in ["hoạt hình", "anime"] for g in genres):
                 section_tags.append("anime")
             year = movie.get("year", 2026)
@@ -385,7 +397,7 @@ def fetch_kk_detail(slug):
                 year = int(year)
             except Exception:
                 year = 2026
-            return {
+            item = {
                 "id": f"kk-{slug}",
                 "slug": slug,
                 "crawlSlug": slug,
@@ -414,6 +426,9 @@ def fetch_kk_detail(slug):
                 "episodes": eps,
                 "sourceSite": "kkphim"
             }
+            if dub_eps:
+                item["dubEpisodes"] = dub_eps
+            return item
     except Exception:
         return None
 

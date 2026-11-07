@@ -3916,24 +3916,30 @@ class AppleCinemaApp {
 
     // 1. TÌM KIẾM TỨC THÌ 0ms VỚI CHỈ MỤC ĐÃ ĐƯỢC TIỀN TÍNH TOÁN (SMART RELEVANCE RANKING)
     const q = query.toLowerCase();
+    const qNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(q) : q;
+    const qTokens = qNorm ? qNorm.split(" ").filter(Boolean) : [];
     const scored = [];
     const movies = this.service.movies;
     for (let i = 0; i < movies.length; i++) {
       const m = movies[i];
       const t = m._titleLower || (m._titleLower = (m.title || "").toLowerCase());
       const o = m._originLower || (m._originLower = (m.originTitle || "").toLowerCase());
+      const tNorm = m._titleNorm || (m._titleNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(m.title) : t);
+      const oNorm = m._originNorm || (m._originNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(m.originTitle) : o);
       let score = 0;
 
-      if (t === q || o === q) {
+      if (t === q || o === q || (qNorm && (tNorm === qNorm || oNorm === qNorm))) {
         score = 250; // Trùng khớp hoàn toàn 100%
-      } else if (t.startsWith(q)) {
-        score = 180; // Tên tiếng Việt bắt đầu bằng từ khóa (ví dụ: "Baby Đến Rồi")
-      } else if (o.startsWith(q)) {
-        score = 150; // Tên gốc bắt đầu bằng từ khóa (ví dụ: "Baby Bandito")
-      } else if (t.includes(q)) {
-        score = 110; // Tên tiếng Việt chứa từ khóa (ví dụ: "Kế Hoạch Baby")
-      } else if (o.includes(q)) {
-        score = 90; // Tên gốc chứa từ khóa (ví dụ: "Win My Baby Back")
+      } else if (t.startsWith(q) || (qNorm && tNorm.startsWith(qNorm))) {
+        score = 180; // Tên tiếng Việt bắt đầu bằng từ khóa
+      } else if (o.startsWith(q) || (qNorm && oNorm.startsWith(qNorm))) {
+        score = 150; // Tên gốc bắt đầu bằng từ khóa (kể cả khi bỏ dấu : hay -)
+      } else if (t.includes(q) || (qNorm && tNorm.includes(qNorm))) {
+        score = 110; // Tên tiếng Việt chứa từ khóa
+      } else if (o.includes(q) || (qNorm && oNorm.includes(qNorm))) {
+        score = 90; // Tên gốc chứa từ khóa
+      } else if (qTokens.length > 1 && qTokens.every((tk) => `${tNorm} ${oNorm}`.includes(tk))) {
+        score = 80; // Khớp toàn bộ từ khóa rời rạc giữa tiếng Việt & tiếng Anh
       } else {
         const meta = m._metaSearch || (m._metaSearch = `${(m.genres || []).join(" ")} ${(m.cast || []).join(" ")} ${m.director || ""}`.toLowerCase());
         if (meta.includes(q)) {

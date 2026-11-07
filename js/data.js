@@ -1171,11 +1171,28 @@ class PhimmoiService {
       const m = this.movies[i];
       m._titleLower = (m.title || "").toLowerCase();
       m._originLower = (m.originTitle || "").toLowerCase();
+      m._titleNorm = this.normalizeSearchText(m.title);
+      m._originNorm = this.normalizeSearchText(m.originTitle);
       m._metaSearch = `${(m.genres || []).join(" ")} ${(m.cast || []).join(" ")} ${m.director || ""}`.toLowerCase();
     }
 
     this.isLiveConnected = true;
     this.lastSyncedCount = this.movies.length;
+  }
+
+  /**
+   * Chuẩn hóa văn bản tìm kiếm: bỏ dấu tiếng Việt & ký tự đặc biệt (: - () ...) để gõ "star wars the clone war" hay "cuoc chien vo tinh" đều khớp tức thì
+   */
+  normalizeSearchText(str) {
+    if (!str) return "";
+    return String(str)
+      .toLowerCase()
+      .replace(/đ/g, "d")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   /**
@@ -1542,12 +1559,19 @@ class PhimmoiService {
   async searchMovies(query) {
     const q = (query || "").trim().toLowerCase();
     if (!q) return this.movies;
+    const qNorm = this.normalizeSearchText(q);
+    const qTokens = qNorm ? qNorm.split(" ").filter(Boolean) : [];
 
-    // 1. Tìm tức thì trong kho dữ liệu đã nạp
+    // 1. Tìm tức thì trong kho dữ liệu đã nạp (hỗ trợ cả có dấu, không dấu, và bỏ qua dấu hai chấm / gạch ngang)
     const localMatches = this.movies.filter((m) => {
+      const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
+      const oNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
+      const combinedNorm = `${tNorm} ${oNorm}`;
       return (
         m.title.toLowerCase().includes(q) ||
         m.originTitle.toLowerCase().includes(q) ||
+        (qNorm && (tNorm.includes(qNorm) || oNorm.includes(qNorm))) ||
+        (qTokens.length > 1 && qTokens.every((tk) => combinedNorm.includes(tk))) ||
         m.genres.some((g) => g.toLowerCase().includes(q)) ||
         m.country.toLowerCase().includes(q) ||
         m.cast.some((c) => c.toLowerCase().includes(q)) ||
@@ -1679,12 +1703,15 @@ class PhimmoiService {
     const scored = localMatches.map((m) => {
       const t = (m.title || "").toLowerCase();
       const o = (m.originTitle || "").toLowerCase();
+      const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
+      const oNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
       let score = 0;
-      if (t === q || o === q) score = 250;
-      else if (t.startsWith(q)) score = 180;
-      else if (o.startsWith(q)) score = 150;
-      else if (t.includes(q)) score = 110;
-      else if (o.includes(q)) score = 90;
+      if (t === q || o === q || (qNorm && (tNorm === qNorm || oNorm === qNorm))) score = 250;
+      else if (t.startsWith(q) || (qNorm && tNorm.startsWith(qNorm))) score = 180;
+      else if (o.startsWith(q) || (qNorm && oNorm.startsWith(qNorm))) score = 150;
+      else if (t.includes(q) || (qNorm && tNorm.includes(qNorm))) score = 110;
+      else if (o.includes(q) || (qNorm && oNorm.includes(qNorm))) score = 90;
+      else if (qTokens.length > 1 && qTokens.every((tk) => `${tNorm} ${oNorm}`.includes(tk))) score = 80;
       else score = 30;
       return { movie: m, score };
     });
