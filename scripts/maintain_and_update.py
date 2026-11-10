@@ -246,7 +246,7 @@ def sanitize_movie(m):
             ep_copy.pop("embed", None)
         ep_copy.pop("slug", None)
         ep_copy.pop("altSources", None)
-        if not src:
+        if not src and not embed:
             ep_copy["needsEnrich"] = True
         else:
             ep_copy.pop("needsEnrich", None)

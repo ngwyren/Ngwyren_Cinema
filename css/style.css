@@ -1646,8 +1646,11 @@ body::-webkit-scrollbar {
               visibility 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body.modal-open .vision-stage {
+body.modal-open .vision-stage,
+body.modal-open .spatial-room-bg {
+  visibility: hidden !important;
   pointer-events: none !important;
+  animation: none !important;
 }
 
 .detail-modal-backdrop.open {
@@ -8125,7 +8128,7 @@ body.video-cursor-hidden *,
 
 #hlsVideoElement.quality-4k-enhanced,
 .active-video-container video.quality-4k-enhanced {
-  filter: contrast(1.04) saturate(1.05) !important;
+  filter: none !important;
   image-rendering: -webkit-optimize-contrast !important;
   image-rendering: high-quality !important;
   -webkit-font-smoothing: antialiased !important;
@@ -8183,8 +8186,7 @@ body.video-cursor-hidden *,
 @media (hover: none), (max-width: 1180px) {
   #hlsVideoElement.quality-4k-enhanced,
   .active-video-container video.quality-4k-enhanced {
-    filter: contrast(1.04) saturate(1.05) !important;
-    will-change: transform !important;
+    filter: none !important;
   }
 }
 

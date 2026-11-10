@@ -1131,7 +1131,7 @@ class PhimmoiService {
           for (let ei = 0; ei < normalizedItem.episodes.length; ei++) {
             const ep = normalizedItem.episodes[ei];
             if (!ep.slug) ep.slug = `tap-${ei + 1}`;
-            if (!ep.source || ep.source.includes("opstream") || ep.source.includes("vip.opstream")) {
+            if ((!ep.source && !ep.embed) || (ep.source && (ep.source.includes("opstream") || ep.source.includes("vip.opstream")))) {
               ep.needsEnrich = true;
             }
           }
@@ -1480,22 +1480,25 @@ class PhimmoiService {
   }
 
   /**
-   * Fetch thông minh hỗ trợ bộ nhớ đệm 0ms + kết nối trực tiếp + tự động fallback qua CORS proxy nếu trình duyệt chặn
+   * Fetch thông minh hỗ trợ bộ nhớ đệm 0ms + kết nối trực tiếp siêu tốc (không treo qua proxy chết với API đã hỗ trợ CORS)
    */
-  async smartFetchJson(url, timeoutMs = 7500, bypassCache = false) {
+  async smartFetchJson(url, timeoutMs = 3000, bypassCache = false) {
+    if (!url || url.includes("phimmoiz.one")) return null;
     if (!bypassCache && this._smartCache && this._smartCache.has(url)) {
       return this._smartCache.get(url);
     }
-    const attempts = [
-      url,
-      `${PHIMMOI_CONFIG.corsProxies[0]}${encodeURIComponent(url)}`,
-      `${PHIMMOI_CONFIG.corsProxies[1]}${encodeURIComponent(url)}`
-    ];
+    const isDirectCorsApi = url.includes("phimapi.com") || url.includes("nguonc.com");
+    const attempts = isDirectCorsApi
+      ? [url]
+      : [
+          url,
+          `${PHIMMOI_CONFIG.corsProxies[0]}${encodeURIComponent(url)}`
+        ];
 
     for (const targetUrl of attempts) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), timeoutMs);
         const res = await fetch(targetUrl, { signal: controller.signal });
         clearTimeout(timer);
         if (res.ok) {
@@ -1503,22 +1506,24 @@ class PhimmoiService {
           if (this._smartCache) this._smartCache.set(url, data);
           return data;
         }
+        // Nếu API trực tiếp trả về 404/400 thì dừng ngay, không thử lại qua proxy gây trễ
+        if (isDirectCorsApi) return null;
       } catch (err) {
-        // Thử sang endpoint kế tiếp
+        clearTimeout(timer);
       }
     }
     return null;
   }
 
   /**
-   * Đồng bộ xu hướng phim thời gian thực (Real-time Trending) từ PhimAPI v3, NguonC & WP API
+   * Đồng bộ xu hướng phim thời gian thực (Real-time Trending) từ PhimAPI v3 & NguonC
    */
   async syncLatestFromPhimmoi(perPage = 24) {
-    const [phimApiV3Page1, nguoncLatestPage1, wpPage1] = await Promise.all([
-      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiLatest}?page=1`, 4500, true).catch(() => null),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiLatest}?page=1`, 4500, true).catch(() => null),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.wpApiPosts}?per_page=${perPage}&page=1&_embed=1`, 4500, true).catch(() => null)
+    const [phimApiV3Page1, nguoncLatestPage1] = await Promise.all([
+      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiLatest}?page=1`, 2800, true).catch(() => null),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiLatest}?page=1`, 2800, true).catch(() => null)
     ]);
+    const wpPage1 = null;
 
     let addedCount = 0;
     let updatedCount = 0;
@@ -1554,7 +1559,7 @@ class PhimmoiService {
         if (candidate.episodeCurrent && candidate.episodeCurrent !== prevEpCur) {
           existing.episodeCurrent = candidate.episodeCurrent;
           existing._isEnriched = false;
-          if (Array.isArray(existing.episodes) && existing.episodes[0]) {
+          if (Array.isArray(existing.episodes) && existing.episodes[0] && !existing.episodes[0].source) {
             existing.episodes[0].needsEnrich = true;
           }
           updatedCount++;
@@ -2047,11 +2052,11 @@ class PhimmoiService {
     const hasYearSuffix = /-(19\d\d|20\d\d)$/.test(movie.slug);
     const slugToTry = movie.crawlSlug || (hasYearSuffix ? movie.slug : movie.slug.replace(/-(?!(19\d\d|20\d\d)$)\d+$/, ""));
 
-    let [phimApiRes, nguoncRes, wpPosts] = await Promise.all([
-      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiBase}${encodeURIComponent(slugToTry)}`, 6000),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(slugToTry)}`, 6000),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.wpApiPosts}?slug=${encodeURIComponent(movie.slug)}&_embed=1`, 4500)
+    let [phimApiRes, nguoncRes] = await Promise.all([
+      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiBase}${encodeURIComponent(slugToTry)}`, 2800),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(slugToTry)}`, 2400)
     ]);
+    const wpPosts = null;
 
     // Nếu slug có hậu tố số hoặc khác chuẩn khiến PhimAPI chưa khớp, tự động tìm theo tên phim để lấy luồng .m3u8 thật
     if ((!phimApiRes || !Array.isArray(phimApiRes.episodes) || phimApiRes.episodes.length === 0) && movie.title) {

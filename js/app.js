@@ -836,18 +836,6 @@ class AppleCinemaApp {
             </div>
           </div>
 
-          <!-- Schedule Status Header Bar -->
-          <div class="schedule-status-header">
-            <div class="schedule-status-title">
-              <span class="schedule-status-dot"></span>
-              Phát sóng <strong>${dayNames[currentDayKey]}</strong>
-              ${currentDayKey === todayKey ? '<span class="schedule-live-badge">HÔM NAY ĐANG CHIẾU</span>' : ""}
-            </div>
-            <div class="schedule-status-total">
-              Đang phát sóng: <strong>${dayItems.length} bộ phim</strong>
-            </div>
-          </div>
-
           <!-- Schedule Cards 4-Column Grid -->
           <div class="schedule-cards-grid">
             ${cardsHTML}
@@ -1407,7 +1395,7 @@ class AppleCinemaApp {
     return `
       <article class="vision-trailer-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', true)">
         <img src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
-             onerror="this.src='https://phimmoiz.one/wp-content/uploads/2026/10/matchbox-phim-dien-anh-poster.webp'" />
+             onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/16ea0557ca40cd54a3d25c6750a65c0b.jpg'" />
         <div class="vision-trailer-overlay">
           <div class="vision-trailer-title">${movie.title}</div>
           <button class="vision-trailer-play" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" aria-label="Phát">
@@ -1450,9 +1438,9 @@ class AppleCinemaApp {
       ? `loading="eager" fetchpriority="high" decoding="async"`
       : `loading="lazy" fetchpriority="low" decoding="async"`;
     return `
-      <article class="vision-feature-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', false)">
+      <article class="vision-feature-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', true)">
         <img class="vision-feature-img" src="${this.getMoviePoster(movie)}" alt="${movie.title}" ${loadAttr}
-             onerror="this.src='https://phimmoiz.one/wp-content/uploads/2026/10/matchbox-phim-dien-anh-poster.webp'" />
+             onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg'" />
         <div class="vision-feature-shade"></div>
 
         <button class="vision-card-more ${inMyList ? "active" : ""}"
@@ -1608,10 +1596,10 @@ class AppleCinemaApp {
 
     return `
       <article class="movie-card ${rankNum ? "ranked-card" : ""}"
-               onclick="app.openMovieModal('${movie.slug}', false)">
+               onclick="app.openMovieModal('${movie.slug}', true)">
         <div class="movie-poster-wrap">
           <img src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async"
-               onerror="this.src='https://phimmoiz.one/wp-content/uploads/2026/10/matchbox-phim-dien-anh-poster.webp'" />
+               onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg'" />
           <div class="poster-badges-top">
             ${qualityBadge}
             <span class="ribbon-ep">${epText}</span>
@@ -1691,9 +1679,15 @@ class AppleCinemaApp {
     } catch (_) {}
   }
 
-  async openMovieModal(slug, autoPlay = false, epIndex = 0) {
+  async openMovieModal(slug, autoPlay = true, epIndex = 0) {
     const movie = this.findMovie(slug);
     if (!movie) return;
+
+    // Tạm dừng bộ xoay Hero ở nền khi đang mở rạp phim để giải phóng 100% GPU cho trình phát video
+    if (this.heroTimer) {
+      clearInterval(this.heroTimer);
+      this.heroTimer = null;
+    }
 
     this.warmUpMovieStream(movie, epIndex);
 
@@ -1811,6 +1805,7 @@ class AppleCinemaApp {
     document.body.classList.remove("modal-open");
     this.stopModalVideo();
     this.isPlaying = false;
+    this.startHeroAutoRotate();
     if (this.playingMovie || this.selectedMovie) {
       this.setNowPlayingBar(this.playingMovie || this.selectedMovie, this.currentEpisodeIndex, false);
     }
@@ -2464,7 +2459,13 @@ class AppleCinemaApp {
   }
 
   calibrateHlsPlaylistTimestampsSync(playlistText, playlistUrl) {
+    // Chỉ hiệu chuẩn tỷ lệ khung hình 23.976fps cho riêng luồng Jumper (2008) bị lệch metadata,
+    // tuyệt đối không biến đổi #EXTINF của các phim khác để tránh lệch PTS gây giật/khựng hình
+    const isJumperStream =
+      (this.selectedMovie && this.selectedMovie.slug && this.selectedMovie.slug.includes("jumper")) ||
+      (playlistUrl && playlistUrl.includes("e24fa24c0056d57c5e142759eb05ba2b"));
     if (
+      !isJumperStream ||
       !playlistText ||
       !playlistText.includes("#EXTINF:3.14") ||
       !playlistText.includes("#EXT-X-DISCONTINUITY") ||
@@ -2476,7 +2477,7 @@ class AppleCinemaApp {
       return this._calibratedPlaylistsCache.get(playlistUrl);
     }
     try {
-      const scale = 1001 / 960; // 25 / (24000 / 1001) = 1.0427083333 (Hiệu chuẩn 0ms đồng bộ không tốn request mạng)
+      const scale = 1001 / 960;
       let seenFirstSeg = false;
       const lines = playlistText.split(/\r?\n/);
       const calibratedLines = lines.map((line) => {
@@ -2521,27 +2522,6 @@ class AppleCinemaApp {
             }
             if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
           };
-
-          // Phục vụ tức thì 0ms nếu master playlist đã được prefetch vào RAM khi rê chuột / mở modal
-          const reqUrl = context && context.url;
-          const cachedPlaylist = reqUrl && self._m3u8PrefetchCache && self._m3u8PrefetchCache.get(reqUrl);
-          if (typeof cachedPlaylist === "string" && cachedPlaylist.includes("#EXTM3U")) {
-            const now = performance.now();
-            const fakeStats = {
-              aborted: false,
-              loaded: cachedPlaylist.length,
-              total: cachedPlaylist.length,
-              retry: 0,
-              chunkCount: 1,
-              bwEstimate: 20000000,
-              loading: { start: now, first: now, end: now },
-              parsing: { start: now, end: now },
-              buffering: { start: now, first: now, end: now }
-            };
-            callbacks.onSuccess({ url: reqUrl, data: cachedPlaylist }, fakeStats, context, null);
-            return;
-          }
-
           origLoad(context, cfg, callbacks);
         };
       }
@@ -2649,6 +2629,7 @@ class AppleCinemaApp {
     }
     document.body.classList.remove("video-cursor-hidden");
     document.getElementById("applePlayerOverlay")?.style.setProperty("display", "none");
+    document.getElementById("appleSkipIntroBtn")?.classList.remove("visible");
     if (videoEl) {
       videoEl.pause();
       videoEl.style.display = "none";
@@ -2676,6 +2657,17 @@ class AppleCinemaApp {
     modalBackdrop?.scrollTo({ top: 0, behavior: "smooth" });
     sheet?.scrollTo({ top: 0, behavior: "smooth" });
 
+    // Mở khung trình phát ngay lập tức (0ms) để người dùng thấy trình phát chạy ngay khi bấm
+    const coverPreview = document.getElementById("modalCoverPreview");
+    const videoContainer = document.getElementById("activeVideoContainer");
+    const videoEl = document.getElementById("hlsVideoElement");
+    const iframeEl = document.getElementById("trailerIframeElement");
+
+    if (coverPreview) coverPreview.style.display = "none";
+    if (videoContainer) {
+      videoContainer.classList.add("playing", "video-is-waiting");
+    }
+
     // Nếu tập phim chưa có luồng thật hoặc link cũ/lỗi, tự động nạp luồng thật 1080p/4K từ API trước khi phát
     const initialEp = movie.episodes?.[epIndex] || movie.episodes?.[0];
     const unwrappedInitialSource = this.unwrapM3u8Url(initialEp?.source || "");
@@ -2685,7 +2677,8 @@ class AppleCinemaApp {
       !unwrappedInitialSource.includes("opstream") &&
       !initialEp?.needsEnrich
     );
-    const isBrokenOrOld = !hasReadyM3u8;
+    const hasReadyEmbed = Boolean(initialEp?.embed && !initialEp?.needsEnrich);
+    const isBrokenOrOld = !hasReadyM3u8 && !hasReadyEmbed;
 
     if (isBrokenOrOld || (!initialEp?.source && !initialEp?.embed)) {
       await this.service.enrichMovieStreams(movie, isBrokenOrOld);
@@ -2709,14 +2702,6 @@ class AppleCinemaApp {
     // Lưu vào Lịch sử xem tiếp
     this.recordWatchHistory(movie.slug, epIndex);
     this.setNowPlayingBar(movie, epIndex, true);
-
-    const coverPreview = document.getElementById("modalCoverPreview");
-    const videoContainer = document.getElementById("activeVideoContainer");
-    const videoEl = document.getElementById("hlsVideoElement");
-    const iframeEl = document.getElementById("trailerIframeElement");
-
-    if (coverPreview) coverPreview.style.display = "none";
-    if (videoContainer) videoContainer.classList.add("playing");
 
     // Cập nhật lại thanh Server Buttons và trạng thái tập phim đang phát (O(1) DOM update)
     this.renderServerButtons(movie, epIndex);
@@ -2843,7 +2828,14 @@ class AppleCinemaApp {
     this.detectedAdRanges = [];
     this.actualVideoRes = { width: 0, height: 0, bitrateMbps: 0 };
 
-    if (window.Hls && window.Hls.isSupported()) {
+    const isAppleTouchDevice =
+      typeof navigator !== "undefined" &&
+      (/(iPhone|iPad|iPod)/i.test(navigator.userAgent || "") ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+    const canPlayNativeHls = Boolean(videoEl.canPlayType && videoEl.canPlayType("application/vnd.apple.mpegurl"));
+
+    const startHlsJsEngine = () => {
+      if (!window.Hls || !window.Hls.isSupported()) return false;
       const CustomPlaylistLoader = this.createAdFreePlaylistLoader();
       this.hlsInstance = new window.Hls({
         pLoader: CustomPlaylistLoader,
@@ -2852,29 +2844,25 @@ class AppleCinemaApp {
         progressive: true,
         startFragPrefetch: true,
         backBufferLength: 30,
-        maxBufferLength: 40,
-        maxMaxBufferLength: 90,
-        maxBufferSize: 60 * 1000 * 1000,
-        maxBufferHole: 0.3,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        maxBufferSize: 45 * 1000 * 1000,
+        maxBufferHole: 0.5,
         highBufferWatchdogPeriod: 2,
-        nudgeOffset: 0.15,
+        nudgeOffset: 0.2,
         nudgeMaxRetry: 10,
         maxAudioFramesDrift: 4,
-        forceKeyFrameOnDiscontinuity: false,
-        maxFragLookUpTolerance: 0.2,
+        forceKeyFrameOnDiscontinuity: true,
+        maxFragLookUpTolerance: 0.25,
         startLevel: -1,
         capLevelToPlayerSize: false,
-        abrEwmaDefaultEstimate: 20000000,
-        abrBandWidthFactor: 0.9,
-        abrBandWidthUpFactor: 0.7
+        abrEwmaDefaultEstimate: 15000000
       });
-      this.hlsInstance.loadSource(streamUrl);
-      this.hlsInstance.attachMedia(videoEl);
 
-      this.hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, (_, data) => {
-        const levels = this.hlsInstance.levels || [];
+      // Đăng ký toàn bộ sự kiện TRƯỚC khi gọi loadSource & attachMedia để không bao giờ bỏ lỡ MANIFEST_PARSED
+      this.hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
+        const levels = this.hlsInstance?.levels || [];
         if (levels.length > 1) {
-          // Chọn mức phân giải cao nhất cho các segment kế tiếp mà không hủy segment đầu tiên đang tải
           let highestIdx = levels.length - 1;
           let maxMetric = 0;
           levels.forEach((lvl, idx) => {
@@ -2892,7 +2880,6 @@ class AppleCinemaApp {
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
         videoEl.play().catch(() => {});
-        // Tự động tua tiếp đến đoạn đã xem dở
         const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
         if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
           const applySavedTime = () => {
@@ -2906,6 +2893,7 @@ class AppleCinemaApp {
           applySavedTime();
         }
       });
+
       this.hlsInstance.on(window.Hls.Events.LEVEL_SWITCHED, (_, data) => {
         const lvl = this.hlsInstance?.levels?.[data.level];
         if (lvl) {
@@ -2917,6 +2905,7 @@ class AppleCinemaApp {
           this.applyVideoQualityVisuals();
         }
       });
+
       this.hlsInstance.on(window.Hls.Events.ERROR, async (_, data) => {
         if (data.fatal) {
           console.warn("[HLS] Lỗi đường truyền video:", data.type, data.details);
@@ -2935,7 +2924,6 @@ class AppleCinemaApp {
             return;
           }
 
-          // Tự động kết nối lại nguồn API mới nhất nếu link cũ bị gián đoạn hoặc 404
           if (!this._isAutoRetryingApi) {
             this._isAutoRetryingApi = true;
             try {
@@ -2951,7 +2939,6 @@ class AppleCinemaApp {
             }
           }
 
-          // Thử luồng .m3u8 dự phòng trong altSources nếu có
           const altBackup = episode?.altSources?.find(
             (a) => a.source && a.source.includes(".m3u8") && this.unwrapM3u8Url(a.source) !== streamUrl
           );
@@ -2963,7 +2950,6 @@ class AppleCinemaApp {
             return;
           }
 
-          // Fallback sang Embed nếu mọi luồng HLS trực tiếp không khả dụng (ẩn overlay để điều khiển được iframe)
           const fallback = episode?.embed || ncEp?.embed || dubEp?.embed;
           if (fallback && !isForbiddenIframe(fallback)) {
             const unwrappedFallback = this.unwrapM3u8Url(fallback);
@@ -2984,21 +2970,57 @@ class AppleCinemaApp {
           }
         }
       });
-    } else if (videoEl.canPlayType("application/vnd.apple.mpegurl")) {
+
+      this.hlsInstance.attachMedia(videoEl);
+      this.hlsInstance.loadSource(streamUrl);
+      return true;
+    };
+
+    // Trên iPhone & iPad: Ưu tiên trình giải mã phần cứng Apple AVPlayer Native HLS (mượt 120Hz ProMotion, 0% tải JS CPU)
+    if (isAppleTouchDevice && canPlayNativeHls) {
       videoEl.src = streamUrl;
-      videoEl.addEventListener("loadedmetadata", () => {
+      const onNativeMeta = () => {
         this.actualVideoRes.width = videoEl.videoWidth || 1920;
         this.actualVideoRes.height = videoEl.videoHeight || 1080;
         this.renderDynamicQualityButtons();
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
-        videoEl.play().catch(() => {});
         const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
         if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
           videoEl.currentTime = savedProg.currentTime;
-          this.showToast(`▶ Đang tiếp tục xem từ ${this.formatSeconds(savedProg.currentTime)} (${savedProg.percentage}%)`);
         }
-      });
+        videoEl.play().catch(() => {});
+      };
+      videoEl.addEventListener("loadedmetadata", onNativeMeta, { once: true });
+      videoEl.addEventListener(
+        "error",
+        () => {
+          videoEl.removeEventListener("loadedmetadata", onNativeMeta);
+          videoEl.removeAttribute("src");
+          startHlsJsEngine();
+        },
+        { once: true }
+      );
+      videoEl.play().catch(() => {});
+    } else if (!startHlsJsEngine() && canPlayNativeHls) {
+      videoEl.src = streamUrl;
+      videoEl.addEventListener(
+        "loadedmetadata",
+        () => {
+          this.actualVideoRes.width = videoEl.videoWidth || 1920;
+          this.actualVideoRes.height = videoEl.videoHeight || 1080;
+          this.renderDynamicQualityButtons();
+          this.renderDynamicResumeButtons();
+          this.applyVideoQualityVisuals();
+          const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
+          if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
+            videoEl.currentTime = savedProg.currentTime;
+          }
+          videoEl.play().catch(() => {});
+        },
+        { once: true }
+      );
+      videoEl.play().catch(() => {});
     }
 
     videoEl.onloadedmetadata = () => {
@@ -3825,30 +3847,47 @@ class AppleCinemaApp {
   }
 
   getMovieIntroWindow(movie, duration = 0) {
-    if (!movie || !duration || isNaN(duration) || duration < 180) return null;
+    if (!movie || !duration || isNaN(duration) || duration < 600) return null;
     if (typeof movie.introStart === "number" && typeof movie.introEnd === "number") {
       return {
         start: movie.introStart,
-        end: movie.introEnd,
-        skipDuration: Math.max(30, movie.introEnd - movie.introStart)
+        end: movie.introEnd
       };
     }
+
+    // Phim lẻ chiếu rạp không có nhạc OP tập phim -> không hiện Skip Intro tự động để tránh cắt mất cảnh mở đầu phim
+    if (movie.type === "single") {
+      return null;
+    }
+
+    const slug = (movie.slug || "").toLowerCase();
+    // Star Wars: The Clone Wars có đoạn intro + châm ngôn Jedi cố định ~36 giây
+    if (slug.includes("clone-war")) {
+      return { start: 1, end: 36 };
+    }
+
+    const isDonghua3D =
+      (Array.isArray(movie.sectionTags) && movie.sectionTags.includes("hoat-hinh-3d")) ||
+      (Array.isArray(movie.genres) && movie.genres.some((g) => /hoạt hình 3d/i.test(g)));
+    if (isDonghua3D && duration >= 900) {
+      return { start: 1, end: 58 };
+    }
+
     const isAnime =
-      (Array.isArray(movie.sectionTags) &&
-        (movie.sectionTags.includes("anime") || movie.sectionTags.includes("hoat-hinh-3d"))) ||
-      (Array.isArray(movie.genres) &&
-        movie.genres.some((g) => /anime|hoạt hình/i.test(g)));
+      (Array.isArray(movie.sectionTags) && movie.sectionTags.includes("anime")) ||
+      (Array.isArray(movie.genres) && movie.genres.some((g) => /anime|hoạt hình/i.test(g)));
+
+    if (isAnime && movie.countrySlug === "nhat-ban" && duration >= 1200) {
+      // OP Anime Nhật Bản chuẩn (không vượt quá 78s để giữ nguyên cảnh tiêu đề tập)
+      return { start: 1, end: 78 };
+    }
 
     if (isAnime) {
-      // Chuẩn OP Anime / Hoạt hình 3D: ~85 - 90 giây
-      return { start: 1, end: 90, skipDuration: 85 };
+      return { start: 1, end: 38 };
     }
-    if (movie.type === "series") {
-      // Chuẩn Intro Phim Bộ: ~80 - 85 giây
-      return { start: 1, end: 85, skipDuration: 80 };
-    }
-    // Phim Lẻ chiếu rạp: bỏ qua đoạn giới thiệu hãng phim mở đầu (~60 giây)
-    return { start: 1, end: 65, skipDuration: 60 };
+
+    // Phim bộ truyền hình (Việt Nam, Hàn Quốc, Trung Quốc, Âu Mỹ): chỉ bỏ qua đoạn giới thiệu đầu tập (~38s) để không lấn vào nội dung phim chính
+    return { start: 1, end: 38 };
   }
 
   updateSkipIntroButtonState(videoEl, movie, epIndex = 0) {
@@ -3868,7 +3907,7 @@ class AppleCinemaApp {
     const shouldShow =
       this._introSkippedKey !== epKey &&
       cur >= intro.start &&
-      cur <= intro.end - 3;
+      cur <= intro.end - 4;
 
     btn.classList.toggle("visible", shouldShow);
   }
@@ -3881,19 +3920,14 @@ class AppleCinemaApp {
     const videoEl = document.getElementById("hlsVideoElement");
     if (!videoEl || !videoEl.duration || isNaN(videoEl.duration)) return;
     const mov = this.playingMovie || this.selectedMovie;
-    const intro = this.getMovieIntroWindow(mov, videoEl.duration) || {
-      start: 1,
-      end: 85,
-      skipDuration: 85
-    };
+    const intro = this.getMovieIntroWindow(mov, videoEl.duration);
+    if (!intro) return;
 
     const cur = videoEl.currentTime || 0;
-    // Nếu đang ở ngay đầu tập (<= 15s) thì nhảy thẳng tới mốc kết thúc Intro chuẩn;
-    // nếu đoạn nhạc Intro bắt đầu muộn hơn (Cold Open), cộng thêm đúng độ dài bài OP (skipDuration)
-    const targetTime = Math.min(
-      Math.max(0, videoEl.duration - 10),
-      cur <= 15 ? intro.end : cur + intro.skipDuration
-    );
+    if (cur >= intro.end) return;
+
+    // Nhảy chính xác tới mốc kết thúc Intro (intro.end), tuyệt đối không cộng dồn cur + skipDuration làm lấn vào phim chính
+    const targetTime = Math.min(Math.max(0, videoEl.duration - 10), intro.end);
 
     this._introSkippedKey = `${mov?.slug || ""}-${this.currentEpisodeIndex}`;
     const btn = document.getElementById("appleSkipIntroBtn");
