@@ -59,6 +59,7 @@ class AppleCinemaApp {
     this.initGlobalAdBlocker();
     this.applyTheme();
     this.buildFastIndexes();
+    this.cleanPersonalListsOnBoot();
     this.setupHeroMovies();
     this.initUserProfile();
     this.bindGlobalEvents();
@@ -135,6 +136,58 @@ class AppleCinemaApp {
     };
   }
 
+  sanitizeAndDedupeHistory(rawHistory) {
+    if (!Array.isArray(rawHistory)) return [];
+    const bySlug = new Map();
+    for (const item of rawHistory) {
+      if (!item || typeof item !== "object" || !item.slug) continue;
+      const movie = this.findMovie(item.slug);
+      const canonicalSlug = movie ? movie.slug : String(item.slug).trim();
+      if (!canonicalSlug) continue;
+      const normalized = {
+        ...item,
+        slug: canonicalSlug,
+        epIndex: Number(item.epIndex) || 0,
+        progress: Number(item.progress) || 15,
+        timestamp: Number(item.timestamp) || 0
+      };
+      const existing = bySlug.get(canonicalSlug);
+      if (!existing || normalized.timestamp > existing.timestamp || (normalized.timestamp === existing.timestamp && normalized.epIndex > existing.epIndex)) {
+        bySlug.set(canonicalSlug, normalized);
+      }
+    }
+    return Array.from(bySlug.values()).slice(0, 24);
+  }
+
+  sanitizeAndDedupeMyList(rawMyList) {
+    if (!Array.isArray(rawMyList)) return [];
+    const seen = new Set();
+    const cleaned = [];
+    for (const idOrSlug of rawMyList) {
+      if (!idOrSlug) continue;
+      const movie = this.findMovie(idOrSlug);
+      const canonicalSlug = movie ? movie.slug : String(idOrSlug).trim();
+      if (canonicalSlug && !seen.has(canonicalSlug)) {
+        seen.add(canonicalSlug);
+        cleaned.push(canonicalSlug);
+      }
+    }
+    return cleaned;
+  }
+
+  cleanPersonalListsOnBoot() {
+    const prevHistLen = Array.isArray(this.watchHistory) ? this.watchHistory.length : 0;
+    const prevListLen = Array.isArray(this.myList) ? this.myList.length : 0;
+    this.watchHistory = this.sanitizeAndDedupeHistory(this.watchHistory);
+    this.myList = this.sanitizeAndDedupeMyList(this.myList);
+    if (this.watchHistory.length !== prevHistLen) {
+      this.saveStorage("apple_cinema_history", this.watchHistory);
+    }
+    if (this.myList.length !== prevListLen) {
+      this.saveStorage("apple_cinema_mylist", this.myList);
+    }
+  }
+
   loadStorage(key, fallback) {
     try {
       const raw = localStorage.getItem(key);
@@ -144,10 +197,11 @@ class AppleCinemaApp {
     }
   }
 
-  saveStorage(key, value) {
+  saveStorage(key, value, skipCloudSync = false) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
       if (
+        !skipCloudSync &&
         (key === "apple_cinema_mylist" ||
           key === "ngwyren_playback_progress" ||
           key === "ngwyren_user_profile" ||
@@ -373,8 +427,16 @@ class AppleCinemaApp {
   }
 
   renderLeftSideColumnHTML(contextMovies = null, panelTitle = "Đề Xuất") {
-    // Luôn đảm bảo đủ đúng 15 phim mới, ngẫu nhiên hóa mỗi lần tải lại trang
+    // Luôn đảm bảo đủ đúng 15 phim mới không trùng lặp, ngẫu nhiên hóa mỗi lần tải lại trang
     let list15 = [];
+    const seenSlugs = new Set();
+    const pushUnique = (m) => {
+      if (m && m.slug && !seenSlugs.has(m.slug)) {
+        seenSlugs.add(m.slug);
+        list15.push(m);
+      }
+    };
+
     if (!contextMovies || contextMovies === this.service.movies) {
       if (!this._shuffledTrailers) {
         const topPool = this.service.movies.slice(0, 45);
@@ -384,22 +446,31 @@ class AppleCinemaApp {
         }
         this._shuffledTrailers = topPool.slice(0, 15);
       }
-      list15 = this._shuffledTrailers;
+      for (const m of this._shuffledTrailers) pushUnique(m);
     } else {
-      list15 = [...contextMovies];
-      if (list15.length < 15) {
-        for (const m of this.service.movies) {
-          if (!list15.some((x) => x.slug === m.slug)) {
-            list15.push(m);
-            if (list15.length >= 15) break;
-          }
-        }
+      for (const m of contextMovies) {
+        pushUnique(m);
+        if (list15.length >= 15) break;
       }
     }
+
+    if (list15.length < 15) {
+      for (const m of this.service.movies) {
+        pushUnique(m);
+        if (list15.length >= 15) break;
+      }
+    }
+
     const sourceTrailers = list15.slice(0, 15);
-    const continueItems = this.watchHistory
-      .map((h) => ({ movie: this.findMovie(h.slug), epIndex: h.epIndex || 0 }))
-      .filter((x) => x.movie);
+    const seenContinueSlugs = new Set();
+    const continueItems = [];
+    for (const h of this.watchHistory) {
+      const movie = this.findMovie(h?.slug);
+      if (movie && !seenContinueSlugs.has(movie.slug)) {
+        seenContinueSlugs.add(movie.slug);
+        continueItems.push({ movie, epIndex: h.epIndex || 0 });
+      }
+    }
 
     // Chỉ hiển thị khung Xem Tiếp khi người dùng đã thực sự xem phim (tài khoản mới không hiện rác)
     const continuePanelHTML = continueItems.length > 0 ? `
@@ -435,14 +506,21 @@ class AppleCinemaApp {
      CONTINUE WATCHING HOME SHELF (HÀNG "TIẾP TỤC XEM" CHUẨN APPLE TV & NETFLIX)
      ========================================================================== */
   renderContinueWatchingShelfHTML() {
-    const continueItems = this.watchHistory
-      .map((h) => ({
-        movie: this.findMovie(h.slug),
-        epIndex: h.epIndex || 0,
-        progress: h.progress || 0,
-        currentTime: h.currentTime || 0
-      }))
-      .filter((x) => x.movie && x.progress > 0 && x.progress < 95);
+    const seenContinueSlugs = new Set();
+    const continueItems = [];
+    for (const h of this.watchHistory) {
+      const movie = this.findMovie(h?.slug);
+      const progress = h?.progress || 0;
+      if (movie && progress > 0 && progress < 95 && !seenContinueSlugs.has(movie.slug)) {
+        seenContinueSlugs.add(movie.slug);
+        continueItems.push({
+          movie,
+          epIndex: h.epIndex || 0,
+          progress,
+          currentTime: h.currentTime || 0
+        });
+      }
+    }
 
     if (continueItems.length === 0) return "";
 
@@ -1037,7 +1115,10 @@ class AppleCinemaApp {
           "vietsub": "Đề Xuất"
         };
         const shortTitle = shortMap[this.currentNav] || "Đề Xuất";
-        return this.renderLeftSideColumnHTML(distinctListForLeft.length >= 2 ? distinctListForLeft : list, shortTitle);
+        const leftSource = isPersonalPage
+          ? null
+          : (distinctListForLeft.length >= 2 ? distinctListForLeft : list);
+        return this.renderLeftSideColumnHTML(leftSource, shortTitle);
       })()}
 
         <div class="vision-main-col vision-col-transition">
@@ -1163,16 +1244,34 @@ class AppleCinemaApp {
         title = "Phim Âu Mỹ & Hollywood";
         subtitle = "Hành động, viễn tưởng & giật gân";
         break;
-      case "yeu-thich":
-        base = this.myList.map((idOrSlug) => this.findMovie(idOrSlug)).filter(Boolean);
+      case "yeu-thich": {
+        const seenFav = new Set();
+        base = [];
+        for (const idOrSlug of this.myList) {
+          const m = this.findMovie(idOrSlug);
+          if (m && !seenFav.has(m.slug)) {
+            seenFav.add(m.slug);
+            base.push(m);
+          }
+        }
         title = "Danh Sách Đã Lưu";
         subtitle = "Những bộ phim bạn đã lưu để thưởng thức";
         break;
-      case "lich-su":
-        base = this.watchHistory.map((h) => this.findMovie(h.slug)).filter(Boolean);
+      }
+      case "lich-su": {
+        const seenHist = new Set();
+        base = [];
+        for (const h of this.watchHistory) {
+          const m = this.findMovie(h?.slug);
+          if (m && !seenHist.has(m.slug)) {
+            seenHist.add(m.slug);
+            base.push(m);
+          }
+        }
         title = "Lịch Sử Xem Tiếp";
         subtitle = "Tiếp tục thưởng thức từ tập phim đang xem dở";
         break;
+      }
       case "person-filter":
         base = base.filter(
           (m) =>
@@ -4118,14 +4217,17 @@ class AppleCinemaApp {
   }
 
   recordWatchHistory(slug, epIndex = 0) {
-    this.watchHistory = this.watchHistory.filter((h) => h.slug !== slug);
-    this.watchHistory.unshift({
-      slug,
-      epIndex,
-      progress: 15,
-      timestamp: Date.now()
-    });
-    this.watchHistory = this.watchHistory.slice(0, 24);
+    const movie = this.findMovie(slug);
+    const canonicalSlug = movie ? movie.slug : slug;
+    this.watchHistory = this.sanitizeAndDedupeHistory([
+      {
+        slug: canonicalSlug,
+        epIndex,
+        progress: 15,
+        timestamp: Date.now()
+      },
+      ...(this.watchHistory || [])
+    ]);
     this.saveStorage("apple_cinema_history", this.watchHistory);
     this.updateSidebarCounts();
   }
@@ -4639,23 +4741,31 @@ class AppleCinemaApp {
         throw new Error("Mã đồng bộ không hợp lệ");
       }
 
-      // Merge Cloud state
+      // Merge Cloud state (with strict canonical slug deduplication so objects never multiply)
+      let hadCloudDuplicates = false;
       if (cloudData.profile) {
         this.userProfile = cloudData.profile;
-        this.saveStorage("ngwyren_user_profile", this.userProfile);
+        this.saveStorage("ngwyren_user_profile", this.userProfile, true);
         this.updateProfileUI();
       }
       if (Array.isArray(cloudData.myList)) {
-        this.myList = Array.from(new Set([...(this.myList || []), ...cloudData.myList]));
-        this.saveStorage("apple_cinema_mylist", this.myList);
+        const mergedList = this.sanitizeAndDedupeMyList([...(this.myList || []), ...cloudData.myList]);
+        if (cloudData.myList.length > mergedList.length) hadCloudDuplicates = true;
+        this.myList = mergedList;
+        this.saveStorage("apple_cinema_mylist", this.myList, true);
       }
       if (Array.isArray(cloudData.history)) {
-        this.watchHistory = Array.from(new Set([...(this.watchHistory || []), ...cloudData.history]));
-        this.saveStorage("apple_cinema_history", this.watchHistory);
+        const mergedHist = this.sanitizeAndDedupeHistory([...(this.watchHistory || []), ...cloudData.history]);
+        if (cloudData.history.length > mergedHist.length) hadCloudDuplicates = true;
+        this.watchHistory = mergedHist;
+        this.saveStorage("apple_cinema_history", this.watchHistory, true);
       }
       if (cloudData.progress && typeof cloudData.progress === "object") {
         this.playbackProgress = { ...(this.playbackProgress || {}), ...cloudData.progress };
-        this.saveStorage("ngwyren_playback_progress", this.playbackProgress);
+        this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+      }
+      if (hadCloudDuplicates) {
+        this.triggerCloudSync(1500);
       }
 
       this.cloudObjId = cleanId;
