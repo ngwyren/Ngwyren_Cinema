@@ -8,6 +8,7 @@ const PHIMMOI_CONFIG = {
   wpApiPosts: "https://phimmoiz.one/wp-json/wp/v2/posts",
   phimApiBase: "https://phimapi.com/phim/",
   phimApiSearch: "https://phimapi.com/v1/api/tim-kiem",
+  phimApiLatest: "https://phimapi.com/danh-sach/phim-moi-cap-nhat-v3",
   nguoncApiBase: "https://phim.nguonc.com/api/film/",
   nguoncApiSearch: "https://phim.nguonc.com/api/films/search",
   nguoncApiLatest: "https://phim.nguonc.com/api/films/phim-moi-cap-nhat",
@@ -1085,6 +1086,8 @@ class PhimmoiService {
     this.slugMap = new Map();
     this.canonicalKeyMap = new Map();
     this._smartCache = new Map();
+    this.liveTrendingMovies = [];
+    this.lastTrendingSyncAt = 0;
     this.movies.forEach((m) => {
       this.slugMap.set(m.slug, m);
       if (m.crawlSlug) this.slugMap.set(m.crawlSlug, m);
@@ -1479,8 +1482,8 @@ class PhimmoiService {
   /**
    * Fetch thông minh hỗ trợ bộ nhớ đệm 0ms + kết nối trực tiếp + tự động fallback qua CORS proxy nếu trình duyệt chặn
    */
-  async smartFetchJson(url, timeoutMs = 7500) {
-    if (this._smartCache && this._smartCache.has(url)) {
+  async smartFetchJson(url, timeoutMs = 7500, bypassCache = false) {
+    if (!bypassCache && this._smartCache && this._smartCache.has(url)) {
       return this._smartCache.get(url);
     }
     const attempts = [
@@ -1508,55 +1511,359 @@ class PhimmoiService {
   }
 
   /**
-   * Đồng bộ toàn bộ danh sách phim mới nhất từ nhiều trang API
+   * Đồng bộ xu hướng phim thời gian thực (Real-time Trending) từ PhimAPI v3, NguonC & WP API
    */
-  async syncLatestFromPhimmoi(perPage = 30) {
-    const pagesToFetch = [1, 2, 3];
-    const pagePromises = pagesToFetch.map((page) =>
-      this.smartFetchJson(`${PHIMMOI_CONFIG.wpApiPosts}?per_page=${perPage}&page=${page}&_embed=1`)
-    );
-
-    const results = await Promise.all(pagePromises);
-    const allPosts = results.filter(Array.isArray).flat();
-
-    if (allPosts.length === 0) {
-      return { added: 0, total: this.movies.length, live: false };
-    }
+  async syncLatestFromPhimmoi(perPage = 24) {
+    const [phimApiV3Page1, nguoncLatestPage1, wpPage1] = await Promise.all([
+      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiLatest}?page=1`, 4500, true).catch(() => null),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiLatest}?page=1`, 4500, true).catch(() => null),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.wpApiPosts}?per_page=${perPage}&page=1&_embed=1`, 4500, true).catch(() => null)
+    ]);
 
     let addedCount = 0;
+    let updatedCount = 0;
     const newlyAdded = [];
+    const liveTrendingBatch = [];
+    const seenTrendingSlugs = new Set();
 
-    allPosts.forEach((post) => {
-      const normalized = this.normalizeWpPost(post);
-      if (!normalized) return;
+    const registerTrendingMovie = (movieObj, rankIdx, updatedAtMs) => {
+      if (!movieObj || !movieObj.slug) return;
+      movieObj.isLiveTrending = true;
+      movieObj.liveTrendRank = Math.min(movieObj.liveTrendRank || 999, rankIdx);
+      movieObj.updatedAtMs = Math.max(movieObj.updatedAtMs || 0, updatedAtMs || Date.now());
+      if (!seenTrendingSlugs.has(movieObj.slug)) {
+        seenTrendingSlugs.add(movieObj.slug);
+        liveTrendingBatch.push(movieObj);
+      }
+    };
 
-      const cKey = this.getCanonicalMovieKey(normalized);
+    const upsertLiveCandidate = (candidate, rankIdx, updatedAtMs) => {
+      if (!candidate || !candidate.slug || this.isAdOrSpam(candidate)) return;
+      const epStr = String(candidate.episodeCurrent || "").toLowerCase();
+      if (epStr.includes("trailer") || epStr.includes("sắp chiếu")) return;
+
+      const cKey = this.getCanonicalMovieKey(candidate);
       const existing =
-        this.slugMap.get(normalized.slug) ||
-        (normalized.crawlSlug && this.slugMap.get(normalized.crawlSlug)) ||
+        this.slugMap.get(candidate.slug) ||
+        (candidate.crawlSlug && this.slugMap.get(candidate.crawlSlug)) ||
         (cKey && this.canonicalKeyMap.get(cKey));
 
       if (existing) {
-        this.mergeBestQualityMovie(existing, normalized);
-        this.slugMap.set(normalized.slug, existing);
-        if (normalized.crawlSlug) this.slugMap.set(normalized.crawlSlug, existing);
+        const prevEpCur = existing.episodeCurrent;
+        this.mergeBestQualityMovie(existing, candidate);
+        if (candidate.episodeCurrent && candidate.episodeCurrent !== prevEpCur) {
+          existing.episodeCurrent = candidate.episodeCurrent;
+          existing._isEnriched = false;
+          if (Array.isArray(existing.episodes) && existing.episodes[0]) {
+            existing.episodes[0].needsEnrich = true;
+          }
+          updatedCount++;
+        }
+        if (candidate.backdrop && (!existing.backdrop || existing.backdrop === existing.poster)) {
+          existing.backdrop = candidate.backdrop;
+          delete existing._cachedBackdrop;
+        }
+        this.slugMap.set(candidate.slug, existing);
+        if (candidate.crawlSlug) this.slugMap.set(candidate.crawlSlug, existing);
+        registerTrendingMovie(existing, rankIdx, updatedAtMs);
       } else {
-        newlyAdded.push(normalized);
-        this.slugMap.set(normalized.slug, normalized);
-        if (normalized.crawlSlug) this.slugMap.set(normalized.crawlSlug, normalized);
-        if (cKey) this.canonicalKeyMap.set(cKey, normalized);
+        candidate._titleLower = (candidate.title || "").toLowerCase();
+        candidate._originLower = (candidate.originTitle || "").toLowerCase();
+        newlyAdded.push(candidate);
+        this.slugMap.set(candidate.slug, candidate);
+        if (candidate.crawlSlug) this.slugMap.set(candidate.crawlSlug, candidate);
+        if (cKey) this.canonicalKeyMap.set(cKey, candidate);
         addedCount++;
+        registerTrendingMovie(candidate, rankIdx, updatedAtMs);
       }
-    });
+    };
+
+    // 1. Nguồn PhimAPI v3 (Cập nhật từng phút với ảnh thumb 16:9 widescreen & điểm IMDb/TMDB)
+    const paItems = phimApiV3Page1?.items || phimApiV3Page1?.data?.items || [];
+    if (Array.isArray(paItems)) {
+      paItems.forEach((item, idx) => {
+        if (!item || !item.slug || this.isAdOrSpam(item)) return;
+        const posterUrl = item.poster_url?.startsWith("http")
+          ? item.poster_url
+          : item.poster_url
+          ? `https://phimimg.com/${item.poster_url.replace(/^\//, "")}`
+          : "";
+        const thumbUrl = item.thumb_url?.startsWith("http")
+          ? item.thumb_url
+          : item.thumb_url
+          ? `https://phimimg.com/${item.thumb_url.replace(/^\//, "")}`
+          : "";
+        const isSer =
+          item.type === "series" ||
+          item.type === "hoathinh" ||
+          item.type === "tvshows" ||
+          (item.episode_current && /tập\s*\d+/i.test(item.episode_current));
+        const genres = Array.isArray(item.category) && item.category.length > 0
+          ? item.category.map((c) => c.name).filter(Boolean)
+          : ["Chính Kịch"];
+        const countryName = item.country?.[0]?.name || "Quốc Tế";
+        const countrySlug = item.country?.[0]?.slug || "quoc-te";
+        const tags = ["hot", "de-cu", "vietsub", isSer ? "phim-bo" : "phim-le"];
+        if (
+          item.type === "hoathinh" ||
+          genres.some((g) => g.toLowerCase().includes("hoạt hình") || g.toLowerCase().includes("anime"))
+        ) {
+          tags.push("anime");
+        }
+        if (countrySlug === "han-quoc" || countrySlug === "au-my") {
+          tags.push("netflix");
+        }
+        const imdbVote = Number(item.imdb?.vote_average || item.tmdb?.vote_average || 0);
+        const ratingVal = imdbVote >= 6.5 ? Number(imdbVote.toFixed(1)) : 9.1;
+        const updatedAtMs = Date.parse(item.modified?.time || "") || Date.now();
+
+        const candidate = {
+          id: item.slug,
+          slug: item.slug,
+          crawlSlug: item.slug,
+          title: item.name || item.origin_name,
+          originTitle: item.origin_name || item.name,
+          poster: posterUrl || thumbUrl,
+          backdrop: thumbUrl || posterUrl,
+          type: isSer ? "series" : "single",
+          sectionTags: tags,
+          quality: "1080",
+          language: item.lang || "Vietsub",
+          duration: item.time || (isSer ? "45 phút/tập" : "115 phút"),
+          episodeCurrent: item.episode_current || (isSer ? "Tập Mới" : "Full"),
+          episodeTotal: isSer ? "Đang cập nhật" : "1",
+          year: Number(item.year) || 2026,
+          rating: ratingVal,
+          matchScore: 97,
+          country: countryName,
+          countrySlug,
+          genres,
+          director: "Đang cập nhật",
+          cast: ["Dàn diễn viên chính"],
+          ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
+          trailerUrl: "",
+          synopsis: `${item.name} (${item.origin_name || item.year || 2026}) — Xu hướng mới cập nhật bản Full HD ${item.lang || "Vietsub"} trên Ngwyren Cinema.`,
+          episodes: [{ name: item.episode_current || "Tập 1", slug: "tap-1", source: "", needsEnrich: true }]
+        };
+        upsertLiveCandidate(candidate, idx + 1, updatedAtMs);
+      });
+    }
+
+    // 2. Nguồn NguonC Real-time Latest
+    const ncItems = nguoncLatestPage1?.items || [];
+    if (Array.isArray(ncItems)) {
+      ncItems.forEach((nc, idx) => {
+        if (!nc || !nc.slug || this.isAdOrSpam(nc)) return;
+        const isSer = parseInt(nc.total_episodes, 10) > 1 || /tập\s*\d+/i.test(nc.current_episode || "");
+        const posterUrl = nc.thumb_url_webp || nc.thumb_url || nc.poster_url_webp || nc.poster_url || "";
+        const backdropUrl = nc.poster_url_webp || nc.poster_url || nc.thumb_url_webp || nc.thumb_url || "";
+        const updatedAtMs = Date.parse(nc.modified || "") || Date.now();
+        const candidate = {
+          id: nc.slug,
+          slug: nc.slug,
+          crawlSlug: nc.slug,
+          title: nc.name,
+          originTitle: nc.original_name || nc.name,
+          poster: posterUrl,
+          backdrop: backdropUrl,
+          type: isSer ? "series" : "single",
+          sectionTags: ["hot", "de-cu", "vietsub", isSer ? "phim-bo" : "phim-le"],
+          quality: "1080",
+          language: nc.language || "Vietsub",
+          duration: nc.time || (isSer ? "45 phút/tập" : "115 phút"),
+          episodeCurrent: nc.current_episode || (isSer ? "Tập Mới" : "Full"),
+          episodeTotal: String(nc.total_episodes || 1),
+          year: parseInt(nc.year, 10) || 2026,
+          rating: 9.0,
+          matchScore: 96,
+          country: "Quốc Tế",
+          countrySlug: "quoc-te",
+          genres: ["Chính Kịch", "Thịnh Hành"],
+          director: nc.director || "Đang cập nhật",
+          cast: nc.casts ? nc.casts.split(/,\s*/).slice(0, 6) : ["Dàn diễn viên chính"],
+          ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
+          trailerUrl: "",
+          synopsis: this.cleanAdText(nc.description || "").slice(0, 220) || `${nc.name} chất lượng cao Vietsub.`,
+          episodes: [{ name: nc.current_episode || "Tập 1", slug: "tap-1", source: "", needsEnrich: true }]
+        };
+        upsertLiveCandidate(candidate, idx + 5, updatedAtMs);
+      });
+    }
+
+    // 3. Nguồn WP API bổ sung
+    if (Array.isArray(wpPage1)) {
+      wpPage1.forEach((post, idx) => {
+        const normalized = this.normalizeWpPost(post);
+        if (normalized) {
+          upsertLiveCandidate(normalized, idx + 15, Date.now() - idx * 60000);
+        }
+      });
+    }
 
     if (newlyAdded.length > 0) {
-      // Giữ các siêu phẩm đề cử ở đầu và cập nhật toàn bộ phim mới
       this.movies = [...newlyAdded, ...this.movies];
     }
 
-    this.isLiveConnected = true;
-    this.lastSyncedCount = allPosts.length;
-    return { added: addedCount, total: this.movies.length, live: true };
+    if (liveTrendingBatch.length > 0) {
+      this.liveTrendingMovies = liveTrendingBatch;
+      this.lastTrendingSyncAt = Date.now();
+    }
+
+    this.isLiveConnected = liveTrendingBatch.length > 0 || this.isLiveConnected;
+    this.lastSyncedCount = liveTrendingBatch.length;
+    return {
+      added: addedCount,
+      updated: updatedCount,
+      trendingCount: this.liveTrendingMovies.length,
+      total: this.movies.length,
+      live: liveTrendingBatch.length > 0
+    };
+  }
+
+  /**
+   * Thuật toán xếp hạng Xu Hướng Thời Gian Thực (Real-time Trend Score) cho cột Đề Xuất
+   * Kết hợp: Luồng API vừa cập nhật (PhimAPI v3 / NguonC) + Lịch chiếu hôm nay + Năm hiện hành + Độ nét ảnh nền 16:9
+   */
+  getRealtimeTrendingList(contextMovies = null, limit = 6, rotationSeed = 0, watchHistory = []) {
+    const now = new Date();
+    const jsDay = now.getDay();
+    const todayKey = jsDay === 0 ? "chu-nhat" : `thu-${jsDay + 1}`;
+    const todaySchedule = (window.NGWYREN_AIR_SCHEDULE && window.NGWYREN_AIR_SCHEDULE[todayKey]) || [];
+    const airingTodaySlugs = new Set(todaySchedule.map((item) => item.slug).filter(Boolean));
+
+    // Tập thể loại người dùng vừa xem gần đây để tăng nhẹ điểm cá nhân hóa theo thời gian thực
+    const recentGenres = new Set();
+    const recentWatchedSlugs = new Set();
+    if (Array.isArray(watchHistory)) {
+      watchHistory.slice(0, 5).forEach((h) => {
+        if (!h || !h.slug) return;
+        recentWatchedSlugs.add(h.slug);
+        const mov = this.slugMap.get(h.slug);
+        if (mov && Array.isArray(mov.genres)) {
+          mov.genres.forEach((g) => recentGenres.add(g));
+        }
+      });
+    }
+
+    const isGlobalContext = !contextMovies || contextMovies === this.movies || contextMovies.length >= this.movies.length - 5;
+    let candidatePool = [];
+
+    if (isGlobalContext) {
+      const seen = new Set();
+      const addCandidate = (m) => {
+        if (m && m.slug && !seen.has(m.slug)) {
+          seen.add(m.slug);
+          candidatePool.push(m);
+        }
+      };
+      // 1. Ưu tiên hàng đầu: Phim vừa cập nhật trực tiếp từ API thời gian thực
+      (this.liveTrendingMovies || []).forEach(addCandidate);
+      // 2. Phim có lịch phát sóng đúng ngày hôm nay
+      todaySchedule.forEach((s) => {
+        const m = this.slugMap.get(s.slug);
+        if (m) addCandidate(m);
+      });
+      // 3. Top phim bom tấn mới nhất trong kho
+      this.movies.slice(0, 90).forEach(addCandidate);
+    } else {
+      candidatePool = contextMovies.slice(0, 120);
+    }
+
+    const nowMs = Date.now();
+    const scored = [];
+
+    for (let i = 0; i < candidatePool.length; i++) {
+      const m = candidatePool[i];
+      if (!m || !m.slug) continue;
+
+      let score = 0;
+
+      // 1. Điểm xu hướng trực tiếp từ Live API (vừa ra tập mới / vừa lên sóng)
+      if (m.isLiveTrending) {
+        const rankBonus = Math.max(20, 260 - (m.liveTrendRank || 20) * 8);
+        score += rankBonus;
+        if (m.updatedAtMs) {
+          const hoursAgo = Math.max(0, (nowMs - m.updatedAtMs) / (1000 * 3600));
+          if (hoursAgo <= 6) score += 120;
+          else if (hoursAgo <= 24) score += 85;
+          else if (hoursAgo <= 72) score += 45;
+        }
+      }
+
+      // 2. Điểm phát sóng đúng ngày hôm nay (Lịch chiếu thời gian thực)
+      if (airingTodaySlugs.has(m.slug)) {
+        score += 135;
+      }
+
+      // 3. Điểm độ mới theo năm phát hành (2026 / 2025)
+      const yr = Number(m.year) || 2024;
+      if (yr >= 2026) score += 95;
+      else if (yr === 2025) score += 60;
+      else if (yr === 2024) score += 25;
+
+      // 4. Ưu tiên ảnh nền ngang 16:9 sắc nét (không dùng ảnh dọc bị cắt hoặc nguồn ảnh chết)
+      const b = m.backdrop || "";
+      if (b && b !== m.poster && !b.includes("phimmoiz.one") && !b.includes("-poster.")) {
+        score += 65;
+      }
+
+      // 5. Điểm đánh giá & nhãn Hot / Đề cử
+      score += (Number(m.rating) || 8.5) * 6;
+      if (Array.isArray(m.sectionTags)) {
+        if (m.sectionTags.includes("de-cu")) score += 30;
+        if (m.sectionTags.includes("hot")) score += 20;
+      }
+
+      // 6. Cá nhân hóa nhẹ theo gu đang xem của người dùng
+      if (recentGenres.size > 0 && Array.isArray(m.genres)) {
+        let matchedG = 0;
+        for (const g of m.genres) {
+          if (recentGenres.has(g)) matchedG++;
+        }
+        score += Math.min(36, matchedG * 14);
+      }
+
+      // Giữ vị trí tự nhiên cho các siêu phẩm đầu bảng
+      score += Math.max(0, 36 - i * 0.4);
+
+      scored.push({ movie: m, score });
+    }
+
+    scored.sort((a, b) => b.score - a.score);
+
+    // Lấy nhóm dẫn đầu xu hướng (Top 18) và xoay vòng thông minh theo khung thời gian thực + rotationSeed
+    const topWindow = scored.slice(0, Math.min(18, scored.length)).map((x) => x.movie);
+    if (topWindow.length <= limit) return topWindow;
+
+    // Khung thời gian thực (mỗi 2 phút hoặc khi người dùng bấm làm mới)
+    const timeSlot = Math.floor(nowMs / (2 * 60 * 1000)) + (Number(rotationSeed) || 0);
+    const result = [];
+    const used = new Set();
+
+    // Luôn giữ 2 vị trí dẫn đầu từ nhóm Top 4 Hot nhất thời điểm hiện tại
+    const top4 = topWindow.slice(0, Math.min(4, topWindow.length));
+    for (let k = 0; k < Math.min(2, top4.length); k++) {
+      const pick = top4[(timeSlot + k) % top4.length];
+      if (pick && !used.has(pick.slug)) {
+        used.add(pick.slug);
+        result.push(pick);
+      }
+    }
+
+    // Các vị trí còn lại lấy luân phiên từ nhóm Top 18 xu hướng thời gian thực
+    const restPool = topWindow.filter((m) => !used.has(m.slug));
+    if (restPool.length > 0) {
+      const startOffset = (timeSlot * 2) % restPool.length;
+      for (let j = 0; j < restPool.length && result.length < limit; j++) {
+        const candidate = restPool[(startOffset + j) % restPool.length];
+        if (candidate && !used.has(candidate.slug)) {
+          used.add(candidate.slug);
+          result.push(candidate);
+        }
+      }
+    }
+
+    return result.slice(0, limit);
   }
 
   /**

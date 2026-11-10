@@ -56,6 +56,8 @@ class AppleCinemaApp {
     this.tagCache = new Map();
     this.countryCache = new Map();
     this.chartsCache = null;
+    this._trendingRotationSeed = 0;
+    this._lastLeftContext = null;
   }
 
   async init() {
@@ -76,11 +78,38 @@ class AppleCinemaApp {
     this.renderMainView();
     this.startHeroAutoRotate();
 
-    // Trì hoãn đồng bộ ngầm khi trình duyệt rảnh để không gây giật lag lúc mới mở trang
-    setTimeout(() => this.syncLivePhimmoi(false), 6000);
+    // Đồng bộ ngay xu hướng phim thời gian thực (Real-time Trending) sau 1.2s khi khung hình đầu tiên đã vẽ xong
+    setTimeout(() => this.syncLivePhimmoi(false), 1200);
 
-    // Khởi chạy lịch tự động cập nhật phim mới và bảo trì sửa lỗi định kỳ (mỗi 30 phút)
+    // Khởi chạy Engine cập nhật Trend Đề Xuất thời gian thực (mỗi 90 giây & khi quay lại tab) + Bảo trì định kỳ
+    this.startRealtimeTrendingEngine();
     this.startPeriodicMaintenanceScheduler();
+  }
+
+  startRealtimeTrendingEngine() {
+    if (this._trendingRealtimeInterval) clearInterval(this._trendingRealtimeInterval);
+    this._trendingRealtimeInterval = setInterval(async () => {
+      if (document.hidden) return;
+      const modalOpen = document.getElementById("movieDetailModal")?.classList.contains("open");
+      if (modalOpen && this.isPlaying) return;
+      this._trendingRotationSeed = (this._trendingRotationSeed || 0) + 1;
+      await this.syncLivePhimmoi(false);
+    }, 90 * 1000);
+
+    if (!this._boundVisibilityTrendingSync) {
+      this._boundVisibilityTrendingSync = () => {
+        if (document.visibilityState === "visible") {
+          const elapsed = Date.now() - (this.service?.lastTrendingSyncAt || 0);
+          if (elapsed > 45 * 1000) {
+            this._trendingRotationSeed = (this._trendingRotationSeed || 0) + 1;
+            this.syncLivePhimmoi(false);
+          } else {
+            this.refreshRealtimeTrendingDOM();
+          }
+        }
+      };
+      document.addEventListener("visibilitychange", this._boundVisibilityTrendingSync);
+    }
   }
 
   startPeriodicMaintenanceScheduler() {
@@ -294,32 +323,97 @@ class AppleCinemaApp {
   }
 
   /* ==========================================================================
-     LIVE SYNC ALL MOVIES
+     LIVE SYNC ALL MOVIES & REAL-TIME TRENDING ENGINE
      ========================================================================== */
   async syncLivePhimmoi(showToast = true) {
+    if (this._isSyncingLive) return;
+    this._isSyncingLive = true;
     const statusText = document.getElementById("liveStatusText");
     const syncBtn = document.getElementById("btnSyncPhimmoi");
+    const syncIcon = document.getElementById("visionTrendSyncIcon");
     if (statusText) statusText.textContent = "Đang cập nhật...";
     if (syncBtn) syncBtn.disabled = true;
+    if (syncIcon) syncIcon.classList.add("fa-spin");
 
-    const result = await this.service.syncLatestFromPhimmoi(30);
-    this.buildFastIndexes();
-    this.setupHeroMovies();
-    this.updateSidebarCounts();
+    try {
+      const result = await this.service.syncLatestFromPhimmoi(24);
+      this.buildFastIndexes();
+      this.setupHeroMovies();
+      this.updateSidebarCounts();
+      this.refreshRealtimeTrendingDOM();
 
-    if (statusText) {
-      statusText.textContent = `Trực tuyến (${result.total} phim)`;
+      if (statusText) {
+        statusText.textContent = `Trực tuyến (${result.total} phim)`;
+      }
+      if (syncBtn) syncBtn.disabled = false;
+
+      if (showToast) {
+        this.renderMainView();
+        if (result.added > 0) {
+          this.showToast(`Đã cập nhật thêm ${result.added} phim mới (Tổng ${result.total} phim)`);
+        } else {
+          this.showToast(`Đã đồng bộ toàn bộ kho phim (${result.total} phim)`);
+        }
+      }
+    } finally {
+      this._isSyncingLive = false;
+      const iconAfter = document.getElementById("visionTrendSyncIcon");
+      if (iconAfter) iconAfter.classList.remove("fa-spin");
     }
-    if (syncBtn) syncBtn.disabled = false;
+  }
 
-    if (showToast) {
-      this.renderMainView();
-      if (result.added > 0) {
-        this.showToast(`Đã cập nhật thêm ${result.added} phim mới (Tổng ${result.total} phim)`);
-      } else {
-        this.showToast(`Đã đồng bộ toàn bộ kho phim (${result.total} phim)`);
+  getRealtimeTrendTimeLabel() {
+    const syncAt = this.service?.lastTrendingSyncAt || 0;
+    if (!syncAt) return "LIVE • Xu hướng";
+    const d = new Date(syncAt);
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `LIVE • ${hh}:${mm}`;
+  }
+
+  getRealtimeTrendingMovies(contextMovies = null, limit = 6) {
+    if (this.service && typeof this.service.getRealtimeTrendingList === "function") {
+      return this.service.getRealtimeTrendingList(
+        contextMovies,
+        limit,
+        this._trendingRotationSeed || 0,
+        this.watchHistory || []
+      );
+    }
+    const pool = Array.isArray(contextMovies) && contextMovies.length > 0 ? contextMovies : this.service.movies;
+    return pool.slice(0, limit);
+  }
+
+  refreshRealtimeTrendingDOM() {
+    const stackEl = document.getElementById("visionLiveTrendingStack");
+    const labelEl = document.getElementById("visionLiveTrendLabel");
+    if (labelEl) {
+      labelEl.textContent = this.getRealtimeTrendTimeLabel();
+    }
+    const contextToUse =
+      this.currentNav === "kham-pha" || this.currentNav === "cai-dat" || this.currentNav === "lich-chieu"
+        ? null
+        : this._lastLeftContext;
+    const trending10 = this.getRealtimeTrendingMovies(contextToUse, 10);
+    if (stackEl) {
+      const trending6 = trending10.slice(0, 6);
+      stackEl.innerHTML = trending6.map((m, idx) => this.renderVisionTrailerCardHTML(m, idx)).join("");
+    }
+    const youMightLikeEl = document.getElementById("visionYouMightLikeGrid");
+    if (youMightLikeEl && !contextToUse) {
+      const next4 = trending10.slice(6, 10);
+      if (next4.length === 4) {
+        youMightLikeEl.innerHTML = next4.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("");
       }
     }
+  }
+
+  async refreshTrendingNow(event) {
+    if (event) event.stopPropagation();
+    this.triggerHaptic("light");
+    this._trendingRotationSeed = (this._trendingRotationSeed || 0) + 1;
+    this.refreshRealtimeTrendingDOM();
+    await this.syncLivePhimmoi(false);
   }
 
   /* ==========================================================================
@@ -441,41 +535,9 @@ class AppleCinemaApp {
   }
 
   renderLeftSideColumnHTML(contextMovies = null, panelTitle = "Đề Xuất") {
-    // Tối ưu băng thông: chỉ nạp đúng 6 phim đề xuất chọn lọc (tiết kiệm 9 ảnh nền ~4MB mỗi lần mở trang)
-    let list6 = [];
-    const seenSlugs = new Set();
-    const pushUnique = (m) => {
-      if (m && m.slug && !seenSlugs.has(m.slug)) {
-        seenSlugs.add(m.slug);
-        list6.push(m);
-      }
-    };
-
-    if (!contextMovies || contextMovies === this.service.movies) {
-      if (!this._shuffledTrailers) {
-        const topPool = this.service.movies.slice(0, 36);
-        for (let i = topPool.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [topPool[i], topPool[j]] = [topPool[j], topPool[i]];
-        }
-        this._shuffledTrailers = topPool.slice(0, 6);
-      }
-      for (const m of this._shuffledTrailers) pushUnique(m);
-    } else {
-      for (const m of contextMovies) {
-        pushUnique(m);
-        if (list6.length >= 6) break;
-      }
-    }
-
-    if (list6.length < 6) {
-      for (const m of this.service.movies) {
-        pushUnique(m);
-        if (list6.length >= 6) break;
-      }
-    }
-
-    const sourceTrailers = list6.slice(0, 6);
+    // Lưu ngữ cảnh hiện tại và tính toán 6 phim xu hướng thời gian thực (Real-time Trending)
+    this._lastLeftContext = contextMovies && contextMovies !== this.service.movies ? contextMovies : null;
+    const sourceTrailers = this.getRealtimeTrendingMovies(this._lastLeftContext, 6);
     const seenContinueSlugs = new Set();
     const continueItems = [];
     for (const h of this.watchHistory) {
@@ -504,10 +566,14 @@ class AppleCinemaApp {
         <div class="vision-glass-panel">
           <div class="vision-panel-header">
             <span class="vision-panel-title">${panelTitle}</span>
-            <span class="vision-panel-sort">Hôm nay</span>
+            <button type="button" class="vision-panel-sort vision-live-trend-pill" id="visionLiveTrendBadge" onclick="app.refreshTrendingNow(event)" title="Xu hướng phim thời gian thực • Bấm để làm mới ngay">
+              <span class="vision-live-dot"></span>
+              <span id="visionLiveTrendLabel">${this.getRealtimeTrendTimeLabel()}</span>
+              <i class="fas fa-arrows-rotate vision-trend-sync-icon" id="visionTrendSyncIcon"></i>
+            </button>
           </div>
-          <div class="vision-trailer-stack">
-            ${sourceTrailers.map((m) => this.renderVisionTrailerCardHTML(m)).join("")}
+          <div class="vision-trailer-stack" id="visionLiveTrendingStack">
+            ${sourceTrailers.map((m, idx) => this.renderVisionTrailerCardHTML(m, idx)).join("")}
           </div>
         </div>
 
@@ -1040,7 +1106,8 @@ class AppleCinemaApp {
       this.currentSegment === "all";
 
     if (isDefaultExplore) {
-      const youMightLike = this.service.movies.slice(1, 5);
+      const trending10 = this.getRealtimeTrendingMovies(null, 10);
+      const youMightLike = trending10.slice(6, 10).length === 4 ? trending10.slice(6, 10) : this.service.movies.slice(1, 5);
       const animeFeatured = this.getMoviesByTag("anime").slice(0, 8);
       const netflixFeatured = this.getMoviesByTag("netflix").slice(0, 8);
       const koreanFeatured = this.getMoviesByCountry("han-quoc").slice(0, 8);
@@ -1061,7 +1128,7 @@ class AppleCinemaApp {
                 <h2 class="vision-shelf-title">Gợi Ý Cho Bạn</h2>
                 <button class="vision-see-all-pill" onclick="app.setNavigation('moi-cap-nhat')">Xem Tất Cả</button>
               </div>
-              <div class="vision-cards-grid-4">
+              <div class="vision-cards-grid-4" id="visionYouMightLikeGrid">
                 ${youMightLike.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
               </div>
             </section>
@@ -1391,11 +1458,20 @@ class AppleCinemaApp {
     `;
   }
 
-  renderVisionTrailerCardHTML(movie) {
+  renderVisionTrailerCardHTML(movie, rankIdx = 0) {
+    const rawEp = movie.episodeCurrent || "";
+    const epBadge = rawEp && !/^full$/i.test(rawEp)
+      ? this.formatEpisodeLabel(rawEp, "Tập Mới")
+      : (movie.year >= 2025 ? `Hot ${movie.year}` : "Thịnh hành");
+    const trendBadgeText = rankIdx < 3 ? `#${rankIdx + 1} Trend • ${epBadge}` : `Hot • ${epBadge}`;
     return `
       <article class="vision-trailer-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', true)">
         <img src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
              onerror="this.src='https://phimmoiz.one/wp-content/uploads/2026/10/matchbox-phim-dien-anh-poster.webp'" />
+        <div class="vision-trailer-trend-tag">
+          <span class="vision-live-dot"></span>
+          <span>${trendBadgeText}</span>
+        </div>
         <div class="vision-trailer-overlay">
           <div class="vision-trailer-title">${movie.title}</div>
           <button class="vision-trailer-play" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" aria-label="Phát">
