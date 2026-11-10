@@ -1632,9 +1632,9 @@ body::-webkit-scrollbar {
   position: fixed;
   inset: 0;
   z-index: 90;
-  background: rgba(5, 5, 8, 0.82);
-  backdrop-filter: blur(22px) saturate(160%);
-  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  background: rgba(6, 7, 10, 0.94);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -1642,8 +1642,12 @@ body::-webkit-scrollbar {
   padding: 32px 20px 110px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.38s var(--ease-in-out-smooth),
-              visibility 0.38s var(--ease-in-out-smooth);
+  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.modal-open .vision-stage {
+  pointer-events: none !important;
 }
 
 .detail-modal-backdrop.open {
@@ -8121,13 +8125,12 @@ body.video-cursor-hidden *,
 
 #hlsVideoElement.quality-4k-enhanced,
 .active-video-container video.quality-4k-enhanced {
-  filter: url(#apple4kSharpen) contrast(1.06) saturate(1.08) brightness(1.01) !important;
+  filter: contrast(1.04) saturate(1.05) !important;
   image-rendering: -webkit-optimize-contrast !important;
-  image-rendering: crisp-edges !important;
+  image-rendering: high-quality !important;
   -webkit-font-smoothing: antialiased !important;
-  transform: translateZ(0) scale(1.0001) !important;
+  transform: translateZ(0) !important;
   backface-visibility: hidden !important;
-  will-change: filter, transform !important;
 }
 
 /* Ẩn hoàn toàn các nút khử logo/banner theo yêu cầu người dùng */

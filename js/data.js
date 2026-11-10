@@ -2363,66 +2363,82 @@ class PhimmoiService {
    */
   getRelatedMovies(targetMovie, limit = 9) {
     if (!targetMovie) return [];
+    if (Array.isArray(targetMovie._cachedRelated) && targetMovie._cachedRelated.length >= limit) {
+      return targetMovie._cachedRelated.slice(0, limit);
+    }
 
-    const targetTitleWords = targetMovie.title
+    const targetTitleWords = (targetMovie.title || "")
       .toLowerCase()
       .split(/[:\-–()\s]+/)
-      .filter((w) => w.length > 3);
+      .filter((w) => w.length > 3 && !["phim", "phần", "cuộc", "người"].includes(w));
+    const targetGenres = targetMovie.genres || [];
+    const targetCast = targetMovie.cast || [];
+    const scored = [];
+    const moviesList = this.movies;
+    const total = moviesList.length;
 
-    const scored = this.movies
-      .filter((m) => m.slug !== targetMovie.slug)
-      .map((candidate) => {
-        let score = 55;
-        const reasons = [];
+    for (let i = 0; i < total; i++) {
+      const candidate = moviesList[i];
+      if (!candidate || candidate.slug === targetMovie.slug) continue;
 
-        // 1. Cùng series / vũ trụ điện ảnh (VD: Thanh Gươm Diệt Quỷ, Địch Nhân Kiệt, 9-1-1...)
-        const sharedTitleKey = targetTitleWords.find(
-          (w) => candidate.title.toLowerCase().includes(w) && !["phim", "phần", "cuộc", "người"].includes(w)
-        );
-        if (sharedTitleKey) {
-          score += 28;
-          reasons.push("Cùng series / chủ đề");
-        }
+      // Fast pre-filter: skip candidates with zero genre/country/type overlap once we have enough strong candidates
+      const hasGenreOverlap = candidate.genres && candidate.genres.some((g) => targetGenres.includes(g));
+      const sameCountry = candidate.countrySlug === targetMovie.countrySlug;
+      if (!hasGenreOverlap && !sameCountry && scored.length >= 24) continue;
 
-        // 2. Cùng thể loại (Genres overlap)
-        const sharedGenres = candidate.genres.filter((g) => targetMovie.genres.includes(g));
-        if (sharedGenres.length > 0) {
-          score += sharedGenres.length * 9;
-          reasons.push(`Cùng thể loại ${sharedGenres.slice(0, 2).join(", ")}`);
-        }
+      let score = 55;
+      const reasons = [];
+      const candTitleLower = candidate._titleLower || (candidate._titleLower = (candidate.title || "").toLowerCase());
 
-        // 3. Cùng quốc gia sản xuất
-        if (candidate.countrySlug === targetMovie.countrySlug) {
+      // 1. Cùng series / vũ trụ điện ảnh
+      const sharedTitleKey = targetTitleWords.find((w) => candTitleLower.includes(w));
+      if (sharedTitleKey) {
+        score += 28;
+        reasons.push("Cùng series / chủ đề");
+      }
+
+      // 2. Cùng thể loại (Genres overlap)
+      if (hasGenreOverlap) {
+        const sharedGenres = candidate.genres.filter((g) => targetGenres.includes(g));
+        score += sharedGenres.length * 9;
+        reasons.push(`Cùng thể loại ${sharedGenres.slice(0, 2).join(", ")}`);
+      }
+
+      // 3. Cùng quốc gia sản xuất
+      if (sameCountry) {
+        score += 10;
+        reasons.push(`Điện ảnh ${candidate.country}`);
+      }
+
+      // 4. Cùng định dạng (Phim bộ / Phim lẻ)
+      if (candidate.type === targetMovie.type) {
+        score += 6;
+      }
+
+      // 5. Cùng đạo diễn hoặc diễn viên
+      if (candidate.director === targetMovie.director && candidate.director !== "Đang cập nhật") {
+        score += 12;
+        reasons.push(`Đạo diễn ${candidate.director}`);
+      }
+      if (targetCast.length && candidate.cast && candidate.cast.length) {
+        const sharedCast = candidate.cast.find((c) => targetCast.includes(c));
+        if (sharedCast) {
           score += 10;
-          reasons.push(`Điện ảnh ${candidate.country}`);
+          reasons.push(`Có ${sharedCast}`);
         }
+      }
 
-        // 4. Cùng định dạng (Phim bộ / Phim lẻ)
-        if (candidate.type === targetMovie.type) {
-          score += 6;
-        }
-
-        // 5. Cùng đạo diễn hoặc diễn viên
-        if (candidate.director === targetMovie.director && candidate.director !== "Đang cập nhật") {
-          score += 12;
-          reasons.push(`Đạo diễn ${candidate.director}`);
-        }
-        const sharedCast = candidate.cast.filter((c) => targetMovie.cast.includes(c));
-        if (sharedCast.length > 0) {
-          score += 10;
-          reasons.push(`Có ${sharedCast[0]}`);
-        }
-
-        const clampedMatch = Math.min(99, Math.max(82, score));
-        return {
-          movie: candidate,
-          matchPercent: clampedMatch,
-          reasons: reasons.length ? reasons.slice(0, 2) : [`Đề xuất cho fan ${targetMovie.genres[0] || "Phim hay"}`]
-        };
+      const clampedMatch = Math.min(99, Math.max(82, score));
+      scored.push({
+        movie: candidate,
+        matchPercent: clampedMatch,
+        reasons: reasons.length ? reasons.slice(0, 2) : [`Đề xuất cho fan ${targetGenres[0] || "Phim hay"}`]
       });
+    }
 
     scored.sort((a, b) => b.matchPercent - a.matchPercent);
-    return scored.slice(0, limit);
+    targetMovie._cachedRelated = scored.slice(0, Math.max(limit, 12));
+    return targetMovie._cachedRelated.slice(0, limit);
   }
 
   stripHtml(html) {

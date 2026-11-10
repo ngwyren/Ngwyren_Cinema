@@ -1731,16 +1731,18 @@ class AppleCinemaApp {
       });
     }
 
-    const prevEpSource = movie.episodes?.[epIndex]?.source || "";
+    const prevEpSource = this.unwrapM3u8Url(movie.episodes?.[epIndex]?.source || "");
 
     if (shouldAutoPlay) {
+      // Khi tự động phát, startVideoPlayback đã tự đảm nhiệm việc phát 0ms và làm giàu ngầm, tránh gọi trùng lặp gây khởi động lại luồng video
       this.startVideoPlayback(movie, epIndex, defaultSrv);
-    } else {
-      this.isPlaying = false;
-      this.setNowPlayingBar(movie, epIndex, false);
+      return;
     }
 
-    // Làm giàu dữ liệu nguồn phát ngầm (Background Enrich) từ API mà không chặn hiển thị tập phim 0ms
+    this.isPlaying = false;
+    this.setNowPlayingBar(movie, epIndex, false);
+
+    // Làm giàu dữ liệu nguồn phát ngầm (Background Enrich) từ API khi mở xem chi tiết (chưa bấm phát)
     const initialEp = movie.episodes?.[epIndex] || movie.episodes?.[0];
     const needsApiSync = !movie._isEnriched || !initialEp?.source || initialEp?.needsEnrich || (movie.type === "series" && movie.episodes?.length <= 1);
 
@@ -1749,14 +1751,17 @@ class AppleCinemaApp {
         if (this.selectedMovie && this.selectedMovie.slug === enriched.slug) {
           const langText = document.getElementById("modalLanguageText");
           if (langText) langText.textContent = this.getMovieLanguageLabel(enriched);
-          this.refreshEpisodesInModal(enriched);
-          this.renderServerButtons(enriched, this.currentEpisodeIndex);
-          const newEpSource = enriched.episodes?.[this.currentEpisodeIndex]?.source || "";
           const isPlayingNow = document.getElementById("activeVideoContainer")?.classList.contains("playing");
-          if (isPlayingNow && newEpSource && newEpSource !== prevEpSource && this.currentServerMode === "hls-1") {
-            this.startVideoPlayback(enriched, this.currentEpisodeIndex, "hls-1");
-          } else {
+          if (!isPlayingNow) {
+            this.refreshEpisodesInModal(enriched);
+            this.renderServerButtons(enriched, this.currentEpisodeIndex);
             this.renderDynamicQualityButtons();
+          } else {
+            this.renderServerButtons(enriched, this.currentEpisodeIndex);
+            const newEpSource = this.unwrapM3u8Url(enriched.episodes?.[this.currentEpisodeIndex]?.source || "");
+            if (!prevEpSource && newEpSource && this.currentServerMode === "hls-1") {
+              this.startVideoPlayback(enriched, this.currentEpisodeIndex, "hls-1");
+            }
           }
         }
       });
@@ -2202,10 +2207,9 @@ class AppleCinemaApp {
           <!-- Tab Panel 2: Same Genre Grid -->
           <div id="modalTabPanelFranchise" style="padding-top: 20px; display: none;">
             <div class="movie-grid">
-              ${this.service.movies
-                .filter((m) => m.slug !== movie.slug && m.genres.some((g) => movie.genres.includes(g)))
+              ${relatedItems
                 .slice(0, 8)
-                .map((m) => this.renderMovieCardHTML(m))
+                .map(({ movie: m }) => this.renderMovieCardHTML(m))
                 .join("")}
             </div>
           </div>
@@ -2231,8 +2235,23 @@ class AppleCinemaApp {
 
   refreshEpisodesInModal(movie) {
     const grid = document.getElementById("modalEpisodesGrid");
-    if (grid) {
-      grid.innerHTML = this.renderEpisodesPillsHTML(movie);
+    if (grid && movie && Array.isArray(movie.episodes)) {
+      const buttons = grid.children;
+      if (buttons.length === movie.episodes.length) {
+        for (let i = 0; i < buttons.length; i++) {
+          const isAct = i === this.currentEpisodeIndex;
+          const btn = buttons[i];
+          if (btn.classList.contains("active") !== isAct) {
+            btn.classList.toggle("active", isAct);
+            const icon = btn.querySelector("i");
+            if (icon) {
+              icon.className = `fas ${isAct ? "fa-volume-high" : "fa-play"}`;
+            }
+          }
+        }
+      } else {
+        grid.innerHTML = this.renderEpisodesPillsHTML(movie);
+      }
     }
     this.updateNextEpisodeButton(movie, this.currentEpisodeIndex);
   }
@@ -2444,71 +2463,22 @@ class AppleCinemaApp {
     }
   }
 
-  async calibrateHlsPlaylistTimestamps(playlistText, playlistUrl) {
+  calibrateHlsPlaylistTimestampsSync(playlistText, playlistUrl) {
     if (
       !playlistText ||
-      !playlistUrl ||
-      !playlistText.includes("#EXTINF:") ||
-      playlistText.includes("#EXT-X-STREAM-INF") ||
-      !playlistText.includes("#EXT-X-DISCONTINUITY")
+      !playlistText.includes("#EXTINF:3.14") ||
+      !playlistText.includes("#EXT-X-DISCONTINUITY") ||
+      playlistText.includes("#EXT-X-STREAM-INF")
     ) {
       return playlistText;
     }
-    if (this._calibratedPlaylistsCache && this._calibratedPlaylistsCache.has(playlistUrl)) {
+    if (playlistUrl && this._calibratedPlaylistsCache && this._calibratedPlaylistsCache.has(playlistUrl)) {
       return this._calibratedPlaylistsCache.get(playlistUrl);
     }
     try {
-      const lines = playlistText.split(/\r?\n/);
-      const firstBlockSegs = [];
-      let curDur = 0;
-      let cumTime = 0;
-      for (let i = 0; i < lines.length; i++) {
-        const t = lines[i].trim();
-        if (!t) continue;
-        if (t === "#EXT-X-DISCONTINUITY" && firstBlockSegs.length > 0) {
-          break;
-        }
-        if (t.startsWith("#EXTINF:")) {
-          curDur = parseFloat(t.slice(8).split(",")[0]) || 0;
-        } else if (!t.startsWith("#")) {
-          firstBlockSegs.push({
-            index: firstBlockSegs.length,
-            start: cumTime,
-            dur: curDur,
-            uri: t
-          });
-          cumTime += curDur;
-        }
-      }
-
-      if (firstBlockSegs.length < 15) return playlistText;
-      const segA = firstBlockSegs[0];
-      const probeIdx = Math.min(60, firstBlockSegs.length - 1);
-      const segB = firstBlockSegs[probeIdx];
-      const extinfDelta = segB.start - segA.start;
-      if (extinfDelta < 30) return playlistText;
-
-      const urlA = new URL(segA.uri, playlistUrl).href;
-      const urlB = new URL(segB.uri, playlistUrl).href;
-      const [ptsA, ptsB] = await Promise.all([
-        this.readFirstVideoPtsFromTs(urlA),
-        this.readFirstVideoPtsFromTs(urlB)
-      ]);
-
-      if (ptsA === null || ptsB === null || ptsB <= ptsA) return playlistText;
-      const ptsDelta = ptsB - ptsA;
-      const rawRatio = ptsDelta / extinfDelta;
-
-      // Hiệu chuẩn khi phát hiện lệch xung nhịp thực tế giữa MPEG-TS PTS và #EXTINF (ví dụ phim 23.976fps đóng gói #EXTINF theo 25fps gây trôi +4.27% ở phút 14:30)
-      if (Math.abs(rawRatio - 1.0) < 0.008 || rawRatio < 0.9 || rawRatio > 1.15) {
-        if (this._calibratedPlaylistsCache) this._calibratedPlaylistsCache.set(playlistUrl, playlistText);
-        return playlistText;
-      }
-
-      const ntscTelecineRatio = 1001 / 960; // 25 / (24000 / 1001) = 1.0427083333
-      const scale = Math.abs(rawRatio - ntscTelecineRatio) < 0.004 ? ntscTelecineRatio : rawRatio;
-
+      const scale = 1001 / 960; // 25 / (24000 / 1001) = 1.0427083333 (Hiệu chuẩn 0ms đồng bộ không tốn request mạng)
       let seenFirstSeg = false;
+      const lines = playlistText.split(/\r?\n/);
       const calibratedLines = lines.map((line) => {
         const trimmed = line.trim();
         if (trimmed.startsWith("#EXTINF:")) {
@@ -2524,9 +2494,10 @@ class AppleCinemaApp {
         }
         return line;
       });
-
       const out = calibratedLines.join("\n");
-      if (this._calibratedPlaylistsCache) this._calibratedPlaylistsCache.set(playlistUrl, out);
+      if (playlistUrl && this._calibratedPlaylistsCache) {
+        this._calibratedPlaylistsCache.set(playlistUrl, out);
+      }
       return out;
     } catch (_) {
       return playlistText;
@@ -2544,28 +2515,9 @@ class AppleCinemaApp {
           const origSuccess = callbacks.onSuccess;
           callbacks.onSuccess = (response, stats, ctx, networkDetails) => {
             if (response && typeof response.data === "string" && response.data.includes("#EXTM3U")) {
+              const targetUrl = (response && response.url) || (ctx && ctx.url) || (context && context.url) || "";
               const cleaned = self.cleanHlsAdSegments(response.data);
-              response.data = cleaned;
-              // Fast path 0ms: Chỉ hiệu chuẩn PTS khi playlist thực sự có #EXT-X-DISCONTINUITY giữa phim
-              if (
-                cleaned.includes("#EXTINF:") &&
-                !cleaned.includes("#EXT-X-STREAM-INF") &&
-                cleaned.includes("#EXT-X-DISCONTINUITY")
-              ) {
-                const targetUrl = (response && response.url) || (ctx && ctx.url) || (context && context.url) || "";
-                if (self._calibratedPlaylistsCache && self._calibratedPlaylistsCache.has(targetUrl)) {
-                  response.data = self._calibratedPlaylistsCache.get(targetUrl);
-                  if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
-                  return;
-                }
-                self.calibrateHlsPlaylistTimestamps(cleaned, targetUrl).then((calibrated) => {
-                  response.data = calibrated;
-                  if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
-                }).catch(() => {
-                  if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
-                });
-                return;
-              }
+              response.data = self.calibrateHlsPlaylistTimestampsSync(cleaned, targetUrl);
             }
             if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
           };
@@ -2581,7 +2533,7 @@ class AppleCinemaApp {
               total: cachedPlaylist.length,
               retry: 0,
               chunkCount: 1,
-              bwEstimate: 50000000,
+              bwEstimate: 20000000,
               loading: { start: now, first: now, end: now },
               parsing: { start: now, end: now },
               buffering: { start: now, first: now, end: now }
@@ -2739,15 +2691,17 @@ class AppleCinemaApp {
       await this.service.enrichMovieStreams(movie, isBrokenOrOld);
       const langText = document.getElementById("modalLanguageText");
       if (langText) langText.textContent = this.getMovieLanguageLabel(movie);
-      this.refreshEpisodesInModal(movie);
     } else if (!movie._isEnriched) {
       // Nếu đã có sẵn luồng .m3u8 chuẩn, phát ngay lập tức 0ms và nạp ngầm Server 2 / Thuyết Minh
+      const prevEpCount = Array.isArray(movie.episodes) ? movie.episodes.length : 0;
       this.service.enrichMovieStreams(movie, false).then(() => {
         if (this.selectedMovie?.slug === movie.slug) {
           const langText = document.getElementById("modalLanguageText");
           if (langText) langText.textContent = this.getMovieLanguageLabel(movie);
           this.renderServerButtons(movie, this.currentEpisodeIndex);
-          this.refreshEpisodesInModal(movie);
+          if ((movie.episodes?.length || 0) !== prevEpCount) {
+            this.refreshEpisodesInModal(movie);
+          }
         }
       }).catch(() => {});
     }
@@ -2755,7 +2709,6 @@ class AppleCinemaApp {
     // Lưu vào Lịch sử xem tiếp
     this.recordWatchHistory(movie.slug, epIndex);
     this.setNowPlayingBar(movie, epIndex, true);
-    this.updateNextEpisodeButton(movie, epIndex);
 
     const coverPreview = document.getElementById("modalCoverPreview");
     const videoContainer = document.getElementById("activeVideoContainer");
@@ -2765,7 +2718,7 @@ class AppleCinemaApp {
     if (coverPreview) coverPreview.style.display = "none";
     if (videoContainer) videoContainer.classList.add("playing");
 
-    // Cập nhật lại thanh Server Buttons và danh sách tập phim
+    // Cập nhật lại thanh Server Buttons và trạng thái tập phim đang phát (O(1) DOM update)
     this.renderServerButtons(movie, epIndex);
     this.refreshEpisodesInModal(movie);
 
@@ -2899,18 +2852,20 @@ class AppleCinemaApp {
         progressive: true,
         startFragPrefetch: true,
         backBufferLength: 30,
-        maxBufferLength: 30,
-        maxMaxBufferLength: 60,
-        maxBufferSize: 45 * 1000 * 1000,
-        maxBufferHole: 0.1,
+        maxBufferLength: 40,
+        maxMaxBufferLength: 90,
+        maxBufferSize: 60 * 1000 * 1000,
+        maxBufferHole: 0.3,
+        highBufferWatchdogPeriod: 2,
+        nudgeOffset: 0.15,
+        nudgeMaxRetry: 10,
         maxAudioFramesDrift: 4,
         forceKeyFrameOnDiscontinuity: false,
-        nudgeMaxRetry: 10,
-        maxFragLookUpTolerance: 0.1,
+        maxFragLookUpTolerance: 0.2,
         startLevel: -1,
         capLevelToPlayerSize: false,
-        abrEwmaDefaultEstimate: 50000000,
-        abrBandWidthFactor: 0.95,
+        abrEwmaDefaultEstimate: 20000000,
+        abrBandWidthFactor: 0.9,
         abrBandWidthUpFactor: 0.7
       });
       this.hlsInstance.loadSource(streamUrl);
@@ -2918,8 +2873,8 @@ class AppleCinemaApp {
 
       this.hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, (_, data) => {
         const levels = this.hlsInstance.levels || [];
-        if (levels.length > 0) {
-          // Khóa ngay vào mức phân giải và bitrate cao nhất (1080p / 4K)
+        if (levels.length > 1) {
+          // Chọn mức phân giải cao nhất cho các segment kế tiếp mà không hủy segment đầu tiên đang tải
           let highestIdx = levels.length - 1;
           let maxMetric = 0;
           levels.forEach((lvl, idx) => {
@@ -2929,17 +2884,15 @@ class AppleCinemaApp {
               highestIdx = idx;
             }
           });
-          this.hlsInstance.currentLevel = highestIdx;
-          this.hlsInstance.loadLevel = highestIdx;
+          this.hlsInstance.nextLoadLevel = highestIdx;
           this.hlsInstance.nextLevel = highestIdx;
         }
         this.inspectHlsLevels(levels);
-        this.applyHlsQualityLevel();
         this.renderDynamicQualityButtons();
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
         videoEl.play().catch(() => {});
-        // Tự động tua tiếp đến đoạn đã xem dở và hiển thị banner kính mờ Apple visionOS
+        // Tự động tua tiếp đến đoạn đã xem dở
         const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
         if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
           const applySavedTime = () => {
@@ -2950,9 +2903,7 @@ class AppleCinemaApp {
             }
           };
           videoEl.addEventListener("loadedmetadata", applySavedTime, { once: true });
-          videoEl.addEventListener("canplay", applySavedTime, { once: true });
           applySavedTime();
-          this.showToast(`▶ Đang tiếp tục xem từ ${this.formatSeconds(savedProg.currentTime)} (${savedProg.percentage}%)`);
         }
       });
       this.hlsInstance.on(window.Hls.Events.LEVEL_SWITCHED, (_, data) => {
@@ -3064,52 +3015,37 @@ class AppleCinemaApp {
     this.renderDynamicResumeButtons();
     this.applyVideoQualityVisuals();
 
-    // Đồng bộ thanh thời gian với Apple Music Now Playing Bar, Apple Video Player & lưu xem tiếp tục
+    // Đồng bộ thanh thời gian siêu nhẹ (Throttle 250ms, không chạm DOM nền khi đang mở rạp phim, không rebuild HTML mỗi 3s)
     videoEl.ontimeupdate = () => {
       if (!videoEl.duration) return;
-      const pct = Math.min(100, (videoEl.currentTime / videoEl.duration) * 100);
-      const fill = document.getElementById("nowPlayingScrubberFill");
-      const curTime = document.getElementById("nowPlayingCurrentTime");
-      const totTime = document.getElementById("nowPlayingTotalTime");
-      if (fill) fill.style.width = `${pct}%`;
-      if (curTime) curTime.textContent = this.formatSeconds(videoEl.currentTime);
-      if (totTime) totTime.textContent = this.formatSeconds(videoEl.duration);
+      const now = performance.now();
+      if (videoEl._lastUiTick && now - videoEl._lastUiTick < 240) return;
+      videoEl._lastUiTick = now;
 
-      // Đồng bộ timeline cho Dynamic Island mở rộng
-      const islandFill = document.getElementById("nowPlayingIslandScrubFill");
-      const islandCur = document.getElementById("nowPlayingIslandCurrentTime");
-      const islandTot = document.getElementById("nowPlayingIslandTotalTime");
-      if (islandFill) islandFill.style.width = `${pct}%`;
-      if (islandCur) islandCur.textContent = this.formatSeconds(videoEl.currentTime);
-      if (islandTot) islandTot.textContent = this.formatSeconds(videoEl.duration);
+      const cur = videoEl.currentTime;
+      const dur = videoEl.duration;
+      const pct = Math.min(100, (cur / dur) * 100);
 
-      // Đồng bộ thanh timeline chuẩn Apple Video Player (không ghi đè khi người dùng đang kéo thanh tua)
-      const appleCur = document.getElementById("appleCurrentTime");
-      const appleDur = document.getElementById("appleDurationTime");
-      const appleFill = document.getElementById("appleScrubFill");
-      const appleThumb = document.getElementById("appleScrubThumb");
-      if (appleDur) appleDur.textContent = this.formatSeconds(videoEl.duration);
+      // Chỉ cập nhật thanh timeline của trình phát chính (nhẹ tuyệt đối)
       if (!this._isScrubbing && !this._seekAccumulatorTimer) {
-        if (appleCur) appleCur.textContent = this.formatSeconds(videoEl.currentTime);
+        const appleCur = document.getElementById("appleCurrentTime");
+        const appleDur = document.getElementById("appleDurationTime");
+        const appleFill = document.getElementById("appleScrubFill");
+        const appleThumb = document.getElementById("appleScrubThumb");
+        if (appleCur) appleCur.textContent = this.formatSeconds(cur);
+        if (appleDur) appleDur.textContent = this.formatSeconds(dur);
         if (appleFill) appleFill.style.width = `${pct}%`;
         if (appleThumb) appleThumb.style.left = `${pct}%`;
-      }
-
-      // Cập nhật trạng thái nút Play trên giao diện Apple
-      const applePlayIcon = document.getElementById("applePlayIcon");
-      if (applePlayIcon) {
-        applePlayIcon.className = videoEl.paused ? "fas fa-play" : "fas fa-pause";
       }
 
       // Hiển thị hoặc ẩn nút Bỏ qua Intro theo khung thời gian mở đầu phim
       this.updateSkipIntroButtonState(videoEl, movie, epIndex);
 
-      // Tự động lưu vị trí thời gian thực nếu thoát giữa chừng
-      if (videoEl.currentTime > 5 && (!videoEl._lastSavedPos || Math.abs(videoEl.currentTime - videoEl._lastSavedPos) >= 3)) {
-        videoEl._lastSavedPos = videoEl.currentTime;
+      // Tự động lưu vị trí xem dở mỗi 10 giây (không gọi renderDynamicResumeButtons làm giật layout khi đang phát)
+      if (cur > 5 && (!videoEl._lastSavedPos || Math.abs(cur - videoEl._lastSavedPos) >= 10)) {
+        videoEl._lastSavedPos = cur;
         if (this.selectedMovie) {
-          this.savePlaybackProgress(this.selectedMovie.slug, this.currentEpisodeIndex, videoEl.currentTime, videoEl.duration);
-          this.renderDynamicResumeButtons();
+          this.savePlaybackProgress(this.selectedMovie.slug, this.currentEpisodeIndex, cur, dur);
         }
       }
     };
