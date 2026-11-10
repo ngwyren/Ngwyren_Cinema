@@ -1995,6 +1995,12 @@ class AppleCinemaApp {
             <div class="apple-hud-text" id="appleHudText" style="display: none;"></div>
           </div>
 
+          <!-- Nút Bỏ Qua Intro nổi chuẩn Netflix / Apple TV+ -->
+          <button type="button" class="apple-skip-intro-btn" id="appleSkipIntroBtn" onclick="app.skipMovieIntro(event)" title="Bỏ qua đoạn mở đầu phim (Phím S)">
+            <span>Bỏ qua Intro</span>
+            <i class="fas fa-forward"></i>
+          </button>
+
           <!-- Apple Glass Player Overlay Controls (Giao diện điều khiển kính mờ chuẩn Apple visionOS / Apple TV+) -->
           <div class="apple-player-overlay" id="applePlayerOverlay">
             <!-- Click Layer phủ toàn màn hình để Play/Pause và Double click Toàn màn hình -->
@@ -3095,6 +3101,9 @@ class AppleCinemaApp {
         applePlayIcon.className = videoEl.paused ? "fas fa-play" : "fas fa-pause";
       }
 
+      // Hiển thị hoặc ẩn nút Bỏ qua Intro theo khung thời gian mở đầu phim
+      this.updateSkipIntroButtonState(videoEl, movie, epIndex);
+
       // Tự động lưu vị trí thời gian thực nếu thoát giữa chừng
       if (videoEl.currentTime > 5 && (!videoEl._lastSavedPos || Math.abs(videoEl.currentTime - videoEl._lastSavedPos) >= 3)) {
         videoEl._lastSavedPos = videoEl.currentTime;
@@ -3879,6 +3888,94 @@ class AppleCinemaApp {
     }, 550);
   }
 
+  getMovieIntroWindow(movie, duration = 0) {
+    if (!movie || !duration || isNaN(duration) || duration < 180) return null;
+    if (typeof movie.introStart === "number" && typeof movie.introEnd === "number") {
+      return {
+        start: movie.introStart,
+        end: movie.introEnd,
+        skipDuration: Math.max(30, movie.introEnd - movie.introStart)
+      };
+    }
+    const isAnime =
+      (Array.isArray(movie.sectionTags) &&
+        (movie.sectionTags.includes("anime") || movie.sectionTags.includes("hoat-hinh-3d"))) ||
+      (Array.isArray(movie.genres) &&
+        movie.genres.some((g) => /anime|hoạt hình/i.test(g)));
+
+    if (isAnime) {
+      // Chuẩn OP Anime / Hoạt hình 3D: ~85 - 90 giây
+      return { start: 1, end: 90, skipDuration: 85 };
+    }
+    if (movie.type === "series") {
+      // Chuẩn Intro Phim Bộ: ~80 - 85 giây
+      return { start: 1, end: 85, skipDuration: 80 };
+    }
+    // Phim Lẻ chiếu rạp: bỏ qua đoạn giới thiệu hãng phim mở đầu (~60 giây)
+    return { start: 1, end: 65, skipDuration: 60 };
+  }
+
+  updateSkipIntroButtonState(videoEl, movie, epIndex = 0) {
+    const btn = document.getElementById("appleSkipIntroBtn");
+    if (!btn || !videoEl) return;
+    const mov = movie || this.playingMovie || this.selectedMovie;
+    const intro = this.getMovieIntroWindow(mov, videoEl.duration);
+    if (!intro) {
+      btn.classList.remove("visible");
+      return;
+    }
+    const epKey = `${mov?.slug || ""}-${epIndex}`;
+    const cur = videoEl.currentTime || 0;
+    if (cur < intro.start && this._introSkippedKey === epKey) {
+      this._introSkippedKey = null;
+    }
+    const shouldShow =
+      this._introSkippedKey !== epKey &&
+      cur >= intro.start &&
+      cur <= intro.end - 3;
+
+    btn.classList.toggle("visible", shouldShow);
+  }
+
+  skipMovieIntro(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const videoEl = document.getElementById("hlsVideoElement");
+    if (!videoEl || !videoEl.duration || isNaN(videoEl.duration)) return;
+    const mov = this.playingMovie || this.selectedMovie;
+    const intro = this.getMovieIntroWindow(mov, videoEl.duration) || {
+      start: 1,
+      end: 85,
+      skipDuration: 85
+    };
+
+    const cur = videoEl.currentTime || 0;
+    // Nếu đang ở ngay đầu tập (<= 15s) thì nhảy thẳng tới mốc kết thúc Intro chuẩn;
+    // nếu đoạn nhạc Intro bắt đầu muộn hơn (Cold Open), cộng thêm đúng độ dài bài OP (skipDuration)
+    const targetTime = Math.min(
+      Math.max(0, videoEl.duration - 10),
+      cur <= 15 ? intro.end : cur + intro.skipDuration
+    );
+
+    this._introSkippedKey = `${mov?.slug || ""}-${this.currentEpisodeIndex}`;
+    const btn = document.getElementById("appleSkipIntroBtn");
+    if (btn) btn.classList.remove("visible");
+
+    videoEl.currentTime = targetTime;
+    const pct = (targetTime / videoEl.duration) * 100;
+    const fill = document.getElementById("appleScrubFill");
+    const thumb = document.getElementById("appleScrubThumb");
+    if (fill) fill.style.width = `${pct}%`;
+    if (thumb) thumb.style.left = `${pct}%`;
+    const curTimeEl = document.getElementById("appleCurrentTime");
+    if (curTimeEl) curTimeEl.textContent = this.formatSeconds(targetTime);
+
+    this.showAppleVideoHud("forward", "Đã bỏ qua Intro");
+    this.triggerHaptic("medium");
+  }
+
   seekRelative(seconds = 5, showHud = false, e) {
     if (e) e.stopPropagation();
     const videoEl = document.getElementById("hlsVideoElement");
@@ -4605,6 +4702,13 @@ class AppleCinemaApp {
         if (modal?.classList.contains("open") && videoEl) {
           e.preventDefault();
           this.toggleVideoFullscreen();
+        }
+      } else if ((e.key === "s" || e.key === "S") && !isInput) {
+        const modal = document.getElementById("movieDetailModal");
+        const videoEl = document.getElementById("hlsVideoElement");
+        if (modal?.classList.contains("open") && videoEl && videoEl.style.display !== "none") {
+          e.preventDefault();
+          this.skipMovieIntro();
         }
       } else if ((e.key === "m" || e.key === "M") && !isInput) {
         const modal = document.getElementById("movieDetailModal");
