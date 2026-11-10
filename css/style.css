@@ -5604,8 +5604,8 @@ body.modal-open .apple-player-bar {
   }
 }
 
-/* C2. iPad Portrait (Dựng đứng: 769px – 919px: iPad 10.2", iPad Mini) */
-@media (min-width: 769px) and (max-width: 919px) {
+/* C2. iPad Portrait (Dựng đứng: 768px – 919px: iPad 10.2", iPad Air, iPad Mini) */
+@media (min-width: 768px) and (max-width: 919px) {
   .vision-stage {
     padding: 14px 14px 140px 14px !important;
   }
@@ -5669,8 +5669,8 @@ body.modal-open .apple-player-bar {
 }
 
 
-/* --- D. THIẾT BỊ 3: ĐIỆN THOẠI DI ĐỘNG / SMARTPHONE (<= 768px: iPhone, Samsung, Xiaomi) --- */
-@media (max-width: 768px) {
+/* --- D. THIẾT BỊ 3: ĐIỆN THOẠI DI ĐỘNG / SMARTPHONE (<= 767px: iPhone, Samsung, Xiaomi) --- */
+@media (max-width: 767px) {
   .vision-stage {
     padding: 6px 6px calc(146px + env(safe-area-inset-bottom, 0px)) 6px !important;
   }
@@ -7197,7 +7197,7 @@ html.dragging-glass .vision-left-dock {
     grid-template-columns: repeat(3, 1fr);
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .schedule-cards-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -8077,5 +8077,299 @@ body.video-cursor-hidden *,
 #modalTopShieldBtn {
   display: none !important;
 }
+
+/* ==========================================================================
+   8. SNAPPY MOTION & ULTRA-LIGHTWEIGHT GPU COMPOSITING (v2.3.52)
+   Chuyển cảnh tức thì (0ms delay + 150ms GPU spring), đóng/mở Modal siêu nhạy,
+   và tắt bộ lọc ma trận SVG nặng trên thiết bị cảm ứng để iPad/iPhone chạy 120Hz ProMotion
+   ========================================================================== */
+.vision-view-enter {
+  animation: visionViewSnappyIn 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+@keyframes visionViewSnappyIn {
+  from {
+    opacity: 0.45;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.detail-modal-backdrop {
+  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.detail-modal-sheet {
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.vision-feature-card,
+.vision-side-rec-card,
+.vision-continue-item,
+.schedule-card-glass {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.2s ease,
+              box-shadow 0.2s ease !important;
+}
+
+/* Trên iPad & iPhone (thiết bị cảm ứng): Dùng bộ lọc phần cứng GPU thay cho SVG feConvolveMatrix
+   để giữ nguyên bộ giải mã phần cứng AVSampleBufferDisplayLayer, tiết kiệm pin & không nóng máy */
+@media (hover: none), (max-width: 1180px) {
+  #hlsVideoElement.quality-4k-enhanced,
+  .active-video-container video.quality-4k-enhanced {
+    filter: contrast(1.04) saturate(1.05) !important;
+    will-change: transform !important;
+  }
+}
+
+/* ==========================================================================
+   9. TỐI ƯU GIAO DIỆN CHUYÊN BIỆT CHO iPAD (768px – 1180px) & iPHONE (<= 767px)
+   ========================================================================== */
+
+/* --- 9A. iPad (iPad Mini, iPad Air, iPad Pro 11" & 12.9": 768px – 1180px) --- */
+@media (min-width: 768px) and (max-width: 1180px) {
+  /* Thanh danh mục cuộn ngang gọn trên 1 hàng, không bị rớt dòng làm lệch topbar */
+  .vision-nav-pills {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 6px !important;
+  }
+  .vision-nav-pills::-webkit-scrollbar {
+    display: none !important;
+  }
+  .vision-nav-pill {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    padding: 8px 14px !important;
+  }
+
+  /* Modal Xem Phim trên iPad: Căn giữa sang trọng như cửa sổ visionOS với chiều cao chuẩn 90dvh */
+  .detail-modal-backdrop {
+    padding: 20px 18px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .detail-modal-sheet {
+    width: min(94vw, 980px) !important;
+    max-width: 94vw !important;
+    max-height: 90dvh !important;
+    border-radius: 26px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .modal-body-content {
+    padding: 20px 22px 28px !important;
+  }
+  .modal-info-grid {
+    grid-template-columns: 1fr 260px !important;
+    gap: 20px !important;
+  }
+
+  /* Nút điều khiển Player trên iPad: Vùng chạm chuẩn Apple HIG (42x42px) */
+  .apple-ctrl-btn {
+    width: 42px !important;
+    height: 42px !important;
+  }
+  .apple-scrubber-container {
+    height: 28px !important;
+  }
+
+  /* Lưới Tập Phim & Phim Liên Quan trên iPad */
+  .episodes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .related-movies-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+  .vision-settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+
+/* Riêng iPad Portrait (768px – 919px): Thông tin phim trong Modal xếp 1 cột rộng rãi */
+@media (min-width: 768px) and (max-width: 919px) {
+  .modal-info-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* --- 9B. iPhone (iPhone SE, iPhone 13/14/15/16, Pro & Pro Max: <= 767px) --- */
+@media (max-width: 767px) {
+  /* Chống Safari tự động phóng to (Auto-Zoom) khi chạm vào ô tìm kiếm hoặc ô nhập liệu */
+  .vision-search-pill input,
+  .auth-input,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Tối ưu Safe Area cho Dynamic Island / Tai thỏ và Home Indicator trên iPhone */
+  .vision-stage {
+    padding-top: max(8px, env(safe-area-inset-top, 8px)) !important;
+    padding-left: max(6px, env(safe-area-inset-left, 6px)) !important;
+    padding-right: max(6px, env(safe-area-inset-right, 6px)) !important;
+    padding-bottom: calc(138px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Bảng Thông Báo (Notification Flyout) vừa khít màn hình iPhone, không bị tràn mép */
+  .vision-notif-flyout {
+    position: fixed !important;
+    top: calc(60px + env(safe-area-inset-top, 0px)) !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: 75dvh !important;
+    border-radius: 20px !important;
+    z-index: 120 !important;
+  }
+
+  /* Modal Xem Phim dạng Bottom Sheet chuẩn iOS trên iPhone với khung Video ghim cố định (Sticky Player) */
+  .detail-modal-backdrop {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+  .detail-modal-sheet {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    max-height: 94dvh !important;
+    border-radius: 24px 24px 0 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: env(safe-area-inset-bottom, 16px) !important;
+  }
+  .detail-modal-sheet .modal-player-stage {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    aspect-ratio: 16 / 9 !important;
+    background: #000 !important;
+    border-radius: 24px 24px 0 0 !important;
+  }
+  .modal-close-floating {
+    top: 10px !important;
+    right: 10px !important;
+    width: 34px !important;
+    height: 34px !important;
+    z-index: 45 !important;
+  }
+
+  /* Màn hình chờ phát phim (Cover Preview) gọn gàng trên màn hình 16:9 của iPhone */
+  .player-cover-preview {
+    padding: 14px 16px !important;
+  }
+  .player-preview-content h2 {
+    font-size: 1.15rem !important;
+    margin-bottom: 4px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  .player-preview-content p {
+    font-size: 0.76rem !important;
+    margin-bottom: 10px !important;
+  }
+  .big-play-trigger {
+    width: 52px !important;
+    height: 52px !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 10px !important;
+  }
+
+  /* Điều khiển Video Player trên iPhone: Gọn, dễ bấm ngón cái */
+  .apple-controls-bottom {
+    padding: 10px 12px 10px !important;
+    gap: 6px !important;
+  }
+  .apple-controls-row {
+    gap: 6px !important;
+  }
+  .apple-controls-left,
+  .apple-controls-right {
+    gap: 4px !important;
+  }
+  .apple-ctrl-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 0.85rem !important;
+  }
+  .apple-time-Readout {
+    font-size: 0.72rem !important;
+  }
+  .apple-volume-group .apple-volume-slider-wrap {
+    display: none !important;
+  }
+
+  /* Thanh chọn Server & Chất lượng cuộn ngang mượt mà trên iPhone */
+  .player-toolbar {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  .player-toolbar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .server-bar {
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 6px !important;
+    scrollbar-width: none !important;
+  }
+  .server-btn {
+    flex-shrink: 0 !important;
+    padding: 6px 10px !important;
+    font-size: 0.74rem !important;
+  }
+
+  /* Nội dung chi tiết phim & Danh sách tập trên iPhone */
+  .modal-body-content {
+    padding: 14px 14px 24px !important;
+  }
+  .modal-movie-title {
+    font-size: 1.25rem !important;
+  }
+  .episodes-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    max-height: 240px !important;
+    overflow-y: auto !important;
+    padding-right: 2px !important;
+  }
+  .ep-pill {
+    padding: 9px 4px !important;
+    font-size: 0.78rem !important;
+    border-radius: 10px !important;
+  }
+  .related-movies-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  .vision-settings-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
 
 

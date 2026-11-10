@@ -9,10 +9,13 @@ class AppleCinemaApp {
     this.currentNav = "kham-pha";
     this.currentSegment = "all"; // all | series | single
     this.activeGenreFilter = "Tất cả";
-    this.visibleGridLimit = 36;
+    this.visibleGridLimit = 24;
     this.heroMovies = [];
     this.heroIndex = 0;
     this.heroTimer = null;
+    this._preconnectedOrigins = new Set();
+    this._m3u8PrefetchCache = new Map();
+    this._calibratedPlaylistsCache = new Map();
 
     // Trạng thái phim đang mở / đang phát
     this.selectedMovie = null;
@@ -265,6 +268,22 @@ class AppleCinemaApp {
     // Chọn ngẫu nhiên 8 phim xuất sắc & chọn vị trí slide mở đầu ngẫu nhiên (đổi liên tục mỗi lần load web)
     this.heroMovies = pool.slice(0, 8);
     this.heroIndex = Math.floor(Math.random() * this.heroMovies.length);
+
+    // Preload ảnh Hero đầu tiên ở mức ưu tiên cao nhất để hiển thị tức thì 0ms
+    const activeHero = this.heroMovies[this.heroIndex];
+    if (activeHero) {
+      const heroImgUrl = this.getMovieBackdrop(activeHero);
+      if (heroImgUrl && typeof document !== "undefined" && !document.getElementById("heroPreloadLink")) {
+        const link = document.createElement("link");
+        link.id = "heroPreloadLink";
+        link.rel = "preload";
+        link.as = "image";
+        link.href = heroImgUrl;
+        link.setAttribute("fetchpriority", "high");
+        document.head.appendChild(link);
+      }
+      this.warmUpMovieStream(activeHero, 0);
+    }
   }
 
   /* ==========================================================================
@@ -325,7 +344,7 @@ class AppleCinemaApp {
     this.customFilterTitle = customTitle;
     this.activeGenreFilter = "Tất cả";
     this.currentSegment = "all";
-    this.visibleGridLimit = 36;
+    this.visibleGridLimit = 24;
 
     // 1. Phản hồi nhấp nháy: Cập nhật active pill
     document.querySelectorAll("[data-nav]").forEach((el) => {
@@ -355,28 +374,23 @@ class AppleCinemaApp {
       this._navTransitionTimer = null;
     }
 
-    // Giai đoạn Fade Out: Thu nhỏ và mờ nhẹ cực êm (Compositor GPU 120fps siêu nhanh 75ms)
-    container.classList.remove("vision-view-enter");
-    container.classList.add("vision-view-exit");
+    // Chuyển trang tức thì 0ms độ trễ kết hợp hiệu ứng Fade-Scale GPU 120fps siêu nhanh (140ms)
+    const htmlEl = document.documentElement;
+    const prevBehavior = htmlEl.style.scrollBehavior;
+    htmlEl.style.scrollBehavior = "auto";
+    window.scrollTo(0, 0);
+    htmlEl.style.scrollBehavior = prevBehavior;
 
-    this._navTransitionTimer = setTimeout(() => {
-      const htmlEl = document.documentElement;
-      const prevBehavior = htmlEl.style.scrollBehavior;
-      htmlEl.style.scrollBehavior = "auto";
-      window.scrollTo(0, 0);
-      htmlEl.style.scrollBehavior = prevBehavior;
+    container.classList.remove("vision-view-exit", "vision-view-enter");
+    if (updateCallback) updateCallback();
 
-      if (updateCallback) updateCallback();
-
-      // Giai đoạn Fade In: Nở nhẹ nhàng từ 0.992 về 1 (Scale In thuần túy, êm dịu chuẩn Apple)
-      container.classList.remove("vision-view-exit");
+    requestAnimationFrame(() => {
       container.classList.add("vision-view-enter");
-
       this._navTransitionTimer = setTimeout(() => {
         container.classList.remove("vision-view-enter");
         this._navTransitionTimer = null;
-      }, 220);
-    }, 75);
+      }, 150);
+    });
   }
 
   triggerHaptic(type = "light") {
@@ -427,41 +441,41 @@ class AppleCinemaApp {
   }
 
   renderLeftSideColumnHTML(contextMovies = null, panelTitle = "Đề Xuất") {
-    // Luôn đảm bảo đủ đúng 15 phim mới không trùng lặp, ngẫu nhiên hóa mỗi lần tải lại trang
-    let list15 = [];
+    // Tối ưu băng thông: chỉ nạp đúng 6 phim đề xuất chọn lọc (tiết kiệm 9 ảnh nền ~4MB mỗi lần mở trang)
+    let list6 = [];
     const seenSlugs = new Set();
     const pushUnique = (m) => {
       if (m && m.slug && !seenSlugs.has(m.slug)) {
         seenSlugs.add(m.slug);
-        list15.push(m);
+        list6.push(m);
       }
     };
 
     if (!contextMovies || contextMovies === this.service.movies) {
       if (!this._shuffledTrailers) {
-        const topPool = this.service.movies.slice(0, 45);
+        const topPool = this.service.movies.slice(0, 36);
         for (let i = topPool.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [topPool[i], topPool[j]] = [topPool[j], topPool[i]];
         }
-        this._shuffledTrailers = topPool.slice(0, 15);
+        this._shuffledTrailers = topPool.slice(0, 6);
       }
       for (const m of this._shuffledTrailers) pushUnique(m);
     } else {
       for (const m of contextMovies) {
         pushUnique(m);
-        if (list15.length >= 15) break;
+        if (list6.length >= 6) break;
       }
     }
 
-    if (list15.length < 15) {
+    if (list6.length < 6) {
       for (const m of this.service.movies) {
         pushUnique(m);
-        if (list15.length >= 15) break;
+        if (list6.length >= 6) break;
       }
     }
 
-    const sourceTrailers = list15.slice(0, 15);
+    const sourceTrailers = list6.slice(0, 6);
     const seenContinueSlugs = new Set();
     const continueItems = [];
     for (const h of this.watchHistory) {
@@ -1048,7 +1062,7 @@ class AppleCinemaApp {
                 <button class="vision-see-all-pill" onclick="app.setNavigation('moi-cap-nhat')">Xem Tất Cả</button>
               </div>
               <div class="vision-cards-grid-4">
-                ${youMightLike.map((m) => this.renderVisionFeatureCardHTML(m)).join("")}
+                ${youMightLike.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
               </div>
             </section>
 
@@ -1061,7 +1075,7 @@ class AppleCinemaApp {
                 </button>
               </div>
               <div class="vision-cards-grid-4">
-                ${animeFeatured.map((m) => this.renderVisionFeatureCardHTML(m)).join("")}
+                ${animeFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
               </div>
             </section>
 
@@ -1074,7 +1088,7 @@ class AppleCinemaApp {
                 </button>
               </div>
               <div class="vision-cards-grid-4">
-                ${netflixFeatured.map((m) => this.renderVisionFeatureCardHTML(m)).join("")}
+                ${netflixFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
               </div>
             </section>
 
@@ -1087,7 +1101,7 @@ class AppleCinemaApp {
                 </button>
               </div>
               <div class="vision-cards-grid-4">
-                ${koreanFeatured.map((m) => this.renderVisionFeatureCardHTML(m)).join("")}
+                ${koreanFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
               </div>
             </section>
           </div>
@@ -1155,7 +1169,7 @@ class AppleCinemaApp {
             }
             ${
               visibleList.length > 0
-                ? `<div class="vision-cards-grid-4">${visibleList.map((m) => this.renderVisionFeatureCardHTML(m)).join("")}</div>
+                ? `<div class="vision-cards-grid-4">${visibleList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>
                    ${this.renderLoadMoreButtonsHTML(list.length)}`
                 : `<div style="padding: 60px 20px; text-align: center; background: rgba(255,255,255,0.04); border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);">
                     <i class="fas fa-film" style="font-size: 2.5rem; color: #ffffff; margin-bottom: 14px;"></i>
@@ -1379,8 +1393,8 @@ class AppleCinemaApp {
 
   renderVisionTrailerCardHTML(movie) {
     return `
-      <article class="vision-trailer-card" onclick="app.openMovieModal('${movie.slug}', true)">
-        <img src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" loading="lazy" decoding="async"
+      <article class="vision-trailer-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', true)">
+        <img src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
              onerror="this.src='https://phimmoiz.one/wp-content/uploads/2026/10/matchbox-phim-dien-anh-poster.webp'" />
         <div class="vision-trailer-overlay">
           <div class="vision-trailer-title">${movie.title}</div>
@@ -1399,7 +1413,7 @@ class AppleCinemaApp {
     const timeText = prog ? `Đã xem ${this.formatSeconds(prog.currentTime)} (${pct}%)` : `${epName} • ${movie.quality}`;
 
     return `
-      <div class="vision-continue-item" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})" title="Tiếp tục xem ${movie.title}">
+      <div class="vision-continue-item" onpointerenter="app.warmUpMovieStream('${movie.slug}', ${epIndex})" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})" title="Tiếp tục xem ${movie.title}">
         <div class="vision-continue-thumb-box">
           <img class="vision-continue-thumb" src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async" />
           <div class="vision-continue-progress-bg">
@@ -1417,11 +1431,15 @@ class AppleCinemaApp {
     `;
   }
 
-  renderVisionFeatureCardHTML(movie) {
+  renderVisionFeatureCardHTML(movie, index = 99) {
     const inMyList = this.isInMyList(movie);
+    const isAboveFold = index < 4;
+    const loadAttr = isAboveFold
+      ? `loading="eager" fetchpriority="high" decoding="async"`
+      : `loading="lazy" fetchpriority="low" decoding="async"`;
     return `
-      <article class="vision-feature-card" onclick="app.openMovieModal('${movie.slug}', false)">
-        <img class="vision-feature-img" src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async"
+      <article class="vision-feature-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', false)">
+        <img class="vision-feature-img" src="${this.getMoviePoster(movie)}" alt="${movie.title}" ${loadAttr}
              onerror="this.src='https://phimmoiz.one/wp-content/uploads/2026/10/matchbox-phim-dien-anh-poster.webp'" />
         <div class="vision-feature-shade"></div>
 
@@ -1621,9 +1639,51 @@ class AppleCinemaApp {
   /* ==========================================================================
      NETFLIX-STYLE MOVIE DETAIL MODAL & HLS STREAMING PLAYER
      ========================================================================== */
+  warmUpMovieStream(slugOrMovie, epIndex = 0) {
+    try {
+      const movie = typeof slugOrMovie === "string" ? this.findMovie(slugOrMovie) : slugOrMovie;
+      if (!movie) return;
+      const ep = movie.episodes?.[epIndex] || movie.episodes?.[0];
+      const rawUrl = ep?.source || movie.nguoncEpisodes?.[epIndex]?.source || "";
+      const streamUrl = this.unwrapM3u8Url(rawUrl);
+      if (!streamUrl || !streamUrl.startsWith("http")) return;
+
+      // 1. Preconnect tới CDN của luồng .m3u8 ngay khi rê chuột / chạm nhẹ vào thẻ phim
+      const parsed = new URL(streamUrl);
+      const origin = parsed.origin;
+      if (origin && !this._preconnectedOrigins.has(origin) && typeof document !== "undefined") {
+        this._preconnectedOrigins.add(origin);
+        const link = document.createElement("link");
+        link.rel = "preconnect";
+        link.href = origin;
+        link.crossOrigin = "anonymous";
+        document.head.appendChild(link);
+      }
+
+      // 2. Prefetch ngầm master playlist .m3u8 vào bộ nhớ đệm RAM để bấm Phát là chạy tức thì (< 100ms)
+      if (!this._m3u8PrefetchCache.has(streamUrl) && this._m3u8PrefetchCache.size < 40) {
+        this._m3u8PrefetchCache.set(streamUrl, null);
+        fetch(streamUrl, { mode: "cors" })
+          .then((r) => (r.ok ? r.text() : ""))
+          .then((txt) => {
+            if (txt && txt.includes("#EXTM3U")) {
+              this._m3u8PrefetchCache.set(streamUrl, txt);
+            } else {
+              this._m3u8PrefetchCache.delete(streamUrl);
+            }
+          })
+          .catch(() => {
+            this._m3u8PrefetchCache.delete(streamUrl);
+          });
+      }
+    } catch (_) {}
+  }
+
   async openMovieModal(slug, autoPlay = false, epIndex = 0) {
     const movie = this.findMovie(slug);
     if (!movie) return;
+
+    this.warmUpMovieStream(movie, epIndex);
 
     const shouldAutoPlay = Boolean(autoPlay || this.settings?.autoPlayOnOpen);
     const defaultSrv = this.settings?.defaultServer || "hls-1";
@@ -1786,6 +1846,7 @@ class AppleCinemaApp {
 
   getMovieBackdrop(movie) {
     if (!movie) return "";
+    if (movie._cachedBackdrop) return movie._cachedBackdrop;
     let b = movie.backdrop || "";
     const isSuspicious = !b ||
       (movie.poster && b === movie.poster) ||
@@ -1798,6 +1859,7 @@ class AppleCinemaApp {
       b.endsWith("-poster.jpg");
 
     if (!isSuspicious) {
+      movie._cachedBackdrop = b;
       return b;
     }
 
@@ -1807,14 +1869,17 @@ class AppleCinemaApp {
              (m.slug === movie.slug || m.title === movie.title || m.originTitle === movie.originTitle ||
               (m.crawlSlug && movie.crawlSlug && m.crawlSlug === movie.crawlSlug))
     );
-    if (match && match.backdrop) return match.backdrop;
-    return b || movie.poster || "";
+    const resolved = (match && match.backdrop) ? match.backdrop : (b || movie.poster || "");
+    movie._cachedBackdrop = resolved;
+    return resolved;
   }
 
   getMoviePoster(movie) {
     if (!movie) return "";
+    if (movie._cachedPoster) return movie._cachedPoster;
     let p = movie.poster || "";
     if (p && !p.includes("animevietsub") && !p.includes("animevsub")) {
+      movie._cachedPoster = p;
       return p;
     }
     const match = this.service?.movies?.find(
@@ -1822,8 +1887,9 @@ class AppleCinemaApp {
              (m.slug === movie.slug || m.title === movie.title || m.originTitle === movie.originTitle ||
               (m.crawlSlug && movie.crawlSlug && m.crawlSlug === movie.crawlSlug))
     );
-    if (match && match.poster) return match.poster;
-    return p || movie.backdrop || "";
+    const resolved = (match && match.poster) ? match.poster : (p || movie.backdrop || "");
+    movie._cachedPoster = resolved;
+    return resolved;
   }
 
   getMovieLanguageLabel(movie) {
@@ -2285,16 +2351,19 @@ class AppleCinemaApp {
   async readFirstVideoPtsFromTs(segUrl) {
     if (!segUrl) return null;
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 1800);
+    const timer = setTimeout(() => ctrl.abort(), 950);
     try {
-      const res = await fetch(segUrl, { signal: ctrl.signal });
+      const res = await fetch(segUrl, {
+        signal: ctrl.signal,
+        headers: { Range: "bytes=0-4095" }
+      });
       if (!res.ok) return null;
       let buf = null;
       if (res.body && typeof res.body.getReader === "function") {
         const reader = res.body.getReader();
         const chunks = [];
         let total = 0;
-        while (total < 8192) {
+        while (total < 3760) {
           const { done, value } = await reader.read();
           if (done || !value) break;
           chunks.push(value);
@@ -2311,7 +2380,7 @@ class AppleCinemaApp {
         }
       } else {
         const ab = await res.arrayBuffer();
-        buf = new Uint8Array(ab, 0, Math.min(ab.byteLength, 8192));
+        buf = new Uint8Array(ab, 0, Math.min(ab.byteLength, 3760));
       }
       if (!buf || buf.length < 376) return null;
 
@@ -2358,8 +2427,17 @@ class AppleCinemaApp {
   }
 
   async calibrateHlsPlaylistTimestamps(playlistText, playlistUrl) {
-    if (!playlistText || !playlistUrl || !playlistText.includes("#EXTINF:") || playlistText.includes("#EXT-X-STREAM-INF")) {
+    if (
+      !playlistText ||
+      !playlistUrl ||
+      !playlistText.includes("#EXTINF:") ||
+      playlistText.includes("#EXT-X-STREAM-INF") ||
+      !playlistText.includes("#EXT-X-DISCONTINUITY")
+    ) {
       return playlistText;
+    }
+    if (this._calibratedPlaylistsCache && this._calibratedPlaylistsCache.has(playlistUrl)) {
+      return this._calibratedPlaylistsCache.get(playlistUrl);
     }
     try {
       const lines = playlistText.split(/\r?\n/);
@@ -2405,6 +2483,7 @@ class AppleCinemaApp {
 
       // Hiệu chuẩn khi phát hiện lệch xung nhịp thực tế giữa MPEG-TS PTS và #EXTINF (ví dụ phim 23.976fps đóng gói #EXTINF theo 25fps gây trôi +4.27% ở phút 14:30)
       if (Math.abs(rawRatio - 1.0) < 0.008 || rawRatio < 0.9 || rawRatio > 1.15) {
+        if (this._calibratedPlaylistsCache) this._calibratedPlaylistsCache.set(playlistUrl, playlistText);
         return playlistText;
       }
 
@@ -2428,7 +2507,9 @@ class AppleCinemaApp {
         return line;
       });
 
-      return calibratedLines.join("\n");
+      const out = calibratedLines.join("\n");
+      if (this._calibratedPlaylistsCache) this._calibratedPlaylistsCache.set(playlistUrl, out);
+      return out;
     } catch (_) {
       return playlistText;
     }
@@ -2447,8 +2528,18 @@ class AppleCinemaApp {
             if (response && typeof response.data === "string" && response.data.includes("#EXTM3U")) {
               const cleaned = self.cleanHlsAdSegments(response.data);
               response.data = cleaned;
-              if (cleaned.includes("#EXTINF:") && !cleaned.includes("#EXT-X-STREAM-INF")) {
+              // Fast path 0ms: Chỉ hiệu chuẩn PTS khi playlist thực sự có #EXT-X-DISCONTINUITY giữa phim
+              if (
+                cleaned.includes("#EXTINF:") &&
+                !cleaned.includes("#EXT-X-STREAM-INF") &&
+                cleaned.includes("#EXT-X-DISCONTINUITY")
+              ) {
                 const targetUrl = (response && response.url) || (ctx && ctx.url) || (context && context.url) || "";
+                if (self._calibratedPlaylistsCache && self._calibratedPlaylistsCache.has(targetUrl)) {
+                  response.data = self._calibratedPlaylistsCache.get(targetUrl);
+                  if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
+                  return;
+                }
                 self.calibrateHlsPlaylistTimestamps(cleaned, targetUrl).then((calibrated) => {
                   response.data = calibrated;
                   if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
@@ -2460,6 +2551,27 @@ class AppleCinemaApp {
             }
             if (origSuccess) origSuccess(response, stats, ctx, networkDetails);
           };
+
+          // Phục vụ tức thì 0ms nếu master playlist đã được prefetch vào RAM khi rê chuột / mở modal
+          const reqUrl = context && context.url;
+          const cachedPlaylist = reqUrl && self._m3u8PrefetchCache && self._m3u8PrefetchCache.get(reqUrl);
+          if (typeof cachedPlaylist === "string" && cachedPlaylist.includes("#EXTM3U")) {
+            const now = performance.now();
+            const fakeStats = {
+              aborted: false,
+              loaded: cachedPlaylist.length,
+              total: cachedPlaylist.length,
+              retry: 0,
+              chunkCount: 1,
+              bwEstimate: 50000000,
+              loading: { start: now, first: now, end: now },
+              parsing: { start: now, end: now },
+              buffering: { start: now, first: now, end: now }
+            };
+            callbacks.onSuccess({ url: reqUrl, data: cachedPlaylist }, fakeStats, context, null);
+            return;
+          }
+
           origLoad(context, cfg, callbacks);
         };
       }
@@ -2766,11 +2878,12 @@ class AppleCinemaApp {
         pLoader: CustomPlaylistLoader,
         enableWorker: true,
         lowLatencyMode: false,
-        progressive: false,
-        backBufferLength: 90,
-        maxBufferLength: 60,
-        maxMaxBufferLength: 120,
-        maxBufferSize: 120 * 1000 * 1000,
+        progressive: true,
+        startFragPrefetch: true,
+        backBufferLength: 30,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        maxBufferSize: 45 * 1000 * 1000,
         maxBufferHole: 0.1,
         maxAudioFramesDrift: 4,
         forceKeyFrameOnDiscontinuity: false,

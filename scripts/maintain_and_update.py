@@ -240,10 +240,11 @@ def sanitize_movie(m):
             embed = ""
         ep_copy = dict(ep)
         ep_copy["source"] = src
-        if embed:
+        if embed and not embed.startswith("https://player.phimapi.com/player/?url=") and embed != src:
             ep_copy["embed"] = embed
         else:
             ep_copy.pop("embed", None)
+        ep_copy.pop("slug", None)
         ep_copy.pop("altSources", None)
         if not src:
             ep_copy["needsEnrich"] = True
@@ -253,14 +254,51 @@ def sanitize_movie(m):
 
     m["episodes"] = cleaned_eps
 
-    # Honest quality normalization
+    if isinstance(m.get("dubEpisodes"), list):
+        for dep in m["dubEpisodes"]:
+            if isinstance(dep, dict):
+                dep.pop("slug", None)
+                demb = dep.get("embed") or ""
+                if demb.startswith("https://player.phimapi.com/player/?url=") or demb == dep.get("source"):
+                    dep.pop("embed", None)
+
+    # Honest quality normalization & lossless payload compaction
     tags = m.get("sectionTags") if isinstance(m.get("sectionTags"), list) else ["hot", "vietsub"]
     is_real_4k = str(m.get("quality") or "").upper() == "4K" and "4k" in tags
-    m["quality"] = "4K" if is_real_4k else "1080"
-    if not is_real_4k and "4k" in tags:
-        tags = [t for t in tags if t != "4k"]
+    if is_real_4k:
+        m["quality"] = "4K"
+    else:
+        m.pop("quality", None)
+        if "4k" in tags:
+            tags = [t for t in tags if t != "4k"]
     m["sectionTags"] = tags
-    m["synopsis"] = clean_ad_text(m.get("synopsis") or "")
+
+    syn = clean_ad_text(m.get("synopsis") or "")
+    if len(syn) > 220:
+        syn = syn[:220].rsplit(" ", 1)[0].rstrip(".,;:") + "..."
+    m["synopsis"] = syn
+
+    m.pop("ambientColors", None)
+    m.pop("sourceSite", None)
+    m.pop("matchScore", None)
+    if m.get("id") in (slug, f"kk-{slug}", f"pa-{slug}", f"nc-{slug}"):
+        m.pop("id", None)
+    if m.get("crawlSlug") == slug:
+        m.pop("crawlSlug", None)
+    if m.get("backdrop") == m.get("poster"):
+        m.pop("backdrop", None)
+    if m.get("originTitle") == m.get("title"):
+        m.pop("originTitle", None)
+    if m.get("language") == "Vietsub":
+        m.pop("language", None)
+    if m.get("director") in ("Đang cập nhật", "", None):
+        m.pop("director", None)
+    if m.get("cast") == ["Dàn diễn viên chính"]:
+        m.pop("cast", None)
+    elif isinstance(m.get("cast"), list) and len(m["cast"]) > 6:
+        m["cast"] = m["cast"][:6]
+    if not m.get("trailerUrl"):
+        m.pop("trailerUrl", None)
     return m
 
 
@@ -554,7 +592,7 @@ def main():
     deduped = deduplicate_catalog(catalog)
 
     with open(CATALOG_PATH, "w", encoding="utf-8") as f:
-        f.write("window.NGWYREN_FULL_CATALOG = " + json.dumps(deduped, ensure_ascii=False) + ";\n")
+        f.write("window.NGWYREN_FULL_CATALOG=" + json.dumps(deduped, ensure_ascii=False, separators=(",", ":")) + ";\n")
     print(f"[SAVE] Wrote {len(deduped)} clean, deduplicated movies to {CATALOG_PATH}.")
 
     repair_air_schedule(deduped)

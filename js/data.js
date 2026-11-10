@@ -1097,6 +1097,7 @@ class PhimmoiService {
 
     // Tự động nạp toàn bộ kho phim đầy đủ từ js/movies-catalog.js, khử trùng lặp và chọn bản chất lượng tốt nhất
     if (Array.isArray(window.NGWYREN_FULL_CATALOG)) {
+      const seedKeyCount = this.canonicalKeyMap.size;
       window.NGWYREN_FULL_CATALOG.forEach((item) => {
         if (!item || !item.slug) return;
         const is4k = Boolean(
@@ -1105,10 +1106,18 @@ class PhimmoiService {
         );
         const normalizedItem = {
           ...item,
+          id: item.id || item.slug,
+          crawlSlug: item.crawlSlug || item.slug,
+          originTitle: item.originTitle || item.title,
+          backdrop: item.backdrop || item.poster,
           quality: is4k ? "4K" : "1080",
+          language: item.language || "Vietsub",
+          director: item.director || "Đang cập nhật",
+          matchScore: item.matchScore || 96,
+          ambientColors: item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"],
           genres: Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"],
           cast: Array.isArray(item.cast) ? item.cast : [item.cast || "Dàn diễn viên chính"],
-          sectionTags: Array.isArray(item.sectionTags) ? item.sectionTags : ["hot"],
+          sectionTags: Array.isArray(item.sectionTags) ? item.sectionTags : ["hot", "vietsub"],
           episodes: Array.isArray(item.episodes)
             ? item.episodes
             : [item.episodes || { name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", needsEnrich: true }]
@@ -1116,35 +1125,24 @@ class PhimmoiService {
 
         // Đánh dấu needsEnrich nếu phim có link cũ (opstream) hoặc chưa có source để nạp API 1080p/4K mới nhất
         if (Array.isArray(normalizedItem.episodes)) {
-          normalizedItem.episodes.forEach((ep) => {
+          for (let ei = 0; ei < normalizedItem.episodes.length; ei++) {
+            const ep = normalizedItem.episodes[ei];
+            if (!ep.slug) ep.slug = `tap-${ei + 1}`;
             if (!ep.source || ep.source.includes("opstream") || ep.source.includes("vip.opstream")) {
               ep.needsEnrich = true;
-            }
-          });
-        }
-
-        // Pre-populate missing episode slots for series so the user sees all episodes INSTANTLY 0ms
-        if (normalizedItem.type === "series" && Array.isArray(normalizedItem.episodes)) {
-          const match = (normalizedItem.episodeCurrent || "").match(/(\d+)/);
-          const expectedCount = match ? parseInt(match[1], 10) : normalizedItem.episodes.length;
-          if (expectedCount > normalizedItem.episodes.length && expectedCount <= 300) {
-            const currentLen = normalizedItem.episodes.length;
-            for (let i = currentLen + 1; i <= expectedCount; i++) {
-              normalizedItem.episodes.push({
-                name: `Tập ${i}`,
-                slug: `tap-${i}`,
-                source: "",
-                needsEnrich: true
-              });
             }
           }
         }
 
-        const cKey = this.getCanonicalMovieKey(normalizedItem);
-        const existing =
+        const existingBySlug =
           this.slugMap.get(normalizedItem.slug) ||
-          (normalizedItem.crawlSlug && this.slugMap.get(normalizedItem.crawlSlug)) ||
-          (cKey && this.canonicalKeyMap.get(cKey));
+          (normalizedItem.crawlSlug && this.slugMap.get(normalizedItem.crawlSlug));
+        let existing = existingBySlug;
+        let cKey = "";
+        if (!existing && seedKeyCount > 0) {
+          cKey = this.getCanonicalMovieKey(normalizedItem);
+          existing = cKey && this.canonicalKeyMap.get(cKey);
+        }
 
         if (existing) {
           this.mergeBestQualityMovie(existing, normalizedItem);
@@ -1161,19 +1159,27 @@ class PhimmoiService {
           if (Array.isArray(normalizedItem.aliasSlugs)) {
             normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, normalizedItem));
           }
-          if (cKey) this.canonicalKeyMap.set(cKey, normalizedItem);
         }
       });
     }
 
-    // Tối ưu hóa siêu tốc: Tiền lập chỉ mục tìm kiếm 0ms giúp tìm kiếm tức thì không tốn CPU
+    // Tối ưu hóa siêu tốc: Chỉ mục tìm kiếm cơ bản tức thì, phần chuẩn hóa không dấu nạp ngầm khi trình duyệt rảnh (idle)
     for (let i = 0; i < this.movies.length; i++) {
       const m = this.movies[i];
       m._titleLower = (m.title || "").toLowerCase();
       m._originLower = (m.originTitle || "").toLowerCase();
-      m._titleNorm = this.normalizeSearchText(m.title);
-      m._originNorm = this.normalizeSearchText(m.originTitle);
-      m._metaSearch = `${(m.genres || []).join(" ")} ${(m.cast || []).join(" ")} ${m.director || ""}`.toLowerCase();
+    }
+    const warmSearchIndex = () => {
+      for (let i = 0; i < this.movies.length; i++) {
+        const m = this.movies[i];
+        if (!m._titleNorm) m._titleNorm = this.normalizeSearchText(m.title);
+        if (!m._originNorm) m._originNorm = this.normalizeSearchText(m.originTitle);
+      }
+    };
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      window.requestIdleCallback(warmSearchIndex, { timeout: 1500 });
+    } else {
+      setTimeout(warmSearchIndex, 400);
     }
 
     this.isLiveConnected = true;
