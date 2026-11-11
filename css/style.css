@@ -3545,75 +3545,65 @@ body {
   gap: 10px;
 }
 
-/* Nút Cài Đặt & Đã Lưu 1 Bên Trên Web/Desktop (Chuẩn yêu cầu người dùng) */
-.vision-topbar-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  height: 38px;
-  padding: 0 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  font-size: 0.82rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.vision-topbar-action-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-1px);
-  color: #ffffff;
-}
-
-.vision-topbar-action-btn.active {
-  background: #ffffff !important;
-  color: #0b0c10 !important;
-  border-color: #ffffff !important;
-  font-weight: 600;
-}
-
-.vision-topbar-action-btn.active i {
-  color: #0b0c10 !important;
-}
-
-.vision-topbar-action-btn i {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.vision-topbar-action-btn .topbar-saved-badge {
-  font-size: 0.68rem;
-  font-weight: 700;
-  background: #f5c518;
-  color: #000000;
-  padding: 1px 6px;
-  border-radius: 999px;
-  line-height: 1.2;
-}
-
+/* Nút Tròn Chuẩn Apple visionOS (Đã Lưu, Cài Đặt, Thông Báo - Chỉ Icon, Không Để Chữ Chuẩn Theo Yêu Cầu) */
 .vision-circle-btn {
   position: relative;
   width: 36px;
   height: 36px;
+  min-width: 36px;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   color: rgba(255, 255, 255, 0.85) !important;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.02rem;
+  border-radius: 50% !important;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
 }
+
 .vision-circle-btn:hover {
   color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   transform: scale(1.12);
+}
+
+.vision-circle-btn:active {
+  transform: scale(0.92);
+}
+
+.vision-circle-btn.active {
+  background: #ffffff !important;
+  color: #0b0c10 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.55) !important;
+}
+
+.vision-circle-btn.active i {
+  color: #0b0c10 !important;
+}
+
+.vision-circle-btn .topbar-saved-badge {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 3px;
+  border-radius: 999px;
+  background: #f5c518;
+  color: #000000;
+  font-size: 0.62rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
 }
 
 .vision-notif-dot {
@@ -4526,6 +4516,9 @@ body {
   clip-path: inset(0 round 10px);
   pointer-events: none !important;
   transform: translateZ(0) !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: high-quality !important;
+  filter: contrast(1.06) brightness(1.02) !important;
 }
 
 .cinema-thumb-card:hover {
@@ -6130,12 +6123,10 @@ body.modal-open .apple-player-bar {
   .vision-topbar-right {
     gap: 8px !important;
   }
-  .vision-topbar-action-btn .action-btn-text {
-    display: none !important;
-  }
-  .vision-topbar-action-btn {
-    padding: 0 10px !important;
+  .vision-circle-btn {
+    width: 36px !important;
     height: 36px !important;
+    min-width: 36px !important;
   }
   .vision-topbar-home-btn {
     width: 38px !important;

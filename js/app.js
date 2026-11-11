@@ -1449,16 +1449,15 @@ class AppleCinemaApp {
 
     if (nav === "anime") {
       const topAnimeSlugs = [
-        "thanh-guom-diet-quy-vo-han-thanh-465645",
+        "thanh-guom-diet-quy-vo-han-thanh",
         "chainsaw-man-the-movie-chuong-reze",
         "chu-thuat-hoi-chien-hoai-ngoc-ngoc-chiet-the-movie",
-        "thanh-guom-diet-quy-vo-han-thanh",
-        "chu-thuat-hoi-chien-phan-2",
-        "one-piece-film-red",
         "tham-tu-lung-danh-conan-ngoi-sao-5-canh-1-trieu-do",
-        "thanh-guom-diet-quy-phan-4-lang-tho-ren",
         "naruto-shippuden",
-        "doraemon-nobita-va-cuoc-phieu-luu-vao-the-gioi-trong-tranh"
+        "one-piece-film-red",
+        "chu-thuat-hoi-chien-phan-2",
+        "doraemon-nobita-va-cuoc-phieu-luu-vao-the-gioi-trong-tranh",
+        "thanh-guom-diet-quy-phan-4-lang-tho-ren"
       ];
       const featured = topAnimeSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
       const catalogAnime = this.service.movies.filter(
@@ -1473,10 +1472,10 @@ class AppleCinemaApp {
       const topSingleSlugs = [
         "nhiem-vu-bat-kha-thi-nghiep-bao-phan-2-1",
         "dia-dao-mat-troi-trong-bong-toi",
-        "matchbox-phim-dien-anh",
         "tham-tu-kien-ky-an-khong-dau",
         "nha-gia-tien",
         "cu-roi-tu-than-2-diem-chet",
+        "matchbox-phim-dien-anh",
         "dich-nhan-kiet-lang-nhan-kiep"
       ];
       const featured = topSingleSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
@@ -1484,20 +1483,34 @@ class AppleCinemaApp {
       pool = Array.from(new Set([...featured, ...catalogSingles]));
     } else if (nav === "phim-bo") {
       const topSeriesSlugs = [
-        "squid-game-3-765752",
         "tai-xe-an-danh-phan-3",
         "cau-be-mat-tich-phan-5",
+        "tro-choi-con-muc-phan-3",
+        "thu-tu-phan-2",
         "good-boy-18",
+        "the-gioi-khong-loi-thoat-phan-3",
+        "kho-do-danh",
+        "khom-lung",
         "100-ngay-lua-doi"
       ];
       const featured = topSeriesSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
       const catalogSeries = this.service.movies.filter((m) => m.type === "series" && isWidescreenHd(m));
       pool = Array.from(new Set([...featured, ...catalogSeries]));
     } else if (nav === "netflix") {
+      const topNetflixSlugs = [
+        "tro-choi-con-muc-phan-3",
+        "cau-be-mat-tich-phan-5",
+        "thu-tu-phan-2",
+        "the-gioi-khong-loi-thoat-phan-3",
+        "one-piece-nu-hung",
+        "bang-chuot-cau-chuyen-tho-san-quai-vat",
+        "tho-san-quai-vat-phan-4"
+      ];
+      const featured = topNetflixSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
       const netflixMovies = this.service.movies.filter(
         (m) => m.sectionTags && m.sectionTags.includes("netflix") && isWidescreenHd(m)
       );
-      pool = netflixMovies.length > 0 ? netflixMovies : (this.heroMovies || []);
+      pool = Array.from(new Set([...featured, ...netflixMovies]));
     } else if (nav === "viet-nam") {
       pool = this.getMoviesByCountry("viet-nam").filter(isWidescreenHd);
     } else if (nav === "han-quoc") {
@@ -1507,8 +1520,19 @@ class AppleCinemaApp {
     } else if (nav === "au-my") {
       pool = this.getMoviesByCountry("au-my").filter(isWidescreenHd);
     } else {
-      // Default: Khám Phá (Home)
-      pool = this.heroMovies && this.heroMovies.length >= 4 ? this.heroMovies : this.service.movies.filter(isWidescreenHd);
+      // Default: Khám Phá (Home) - Ưu tiên các siêu phẩm bom tấn thịnh hành nhất
+      const topTrendingHome = [
+        "thanh-guom-diet-quy-vo-han-thanh",
+        "nhiem-vu-bat-kha-thi-nghiep-bao-phan-2-1",
+        "tai-xe-an-danh-phan-3",
+        "chainsaw-man-the-movie-chuong-reze",
+        "cau-be-mat-tich-phan-5",
+        "dia-dao-mat-troi-trong-bong-toi",
+        "tham-tu-lung-danh-conan-ngoi-sao-5-canh-1-trieu-do",
+        "tro-choi-con-muc-phan-3"
+      ];
+      const featuredHome = topTrendingHome.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
+      pool = Array.from(new Set([...featuredHome, ...(this.heroMovies || []), ...this.service.movies.filter(isWidescreenHd)]));
     }
 
     if (!pool || pool.length === 0) {
@@ -1579,11 +1603,14 @@ class AppleCinemaApp {
     const statusText = movie.type === "series" ? (movie.episodeCurrent || "Phim Bộ") : (movie.duration || "Hoàn Tất (Full)");
 
     // Danh sách thumbnail phim cho dải trượt góc dưới bên phải - LẤY 100% TỪ DANH MỤC HIỆN TẠI (ĐÚNG PHIM - ĐÚNG CHỖ)
-    const thumbMovies = heroList.slice(0, 7);
+    const thumbMovies = heroList.slice(0, 8);
+    const mainBackdrop = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
+    const mainPosterFallback = this.getMoviePoster(movie) || mainBackdrop;
 
     return `
       <section class="vision-hero-banner cinema-showcase-hero" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
-        <img class="vision-hero-bg" src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" fetchpriority="high" decoding="async" />
+        <img class="vision-hero-bg" src="${mainBackdrop}" alt="${movie.title}" fetchpriority="high" decoding="async"
+             onerror="this.onerror=null;this.src='${mainPosterFallback}';" />
         <div class="vision-hero-overlay"></div>
 
         <div class="cinema-hero-content">
@@ -1624,9 +1651,12 @@ class AppleCinemaApp {
           <div class="cinema-hero-thumbnails" aria-label="Phim nổi bật">
             ${thumbMovies.map((hm, i) => {
               const isActive = customMovie ? hm.slug === movie.slug : hm.slug === movie.slug || i === this.heroIndex;
+              const thumbUrl = this.getMovieBackdrop(hm) || this.getMoviePoster(hm);
+              const fallbackUrl = this.getMoviePoster(hm) || thumbUrl;
               return `
                 <div class="cinema-thumb-card ${isActive ? "active" : ""}" onclick="app.setHeroSlide(${i})" title="${hm.title}">
-                  <img src="${this.getMovieBackdrop(hm)}" alt="${hm.title}" loading="lazy" decoding="async" />
+                  <img src="${thumbUrl}" alt="${hm.title}" fetchpriority="high" decoding="async"
+                       onerror="this.onerror=null;this.src='${fallbackUrl}';" />
                 </div>
               `;
             }).join("")}
@@ -2111,8 +2141,12 @@ class AppleCinemaApp {
 
   getMovieBackdrop(movie) {
     if (!movie) return "";
-    if (movie._cachedBackdrop) return movie._cachedBackdrop;
     let b = movie.backdrop || "";
+    if (b.includes("20240807-1/f4b1d683a48e8e7428863f64c1ad6161.jpg")) {
+      b = "https://phimimg.com/upload/vod/20241229-1/309e1f1623755fa993140a83167f577b.jpg";
+      movie.backdrop = b;
+    }
+    if (movie._cachedBackdrop) return movie._cachedBackdrop;
     const isSuspicious = !b ||
       (movie.poster && b === movie.poster) ||
       b.includes("animevietsub") ||
@@ -2141,8 +2175,12 @@ class AppleCinemaApp {
 
   getMoviePoster(movie) {
     if (!movie) return "";
-    if (movie._cachedPoster) return movie._cachedPoster;
     let p = movie.poster || "";
+    if (p.includes("20240807-1/9b47e2fa1c0c660e527d216f4ad47f87.jpg")) {
+      p = "https://phimimg.com/upload/vod/20241229-1/01a129f40195c588ebc3d00c225fa33c.jpg";
+      movie.poster = p;
+    }
+    if (movie._cachedPoster) return movie._cachedPoster;
     if (p && !p.includes("animevietsub") && !p.includes("animevsub")) {
       movie._cachedPoster = p;
       return p;
@@ -4732,7 +4770,7 @@ class AppleCinemaApp {
     if (animeCount) animeCount.textContent = this.getMoviesByTag("anime").length;
     if (topbarSaved) {
       topbarSaved.textContent = this.myList.length;
-      topbarSaved.style.display = this.myList.length > 0 ? "inline-block" : "none";
+      topbarSaved.style.display = this.myList.length > 0 ? "inline-flex" : "none";
     }
   }
 
