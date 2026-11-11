@@ -1098,72 +1098,9 @@ class PhimmoiService {
       if (cKey) this.canonicalKeyMap.set(cKey, m);
     });
 
-    // Tự động nạp toàn bộ kho phim đầy đủ từ js/movies-catalog.js, khử trùng lặp và chọn bản chất lượng tốt nhất
+    // Tự động nạp toàn bộ kho phim đầy đủ từ js/movies-catalog.js nếu đã có sẵn
     if (Array.isArray(window.NGWYREN_FULL_CATALOG)) {
-      const seedKeyCount = this.canonicalKeyMap.size;
-      window.NGWYREN_FULL_CATALOG.forEach((item) => {
-        if (!item || !item.slug) return;
-        const is4k = Boolean(
-          (item.quality && item.quality.toString().toUpperCase() === "4K") &&
-          (Array.isArray(item.sectionTags) && item.sectionTags.includes("4k"))
-        );
-        const normalizedItem = {
-          ...item,
-          id: item.id || item.slug,
-          crawlSlug: item.crawlSlug || item.slug,
-          originTitle: item.originTitle || item.title,
-          backdrop: item.backdrop || item.poster,
-          quality: is4k ? "4K" : "1080",
-          language: item.language || "Vietsub",
-          director: item.director || "Đang cập nhật",
-          matchScore: item.matchScore || 96,
-          ambientColors: item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"],
-          genres: Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"],
-          cast: Array.isArray(item.cast) ? item.cast : [item.cast || "Dàn diễn viên chính"],
-          sectionTags: Array.isArray(item.sectionTags) ? item.sectionTags : ["hot", "vietsub"],
-          episodes: Array.isArray(item.episodes)
-            ? item.episodes
-            : [item.episodes || { name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", needsEnrich: true }]
-        };
-
-        // Đánh dấu needsEnrich nếu phim có link cũ (opstream) hoặc chưa có source để nạp API 1080p/4K mới nhất
-        if (Array.isArray(normalizedItem.episodes)) {
-          for (let ei = 0; ei < normalizedItem.episodes.length; ei++) {
-            const ep = normalizedItem.episodes[ei];
-            if (!ep.slug) ep.slug = `tap-${ei + 1}`;
-            if ((!ep.source && !ep.embed) || (ep.source && (ep.source.includes("opstream") || ep.source.includes("vip.opstream")))) {
-              ep.needsEnrich = true;
-            }
-          }
-        }
-
-        const existingBySlug =
-          this.slugMap.get(normalizedItem.slug) ||
-          (normalizedItem.crawlSlug && this.slugMap.get(normalizedItem.crawlSlug));
-        let existing = existingBySlug;
-        let cKey = "";
-        if (!existing && seedKeyCount > 0) {
-          cKey = this.getCanonicalMovieKey(normalizedItem);
-          existing = cKey && this.canonicalKeyMap.get(cKey);
-        }
-
-        if (existing) {
-          this.mergeBestQualityMovie(existing, normalizedItem);
-          this.slugMap.set(normalizedItem.slug, existing);
-          if (normalizedItem.crawlSlug) this.slugMap.set(normalizedItem.crawlSlug, existing);
-          if (Array.isArray(normalizedItem.aliasSlugs)) {
-            normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
-          }
-          if (cKey) this.canonicalKeyMap.set(cKey, existing);
-        } else {
-          this.movies.push(normalizedItem);
-          this.slugMap.set(normalizedItem.slug, normalizedItem);
-          if (normalizedItem.crawlSlug) this.slugMap.set(normalizedItem.crawlSlug, normalizedItem);
-          if (Array.isArray(normalizedItem.aliasSlugs)) {
-            normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, normalizedItem));
-          }
-        }
-      });
+      this.loadFullCatalog(window.NGWYREN_FULL_CATALOG);
     }
 
     // Tối ưu hóa siêu tốc: Chỉ mục tìm kiếm cơ bản tức thì, phần chuẩn hóa không dấu nạp ngầm khi trình duyệt rảnh (idle)
@@ -1187,6 +1124,107 @@ class PhimmoiService {
 
     this.isLiveConnected = true;
     this.lastSyncedCount = this.movies.length;
+  }
+
+  loadFullCatalog(catalog) {
+    if (!Array.isArray(catalog) || this._fullCatalogLoaded) return;
+    this._fullCatalogLoaded = true;
+
+    const seedKeyCount = this.canonicalKeyMap.size;
+    const len = catalog.length;
+    for (let i = 0; i < len; i++) {
+      const item = catalog[i];
+      if (!item || !item.slug) continue;
+      const is4k = Boolean(
+        (item.quality && item.quality.toString().toUpperCase() === "4K") &&
+        (Array.isArray(item.sectionTags) && item.sectionTags.includes("4k"))
+      );
+      const normalizedItem = {
+        ...item,
+        id: item.id || item.slug,
+        crawlSlug: item.crawlSlug || item.slug,
+        originTitle: item.originTitle || item.title,
+        backdrop: item.backdrop || item.poster,
+        quality: is4k ? "4K" : "1080",
+        language: item.language || "Vietsub",
+        director: item.director || "Đang cập nhật",
+        matchScore: item.matchScore || 96,
+        ambientColors: item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"],
+        genres: Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"],
+        cast: Array.isArray(item.cast) ? item.cast : [item.cast || "Dàn diễn viên chính"],
+        sectionTags: Array.isArray(item.sectionTags) ? item.sectionTags : ["hot", "vietsub"],
+        episodes: Array.isArray(item.episodes)
+          ? item.episodes
+          : [item.episodes || { name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", needsEnrich: true }]
+      };
+
+      if (Array.isArray(normalizedItem.episodes)) {
+        for (let ei = 0; ei < normalizedItem.episodes.length; ei++) {
+          const ep = normalizedItem.episodes[ei];
+          if (!ep.slug) ep.slug = `tap-${ei + 1}`;
+          if ((!ep.source && !ep.embed) || (ep.source && (ep.source.includes("opstream") || ep.source.includes("vip.opstream")))) {
+            ep.needsEnrich = true;
+          }
+        }
+      }
+
+      const existingBySlug =
+        this.slugMap.get(normalizedItem.slug) ||
+        (normalizedItem.crawlSlug && this.slugMap.get(normalizedItem.crawlSlug));
+      let existing = existingBySlug;
+      let cKey = "";
+      if (!existing && seedKeyCount > 0) {
+        cKey = this.getCanonicalMovieKey(normalizedItem);
+        existing = cKey && this.canonicalKeyMap.get(cKey);
+      }
+
+      if (existing) {
+        this.mergeBestQualityMovie(existing, normalizedItem);
+        this.slugMap.set(normalizedItem.slug, existing);
+        if (normalizedItem.crawlSlug) this.slugMap.set(normalizedItem.crawlSlug, existing);
+        if (Array.isArray(normalizedItem.aliasSlugs)) {
+          normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
+        }
+        if (cKey) this.canonicalKeyMap.set(cKey, existing);
+      } else {
+        this.movies.push(normalizedItem);
+        this.slugMap.set(normalizedItem.slug, normalizedItem);
+        if (normalizedItem.crawlSlug) this.slugMap.set(normalizedItem.crawlSlug, normalizedItem);
+        if (Array.isArray(normalizedItem.aliasSlugs)) {
+          normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, normalizedItem));
+        }
+      }
+    }
+
+    for (let i = 0; i < this.movies.length; i++) {
+      const m = this.movies[i];
+      m._titleLower = (m.title || "").toLowerCase();
+      m._originLower = (m.originTitle || "").toLowerCase();
+    }
+
+    this.lastSyncedCount = this.movies.length;
+
+    const warmSearchIndex = () => {
+      for (let i = 0; i < this.movies.length; i++) {
+        const m = this.movies[i];
+        if (!m._titleNorm) m._titleNorm = this.normalizeSearchText(m.title);
+        if (!m._originNorm) m._originNorm = this.normalizeSearchText(m.originTitle);
+      }
+    };
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      window.requestIdleCallback(warmSearchIndex, { timeout: 1500 });
+    } else {
+      setTimeout(warmSearchIndex, 400);
+    }
+
+    if (typeof window !== "undefined" && window.app) {
+      window.app.buildFastIndexes();
+      window.app.setupHeroMovies();
+      window.app.updateSidebarCounts();
+      if (window.app.currentNav && window.app.currentNav !== "kham-pha") {
+        window.app.renderMainView();
+      }
+    }
   }
 
   /**

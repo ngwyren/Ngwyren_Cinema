@@ -75,9 +75,11 @@ class AppleCinemaApp {
     this.bindGlobalEvents();
     this.updateSidebarCounts();
 
-    // Khởi tạo thanh Now Playing mặc định với bộ phim đầu tiên trong lịch sử hoặc ngẫu nhiên từ Hero
+    // Khởi tạo trạng thái phim mặc định (0ms non-blocking)
     const initialPlaying = this.service.slugMap.get(this.watchHistory[0]?.slug) || this.heroMovies[this.heroIndex] || this.service.movies[0];
-    this.setNowPlayingBar(initialPlaying, 0, false);
+    this.playingMovie = initialPlaying;
+    this.currentEpisodeIndex = 0;
+    this.isPlaying = false;
 
     // Render giao diện tức thì (0ms)
     this.renderMainView();
@@ -293,7 +295,6 @@ class AppleCinemaApp {
         link.setAttribute("fetchpriority", "high");
         document.head.appendChild(link);
       }
-      this.warmUpMovieStream(activeHero, 0);
     }
   }
 
@@ -386,6 +387,7 @@ class AppleCinemaApp {
   }
 
   setNavigation(navKey, customTitle = null, force = false) {
+    this.ensureFullCatalogLoaded();
     if (!force && this.currentNav === navKey && !customTitle && !this.customFilterTitle && this.activeGenreFilter === "Tất cả") {
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
@@ -2960,12 +2962,31 @@ class AppleCinemaApp {
     return this.formatSeconds(seconds);
   }
 
+  async ensureHlsLoaded() {
+    if (typeof window !== "undefined" && window.Hls) return true;
+    if (this._loadingHlsPromise) return this._loadingHlsPromise;
+    this._loadingHlsPromise = new Promise((resolve) => {
+      if (typeof document === "undefined") return resolve(false);
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/hls.js@latest";
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.head.appendChild(script);
+    });
+    return this._loadingHlsPromise;
+  }
+
   async startVideoPlayback(movie, epIndex = 0, serverMode = "hls-1") {
     if (!movie) return;
     this.selectedMovie = movie;
     this.playingMovie = movie;
     this.currentEpisodeIndex = epIndex;
     this.currentServerMode = serverMode;
+
+    if (serverMode === "hls-1" || !serverMode) {
+      await this.ensureHlsLoaded();
+    }
 
     // Tự động kéo mượt lên đầu Modal để thấy ngay khung phát video khi bấm chọn tập phim ở dưới
     const modalBackdrop = document.getElementById("movieDetailModal");
@@ -3821,6 +3842,9 @@ class AppleCinemaApp {
     this.currentEpisodeIndex = epIndex;
     this.isPlaying = playing;
 
+    const barEl = document.getElementById("applePlayerBar");
+    if (!barEl || barEl.style.display === "none") return;
+
     const ep = (movie.episodes && movie.episodes[epIndex]) || (movie.episodes && movie.episodes[0]);
     const artImg = document.getElementById("nowPlayingArt");
     const titleText = document.getElementById("nowPlayingTitleText");
@@ -4528,6 +4552,7 @@ class AppleCinemaApp {
      SEARCH, FILTERS, FAVORITES & HISTORY
      ========================================================================== */
   handleSearchInput(rawValue) {
+    this.ensureFullCatalogLoaded();
     const query = (rawValue || "").trim();
     const clearBtn = document.getElementById("searchClearBtn");
     const dropdown = document.getElementById("searchDropdown");
@@ -4840,8 +4865,15 @@ class AppleCinemaApp {
   }
 
 
+  ensureFullCatalogLoaded() {
+    if (this.service && !this.service._fullCatalogLoaded && typeof window !== "undefined" && Array.isArray(window.NGWYREN_FULL_CATALOG)) {
+      this.service.loadFullCatalog(window.NGWYREN_FULL_CATALOG);
+    }
+  }
+
   findMovie(idOrSlug) {
     if (!idOrSlug) return null;
+    this.ensureFullCatalogLoaded();
     const cleanSlug = idOrSlug === "ly-hung-mieu" ? "ly-hung-mieu-gau-truc-ly" : idOrSlug;
     return (
       this.service.slugMap.get(cleanSlug) ||
@@ -5410,8 +5442,15 @@ class AppleCinemaApp {
       this.lastCloudSyncTime = Date.now();
       this.saveStorage("ngwyren_last_cloud_sync", this.lastCloudSyncTime);
 
-      // Cập nhật giao diện lập tức: Kể cả trang Khám Phá (Hàng Tiếp Tục Xem) và các danh mục
-      this.renderMainView();
+      // Cập nhật giao diện nhẹ nhàng: Chỉ re-render toàn phần nếu đang ở Đã Lưu / Lịch Sử
+      if (this.currentNav === "yeu-thich" || this.currentNav === "lich-su") {
+        this.renderMainView();
+      } else {
+        const contShelf = document.getElementById("continueWatchingShelf");
+        if (contShelf) {
+          contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
+        }
+      }
       this.updateSidebarCounts();
 
       if (notify) {

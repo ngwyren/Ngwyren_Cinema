@@ -7098,14 +7098,9 @@ html.dragging-glass .vision-left-dock {
   border-color: rgba(255, 255, 255, var(--glass-border-alpha, 0.22)) !important;
 }
 
-/* Ambient Spatial Glow Animation */
+/* Ambient Spatial Glow Animation (Tắt chuyển động nền toàn màn hình để triệt tiêu 100% giật lag) */
 [data-ambient="true"] .spatial-room-bg {
-  animation: ambientSpatialPulse 16s ease-in-out infinite alternate;
-}
-@keyframes ambientSpatialPulse {
-  0% { transform: scale(1) rotate(0deg); opacity: 0.9; }
-  50% { transform: scale(1.05) rotate(1deg); opacity: 1; }
-  100% { transform: scale(1.02) rotate(-1deg); opacity: 0.85; }
+  animation: none !important;
 }
 
 /* Tắt triệt để thông báo toast theo yêu cầu người dùng */
@@ -8993,8 +8988,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   font-weight: 700;
   color: rgba(255, 255, 255, 0.94);
   letter-spacing: 0.02em;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* --- 10B. PS5 "Game Screen & Saves" — Save Slots & Quick-Launch Episode Strip --- */
@@ -9014,14 +9009,14 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   gap: 10px;
   padding: 7px 14px 10px 11px;
   border-radius: 14px;
-  background: rgba(20, 24, 34, 0.76);
-  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(20, 24, 34, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.24);
   color: #ffffff;
   font-family: inherit;
   cursor: pointer;
   overflow: hidden;
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   box-shadow:
     inset 0 1px 0.5px rgba(255, 255, 255, 0.35),
     0 10px 24px rgba(0, 0, 0, 0.42);
@@ -9196,10 +9191,10 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   padding: 3px 10px;
   margin-bottom: 3px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  background: rgba(0, 0, 0, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   font-size: 0.66rem;
   font-weight: 700;
   color: #ffffff;
@@ -9220,11 +9215,12 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-feature-card {
-  animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 35ms) both;
+  animation: none !important;
+  transform: translateZ(0);
   transition:
-    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.25s ease,
-    box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease,
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .vision-feature-card .vision-feature-img {
