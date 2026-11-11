@@ -5755,10 +5755,18 @@ class AppleCinemaApp {
   toggleNotificationCenter(e) {
     if (e) e.stopPropagation();
     const flyout = document.getElementById("visionNotifFlyout");
+    const backdrop = document.getElementById("visionNotifBackdrop");
+    const bellBtn = document.getElementById("notifBellBtn");
     if (!flyout) return;
-    if (flyout.style.display === "none" || !flyout.style.display) {
+    const isClosed = flyout.style.display === "none" || !flyout.style.display;
+    if (isClosed) {
       this.renderNotificationFlyout(this.activeNotifTab || "today");
       flyout.style.display = "flex";
+      if (backdrop) {
+        backdrop.style.display = "block";
+        requestAnimationFrame(() => backdrop.classList.add("open"));
+      }
+      if (bellBtn) bellBtn.classList.add("active");
       flyout.classList.remove("ps5-flyout-anim");
       requestAnimationFrame(() => {
         flyout.classList.add("ps5-flyout-anim");
@@ -5766,17 +5774,23 @@ class AppleCinemaApp {
       const dot = document.querySelector(".vision-notif-dot");
       if (dot) dot.style.display = "none";
     } else {
-      flyout.style.display = "none";
-      flyout.classList.remove("ps5-flyout-anim");
+      this.closeNotificationCenter();
     }
   }
 
   closeNotificationCenter() {
     const flyout = document.getElementById("visionNotifFlyout");
+    const backdrop = document.getElementById("visionNotifBackdrop");
+    const bellBtn = document.getElementById("notifBellBtn");
     if (flyout) {
       flyout.style.display = "none";
       flyout.classList.remove("ps5-flyout-anim");
     }
+    if (backdrop) {
+      backdrop.classList.remove("open");
+      backdrop.style.display = "none";
+    }
+    if (bellBtn) bellBtn.classList.remove("active");
   }
 
   switchNotifTab(tab) {

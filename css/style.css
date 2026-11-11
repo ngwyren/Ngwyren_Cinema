@@ -3540,6 +3540,7 @@ body {
 
 /* Right Notification & Profile Pill */
 .vision-topbar-right {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -3626,18 +3627,34 @@ body {
 /* ==========================================================================
    CINEMA NOTIFICATION CENTER (Trung Tâm Thông Báo Điện Ảnh Chuẩn Apple visionOS)
    ========================================================================== */
+.vision-notif-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.24s ease;
+}
+
+.vision-notif-backdrop.open {
+  opacity: 1;
+}
+
 .vision-notif-flyout {
   position: absolute;
-  top: 52px;
+  top: calc(100% + 12px);
   right: 0;
-  width: min(440px, 92vw);
-  max-height: min(640px, 82vh);
-  background: rgba(18, 18, 26, 0.94);
+  width: min(420px, 92vw);
+  max-height: calc(100vh - 120px);
+  background: rgba(18, 18, 26, 0.95);
   backdrop-filter: blur(48px) saturate(1.8) contrast(1.05);
   -webkit-backdrop-filter: blur(48px) saturate(1.8) contrast(1.05);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 24px;
-  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.8), inset 0 1px 1.5px rgba(255, 255, 255, 0.35), 0 0 32px rgba(255, 255, 255, 0.1);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -3734,13 +3751,15 @@ body {
 
 /* Content List */
 .notif-flyout-content {
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
   overflow-y: auto;
-  padding: 12px 14px;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 14px 22px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 420px;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
@@ -8752,6 +8771,18 @@ body.video-cursor-hidden *,
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 16px !important;
   }
+
+  /* Bảng Thông Báo trên iPad: Luôn nằm dưới topbar, không che các icon */
+  .vision-notif-flyout {
+    position: absolute !important;
+    top: calc(100% + 12px) !important;
+    right: 0 !important;
+    left: auto !important;
+    width: min(420px, 90vw) !important;
+    max-height: calc(85dvh) !important;
+    border-radius: 24px !important;
+    z-index: 1000 !important;
+  }
 }
 
 /* Riêng iPad Portrait (768px – 919px): Thông tin phim trong Modal xếp 1 cột rộng rãi */
@@ -8784,17 +8815,31 @@ body.video-cursor-hidden *,
     padding-bottom: calc(138px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  /* Bảng Thông Báo (Notification Flyout) vừa khít màn hình iPhone, không bị tràn mép */
+  /* Bảng Thông Báo (Notification Flyout) trên iPhone: Nằm hoàn toàn DƯỚI topbar, không che bell/settings/search */
   .vision-notif-flyout {
     position: fixed !important;
-    top: calc(60px + env(safe-area-inset-top, 0px)) !important;
+    top: calc(108px + env(safe-area-inset-top, 0px)) !important;
     left: 10px !important;
     right: 10px !important;
     width: auto !important;
     max-width: none !important;
-    max-height: 75dvh !important;
-    border-radius: 20px !important;
-    z-index: 120 !important;
+    max-height: calc(100dvh - 116px - env(safe-area-inset-bottom, 16px) - 64px) !important;
+    border-radius: 22px !important;
+    z-index: 1000 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), inset 0 1px 1.5px rgba(255, 255, 255, 0.35) !important;
+  }
+
+  /* Auth Modal căn giữa cân đối trên điện thoại, không bị che lệch */
+  .auth-modal-backdrop {
+    padding: 16px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .auth-modal-sheet {
+    width: min(390px, calc(100vw - 28px)) !important;
+    max-width: 390px !important;
+    border-radius: 24px !important;
+    margin: 0 auto !important;
   }
 
   /* Modal Xem Phim dạng Bottom Sheet chuẩn iOS trên iPhone với khung Video ghim cố định (Sticky Player) */
