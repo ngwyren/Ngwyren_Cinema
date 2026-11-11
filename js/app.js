@@ -1502,15 +1502,13 @@ class AppleCinemaApp {
 
             <p class="cinema-hero-desc">${cleanSynopsis}</p>
 
-            ${this.renderPs5HeroSavesHTML(movie)}
-
             <div class="cinema-hero-actions">
               <button class="cinema-play-glow-btn" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})" title="${primaryPlayLabel}">
                 <i class="fas fa-play"></i>
               </button>
               <div class="cinema-action-capsule">
-                <button class="cinema-capsule-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu" : "Lưu Phim Yêu Thích"}">
-                  <i class="${inMyList ? "fas fa-heart" : "far fa-heart"}"></i>
+                <button class="cinema-capsule-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu Phim" : "Lưu Phim Yêu Thích"}">
+                  <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
                 </button>
                 <span class="cinema-capsule-divider"></span>
                 <button class="cinema-capsule-btn" onclick="app.openMovieModal('${movie.slug}', false)" title="Chi Tiết Phim & Danh Sách Tập">
@@ -1599,12 +1597,6 @@ class AppleCinemaApp {
         <img class="vision-feature-img" src="${this.getMoviePoster(movie)}" alt="${movie.title}" ${loadAttr}
              onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg'" />
         <div class="vision-feature-shade"></div>
-
-        <button class="vision-card-more ${inMyList ? "active" : ""}"
-                onclick="event.stopPropagation(); app.toggleMyList('${movie.slug}', event)"
-                title="${inMyList ? "Đã lưu vào Yêu thích" : "Lưu vào Yêu thích"}">
-          <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
-        </button>
 
         <div class="vision-feature-bottom">
           <div class="vision-feature-meta">
