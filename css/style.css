@@ -4537,7 +4537,19 @@ body {
 }
 
 .vision-card-genre {
-  display: none !important;
+  display: inline-flex !important;
+  align-items: center;
+  padding: 3px 10px;
+  margin-bottom: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
 }
 
 .vision-card-title {
@@ -8449,7 +8461,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 /* --- 10A. PS5 Hero Banner Metadata Row (98% Match • Năm • Full HD • Tập • 5.1) --- */
-html[data-ps5-motion="true"] .vision-hero-banner {
+.vision-hero-banner {
   min-height: 425px;
   height: auto;
   transition:
@@ -8686,7 +8698,7 @@ html[data-ps5-motion="true"] .vision-hero-banner {
 }
 
 /* --- 10D. visionOS + PS5 Feature Cards (Frosted Genre Pill, See More & 3D Hover) --- */
-html[data-ps5-motion="true"] .vision-card-genre {
+.vision-card-genre {
   display: inline-flex !important;
   align-items: center;
   padding: 3px 10px;
@@ -8702,7 +8714,7 @@ html[data-ps5-motion="true"] .vision-card-genre {
   letter-spacing: 0.01em;
 }
 
-html[data-ps5-motion="true"] .vision-card-seemore {
+.vision-card-seemore {
   display: inline-block;
   font-size: 0.68rem;
   font-weight: 600;
@@ -8711,11 +8723,11 @@ html[data-ps5-motion="true"] .vision-card-seemore {
   transition: color 0.2s ease;
 }
 
-html[data-ps5-motion="true"] .vision-feature-card:hover .vision-card-seemore {
+.vision-feature-card:hover .vision-card-seemore {
   color: #ffffff;
 }
 
-html[data-ps5-motion="true"] .vision-feature-card {
+.vision-feature-card {
   animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 35ms) both;
   transition:
     transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
@@ -8723,13 +8735,13 @@ html[data-ps5-motion="true"] .vision-feature-card {
     box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-html[data-ps5-motion="true"] .vision-feature-card .vision-feature-img {
+.vision-feature-card .vision-feature-img {
   transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (hover: hover) {
-  html[data-ps5-motion="true"] .vision-feature-card:hover,
-  html[data-ps5-motion="true"] .vision-feature-card.is-hero-previewing {
+  .vision-feature-card:hover,
+  .vision-feature-card.is-hero-previewing {
     transform: translate3d(0, -7px, 0) scale(1.024) !important;
     border-color: rgba(255, 255, 255, 0.72) !important;
     box-shadow:
@@ -8739,17 +8751,17 @@ html[data-ps5-motion="true"] .vision-feature-card .vision-feature-img {
     z-index: 4;
   }
 
-  html[data-ps5-motion="true"] .vision-feature-card:hover .vision-feature-img,
-  html[data-ps5-motion="true"] .vision-feature-card.is-hero-previewing .vision-feature-img {
+  .vision-feature-card:hover .vision-feature-img,
+  .vision-feature-card.is-hero-previewing .vision-feature-img {
     transform: scale(1.075) translateZ(0);
   }
 
-  html[data-ps5-motion="true"] .vision-feature-card:hover .vision-card-play-white {
+  .vision-feature-card:hover .vision-card-play-white {
     transform: scale(1.1);
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.75);
   }
 
-  html[data-ps5-motion="true"] .vision-trailer-card.is-hero-previewing {
+  .vision-trailer-card.is-hero-previewing {
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 255, 255, 0.14) !important;
   }
