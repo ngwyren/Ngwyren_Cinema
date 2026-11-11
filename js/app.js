@@ -3252,6 +3252,103 @@ class AppleCinemaApp {
     return clean;
   }
 
+  formatYouTubeEmbedUrl(url) {
+    if (!url || typeof url !== "string") return url;
+    let ytId = this.extractYouTubeId(url);
+    if (!ytId && url.includes("/embed/")) {
+      const match = url.match(/\/embed\/([a-zA-Z0-9_-]{11})/);
+      if (match) ytId = match[1];
+    }
+    if (!ytId) return url;
+
+    let start = "";
+    try {
+      const parsedUrl = new URL(url.startsWith("http") ? url : `https://www.youtube.com/${url}`);
+      start = parsedUrl.searchParams.get("start") || "";
+    } catch (_) {
+      const startMatch = url.match(/[?&]start=(\d+)/);
+      if (startMatch) start = startMatch[1];
+    }
+
+    const params = [
+      "autoplay=1",
+      "rel=0",
+      "enablejsapi=1",
+      "cc_load_policy=0", // Tắt phụ đề mặc định
+      "cc_lang_pref=none",
+      "iv_load_policy=3", // Tắt quảng cáo / chú thích nổi
+      "vq=hd1080",        // Luôn ưu tiên độ phân giải cao nhất
+      "playsinline=1",
+      "modestbranding=1"
+    ];
+    if (typeof window !== "undefined" && window.location?.origin && !window.location.origin.startsWith("file://")) {
+      params.push(`origin=${encodeURIComponent(window.location.origin)}`);
+    }
+    if (start) {
+      params.push(`start=${start}`);
+    }
+
+    return `https://www.youtube.com/embed/${ytId}?${params.join("&")}`;
+  }
+
+  applyYouTubeBestQualityAndNoCaptions(iframeEl) {
+    if (!iframeEl) return;
+
+    const sendCmd = (func, args = []) => {
+      try {
+        if (iframeEl.contentWindow) {
+          iframeEl.contentWindow.postMessage(
+            JSON.stringify({
+              event: "command",
+              func: func,
+              args: args
+            }),
+            "*"
+          );
+        }
+      } catch (_) {}
+    };
+
+    const enforceSettings = () => {
+      // 1. Tắt hoàn toàn phụ đề / Closed Captions
+      sendCmd("unloadModule", ["captions"]);
+      sendCmd("unloadModule", ["cc"]);
+      sendCmd("setOption", ["captions", "track", {}]);
+      sendCmd("setOption", ["cc", "track", {}]);
+      sendCmd("setOption", ["captions", "fontSize", 0]);
+
+      // 2. Ép chất lượng cao nhất (1080p Full HD / High-Res)
+      sendCmd("setPlaybackQuality", ["highres"]);
+      sendCmd("setPlaybackQuality", ["hd1080"]);
+      sendCmd("setPlaybackQualityRange", ["hd1080", "highres"]);
+    };
+
+    // Khi iframe vừa nạp xong
+    iframeEl.onload = () => {
+      enforceSettings();
+      setTimeout(enforceSettings, 300);
+      setTimeout(enforceSettings, 800);
+      setTimeout(enforceSettings, 1800);
+      setTimeout(enforceSettings, 3200);
+      setTimeout(enforceSettings, 5000);
+    };
+
+    // Lắng nghe postMessage từ YouTube player
+    if (!this._ytMessageBound) {
+      this._ytMessageBound = true;
+      window.addEventListener("message", (event) => {
+        try {
+          if (typeof event.data === "string" && (event.data.includes("infoDelivery") || event.data.includes("onReady"))) {
+            const curIframe = document.getElementById("trailerIframeElement");
+            if (curIframe && curIframe.style.display !== "none") {
+              enforceSettings();
+            }
+          }
+        } catch (_) {}
+      });
+    }
+  }
+
   activateIframePlayer(iframeUrl) {
     const container = document.getElementById("activeVideoContainer");
     const videoEl = document.getElementById("hlsVideoElement");
@@ -3275,8 +3372,13 @@ class AppleCinemaApp {
       videoEl.style.display = "none";
     }
     if (iframeEl && iframeUrl) {
-      iframeEl.src = iframeUrl;
+      const isYouTube = iframeUrl.includes("youtube.com") || iframeUrl.includes("youtu.be");
+      const finalUrl = isYouTube ? this.formatYouTubeEmbedUrl(iframeUrl) : iframeUrl;
+      iframeEl.src = finalUrl;
       iframeEl.style.display = "block";
+      if (isYouTube) {
+        this.applyYouTubeBestQualityAndNoCaptions(iframeEl);
+      }
     }
   }
 
@@ -3374,7 +3476,7 @@ class AppleCinemaApp {
     if (serverMode === "trailer" && movie.trailerUrl) {
       const ytId = this.extractYouTubeId(movie.trailerUrl);
       const ytEmbedUrl = ytId
-        ? `https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0`
+        ? `https://www.youtube.com/embed/${ytId}`
         : movie.trailerUrl;
       this.activateIframePlayer(ytEmbedUrl);
       return;
