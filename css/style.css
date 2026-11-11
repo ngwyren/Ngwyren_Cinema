@@ -661,22 +661,23 @@ body::-webkit-scrollbar {
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  right: 0;
-  background: rgba(22, 22, 28, 0.94);
+  width: min(480px, calc(100vw - 32px));
+  min-width: 440px;
+  background: rgba(18, 18, 24, 0.96) !important;
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 1px solid var(--border-highlight);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: 14px;
-  max-height: 72vh;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.88), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
+  padding: 14px 16px;
+  max-height: 74vh;
   overflow-y: auto;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px) scale(0.98);
-  transform-origin: top center;
-  transition: all 0.32s var(--ease-spring);
-  z-index: 100;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top left;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 120;
 }
 
 .search-dropdown.open {
@@ -695,60 +696,71 @@ body::-webkit-scrollbar {
   letter-spacing: 0.05em;
   color: var(--text-tertiary);
   padding: 4px 8px 10px;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 10px;
 }
 
 .search-suggestion-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
+  gap: 14px;
+  padding: 10px 12px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.24s var(--ease-in-out-smooth);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .search-suggestion-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   transform: translateX(4px);
 }
 
 .search-suggestion-item img {
-  width: 44px;
-  height: 62px;
+  width: 48px;
+  height: 68px;
   object-fit: cover;
-  border-radius: 6px;
+  border-radius: 8px;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
 
 .search-suggestion-info {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .search-suggestion-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.38;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .search-suggestion-sub {
   font-size: 0.76rem;
-  color: var(--text-secondary);
-  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .search-suggestion-meta {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 6px;
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 .badge-mini {
@@ -3451,8 +3463,57 @@ body {
 }
 
 .topbar-search-container {
-  width: 250px;
+  width: clamp(230px, 20vw, 320px);
   position: relative;
+  transition: width 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.topbar-search-container:focus-within {
+  width: clamp(270px, 24vw, 360px);
+}
+
+.vision-topbar-filter-btn {
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vision-topbar-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.vision-topbar-filter-btn.active {
+  background: rgba(96, 165, 250, 0.22);
+  border-color: rgba(96, 165, 250, 0.55);
+  color: #93c5fd;
+}
+
+.vision-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background: #3b82f6;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .vision-search-pill {
@@ -4478,19 +4539,24 @@ body {
 .cinema-capsule-btn {
   background: transparent;
   border: none;
-  color: #ffffff;
+  color: #ffffff !important;
   font-size: 1.15rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
-  transition: color 0.2s, transform 0.2s;
+  transition: color 0.2s, transform 0.2s, filter 0.2s;
+}
+
+.cinema-capsule-btn i {
+  color: #ffffff !important;
 }
 
 .cinema-capsule-btn:hover {
-  color: #f0a732;
+  color: #ffffff !important;
   transform: scale(1.18);
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
 
 .cinema-capsule-btn.favorited i {
@@ -9708,6 +9774,37 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   color: #0b0c10;
 }
 
+.explore-load-all-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 28px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(124, 58, 237, 0.95)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
+}
+
+.explore-load-all-btn:hover {
+  transform: scale(1.05) translate3d(0, -2px, 0);
+  box-shadow: 0 14px 36px rgba(37, 99, 235, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+.explore-load-all-btn:active {
+  transform: scale(0.96);
+}
+
+.explore-load-all-btn i {
+  font-size: 0.92rem;
+  color: #fde047;
+}
+
 /* ==========================================================================
    10G. PS5 SPATIAL MOTION TOÀN DIỆN CHO TẤT CẢ (LỊCH CHIẾU, THÔNG BÁO, CÀI ĐẶT, ĐĂNG NHẬP, TÌM KIẾM & HỆ THỐNG)
    ========================================================================== */
@@ -10268,6 +10365,254 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .vision-profile-pill:active {
   transform: scale(0.95) !important;
+}
+
+/* ==========================================================================
+   10H. CINEMA SPATIAL FILTER FLYOUT & ACTIVE FILTER CHIPS
+   ========================================================================== */
+
+.vision-filter-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.24s ease;
+}
+
+.vision-filter-backdrop.open {
+  opacity: 1;
+}
+
+.vision-filter-flyout {
+  position: fixed !important;
+  top: calc(74px + env(safe-area-inset-top, 0px)) !important;
+  left: max(24px, env(safe-area-inset-left, 24px)) !important;
+  width: min(560px, 94vw);
+  max-height: min(720px, calc(100vh - 100px));
+  background: rgba(18, 18, 26, 0.96) !important;
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 24px;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.9), inset 0 1px 1.5px rgba(255, 255, 255, 0.3) !important;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: ps5FlyoutSmoothIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  transform-origin: top left;
+}
+
+@media (max-width: 640px) {
+  .vision-filter-flyout {
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    top: calc(108px + env(safe-area-inset-top, 0px)) !important;
+    max-height: calc(100dvh - 120px - env(safe-area-inset-bottom, 16px) - 64px) !important;
+  }
+}
+
+.vision-filter-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vision-filter-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vision-filter-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.vision-filter-sub {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.vision-filter-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vision-filter-reset-link {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.vision-filter-reset-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+}
+
+.vision-filter-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.vision-filter-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.08);
+}
+
+.vision-filter-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.vision-filter-group-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 8px;
+}
+
+.vision-filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-pill {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.filter-pill:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.filter-pill.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(99, 102, 241, 0.95)) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+}
+
+.vision-filter-footer {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 16, 0.7);
+}
+
+.vision-filter-matched-count {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.vision-filter-footer-btns {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Active Chips Bar */
+.active-filter-chips-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+}
+
+.active-filter-label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 4px;
+}
+
+.active-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.2);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93c5fa;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.active-filter-chip:hover {
+  background: rgba(59, 130, 246, 0.35);
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #ffffff;
+}
+
+.active-filter-chip.clear-all {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.active-filter-chip.clear-all:hover {
+  background: rgba(239, 68, 68, 0.28);
+  color: #ffffff;
 }
 
 

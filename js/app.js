@@ -11,6 +11,13 @@ class AppleCinemaApp {
     this.activeGenreFilter = "Tất cả";
     this.visibleGridLimit = 24;
     this.exploreGridLimit = 24;
+    this.filters = {
+      type: "all",
+      genre: "all",
+      country: "all",
+      year: "all",
+      sort: "latest"
+    };
     this.heroMovies = [];
     this.heroIndex = 0;
     this.heroTimer = null;
@@ -1199,16 +1206,20 @@ class AppleCinemaApp {
                 <i class="fas fa-compass" style="margin-right: 8px;"></i>Khám Phá Toàn Bộ Kho Phim (${allExploreMovies.length}+ Phim)
               </h2>
             </div>
+            ${this.getActiveFiltersCount() > 0 ? this.renderActiveFilterChipsHTML() : ""}
             <div class="vision-cards-grid-4" id="exploreAllMoviesGrid">
               ${exploreGridList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
             </div>
             <div class="explore-load-more-wrap">
               ${remainingCount > 0 ? `
-                <button class="explore-load-more-btn" onclick="app.loadMoreExplore()">
-                  <i class="fas fa-plus"></i> Hiển Thị Thêm 24 Phim (<span id="exploreRemainingCount">${remainingCount} phim còn lại</span>)
+                <button class="explore-load-more-btn" onclick="app.loadMoreExplore(100)">
+                  <i class="fas fa-plus"></i> Hiển Thị Thêm 100 Phim (<span id="exploreRemainingCount">${remainingCount} phim còn lại</span>)
+                </button>
+                <button class="explore-load-all-btn" onclick="app.loadAllExplore()">
+                  <i class="fas fa-sparkles"></i> 🌟 Hiển Thị Tất Cả Luôn (${allExploreMovies.length} Phim)
                 </button>
               ` : `
-                <div style="padding: 16px; color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+                <div style="padding: 16px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; font-weight: 600; text-align: center; width: 100%;">
                   🎉 Đã hiển thị toàn bộ ${allExploreMovies.length} phim trong kho Ngwyren Cinema!
                 </div>
               `}
@@ -1262,6 +1273,7 @@ class AppleCinemaApp {
                  </div>`
               : ""
           }
+          ${this.getActiveFiltersCount() > 0 ? this.renderActiveFilterChipsHTML() : ""}
           ${
             visibleList.length > 0
               ? `<div class="vision-cards-grid-4">${visibleList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>
@@ -1282,23 +1294,32 @@ class AppleCinemaApp {
     if (this.visibleGridLimit >= totalCount) return "";
     const remaining = totalCount - this.visibleGridLimit;
     return `
-      <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 24px;">
-        <button class="btn-primary-play" onclick="app.loadMoreMovies(120)">
-          <i class="fas fa-plus"></i> Xem Thêm Phim (+${Math.min(120, remaining)} phim)
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 24px;">
+        <button class="btn-primary-play" onclick="app.loadMoreMovies(100)">
+          <i class="fas fa-plus"></i> Hiển Thị Thêm 100 Phim (+${Math.min(100, remaining)} phim)
         </button>
-        <button class="btn-glass-secondary" onclick="app.loadMoreMovies(${totalCount})">
-          Hiển Thị Tất Cả (${totalCount} phim)
+        <button class="explore-load-all-btn" onclick="app.loadAllCategoryMovies(${totalCount})">
+          <i class="fas fa-sparkles"></i> 🌟 Hiển Thị Tất Cả Luôn (${totalCount} Phim)
+        </button>
+        <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+          <i class="fas fa-arrow-up"></i> Lên Đầu Trang
         </button>
       </div>
     `;
   }
 
-  loadMoreMovies(step = 120) {
+  loadMoreMovies(step = 100) {
     this.visibleGridLimit += step;
     this.renderMainView();
   }
 
-  loadMoreExplore(step = 24) {
+  loadAllCategoryMovies(totalCount) {
+    this.visibleGridLimit = totalCount || 99999;
+    this.renderMainView();
+    this.showNotification(`Đã tải và hiển thị toàn bộ ${totalCount || ""} phim!`, "success");
+  }
+
+  loadMoreExplore(step = 100) {
     this.exploreGridLimit = (this.exploreGridLimit || 24) + step;
     const grid = document.getElementById("exploreAllMoviesGrid");
     const countLabel = document.getElementById("exploreRemainingCount");
@@ -1311,12 +1332,10 @@ class AppleCinemaApp {
         .join("");
     }
     const remaining = Math.max(0, allMovies.length - this.exploreGridLimit);
-    if (countLabel) {
-      if (remaining > 0) {
-        countLabel.textContent = `${remaining} phim còn lại`;
-      } else if (loadMoreWrap) {
+    if (remaining <= 0) {
+      if (loadMoreWrap) {
         loadMoreWrap.innerHTML = `
-          <div style="padding: 16px; color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+          <div style="padding: 16px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; font-weight: 600; text-align: center; width: 100%;">
             🎉 Đã hiển thị toàn bộ ${allMovies.length} phim trong kho Ngwyren Cinema!
           </div>
           <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
@@ -1324,7 +1343,32 @@ class AppleCinemaApp {
           </button>
         `;
       }
+    } else if (countLabel) {
+      countLabel.textContent = `${remaining} phim còn lại`;
     }
+  }
+
+  loadAllExplore() {
+    const allMovies = this.service.movies;
+    this.exploreGridLimit = allMovies.length;
+    const grid = document.getElementById("exploreAllMoviesGrid");
+    const loadMoreWrap = document.querySelector(".explore-load-more-wrap");
+    if (grid) {
+      grid.innerHTML = allMovies
+        .map((m, idx) => this.renderVisionFeatureCardHTML(m, idx))
+        .join("");
+    }
+    if (loadMoreWrap) {
+      loadMoreWrap.innerHTML = `
+        <div style="padding: 16px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; font-weight: 600; text-align: center; width: 100%;">
+          🎉 Đã hiển thị toàn bộ ${allMovies.length} phim trong kho Ngwyren Cinema!
+        </div>
+        <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+          <i class="fas fa-arrow-up"></i> Lên Đầu Trang
+        </button>
+      `;
+    }
+    this.showNotification(`Đã tải và hiển thị toàn bộ ${allMovies.length} phim trong kho!`, "success");
   }
 
   updateExploreCountsAndGrid() {
@@ -1381,6 +1425,16 @@ class AppleCinemaApp {
         base = base.filter((m) => m.type === "single");
         title = "Phim Lẻ Chiếu Rạp";
         subtitle = "Bom tấn điện ảnh Full HD";
+        break;
+      case "chieu-rap":
+        base = base.filter((m) => (m.sectionTags && m.sectionTags.includes("chieu-rap")) || (m.genres && m.genres.some(g => (g || "").toLowerCase().includes("chiếu rạp"))));
+        title = "Phim Chiếu Rạp Bom Tấn";
+        subtitle = "Các siêu phẩm điện ảnh Việt Nam & quốc tế từng gây sốt phòng vé";
+        break;
+      case "filter-results":
+        base = this.applyMovieFilters(this.service.movies);
+        title = `Kết Quả Lọc Phim (${base.length} Phim)`;
+        subtitle = "Danh sách phim được tinh lọc theo các tiêu chí chuyên sâu của bạn";
         break;
       case "anime":
         base = this.getMoviesByTag("anime");
@@ -1466,16 +1520,25 @@ class AppleCinemaApp {
       title = `Thể loại: ${this.activeGenreFilter}`;
     }
 
+    // Tinh lọc chuyên sâu nếu có bộ lọc bổ sung
+    if (this.currentNav !== "filter-results" && this.getActiveFiltersCount() > 0) {
+      base = this.applyMovieFilters(base);
+      title = `${title} (Đã Lọc: ${base.length} Phim)`;
+    }
+
     return { title, subtitle, list: base };
   }
 
   resetAllFilters() {
     this.currentSegment = "all";
     this.activeGenreFilter = "Tất cả";
+    this.filters = { type: "all", genre: "all", country: "all", year: "all", sort: "latest" };
     this.visibleGridLimit = 24;
     this.exploreGridLimit = 24;
     this.customFilterTitle = null;
     this.customFilterValue = null;
+    this.closeFilterPanel();
+    this.updateFilterButtonBadge();
     document.querySelectorAll(".segment-btn").forEach((b) => {
       b.classList.toggle("active", b.dataset.segment === "all");
     });
@@ -1834,14 +1897,16 @@ class AppleCinemaApp {
 
   renderVisionTrailerCardHTML(movie, idx = 0) {
     const staggerIdx = Math.min(typeof idx === "number" ? idx : 0, 7);
+    const trailerImg = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
+    const trailerFallback = this.getMoviePoster(movie) || trailerImg;
     return `
       <article class="vision-trailer-card"
                style="--card-stagger: ${staggerIdx};"
                onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
-        <img src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
-             onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/16ea0557ca40cd54a3d25c6750a65c0b.jpg'" />
+        <img src="${trailerImg}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
+             onerror="if(this.src!=='${trailerFallback}'){this.src='${trailerFallback}';}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22 viewBox=%220 0 640 360%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%2314141c%22/><circle cx=%22320%22 cy=%22180%22 r=%2244%22 fill=%22%23252535%22/><path d=%22M310 162 L335 180 L310 198 Z%22 fill=%22%23ffffff%22/></svg>';}" />
         <div class="vision-trailer-overlay">
           <div class="vision-trailer-title">${movie.title}</div>
           <button class="vision-trailer-play" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" aria-label="Phát">
@@ -1889,14 +1954,16 @@ class AppleCinemaApp {
       : `loading="lazy" fetchpriority="low" decoding="async"`;
     const primaryGenre = (movie.genres && movie.genres[0]) || (movie.type === "series" ? "Phim Bộ" : "Điện Ảnh");
     const staggerIdx = Math.min(index, 7);
+    const cardImg = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
+    const cardFallback = this.getMoviePoster(movie) || cardImg;
     return `
       <article class="vision-feature-card"
                style="--card-stagger: ${staggerIdx};"
                onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
-        <img class="vision-feature-img" src="${this.getMoviePoster(movie)}" alt="${movie.title}" ${loadAttr}
-             onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg'" />
+        <img class="vision-feature-img" src="${cardImg}" alt="${movie.title}" ${loadAttr}
+             onerror="if(this.src!=='${cardFallback}'){this.src='${cardFallback}';}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22 viewBox=%220 0 640 360%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%2314141c%22/><circle cx=%22320%22 cy=%22180%22 r=%2244%22 fill=%22%23252535%22/><path d=%22M310 162 L335 180 L310 198 Z%22 fill=%22%23ffffff%22/></svg>';}" />
         <div class="vision-feature-shade"></div>
 
         <div class="vision-feature-bottom">
@@ -2045,14 +2112,16 @@ class AppleCinemaApp {
       ? (movie.episodeCurrent || "Tập mới")
       : (this.getMovieLanguageLabel(movie).split("+")[0].trim() || "Full");
     const staggerIdx = Math.min(typeof index === "number" ? index : 0, 11);
+    const posterImg = this.getMoviePoster(movie) || this.getMovieBackdrop(movie);
+    const posterFallback = this.getMovieBackdrop(movie) || posterImg;
 
     return `
       <article class="movie-card ${rankNum ? "ranked-card" : ""}"
                style="--card-stagger: ${staggerIdx};"
                onclick="app.openMovieModal('${movie.slug}', true)">
         <div class="movie-poster-wrap">
-          <img src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg'" />
+          <img src="${posterImg}" alt="${movie.title}" loading="lazy" decoding="async"
+               onerror="if(this.src!=='${posterFallback}'){this.src='${posterFallback}';}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22450%22 viewBox=%220 0 300 450%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%2314141c%22/><circle cx=%22150%22 cy=%22225%22 r=%2240%22 fill=%22%23252535%22/><path d=%22M140 210 L165 225 L140 240 Z%22 fill=%22%23ffffff%22/></svg>';}" />
           <div class="poster-badges-top">
             ${qualityBadge}
             <span class="ribbon-ep">${epText}</span>
@@ -2312,6 +2381,10 @@ class AppleCinemaApp {
   getMovieBackdrop(movie) {
     if (!movie) return "";
     let b = movie.backdrop || "";
+    if (movie.slug === "nhung-ke-dot-nhap" || (b && b.includes("6fef435967db666de4292991d5362450.jpg"))) {
+      b = "https://phimimg.com/upload/vod/20260128-1/ad88fd9f6544ed2266385be6051ef4e2.jpg";
+      movie.backdrop = b;
+    }
     if (b.includes("20240807-1/f4b1d683a48e8e7428863f64c1ad6161.jpg") || b.includes("img-2edeaab3f6c4fad2efa3f86568c7e77d478f927de1bd1d9f362b806bde49d7c9")) {
       b = "https://phimimg.com/upload/vod/20250827-1/eddefbf4813488f89a6f0c766f69f82f.jpg";
       movie.backdrop = b;
@@ -2350,6 +2423,11 @@ class AppleCinemaApp {
   getMoviePoster(movie) {
     if (!movie) return "";
     let p = movie.poster || "";
+    if (movie.slug === "nhung-ke-dot-nhap" || (p && p.includes("6fef435967db666de4292991d5362450.jpg"))) {
+      p = "https://phimimg.com/upload/vod/20260128-1/ad88fd9f6544ed2266385be6051ef4e2.jpg";
+      movie.poster = p;
+      movie.backdrop = p;
+    }
     if (p.includes("20240807-1/9b47e2fa1c0c660e527d216f4ad47f87.jpg") || p.includes("img-aec7d896061b5c2d9a890e9529d1b3d9af793c89fb395b82f9cb86d0631697da")) {
       p = "https://phimimg.com/upload/vod/20250827-1/aabb76a70d8afd21ddf2be37381c7587.jpg";
       movie.poster = p;
@@ -5887,6 +5965,364 @@ class AppleCinemaApp {
         avatarEl.innerHTML = `<div class="profile-avatar-letter" style="background: rgba(255, 255, 255, 0.16); color: #ffffff;">G</div>`;
       }
     }
+  }
+
+  /* ==========================================================================
+     CINEMA ADVANCED MOVIE FILTER ENGINE & SPATIAL FLYOUT
+     ========================================================================== */
+  getActiveFiltersCount() {
+    let count = 0;
+    if (this.filters.type !== "all") count++;
+    if (this.filters.genre !== "all") count++;
+    if (this.filters.country !== "all") count++;
+    if (this.filters.year !== "all") count++;
+    if (this.filters.sort !== "latest") count++;
+    return count;
+  }
+
+  updateFilterButtonBadge() {
+    const badge = document.getElementById("visionFilterBadge");
+    const btn = document.getElementById("visionFilterBtn");
+    const count = this.getActiveFiltersCount();
+    if (badge) {
+      if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = "inline-flex";
+      } else {
+        badge.style.display = "none";
+      }
+    }
+    if (btn) {
+      btn.classList.toggle("active", count > 0);
+    }
+  }
+
+  toggleFilterPanel(e) {
+    if (e) e.stopPropagation();
+    const flyout = document.getElementById("visionFilterFlyout");
+    if (!flyout) return;
+    if (flyout.style.display === "none" || !flyout.style.display) {
+      this.openFilterPanel();
+    } else {
+      this.closeFilterPanel();
+    }
+  }
+
+  openFilterPanel() {
+    const flyout = document.getElementById("visionFilterFlyout");
+    const backdrop = document.getElementById("visionFilterBackdrop");
+    if (!flyout) return;
+
+    this.closeNotificationCenter();
+    flyout.innerHTML = this.renderFilterFlyoutHTML();
+    flyout.style.display = "flex";
+    if (backdrop) {
+      backdrop.style.display = "block";
+      requestAnimationFrame(() => backdrop.classList.add("open"));
+    }
+  }
+
+  closeFilterPanel() {
+    const flyout = document.getElementById("visionFilterFlyout");
+    const backdrop = document.getElementById("visionFilterBackdrop");
+    if (flyout) flyout.style.display = "none";
+    if (backdrop) {
+      backdrop.classList.remove("open");
+      backdrop.style.display = "none";
+    }
+  }
+
+  setFilterOption(group, val) {
+    this.filters[group] = val;
+    this.updateFilterButtonBadge();
+    const flyout = document.getElementById("visionFilterFlyout");
+    if (flyout && flyout.style.display !== "none") {
+      flyout.innerHTML = this.renderFilterFlyoutHTML();
+    }
+  }
+
+  resetFilters() {
+    this.filters = { type: "all", genre: "all", country: "all", year: "all", sort: "latest" };
+    this.updateFilterButtonBadge();
+    const flyout = document.getElementById("visionFilterFlyout");
+    if (flyout && flyout.style.display !== "none") {
+      flyout.innerHTML = this.renderFilterFlyoutHTML();
+    }
+    if (this.currentNav === "filter-results") {
+      this.navigateTo("kham-pha");
+    } else {
+      this.renderMainView();
+    }
+  }
+
+  removeFilterOption(group) {
+    if (group === "sort") {
+      this.filters.sort = "latest";
+    } else {
+      this.filters[group] = "all";
+    }
+    this.updateFilterButtonBadge();
+    if (this.getActiveFiltersCount() === 0 && this.currentNav === "filter-results") {
+      this.navigateTo("kham-pha");
+    } else {
+      this.renderMainView();
+    }
+  }
+
+  applyFilterPanel() {
+    this.closeFilterPanel();
+    this.updateFilterButtonBadge();
+    this.visibleGridLimit = 100;
+    this.currentNav = "filter-results";
+    this.renderMainView();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const count = this.applyMovieFilters(this.service.movies).length;
+    this.showNotification(`Đã tìm thấy ${count} phim phù hợp với bộ lọc!`, "success");
+  }
+
+  applyMovieFilters(list) {
+    let result = [...list];
+    const { type, genre, country, year, sort } = this.filters;
+
+    if (type !== "all") {
+      if (type === "chieu-rap") {
+        result = result.filter(m => (m.sectionTags && m.sectionTags.includes("chieu-rap")) || (m.genres && m.genres.some(g => (g || "").toLowerCase().includes("chiếu rạp"))));
+      } else if (type === "single") {
+        result = result.filter(m => m.type === "single");
+      } else if (type === "series") {
+        result = result.filter(m => m.type === "series");
+      } else if (type === "anime") {
+        result = result.filter(m => (m.sectionTags && m.sectionTags.includes("anime")) || (m.genres && m.genres.some(g => /anime|hoạt hình/i.test(g || ""))));
+      } else if (type === "vietsub") {
+        result = result.filter(m => (m.sectionTags && m.sectionTags.includes("vietsub")) || /vietsub/i.test(m.language || ""));
+      }
+    }
+
+    if (genre !== "all") {
+      const gNorm = (genre || "").toLowerCase();
+      result = result.filter(m => Array.isArray(m.genres) && m.genres.some(g => (g || "").toLowerCase().includes(gNorm)));
+    }
+
+    if (country !== "all") {
+      if (country === "viet-nam") {
+        result = result.filter(m => m.countrySlug === "viet-nam" || /việt\s*nam/i.test(m.country || "") || (m.sectionTags && m.sectionTags.includes("vietnam")));
+      } else if (country === "han-quoc") {
+        result = result.filter(m => m.countrySlug === "han-quoc" || /hàn\s*quốc/i.test(m.country || ""));
+      } else if (country === "au-my") {
+        result = result.filter(m => m.countrySlug === "au-my" || /âu\s*mỹ/i.test(m.country || "") || /mỹ/i.test(m.country || ""));
+      } else if (country === "trung-quoc") {
+        result = result.filter(m => m.countrySlug === "trung-quoc" || /trung\s*quốc/i.test(m.country || ""));
+      } else if (country === "nhat-ban") {
+        result = result.filter(m => m.countrySlug === "nhat-ban" || /nhật\s*bản/i.test(m.country || ""));
+      } else if (country === "thai-lan") {
+        result = result.filter(m => m.countrySlug === "thai-lan" || /thái\s*lan/i.test(m.country || ""));
+      } else if (country === "an-do") {
+        result = result.filter(m => m.countrySlug === "an-do" || /ấn\s*độ/i.test(m.country || ""));
+      }
+    }
+
+    if (year !== "all") {
+      if (year === "2010s") {
+        result = result.filter(m => m.year >= 2010 && m.year <= 2019);
+      } else if (year === "classic") {
+        result = result.filter(m => m.year < 2010);
+      } else {
+        const yNum = parseInt(year, 10);
+        if (!isNaN(yNum)) {
+          result = result.filter(m => m.year === yNum);
+        }
+      }
+    }
+
+    if (sort === "rating") {
+      result.sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0));
+    } else if (sort === "matches") {
+      result.sort((a, b) => (Number(b.matchScore) || 0) - (Number(a.matchScore) || 0));
+    } else if (sort === "year-desc") {
+      result.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
+    }
+
+    return result;
+  }
+
+  renderFilterFlyoutHTML() {
+    const matchedCount = this.applyMovieFilters(this.service.movies).length;
+    const { type, genre, country, year, sort } = this.filters;
+
+    const typeList = [
+      { id: "all", label: "Tất Cả" },
+      { id: "chieu-rap", label: "🎟️ Chiếu Rạp" },
+      { id: "single", label: "🎬 Phim Lẻ" },
+      { id: "series", label: "📺 Phim Bộ" },
+      { id: "anime", label: "⚡ Anime / Hoạt Hình" },
+      { id: "vietsub", label: "🔥 Vietsub Hot" }
+    ];
+
+    const countryList = [
+      { id: "all", label: "Tất Cả" },
+      { id: "viet-nam", label: "🇻🇳 Việt Nam" },
+      { id: "au-my", label: "🇺🇸 Âu Mỹ" },
+      { id: "han-quoc", label: "🇰🇷 Hàn Quốc" },
+      { id: "trung-quoc", label: "🇨🇳 Trung Quốc" },
+      { id: "nhat-ban", label: "🇯🇵 Nhật Bản" },
+      { id: "thai-lan", label: "🇹🇭 Thái Lan" },
+      { id: "an-do", label: "🇮🇳 Ấn Độ" }
+    ];
+
+    const genreList = [
+      "all", "Hành Động", "Hài Hước", "Tình Cảm", "Kinh Dị", "Viễn Tưởng", "Tâm Lý", "Cổ Trang", "Võ Thuật", "Bí Ẩn", "Phiêu Lưu", "Chiếu Rạp"
+    ];
+
+    const yearList = [
+      { id: "all", label: "Tất Cả" },
+      { id: "2026", label: "2026" },
+      { id: "2025", label: "2025" },
+      { id: "2024", label: "2024" },
+      { id: "2023", label: "2023" },
+      { id: "2022", label: "2022" },
+      { id: "2021", label: "2021" },
+      { id: "2010s", label: "2010 - 2019" },
+      { id: "classic", label: "Kinh Điển (< 2010)" }
+    ];
+
+    const sortList = [
+      { id: "latest", label: "Mới Nhất" },
+      { id: "rating", label: "⭐ Điểm Cao Nhất" },
+      { id: "matches", label: "🎯 Phù Hợp Nhất" },
+      { id: "year-desc", label: "📅 Năm Giảm Dần" }
+    ];
+
+    return `
+      <div class="vision-filter-header">
+        <div class="vision-filter-header-left">
+          <i class="fas fa-sliders" style="color: #60a5fa; font-size: 1.15rem;"></i>
+          <div>
+            <h3 class="vision-filter-title">Bộ Lọc Phim Chuyên Sâu</h3>
+            <p class="vision-filter-sub">Lọc theo định dạng, thể loại, quốc gia & năm phát hành</p>
+          </div>
+        </div>
+        <div class="vision-filter-header-actions">
+          <button class="vision-filter-reset-link" onclick="app.resetFilters()" title="Đặt lại tất cả bộ lọc">
+            <i class="fas fa-rotate-left"></i> Đặt Lại
+          </button>
+          <button class="vision-filter-close-btn" onclick="app.closeFilterPanel()" title="Đóng">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="vision-filter-body">
+        <!-- Định Dạng -->
+        <div class="vision-filter-group">
+          <div class="vision-filter-group-label">Định Dạng Phim</div>
+          <div class="vision-filter-pills">
+            ${typeList.map(t => `<button class="filter-pill ${type === t.id ? 'active' : ''}" onclick="app.setFilterOption('type', '${t.id}')">${t.label}</button>`).join("")}
+          </div>
+        </div>
+
+        <!-- Quốc Gia -->
+        <div class="vision-filter-group">
+          <div class="vision-filter-group-label">Quốc Gia Sản Xuất</div>
+          <div class="vision-filter-pills">
+            ${countryList.map(c => `<button class="filter-pill ${country === c.id ? 'active' : ''}" onclick="app.setFilterOption('country', '${c.id}')">${c.label}</button>`).join("")}
+          </div>
+        </div>
+
+        <!-- Thể Loại -->
+        <div class="vision-filter-group">
+          <div class="vision-filter-group-label">Thể Loại Phim</div>
+          <div class="vision-filter-pills">
+            ${genreList.map(g => `<button class="filter-pill ${genre.toLowerCase() === g.toLowerCase() ? 'active' : ''}" onclick="app.setFilterOption('genre', '${g}')">${g === 'all' ? 'Tất Cả' : g}</button>`).join("")}
+          </div>
+        </div>
+
+        <!-- Năm Phát Hành -->
+        <div class="vision-filter-group">
+          <div class="vision-filter-group-label">Năm Phát Hành</div>
+          <div class="vision-filter-pills">
+            ${yearList.map(y => `<button class="filter-pill ${year === y.id ? 'active' : ''}" onclick="app.setFilterOption('year', '${y.id}')">${y.label}</button>`).join("")}
+          </div>
+        </div>
+
+        <!-- Sắp Xếp -->
+        <div class="vision-filter-group">
+          <div class="vision-filter-group-label">Sắp Xếp Theo</div>
+          <div class="vision-filter-pills">
+            ${sortList.map(s => `<button class="filter-pill ${sort === s.id ? 'active' : ''}" onclick="app.setFilterOption('sort', '${s.id}')">${s.label}</button>`).join("")}
+          </div>
+        </div>
+      </div>
+
+      <div class="vision-filter-footer">
+        <div class="vision-filter-matched-count">
+          Tìm thấy <strong style="color: #60a5fa;" id="filterLiveCount">${matchedCount}</strong> phim phù hợp
+        </div>
+        <div class="vision-filter-footer-btns">
+          <button class="vision-btn-outline" onclick="app.closeFilterPanel()">Đóng</button>
+          <button class="explore-load-all-btn" onclick="app.applyFilterPanel()">
+            <i class="fas fa-check"></i> Xem Kết Quả (${matchedCount})
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  renderActiveFilterChipsHTML() {
+    const chips = [];
+    const { type, genre, country, year, sort } = this.filters;
+
+    const typeNames = {
+      "chieu-rap": "🎟️ Chiếu Rạp",
+      "single": "🎬 Phim Lẻ",
+      "series": "📺 Phim Bộ",
+      "anime": "⚡ Anime / Hoạt Hình",
+      "vietsub": "🔥 Vietsub Hot"
+    };
+
+    const countryNames = {
+      "viet-nam": "🇻🇳 Việt Nam",
+      "au-my": "🇺🇸 Âu Mỹ",
+      "han-quoc": "🇰🇷 Hàn Quốc",
+      "trung-quoc": "🇨🇳 Trung Quốc",
+      "nhat-ban": "🇯🇵 Nhật Bản",
+      "thai-lan": "🇹🇭 Thái Lan",
+      "an-do": "🇮🇳 Ấn Độ"
+    };
+
+    const sortNames = {
+      "rating": "⭐ Điểm Cao Nhất",
+      "matches": "🎯 Phù Hợp Nhất",
+      "year-desc": "📅 Năm Giảm Dần"
+    };
+
+    if (type !== "all" && typeNames[type]) {
+      chips.push(`<button class="active-filter-chip" onclick="app.removeFilterOption('type')">${typeNames[type]} <i class="fas fa-times"></i></button>`);
+    }
+    if (country !== "all" && countryNames[country]) {
+      chips.push(`<button class="active-filter-chip" onclick="app.removeFilterOption('country')">${countryNames[country]} <i class="fas fa-times"></i></button>`);
+    }
+    if (genre !== "all") {
+      chips.push(`<button class="active-filter-chip" onclick="app.removeFilterOption('genre')">Thể Loại: ${genre} <i class="fas fa-times"></i></button>`);
+    }
+    if (year !== "all") {
+      const yLabel = year === "2010s" ? "2010-2019" : (year === "classic" ? "Kinh Điển (<2010)" : year);
+      chips.push(`<button class="active-filter-chip" onclick="app.removeFilterOption('year')">Năm: ${yLabel} <i class="fas fa-times"></i></button>`);
+    }
+    if (sort !== "latest" && sortNames[sort]) {
+      chips.push(`<button class="active-filter-chip" onclick="app.removeFilterOption('sort')">${sortNames[sort]} <i class="fas fa-times"></i></button>`);
+    }
+
+    if (chips.length === 0) return "";
+
+    return `
+      <div class="active-filter-chips-bar">
+        <span class="active-filter-label"><i class="fas fa-sliders"></i> Bộ Lọc:</span>
+        ${chips.join("")}
+        <button class="active-filter-chip clear-all" onclick="app.resetFilters()">
+          <i class="fas fa-rotate-left"></i> Xóa Tất Cả Lọc
+        </button>
+      </div>
+    `;
   }
 
   /* ==========================================================================

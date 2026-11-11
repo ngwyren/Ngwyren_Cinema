@@ -24,6 +24,1708 @@ const PHIMMOI_CONFIG = {
  */
 const PHIMMOI_SEED_MOVIES = [
   {
+      "id": "mai-2024",
+      "slug": "mai-2024",
+      "crawlSlug": "mai-2024",
+      "title": "Mai",
+      "originTitle": "Mai",
+      "poster": "https://phimimg.com/upload/vod/20240423-1/7b281d88350fd638d84dc9abb5b6b0a6.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240423-1/afb71c134b82ad08f21b8d9127c70fc6.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "131 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Tình Cảm",
+          "Chính Kịch"
+      ],
+      "director": "Trấn Thành",
+      "cast": [
+          "Phương Anh Đào",
+          "Tuấn Trần",
+          "Trấn Thành",
+          "Hồng Đào",
+          "Uyển Ân",
+          "Ngọc Giàu"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=EX6clvId19s",
+      "synopsis": "MAI xoay quanh câu chuyện về cuộc đời của một người phụ nữ cùng tên với bộ phim. Trên First-look Poster, Phương Anh Đào tạo ấn tượng mạnh với cái nhìn tĩnh lặng, xuyên thấu, đặc biệt, trên bờ môi nữ diễn viên là hình ảnh cô đang nằm nghiêng trên mặt nước. Được phủ một màn sương mờ ảo, poster đậm chất nghệ thuật của Mai...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s3.phim1280.tv/20240517/kHTjz9g4/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "lat-mat-6-tam-ve-dinh-menh",
+      "slug": "lat-mat-6-tam-ve-dinh-menh",
+      "crawlSlug": "lat-mat-6-tam-ve-dinh-menh",
+      "title": "Lật Mặt 6: Tấm Vé Định Mệnh",
+      "originTitle": "Face Off 6: The Ticket Of Destiny",
+      "poster": "https://phimimg.com/upload/vod/20240919-1/5c666eeb1ce5b80a0140906109da9d2a.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240919-1/04dc2a0a9dbc3efbb6289dec6349de9e.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "132 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Hành Động",
+          "Chính Kịch",
+          "Tâm Lý"
+      ],
+      "director": "Lý Hải",
+      "cast": [
+          "Trung Dũng",
+          "Huy Khánh",
+          "Quốc Cường",
+          "Tiết Cương",
+          "Huỳnh Thi",
+          "Thanh Thức"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=L-XhraxUsAs",
+      "synopsis": "Một nhóm bạn thân lâu năm bất ngờ nhận được cơ hội đổi đời &nbsp;khi biết tấm vé của cả nhóm trúng giải độc đắc 136.8 tỷ. Đột nhiên An, người nắm giữ tấm vé bất ngờ gặp tai nạn không qua khỏi. Đứng trước món tiền trúng số đáng mơ ước lẽ ra sẽ dễ dàng có được trong tầm tay, nhóm bạn bước chân vào hành trình đi tìm tờ vé...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s4.phim1280.tv/20240918/HifizysW/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "nha-ba-nu",
+      "slug": "nha-ba-nu",
+      "crawlSlug": "nha-ba-nu",
+      "title": "Nhà Bà Nữ",
+      "originTitle": "The House Of No Man",
+      "poster": "https://phimimg.com/upload/vod/20230922-1/8e7ee122a3ca993f858a005ab9b8211d.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20230922-1/d2cfd0e655a35fd296702ab53226061e.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "103 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Chính Kịch",
+          "Hài Hước"
+      ],
+      "director": "Trấn Thành",
+      "cast": [
+          "Uyen An",
+          "Song Luân",
+          "Lê Giang",
+          "Khả Như",
+          "Trấn Thành",
+          "Ngọc Giàu"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=IkaP0KJWTsQ",
+      "synopsis": "<span style=\"font-family: \">Câu chuyện xoay quanh gia đình bà Nữ gồm ba thế hệ sống cùng nhau trong một ngôi nhà. Bà Nữ một tay cáng đáng mọi sự, nổi tiếng với quán bánh canh cua và cũng khét tiếng với việc kiểm soát cuộc sống của tất cả mọi người, từ con gái đến con rể. Mọi chuyện diễn ra bình thường cho đến khi cô co...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s2.phim1280.tv/20230923/z3jgK5cd/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "bo-gia-2021",
+      "slug": "bo-gia-2021",
+      "crawlSlug": "bo-gia-2021",
+      "title": "Bố Già",
+      "originTitle": "Dad, I'm Sorry",
+      "poster": "https://phimimg.com/upload/vod/20250119-1/78ea9e50373b3ac2e51a8fa6b147984f.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250119-1/f42aefe12ee48db50ee7c465efb85798.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "128 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2021,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Hài Hước",
+          "Gia Đình",
+          "Chính Kịch"
+      ],
+      "director": "Trấn Thành, Vũ Ngọc Đãng",
+      "cast": [
+          "Trấn Thành",
+          "Tuấn Trần",
+          "Ngân Chi",
+          "Ngọc Giàu",
+          "Lê Giang"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=jluSu8Rw6YE",
+      "synopsis": "Câu chuyện về Ba Sang - con thứ hai trong 4 anh em ồn ào: Giàu, Sang, Phú, Quý. Ba Sang là một người ga lăng, “quá” tốt bụng và luôn hy sinh vì người khác dù họ có muốn hay không. Quân - Ba Sang’s son là một Youtuber trẻ hiện đại....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s4.phim1280.tv/20250119/FdJUVZy5/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "mat-biec",
+      "slug": "mat-biec",
+      "crawlSlug": "mat-biec",
+      "title": "Mắt Biếc",
+      "originTitle": "Dreamy Eyes",
+      "poster": "https://phimimg.com/upload/vod/20240922-1/9d181d0abdf6531f1792bb0eb85e3042.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240922-1/01e44fb6676ad954648b7e6104b63767.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "117 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2019,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Chính Kịch",
+          "Tình Cảm"
+      ],
+      "director": "Victor Vũ",
+      "cast": [
+          "Trúc Anh",
+          "Trần Nghĩa",
+          "Đỗ Khánh Vân",
+          "Trần Phong",
+          "Nguyễn Lâm Thảo Tâm"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=ITlQ0oU7tDA",
+      "synopsis": "Đạo diễn Victor Vũ trở lại với một tác phẩm chuyển thể từ truyện ngắn cùng tên nổi tiếng của nhà văn Nguyễn Nhật Ánh: Mắt Biếc. Phim kể về chuyện tình đơn phương của chàng thanh niên Ngạn dành cho cô bạn từ thuở nhỏ Hà Lan....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s4.phim1280.tv/20240922/IHLn2YwS/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "tiec-trang-mau",
+      "slug": "tiec-trang-mau",
+      "crawlSlug": "tiec-trang-mau",
+      "title": "Tiệc Trăng Máu",
+      "originTitle": "Blood Moon Party",
+      "poster": "https://phimimg.com/upload/vod/20260123-1/978e6060f811ed9903c2c1e2f9b6f4f0.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20260123-1/a99ede8e342b97387a282cffd66746ae.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "118 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2020,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Hài Hước",
+          "Chính Kịch",
+          "Tâm Lý"
+      ],
+      "director": "Nguyễn Quang Dũng",
+      "cast": [
+          "Thái Hòa",
+          "Hồng Ánh",
+          "Hứa Vĩ Văn",
+          "Thu Trang",
+          "Kiều Minh Tuấn",
+          "Kaity Nguyễn"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=PqNGHKLyPD0",
+      "synopsis": "Trong buổi họp mặt của nhóm bạn thân, một thành viên bất ngờ đề xuất trò chơi chia sẻ điện thoại nhằm tăng tinh thần “đoàn kết”. Từ đó, những góc khuất của từng người dần hé lộ và khiến cho mối quan hệ vốn khắng khít của họ bắt đầu lay chuyển....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20260123/XNNQdd7w/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "hai-phuong",
+      "slug": "hai-phuong",
+      "crawlSlug": "hai-phuong",
+      "title": "Hai Phượng",
+      "originTitle": "Hai Phượng",
+      "poster": "https://phimimg.com/upload/vod/20230917-1/7e4c2ad600ac6d37b8397c39744003f1.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20230917-1/510f39527bcc07538cc1a163128c40a5.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "98 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2019,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Quốc Gia Khác",
+      "countrySlug": "quoc-gia-khac",
+      "genres": [
+          "Hành Động",
+          "Chính Kịch",
+          "Tâm Lý"
+      ],
+      "director": "Le Van Kiet",
+      "cast": [
+          "Veronica Ngo",
+          "Phan Thanh Nhien",
+          "Phạm Anh Khoa",
+          "Thanh Hoa",
+          "Mai Cat Vi",
+          "Le Trang"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "",
+      "synopsis": "<span style=\"font-family: \">Hai Phượng kể về cuộc hành trình đầy gay cấn và gian của khi người mẹ vùng quê tìm cách cứu con mình thoát khỏi đường dây bắt cóc khổng lồ. Không tấc sắc trong tay, người phụ nữ thân cô thế cô làm sao chống lại bọn xã hội đen tàn ác để giành lại nguồn sống của đời mình?</span><br/>...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s2.phim1280.tv/20230917/pGzc51S6/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "gap-lai-chi-bau",
+      "slug": "gap-lai-chi-bau",
+      "crawlSlug": "gap-lai-chi-bau",
+      "title": "Gặp Lại Chị Bầu",
+      "originTitle": "Gặp Lại Chị Bầu",
+      "poster": "https://phimimg.com/upload/vod/20240428-1/56a42ba13865a39e71ef4bec9bf066e5.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240428-1/9209ac428fbbd24bb065a94ec3ef0fc7.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "114 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Hài Hước",
+          "Chính Kịch",
+          "Gia Đình"
+      ],
+      "director": "Nhất Trung",
+      "cast": [
+          "Diệu Nhi",
+          "Anh Tú",
+          "Lê Giang",
+          "Quốc Khánh",
+          "Ngọc Phước",
+          "Kiều Minh Tuấn"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=Gggw9jwr1h4",
+      "synopsis": "“Gặp Lại Chị Bầu” xoay quanh Phúc, một thanh viên trẻ với đam mê diễn xuất nhưng phải trải qua cuộc sống muôn vàn khó khăn. Anh tình cờ lưu lạc đến xóm trọ của bà Lê và cùng những người bạn ở đây trải qua những ngày tháng thanh xuân đáng nhớ nhất cuộc đời....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s3.phim1280.tv/20240428/xRZkP8kh/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "quy-cau",
+      "slug": "quy-cau",
+      "crawlSlug": "quy-cau",
+      "title": "Quỷ Cẩu",
+      "originTitle": "Crimson Snout",
+      "poster": "https://phimimg.com/upload/vod/20240322-1/58433028cb27b24a08795cce603c8a36.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240322-1/fc17321c17a27bd34865d93ac404e22f.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "99 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Kinh Dị"
+      ],
+      "director": "Lưu Thành Luân",
+      "cast": [
+          "Ngô Quang Tuấn",
+          "Kim Xuân",
+          "Vân Dung",
+          "Nam Thư"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=Cswx649vXVw",
+      "synopsis": "Quỷ Cẩu kể về một gia đình làm nghề mổ chó....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s3.phim1280.tv/20240322/rh7CA2Yi/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "lam-giau-voi-ma",
+      "slug": "lam-giau-voi-ma",
+      "crawlSlug": "lam-giau-voi-ma",
+      "title": "Làm Giàu Với Ma",
+      "originTitle": "Betting With Ghost",
+      "poster": "https://phimimg.com/upload/vod/20250323-1/1b5a22c27996cde1f32b19c449853063.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250323-1/5c8b4a2c724d8cbee887c0b90767633d.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "113 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Hài Hước",
+          "Gia Đình",
+          "Kinh Dị"
+      ],
+      "director": "Nhật Trung",
+      "cast": [
+          "Tuấn Trần",
+          "Diệp Bảo Ngọc",
+          "Hoài Linh",
+          "Lê Giang",
+          "La Thành",
+          "Quang Minh"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=MtZ_hf7tLxk",
+      "synopsis": "Trong Làm Giàu Với Ma, Tuấn Trần vào vai Lanh - một thanh niên lêu lổng, ngỗ ngược, dính vào cờ bạc nợ nần. Trên quãng đường chạy trốn khỏi đám giang hồ chủ nợ hung hăng, anh vô tình &quot;đụng&quot; phải ma nữ Na (Diệp Bảo Ngọc) và bị cô nàng nhờ vả giúp mình tìm gặp đứa con mà cô đã phải lìa xa từ lúc chào đời. Đổi l...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250814/7EdgqAni/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "dat-rung-phuong-nam",
+      "slug": "dat-rung-phuong-nam",
+      "crawlSlug": "dat-rung-phuong-nam",
+      "title": "Đất Rừng Phương Nam",
+      "originTitle": "Song of the South",
+      "poster": "https://phimimg.com/upload/vod/20240319-1/72195bc6fd8ffa3063dc86ec088b6ffb.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240319-1/cb60138b0d4e4e8c7f8a7aaa8eb868ec.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "100 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Chiến Tranh",
+          "Gia Đình",
+          "Chính Kịch"
+      ],
+      "director": "Nguyễn Quang Dũng",
+      "cast": [
+          "Trấn Thành",
+          "Công Ninh",
+          "Hồng Ánh",
+          "Mai Tài Phến",
+          "Tuấn Trần",
+          "Tuyền Mập"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=hktzirCnJmQ",
+      "synopsis": "Đất Rừng Phương Nam phiên bản điện ảnh được kế thừa và phát triển từ tiểu thuyết cùng tên của nhà văn Đoàn Giỏi. Bộ phim kể về hành trình phiêu lưu của An - một cậu bé chẳng may mất mẹ trên đường đi tìm cha. Cùng với An, khán giả sẽ trải nghiệm sự trù phú của thiên nhiên và nét đẹp văn hoá đặc sắc của vùng đất Nam Kì L...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s3.phim1280.tv/20240319/ym2SFUf0/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "nguoi-vo-cuoi-cung",
+      "slug": "nguoi-vo-cuoi-cung",
+      "crawlSlug": "nguoi-vo-cuoi-cung",
+      "title": "Người Vợ Cuối Cùng",
+      "originTitle": "The Last Wife",
+      "poster": "https://phimimg.com/upload/vod/20240205-1/67945e7f327a89d07fa2d75ee119c475.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240205-1/0f3ced15c8df776166d1268e26aac241.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "133 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Chính Kịch",
+          "Tình Cảm"
+      ],
+      "director": "Victor Vũ",
+      "cast": [
+          "Kaity Nguyễn",
+          "Thuận Nguyễn",
+          "Quốc Huy",
+          "De Ly Luu",
+          "Ngọc Diệp",
+          "Nguyen Anh Dung"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=RhlCD8FAs08",
+      "synopsis": "Lấy cảm hứng từ tiểu thuyết Hồ Oán Hận, của nhà văn Hồng Thái, Người Vợ Cuối Cùng là một bộ phim tâm lý cổ trang, lấy bối cảnh Việt Nam vào triều Nguyễn. &nbsp;LINH - Người vợ bất đắc dĩ của một viên quan tri huyện, xuất thân là con của một gia đình nông dân nghèo khó, vì không thể hoàn thành nghĩa vụ sinh con nối dõi ...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s2.phim1280.tv/20240205/sxwdzFCr/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "cong-tu-bac-lieu",
+      "slug": "cong-tu-bac-lieu",
+      "crawlSlug": "cong-tu-bac-lieu",
+      "title": "Công Tử Bạc Liêu",
+      "originTitle": "Once Upon A Time In Indochine",
+      "poster": "https://phimimg.com/upload/vod/20250403-1/2598439800e1d56a3ab37ed88160a364.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250403-1/6cc48ac44f9e5bd02a3b4c2301865d9e.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "106 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Gia Đình",
+          "Hài Hước",
+          "Tình Cảm",
+          "Tâm Lý"
+      ],
+      "director": "Lý Minh Thắng",
+      "cast": [
+          "Song Luân",
+          "Kaity Nguyễn",
+          "Thành Lộc",
+          "Hữu Châu",
+          "Thanh Thủy",
+          "Công Dương"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=7oVbS8zQxQ0",
+      "synopsis": "Lấy bối cảnh thập niên 1930, bộ phim là câu chuyện kể về một nhân vật ăn chơi bậc nhất Nam Kỳ lục tỉnh thời bấy giờ, Công tử Bạc Liêu Trần Đắc Hơn, với những giai thoại nổi tiếng như đốt tiền nấu chè, đấu xảo sắc đẹp, v.v... &nbsp;Dù là một người có tư tưởng cấp tiến Tây học, luôn thích phá cách và làm trái ngược lại n...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s4.phim1280.tv/20250403/ppubHKkA/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "ngay-xua-co-mot-chuyen-tinh",
+      "slug": "ngay-xua-co-mot-chuyen-tinh",
+      "crawlSlug": "ngay-xua-co-mot-chuyen-tinh",
+      "title": "Ngày Xưa Có Một Chuyện Tình",
+      "originTitle": "Once Upon A Love Story",
+      "poster": "https://phimimg.com/upload/vod/20250901-1/e8b2e71c237e7dbbee1c014091f44351.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250901-1/377ca3402a12c55372f0145f49c0e4a5.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "135 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Tình Cảm",
+          "Chính Kịch",
+          "Tâm Lý"
+      ],
+      "director": "Trinh Dinh Le Minh",
+      "cast": [
+          "Ngọc Xuân",
+          "Lương Anh Vũ",
+          "Đỗ Nhật Hoàng",
+          "Hạo Khang",
+          "Rima Thanh Vy",
+          "Kiều Trinh"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=wGMq-JNTxC4",
+      "synopsis": "Ngày Xưa Có Một Chuyện Tình xoay quanh câu chuyện tình bạn, tình yêu giữa hai chàng trai và một cô gái từ thuở ấu thơ cho đến khi trưởng thành, phải đối mặt với những thử thách của số phận. Trải dài trong 4 giai đoạn từ năm 1987 - 2000, ba người bạn cùng tuổi - Vinh, Miền, Phúc đã cùng yêu, cùng bỡ ngỡ bước vào đời, va...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250901/w8LN0LND/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "sieu-lua-gap-sieu-lay",
+      "slug": "sieu-lua-gap-sieu-lay",
+      "crawlSlug": "sieu-lua-gap-sieu-lay",
+      "title": "Siêu Lừa Gặp Siêu Lầy",
+      "originTitle": "Hustler vs Scammer",
+      "poster": "https://phimimg.com/upload/vod/20240919-1/ef0bc57cc068af0c1b13943b7a40852f.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240919-1/5489fae29d34ab2c8c116e2417f06fc0.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "112 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Hài Hước",
+          "Hành Động"
+      ],
+      "director": "Võ Thanh Hòa",
+      "cast": [
+          "Mạc Văn Khoa",
+          "Anh Tú",
+          "Ngọc Phước",
+          "Nhật Trung",
+          "Mỹ Duyên",
+          "Đại Nghĩa"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=rCfgqxLwT20",
+      "synopsis": "Siêu Lừa Gặp Siêu Lầy của đạo diễn Võ Thanh Hòa theo chân của Khoa – tên lừa đảo tầm cỡ “quốc nội” đến đảo ngọc Phú Quốc với mong muốn đổi đời. Tại đây, Khoa gặp Tú – tay lừa đảo “hàng real” và cùng Tú thực hiện các phi vụ từ nhỏ đến lớn. Cứ ngỡ sự ranh mãnh của Tú và sự may mắn trời cho của Khoa sẽ giúp họ trở thành b...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s4.phim1280.tv/20240918/PoxPC7NH/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "em-chua-18",
+      "slug": "em-chua-18",
+      "crawlSlug": "em-chua-18",
+      "title": "Em Chưa 18",
+      "originTitle": "Jailbait",
+      "poster": "https://phimimg.com/upload/vod/20250511-1/decf910fa32aa518174b9afc50ea32c3.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250511-1/1647db994439f2622914335845539019.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "90 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2017,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Chính Kịch",
+          "Hài Hước"
+      ],
+      "director": "Lê Thanh Sơn",
+      "cast": [
+          "Kaity Nguyễn",
+          "Kiều Minh Tuấn",
+          "Will",
+          "Nguyễn Tiến Dũng",
+          "Châu Bùi",
+          "Kiều Trinh"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=_affkHceSj4",
+      "synopsis": "Câu chuyện bắt đầu với Hoàng, một Tay chơi “chất lầy” bảnh tỏn, thu nhập ngất ngưởng, sống cùng quy luật &quot;không có đêm thứ 2&quot; với bất kỳ cô nàng nào. Định mệnh ập đến khi chàng trai trong mơ của bao người đàn ông gặp gỡ Linh Đan. Dĩ nhiên, cả hai đã có mối tình chớp nhoáng và không hề có gì khác biệt với nhữn...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s5.phim1280.tv/20250511/6Ul5lCUK/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "cam",
+      "slug": "cam",
+      "crawlSlug": "cam",
+      "title": "Cám",
+      "originTitle": "The Sisters",
+      "poster": "https://phimimg.com/upload/vod/20250302-1/95297d8023e0e6cca061455cdc22cef0.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250302-1/887291d6f943171d2815f048130232dd.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "122 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Kinh Dị"
+      ],
+      "director": "Trần Hữu Tấn",
+      "cast": [
+          "Lam Thanh My",
+          "Rima Thanh Vy",
+          "Thuý Diễm",
+          "Quốc Cường",
+          "Ngô Hải Nam",
+          "Nguyễn Thị Ngọc Hiệp"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=wI2Wd2yA8YE",
+      "synopsis": "Cám - một cô gái sinh ra với khuôn mặt dị dạng do một lời nguyền truyền qua nhiều thế hệ. Cám bị cha mình xem như một vết nhơ của gia đình và bị đày xuống nhà sau, sống như người hầu và chịu đựng sự ngược đãi. Trong khi đó, người chị cùng cha khác mẹ của cô là Tấm nhận được tình yêu thương và sự nuông chiều của cha. Mặ...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250801/vdY9hlo8/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "ma-da",
+      "slug": "ma-da",
+      "crawlSlug": "ma-da",
+      "title": "Ma Da",
+      "originTitle": "The Drowning Spirit",
+      "poster": "https://phimimg.com/upload/vod/20241116-1/e851bfbfc2dc5b2f9463571e5fba6734.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20241116-1/3747ec0cb2bbc3679512ef163621eefc.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "95 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Tình Cảm",
+          "Chính Kịch",
+          "Hài Hước"
+      ],
+      "director": "Nguyễn Hữu Hoàng",
+      "cast": [
+          "Việt Hương",
+          "Dạ Chúc",
+          "Trung Dân",
+          "Diệu Đức",
+          "Thành Lộc",
+          "Cẩm Ly"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=vC-KNlLNIso",
+      "synopsis": "Phim kể về hành trình của bà Lệ, người làm nghề vớt xác người chết trên sông để đưa về với gia đình. Trong quá trình làm nghề, bà Lệ đắc tội với Ma Da, một oan hồn sống dưới sông nước thường xuyên kéo chân người để thế mạng cho mình đi đầu thai. n oán của cả hai khiến cho Ma Da bắt mất bé Nhung, con gái của bà Lệ . Bà ...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s5.phim1280.tv/20241116/8EbHTuih/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "co-dau-hao-mon",
+      "slug": "co-dau-hao-mon",
+      "crawlSlug": "co-dau-hao-mon",
+      "title": "Cô Dâu Hào Môn",
+      "originTitle": "The Trophy Bride",
+      "poster": "https://phimimg.com/upload/vod/20250129-1/a008a55771216663370dae5da82b7edf.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250129-1/f24b69ffb4c24e8f28c64093de552b3a.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "114 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2024,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Chính Kịch",
+          "Tình Cảm",
+          "Hài Hước"
+      ],
+      "director": "Vũ Ngọc Đãng",
+      "cast": [
+          "Uyển Ân",
+          "Kiều Minh Tuấn",
+          "Thu Trang",
+          "Samuel An",
+          "Hồng Vân",
+          "Lê Giang"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=QJ8E9R70csY",
+      "synopsis": "Phim lấy đề tài làm dâu hào môn và khai thác câu chuyện môn đăng hộ đối, lối sống và quy tắc của giới thượng lưu dưới góc nhìn hài hước và châm biếm....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s4.phim1280.tv/20250129/STxoYxtK/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "ke-an-hon",
+      "slug": "ke-an-hon",
+      "crawlSlug": "ke-an-hon",
+      "title": "Kẻ Ăn Hồn",
+      "originTitle": "The Soul Reaper",
+      "poster": "https://phimimg.com/upload/vod/20240315-1/ae6b750d852646a5c94eb3873d5e7c78.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20240315-1/2c151504adb279ed692b550c7b7bb94b.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietnam",
+          "chieu-rap"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "109 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2023,
+      "rating": 9.4,
+      "matchScore": 98,
+      "country": "Việt Nam",
+      "countrySlug": "viet-nam",
+      "genres": [
+          "Chiếu Rạp",
+          "Kinh Dị"
+      ],
+      "director": "Trần Hữu Tấn",
+      "cast": [
+          "Hoàng Hà",
+          "Võ Điền Gia Huy",
+          "Huỳnh Thanh Trực",
+          "Lan Phương",
+          "Chiều Xuân",
+          "Viết Liên"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=GMLKxb8spNI",
+      "synopsis": "Kẻ Ăn Hồn - phim về hàng loạt cái chết bí ẩn ở Làng Địa Ngục, nơi có ma thuật cổ xưa: 5 mạng đổi bình Rượu Sọ Người. Thập Nương - cô gái áo đỏ là kẻ nắm giữ bí thuật luyện nên loại rượu mạnh nhất! &nbsp;Diễn viên: Hoàng Hà, Võ Điền Gia Huy, Huỳnh Thanh Trực, NSƯT Chiều Xuân, Nghệ sĩ Viết Liên, NSND Ngọc Thư, Nguyễn Hữu...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s2.phim1280.tv/20240315/ixpvmeEt/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "gio-cao-diem",
+      "slug": "gio-cao-diem",
+      "crawlSlug": "gio-cao-diem",
+      "title": "Giờ Cao Điểm",
+      "originTitle": "Rush Hour",
+      "poster": "https://phimimg.com/upload/vod/20231115-1/6bd1992872134d88b93b3f53fde32c24.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20231115-1/880ac8fa406774af3ff7f0e82232b3c8.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "98 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 1998,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Âu Mỹ",
+      "countrySlug": "au-my",
+      "genres": [
+          "Hành Động",
+          "Hài Hước",
+          "Hình Sự"
+      ],
+      "director": "Brett Ratner",
+      "cast": [
+          "Jackie Chan",
+          "Chris Tucker",
+          "Tom Wilkinson",
+          "Philip Baker Hall",
+          "Elizabeth Peña",
+          "Chris Penn"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "",
+      "synopsis": "Giờ Cao Điểm là cuộc phiêu lưu của cặp bài trùng: Lee (Thành Long) và James Carter (Christ Turker) trong cuộc chiến chống lại thế lực hắc ám của hội Tam Hoàng. Những màn đấu võ hài hước, những pha mạo hiểm dựng tóc gáy là một phần không thể thiếu tạo nên thương hiệu Thành Long. Bạn sẽ thấy rất rõ điều này qua Giờ Cao Đ...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s1.phim1280.tv/20231125/OrLP2ljE/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "gio-cao-diem-2",
+      "slug": "gio-cao-diem-2",
+      "crawlSlug": "gio-cao-diem-2",
+      "title": "Giờ Cao Điểm 2",
+      "originTitle": "Rush Hour 2",
+      "poster": "https://phimimg.com/upload/vod/20231211-1/1de096e929b0de310046f3b81964ec0d.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20231211-1/f2e44d8cf7f2d637599e1bbaa039e5a7.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "90 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2001,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Âu Mỹ",
+      "countrySlug": "au-my",
+      "genres": [
+          "Hành Động",
+          "Hài Hước",
+          "Kinh Dị"
+      ],
+      "director": "Đang cập nhật",
+      "cast": [
+          "Dàn diễn viên"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "",
+      "synopsis": "Đó là thời gian nghỉ để Det. James Carter và anh thấy mình cùng với Det. Lee ở Hồng Kông mong muốn phấn khích hơn. Trong khi Carter muốn tiệc tùng và gặp gỡ những người phụ nữ, Lee ra ngoài để theo dõi một Lord Gang Triad, người có thể chịu trách nhiệm giết hai người đàn ông tại Đại sứ quán Mỹ. Mọi thứ trở nên phức tạp...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s2.phim1280.tv/20240103/9Q9qg8H8/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "gio-cao-diem-3",
+      "slug": "gio-cao-diem-3",
+      "crawlSlug": "gio-cao-diem-3",
+      "title": "Giờ Cao Điểm 3",
+      "originTitle": "Rush Hour 3",
+      "poster": "https://phimimg.com/upload/vod/20231210-1/ab5860df9137b0922a9a9ace30b6190b.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20231210-1/eeaa20506534d24246457c953c48019f.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub",
+      "duration": "N/A",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2007,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Âu Mỹ",
+      "countrySlug": "au-my",
+      "genres": [
+          "Hành Động",
+          "Hài Hước"
+      ],
+      "director": "Đang cập nhật",
+      "cast": [
+          "Dàn diễn viên"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "",
+      "synopsis": "Gần ba năm sau cuộc phiêu lưu cuối cùng của họ trong Rush Hour 2 (2001), Carter hiện đang làm nhân viên giao thông Los Angeles, trong khi bạn của ông và Thanh tra cảnh sát Ace Hồng Kông, Lee, hộ tống Đại sứ Trung Quốc, Han, đến Tòa án Hình sự Thế giới , để tiết lộ thông tin quan trọng về các bộ ba. Tuy nhiên, sau một n...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s2.phim1280.tv/20231226/QJDWbgSU/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-hon-da-phu-thuy",
+      "slug": "harry-potter-va-hon-da-phu-thuy",
+      "crawlSlug": "harry-potter-va-hon-da-phu-thuy",
+      "title": "Harry Potter và Hòn Đá Phù Thủy",
+      "originTitle": "Harry Potter and the Philosopher's Stone",
+      "poster": "https://phimimg.com/upload/vod/20250604-1/4f59b1adab4ec3e7354f1da1d4297d03.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/0f3aebe145b25b985a1deece53635c99.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "152 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2001,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "Chris Columbus",
+      "cast": [
+          "Daniel Radcliffe",
+          "Rupert Grint",
+          "Emma Watson",
+          "Richard Harris",
+          "Tom Felton",
+          "Alan Rickman"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=l91Km49W9qI",
+      "synopsis": "Harry Potter và Hòn Đá Phù Thủy là bộ phim đầu tiên trong series phim “Harry Potter” được xây dựng dựa trên tiểu thuyết của nhà văn J.K.Rowling. Nhân vật chính của phim, Harry Potter - một cậu bé 11 tuổi sau khi mồ côi cha mẹ đã bị gửi đến nhà dì dượng của mình, gia đình Dursley. Tuy nhiên, cậu bé bị ngược đãi và không...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/8jLStzdU/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-can-phong-bi-mat",
+      "slug": "harry-potter-va-can-phong-bi-mat",
+      "crawlSlug": "harry-potter-va-can-phong-bi-mat",
+      "title": "Harry Potter và Căn Phòng Bí Mật",
+      "originTitle": "Harry Potter and the Chamber of Secrets",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/742fc1a9dd99323db33c3e2d90e9b094.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/e9618bc36b27371bf5765869d9f23831.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "161 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2002,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "Chris Columbus",
+      "cast": [
+          "Daniel Radcliffe",
+          "Rupert Grint",
+          "Emma Watson",
+          "Kenneth Branagh",
+          "Toby Jones",
+          "Robbie Coltrane"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=Cy4fjVMOwsY",
+      "synopsis": "Harry trở lại năm thứ hai tại Hogwarts, nhưng phát hiện ra rằng những điều tồi tệ đang xảy ra bởi vì một trang web có tên là Phòng chứa bí mật đã được người thừa kế của Slytherin mở ra và sẽ khiến những đứa trẻ của Muggles, những kẻ không trong sạch, xuất hiện một cách bí ẩn bởi một con vật quái dị....",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/pI97byf8/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-tu-nhan-azkaban",
+      "slug": "harry-potter-va-tu-nhan-azkaban",
+      "crawlSlug": "harry-potter-va-tu-nhan-azkaban",
+      "title": "Harry Potter và Tù Nhân Azkaban",
+      "originTitle": "Harry Potter and the Prisoner of Azkaban",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/01a4ce613a13f86f386fc37b9d01044b.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/56e3b9d83afe1bb47579e9b3488474f4.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "141 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2004,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "Alfonso Cuarón",
+      "cast": [
+          "Daniel Radcliffe",
+          "Rupert Grint",
+          "Emma Watson",
+          "Robbie Coltrane",
+          "Michael Gambon",
+          "Gary Oldman"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=q9-tAjeJ_nw",
+      "synopsis": "Harry đang mong chờ đến cuối mùa hè để bắt đầu một khóa học mới tại Hogwarts, và rời khỏi ngôi nhà của người dì và người chú đáng khinh của mình, Dursley, càng sớm càng tốt. Điều Harry không biết là anh sẽ phải rời khỏi Privet Drive sớm và bất ngờ sau khi biến dì Marge của mình thành một quả bóng bay khổng lồ. Một chiế...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/M3xcbcwe/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-chiec-coc-lua",
+      "slug": "harry-potter-va-chiec-coc-lua",
+      "crawlSlug": "harry-potter-va-chiec-coc-lua",
+      "title": "Harry Potter và Chiếc Cốc Lửa",
+      "originTitle": "Harry Potter and the Goblet of Fire",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/b7b55d9ad5585acd63a0d51717edbe7e.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/a659814ab76a70bec26ee3b4bb35a645.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "157 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2005,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "Mike Newell",
+      "cast": [
+          "Daniel Radcliffe",
+          "Rupert Grint",
+          "Emma Watson",
+          "Brendan Gleeson",
+          "Michael Gambon",
+          "Robert Pattinson"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=Y3bLHHN129k",
+      "synopsis": "Khi giải Quidditch Thế giới bị cắt ngang bởi những kẻ ủng hộ Chúa tể Voldemort và sự trở lại của Dấu hiệu hắc ám khủng khiếp, Harry ý thức được rõ ràng rằng, Chúa tể Voldemort đang ngày càng mạnh hơn. Và để trở lại thế giới phép thuật, Chúa tể hắc ám cần phải đánh bại kẻ duy nhất sống sót từ lời nguyền chết chóc của hắ...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/ulu1ZgVA/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-menh-lenh-phuong-hoang",
+      "slug": "harry-potter-va-menh-lenh-phuong-hoang",
+      "crawlSlug": "harry-potter-va-menh-lenh-phuong-hoang",
+      "title": "Harry Potter và Mệnh Lệnh Phượng Hoàng",
+      "originTitle": "Harry Potter and the Order of the Phoenix",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/8d433ae93f9c5ba3086c1742b65f63b1.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/48fa44ed4ca3fed2adf799240069b7ef.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "138 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2007,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "David Yates",
+      "cast": [
+          "Daniel Radcliffe",
+          "Rupert Grint",
+          "Emma Watson",
+          "Imelda Staunton",
+          "Helena Bonham Carter",
+          "Robbie Coltrane"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=oijDWW1CMt0",
+      "synopsis": "Harry tức giận vì bị bỏ rơi ở nhà Dursley trong dịp hè, cậu ngờ rằng Chúa tể hắc ám Voldemort đang tập hợp lực lượng, và vì cậu có nguy cơ bị tấn công, những người Harry luôn coi là bạn đang cố che giấu tung tích cậu. Cuối cùng, sau khi được giải cứu, Harry khám phá ra rằng giáo sư Dumbledore đang tập hợp lại Hội Phượn...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/IV0unvSk/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-hoang-tu-lai",
+      "slug": "harry-potter-va-hoang-tu-lai",
+      "crawlSlug": "harry-potter-va-hoang-tu-lai",
+      "title": "Harry Potter và Hoàng Tử Lai",
+      "originTitle": "Harry Potter and the Half-Blood Prince",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/6daf44b2ebbfdcd811af13d89589fada.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/706ab376e08478b0956f619ffad48a76.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "153 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2009,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "David Yates",
+      "cast": [
+          "Daniel Radcliffe",
+          "Rupert Grint",
+          "Emma Watson",
+          "Jim Broadbent",
+          "Michael Gambon",
+          "Tom Felton"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=kLIoLXJTX_c",
+      "synopsis": "Đây là năm thứ 6 của Harry Potter tại trường Hogwarts. Trong lúc những thế lực hắc ám của Voldemort gieo rắc nỗi kinh hoàng và sợ hãi ở khắp nơi, mọi chuyện càng lúc càng trở nên rõ ràng hơn đối với Harry, cậu sẽ sớm phải đối diện với định mệnh của mình. &nbsp;Draco Malfoy, kẻ thù không đội trời chung của Harry, có nhi...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/LKNPHrC7/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-bao-boi-tu-than-phan-1",
+      "slug": "harry-potter-va-bao-boi-tu-than-phan-1",
+      "crawlSlug": "harry-potter-va-bao-boi-tu-than-phan-1",
+      "title": "Harry Potter và Bảo Bối Tử Thần: Phần 1",
+      "originTitle": "Harry Potter and the Deathly Hallows: Part 1",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/be0884caecf9eb4741932860ae5d5ae4.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/c847d25d6018d0665aa03fb75c981c1a.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "146 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2010,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Phiêu Lưu",
+          "Viễn Tưởng"
+      ],
+      "director": "David Yates",
+      "cast": [
+          "Daniel Radcliffe",
+          "Emma Watson",
+          "Rupert Grint",
+          "Toby Jones",
+          "Helena Bonham Carter",
+          "Alan Rickman"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=loDgd0irr3Y",
+      "synopsis": "Chúa tể Voldemort cùng đám tay chân của hắn đang âm mưu tấn công Harry Potter khi cậu rời khỏi ngôi nhà của gia đình Dursley lần cuối cùng. Ngay trước khi phép bảo vệ cho Harry tại gia đình Dursley hết hiệu lực vào thời điểm Harry bước qua tuổi 17, người của Hội Phượng hoàng đến để hộ tống cậu tới một nơi ở mới an toàn...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/gVVvqQnV/index.m3u8"
+          }
+      ]
+  },
+  {
+      "id": "harry-potter-va-bao-boi-tu-than-phan-2",
+      "slug": "harry-potter-va-bao-boi-tu-than-phan-2",
+      "crawlSlug": "harry-potter-va-bao-boi-tu-than-phan-2",
+      "title": "Harry Potter và Bảo Bối Tử Thần: Phần 2",
+      "originTitle": "Harry Potter and the Deathly Hallows: Part 2",
+      "poster": "https://phimimg.com/upload/vod/20250602-1/5ce2cb828266d80e466f0fcfafd123c8.jpg",
+      "backdrop": "https://phimimg.com/upload/vod/20250602-1/4d1f429b653c19ff8f8e4fb17babb7b5.jpg",
+      "type": "single",
+      "sectionTags": [
+          "hot",
+          "de-cu",
+          "phim-le",
+          "vietsub",
+          "au-my",
+          "netflix"
+      ],
+      "quality": "1080",
+      "language": "Vietsub + Lồng Tiếng + Thuyết Minh",
+      "duration": "130 phút",
+      "episodeCurrent": "Full",
+      "episodeTotal": "1",
+      "year": 2011,
+      "rating": 9.2,
+      "matchScore": 98,
+      "country": "Anh",
+      "countrySlug": "anh",
+      "genres": [
+          "Viễn Tưởng",
+          "Phiêu Lưu"
+      ],
+      "director": "David Yates",
+      "cast": [
+          "Daniel Radcliffe",
+          "Emma Watson",
+          "Rupert Grint",
+          "Ralph Fiennes",
+          "Alan Rickman",
+          "Michael Gambon"
+      ],
+      "ambientColors": [
+          "#ffffff",
+          "#d4d4d4",
+          "#a3a3a3"
+      ],
+      "trailerUrl": "https://www.youtube.com/watch?v=EJrI-WxhU3s",
+      "synopsis": "Kết thúc phần 1 là khi nhóm bạn Harry Potter, Ron và Hermione quay trở lại trường Hogwarts để tìm và tiêu diệt Trường Sinh Linh Giá cuối cùng của Voldemort. Nhưng Voldemort đã phát hiện ra nhiệm vụ của họ, và trận chiến pháp thuật lớn nhất trong lịch sử đã diễn ra ở đây, nơi mà biết bao người ngã xuống, nơi mà tất cả c...",
+      "episodes": [
+          {
+              "name": "Full",
+              "slug": "full",
+              "source": "https://s6.kkphimplayer6.com/20250603/MTS2609t/index.m3u8"
+          }
+      ]
+  },
+  {
     id: "pm-1",
     slug: "thanh-guom-diet-quy-vo-han-thanh-465645",
     crawlSlug: "thanh-guom-diet-quy-vo-han-thanh",
