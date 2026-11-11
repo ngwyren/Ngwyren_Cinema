@@ -83,8 +83,12 @@ class AppleCinemaApp {
     this.renderMainView();
     this.startHeroAutoRotate();
 
-    // Chỉ đồng bộ xu hướng phim mới 1 lần duy nhất khi tải trang (sau 1.2s khi khung hình đầu đã vẽ xong)
-    setTimeout(() => this.syncLivePhimmoi(false), 1200);
+    // Đồng bộ nhẹ nhàng sau khi trang đã render mượt mà không chặn giao diện (3.5s)
+    if (window.requestIdleCallback) {
+      setTimeout(() => window.requestIdleCallback(() => this.syncLivePhimmoi(false)), 3500);
+    } else {
+      setTimeout(() => this.syncLivePhimmoi(false), 3500);
+    }
 
     // Khởi chạy lịch bảo trì sửa lỗi định kỳ (mỗi 30 phút)
     this.startPeriodicMaintenanceScheduler();
@@ -606,24 +610,21 @@ class AppleCinemaApp {
     const glassLabel = glassPercent === 0 ? "Trong Suốt" : (glassPercent === 100 ? "Kính Mờ" : "Tiêu Chuẩn");
 
     return `
-      <div class="vision-dashboard-grid">
-        ${this.renderLeftSideColumnHTML(this.service.movies, "Đề Xuất")}
+      <div class="cinema-settings-layout">
+        <!-- Spatial Settings Hero Header -->
+        <section class="vision-settings-banner">
+          <div class="vision-settings-banner-left">
+            <h1 class="vision-hero-title">Cài Đặt Hệ Thống</h1>
+          </div>
+          <div class="vision-settings-banner-actions">
+            <button class="vision-btn-outline" onclick="app.resetDefaultSettings()">
+              Mặc Định
+            </button>
+          </div>
+        </section>
 
-        <div class="vision-main-col vision-col-transition">
-          <!-- Spatial Settings Hero Header -->
-          <section class="vision-settings-banner">
-            <div class="vision-settings-banner-left">
-              <h1 class="vision-hero-title">Cài Đặt Hệ Thống</h1>
-            </div>
-            <div class="vision-settings-banner-actions">
-              <button class="vision-btn-outline" onclick="app.resetDefaultSettings()">
-                Mặc Định
-              </button>
-            </div>
-          </section>
-
-          <!-- Settings Grid (2-Column Glass Cards inside Main Column) -->
-          <div class="vision-settings-grid">
+        <!-- Settings Grid (2-Column Glass Cards) -->
+        <div class="vision-settings-grid">
             <!-- Card Theme: Giao Diện & Không Gian Thị Giác -->
             <div class="vision-settings-card" style="grid-column: 1 / -1;">
               <div class="vision-settings-card-header">
@@ -686,19 +687,6 @@ class AppleCinemaApp {
                 <button class="vision-toggle-btn ${s.ambientGlow !== false ? 'on' : ''}" id="ambientGlowToggleBtn" onclick="app.toggleAmbientGlow()">
                   <span>${s.ambientGlow !== false ? 'Bật' : 'Tắt'}</span>
                 </button>
-              </div>
-
-              <!-- Row 4: PS5 Game Screen & Saves Spatial Motion + 1-Click Backup Restore -->
-              <div class="vision-setting-row">
-                <div class="vision-setting-info">
-                  <strong>Giao diện PS5 Spatial Motion & Save Slots</strong>
-                  <span style="font-size: 0.74rem; color: rgba(255,255,255,0.58);">Hiệu ứng chuyển cảnh Hero 3D khi lướt thẻ phim & chọn nhanh Save Slot / Tập phim trực tiếp trên màn hình chính (Có thể tắt về bản gốc v2.3.57 bất kỳ lúc nào)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                  <button class="vision-toggle-btn ${s.ps5SpatialMotion !== false ? 'on' : ''}" onclick="app.updateSetting('ps5SpatialMotion', ${s.ps5SpatialMotion === false})">
-                    <span>${s.ps5SpatialMotion !== false ? 'Đang Bật (PS5)' : 'Bản Gốc v2.3.57'}</span>
-                  </button>
-                </div>
               </div>
             </div>
 
@@ -837,26 +825,22 @@ class AppleCinemaApp {
       `;
 
     return `
-      <div class="vision-dashboard-grid">
-        ${this.renderLeftSideColumnHTML(this.service.movies, "Đang Chiếu")}
+      <div class="cinema-schedule-layout">
+        <!-- Spatial Schedule Hero Header -->
+        <section class="schedule-hero-panel">
+          <h1 class="schedule-hero-title">Lịch Chiếu Phim</h1>
+        </section>
 
-        <div class="vision-main-col vision-col-transition">
-          <!-- Spatial Schedule Hero Header -->
-          <section class="schedule-hero-panel">
-            <h1 class="schedule-hero-title">Lịch Chiếu Phim</h1>
-          </section>
-
-          <!-- Day of Week Capsule Scroller Bar -->
-          <div class="schedule-tabs-bar">
-            <div class="schedule-tabs-scroll-wrap">
-              ${tabsHTML}
-            </div>
+        <!-- Day of Week Capsule Scroller Bar -->
+        <div class="schedule-tabs-bar">
+          <div class="schedule-tabs-scroll-wrap">
+            ${tabsHTML}
           </div>
+        </div>
 
-          <!-- Schedule Cards 4-Column Grid -->
-          <div class="schedule-cards-grid">
-            ${cardsHTML}
-          </div>
+        <!-- Schedule Cards 4-Column Grid -->
+        <div class="schedule-cards-grid">
+          ${cardsHTML}
         </div>
       </div>
     `;
@@ -1068,65 +1052,61 @@ class AppleCinemaApp {
       const koreanFeatured = this.getMoviesByCountry("han-quoc").slice(0, 8);
 
       container.innerHTML = `
-        <div class="vision-dashboard-grid">
-          ${this.renderLeftSideColumnHTML(this.service.movies, "Đề Xuất")}
+        <div class="cinema-home-layout">
+          <!-- FULL-WIDTH CINEMATIC HERO SHOWCASE -->
+          ${this.renderHeroHTML()}
 
-          <!-- RIGHT MAIN COLUMN: HERO BANNER + GỢI Ý CHO BẠN + CURATED ROWS -->
-          <div class="vision-main-col vision-col-transition">
-            ${this.renderHeroHTML()}
+          ${this.renderContinueWatchingShelfHTML()}
 
-            ${this.renderContinueWatchingShelfHTML()}
+          <!-- BẠN ĐANG QUAN TÂM GÌ? (Chuẩn ảnh mẫu ChợPhim / Netflix) -->
+          <section class="vision-shelf-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title">Bạn đang quan tâm gì?</h2>
+              <button class="vision-see-all-pill" onclick="app.setNavigation('moi-cap-nhat')">Xem Tất Cả</button>
+            </div>
+            <div class="vision-cards-grid-4" id="visionYouMightLikeGrid">
+              ${youMightLike.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+            </div>
+          </section>
 
-            <!-- Gợi Ý Cho Bạn (4-column visionOS cards) -->
-            <section class="vision-shelf-section">
-              <div class="vision-shelf-header">
-                <h2 class="vision-shelf-title">Gợi Ý Cho Bạn</h2>
-                <button class="vision-see-all-pill" onclick="app.setNavigation('moi-cap-nhat')">Xem Tất Cả</button>
-              </div>
-              <div class="vision-cards-grid-4" id="visionYouMightLikeGrid">
-                ${youMightLike.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
-              </div>
-            </section>
+          <!-- Anime Row -->
+          <section class="vision-shelf-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title">Anime</h2>
+              <button class="vision-see-all-pill" onclick="app.setNavigation('anime')">
+                Xem Tất Cả (${this.getMoviesByTag("anime").length})
+              </button>
+            </div>
+            <div class="vision-cards-grid-4">
+              ${animeFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
+            </div>
+          </section>
 
-            <!-- Anime Row -->
-            <section class="vision-shelf-section">
-              <div class="vision-shelf-header">
-                <h2 class="vision-shelf-title">Anime</h2>
-                <button class="vision-see-all-pill" onclick="app.setNavigation('anime')">
-                  Xem Tất Cả (${this.getMoviesByTag("anime").length})
-                </button>
-              </div>
-              <div class="vision-cards-grid-4">
-                ${animeFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
-              </div>
-            </section>
+          <!-- Netflix Row -->
+          <section class="vision-shelf-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title">Phim Độc Quyền Netflix</h2>
+              <button class="vision-see-all-pill" onclick="app.setNavigation('netflix')">
+                Xem Tất Cả (${this.getMoviesByTag("netflix").length})
+              </button>
+            </div>
+            <div class="vision-cards-grid-4">
+              ${netflixFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
+            </div>
+          </section>
 
-            <!-- Netflix Row -->
-            <section class="vision-shelf-section">
-              <div class="vision-shelf-header">
-                <h2 class="vision-shelf-title">Phim Độc Quyền Netflix</h2>
-                <button class="vision-see-all-pill" onclick="app.setNavigation('netflix')">
-                  Xem Tất Cả (${this.getMoviesByTag("netflix").length})
-                </button>
-              </div>
-              <div class="vision-cards-grid-4">
-                ${netflixFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
-              </div>
-            </section>
-
-            <!-- Korean Row -->
-            <section class="vision-shelf-section">
-              <div class="vision-shelf-header">
-                <h2 class="vision-shelf-title">Phim Hàn Quốc Thịnh Hành</h2>
-                <button class="vision-see-all-pill" onclick="app.setNavigation('han-quoc')">
-                  Xem Tất Cả (${this.getMoviesByCountry("han-quoc").length})
-                </button>
-              </div>
-              <div class="vision-cards-grid-4">
-                ${koreanFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
-              </div>
-            </section>
-          </div>
+          <!-- Korean Row -->
+          <section class="vision-shelf-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title">Phim Hàn Quốc Thịnh Hành</h2>
+              <button class="vision-see-all-pill" onclick="app.setNavigation('han-quoc')">
+                Xem Tất Cả (${this.getMoviesByCountry("han-quoc").length})
+              </button>
+            </div>
+            <div class="vision-cards-grid-4">
+              ${koreanFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
+            </div>
+          </section>
         </div>
       `;
       return;
@@ -1141,66 +1121,49 @@ class AppleCinemaApp {
     const isPersonalPage = this.currentNav === "yeu-thich" || this.currentNav === "lich-su";
 
     container.innerHTML = `
-      <div class="vision-dashboard-grid">
-        ${(() => {
-        const shortMap = {
-          "anime": "Đề Xuất Anime",
-          "phim-le": "Đề Xuất Phim Lẻ",
-          "phim-bo": "Đề Xuất Phim Bộ",
-          "netflix": "Đề Xuất Netflix",
-          "vietsub": "Đề Xuất"
-        };
-        const shortTitle = shortMap[this.currentNav] || "Đề Xuất";
-        const leftSource = isPersonalPage
-          ? null
-          : (distinctListForLeft.length >= 2 ? distinctListForLeft : list);
-        return this.renderLeftSideColumnHTML(leftSource, shortTitle);
-      })()}
+      <div class="cinema-category-layout">
+        <!-- Category Header Banner / Hero -->
+        ${
+          isPersonalPage
+            ? `<section class="vision-settings-banner">
+                 <div class="vision-settings-banner-left">
+                   <h1 class="vision-hero-title">${title} (${list.length} phim)</h1>
+                 </div>
+                 <div class="vision-settings-banner-actions">
+                   ${
+                     this.currentNav === "yeu-thich" && list.length > 0
+                       ? `<button class="vision-btn-outline" onclick="app.clearMyList()"><i class="fas fa-trash-can"></i> Xóa Danh Sách</button>`
+                       : this.currentNav === "lich-su" && list.length > 0
+                       ? `<button class="vision-btn-outline" onclick="app.clearWatchHistory()"><i class="fas fa-trash-can"></i> Xóa Lịch Sử</button>`
+                       : ""
+                   }
+                   <button class="vision-btn-watch" onclick="app.resetAllFilters()">
+                     <i class="fas fa-house"></i> Về Khám Phá
+                   </button>
+                 </div>
+               </section>`
+            : this.renderHeroHTML(categoryHeroMovie, `${title} (${list.length} phim)`)
+        }
 
-        <div class="vision-main-col vision-col-transition">
-          <!-- Category Header Banner / Hero -->
+        <section class="vision-shelf-section">
           ${
-            isPersonalPage
-              ? `<section class="vision-settings-banner">
-                   <div class="vision-settings-banner-left">
-                     <h1 class="vision-hero-title">${title} (${list.length} phim)</h1>
-                   </div>
-                   <div class="vision-settings-banner-actions">
-                     ${
-                       this.currentNav === "yeu-thich" && list.length > 0
-                         ? `<button class="vision-btn-outline" onclick="app.clearMyList()"><i class="fas fa-trash-can"></i> Xóa Danh Sách</button>`
-                         : this.currentNav === "lich-su" && list.length > 0
-                         ? `<button class="vision-btn-outline" onclick="app.clearWatchHistory()"><i class="fas fa-trash-can"></i> Xóa Lịch Sử</button>`
-                         : ""
-                     }
-                     <button class="vision-btn-watch" onclick="app.resetAllFilters()">
-                       <i class="fas fa-house"></i> Về Khám Phá
-                     </button>
-                   </div>
-                 </section>`
-              : this.renderHeroHTML(categoryHeroMovie, `${title} (${list.length} phim)`)
+            !isPersonalPage
+              ? `<div class="vision-shelf-header">
+                   <h2 class="vision-shelf-title">${title}</h2>
+                 </div>`
+              : ""
           }
-
-          <section class="vision-shelf-section">
-            ${
-              !isPersonalPage
-                ? `<div class="vision-shelf-header">
-                     <h2 class="vision-shelf-title">${title}</h2>
-                   </div>`
-                : ""
-            }
-            ${
-              visibleList.length > 0
-                ? `<div class="vision-cards-grid-4">${visibleList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>
+          ${
+            visibleList.length > 0
+              ? `<div class="vision-cards-grid-4">${visibleList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>
                    ${this.renderLoadMoreButtonsHTML(list.length)}`
-                : `<div style="padding: 60px 20px; text-align: center; background: rgba(255,255,255,0.04); border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);">
-                    <i class="fas fa-film" style="font-size: 2.5rem; color: #ffffff; margin-bottom: 14px;"></i>
-                    <h3 style="margin-bottom: 18px; font-weight: 600;">Chưa có phim trong mục này</h3>
-                    <button class="vision-btn-watch" onclick="app.resetAllFilters()">Khám Phá Kho Phim</button>
-                  </div>`
-            }
-          </section>
-        </div>
+              : `<div style="padding: 60px 20px; text-align: center; background: rgba(255,255,255,0.04); border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);">
+                  <i class="fas fa-film" style="font-size: 2.5rem; color: #ffffff; margin-bottom: 14px;"></i>
+                  <h3 style="margin-bottom: 18px; font-weight: 600;">Chưa có phim trong mục này</h3>
+                  <button class="vision-btn-watch" onclick="app.resetAllFilters()">Khám Phá Kho Phim</button>
+                </div>`
+          }
+        </section>
       </div>
     `;
   }
@@ -1505,64 +1468,67 @@ class AppleCinemaApp {
     const nextIdx = (this.heroIndex + 1) % this.heroMovies.length;
     const cleanSynopsis = (movie.synopsis || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
     const matchScore = movie.matchScore || (95 + ((movie.title || "").length % 5));
+    const imdbScore = movie.rating ? Number(movie.rating).toFixed(1) : ((matchScore / 10).toFixed(1));
+    const tmdbScore = (Number(imdbScore) > 1 ? (Number(imdbScore) * 0.94).toFixed(1) : "8.2");
     const saveSlot = this.getMovieLatestSaveSlot(movie);
     const primaryPlayEp = saveSlot ? saveSlot.epIndex : 0;
     const primaryPlayLabel = saveSlot ? `Tiếp Tục ${saveSlot.epLabel}` : "Xem Ngay";
+    const statusText = movie.type === "series" ? (movie.episodeCurrent || "Phim Bộ") : (movie.duration || "Hoàn Tất (Full)");
+
+    // Danh sách thumbnail phim cho dải trượt góc dưới bên phải (chuẩn phong cách ChợPhim / Netflix)
+    const thumbMovies = (this.heroMovies && this.heroMovies.length >= 4) ? this.heroMovies.slice(0, 7) : this.service.movies.slice(0, 7);
 
     return `
-      <section class="vision-hero-banner" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
+      <section class="vision-hero-banner cinema-showcase-hero" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
         <img class="vision-hero-bg" src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" fetchpriority="high" decoding="async" />
         <div class="vision-hero-overlay"></div>
 
-        <div class="vision-hero-top">
-          <div class="vision-hero-dots">
-            ${this.heroMovies.map((hm, i) => `
-              <button class="vision-hero-dot ${(customMovie ? hm.slug === movie.slug : i === this.heroIndex) ? "active" : ""}" onclick="app.setHeroSlide(${i})" aria-label="Slide ${i + 1}"></button>
-            `).join("")}
-          </div>
-        </div>
+        <div class="cinema-hero-content">
+          <div class="cinema-hero-info">
+            <h1 class="cinema-hero-title">${movie.title}</h1>
+            <div class="cinema-hero-sub">${movie.originTitle || movie.title} ${movie.year ? `(${movie.year})` : ""}</div>
 
-        <div class="vision-hero-bottom">
-          <div class="vision-hero-info">
-            <div class="vision-hero-genres">
-              ${(movie.genres || []).slice(0, 4).map((g) => `<span class="vision-genre-tag">${g}</span>`).join("")}
+            <div class="cinema-meta-badges">
+              <span class="cinema-badge badge-imdb"><i class="fab fa-imdb"></i> IMDb ${imdbScore}</span>
+              <span class="cinema-badge badge-tmdb"><i class="fas fa-star"></i> TMDb ${tmdbScore}</span>
+              <span class="cinema-badge badge-res">${movie.quality || "4K"}</span>
+              <span class="cinema-badge badge-year">${movie.year || 2026}</span>
+              <span class="cinema-badge badge-status">${statusText}</span>
             </div>
 
-            <h1 class="vision-hero-title">${movie.title}</h1>
-
-            <div class="ps5-hero-meta-row">
-              <span class="ps5-match-pill">${matchScore}% Match</span>
-              <span class="ps5-meta-year">${movie.year || 2026}</span>
-              <span class="ps5-meta-box">${movie.quality || "Full HD"}</span>
-              <span class="ps5-meta-box">${movie.type === "series" ? (movie.episodeCurrent || "Phim Bộ") : (movie.duration || "Chiếu Rạp")}</span>
-              <span class="ps5-meta-box">5.1</span>
+            <div class="cinema-genre-pills">
+              ${(movie.genres || []).slice(0, 4).map((g) => `<span class="cinema-genre-pill">${g}</span>`).join("")}
             </div>
 
-            <p class="vision-hero-desc">${cleanSynopsis}</p>
+            <p class="cinema-hero-desc">${cleanSynopsis}</p>
 
             ${this.renderPs5HeroSavesHTML(movie)}
 
-            <div class="vision-hero-actions">
-              <button class="vision-btn-watch" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})">
-                <i class="fas fa-play"></i> ${primaryPlayLabel}
+            <div class="cinema-hero-actions">
+              <button class="cinema-play-glow-btn" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})" title="${primaryPlayLabel}">
+                <i class="fas fa-play"></i>
               </button>
-              <button class="vision-btn-outline" onclick="app.toggleMyList('${movie.slug}', event)">
-                <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
-                ${inMyList ? "Đã Lưu" : "Lưu Phim"}
-              </button>
-              <button class="vision-btn-dots" onclick="app.openMovieModal('${movie.slug}', false)" title="Chi tiết & Tập phim">
-                <i class="fas fa-ellipsis"></i>
-              </button>
+              <div class="cinema-action-capsule">
+                <button class="cinema-capsule-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu" : "Lưu Phim Yêu Thích"}">
+                  <i class="${inMyList ? "fas fa-heart" : "far fa-heart"}"></i>
+                </button>
+                <span class="cinema-capsule-divider"></span>
+                <button class="cinema-capsule-btn" onclick="app.openMovieModal('${movie.slug}', false)" title="Chi Tiết Phim & Danh Sách Tập">
+                  <i class="fas fa-circle-info"></i>
+                </button>
+              </div>
             </div>
           </div>
 
-          <div class="vision-hero-arrows">
-            <button class="vision-arrow-btn" onclick="app.setHeroSlide(${prevIdx})" aria-label="Slide trước">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="vision-arrow-btn" onclick="app.setHeroSlide(${nextIdx})" aria-label="Slide tiếp">
-              <i class="fas fa-chevron-right"></i>
-            </button>
+          <div class="cinema-hero-thumbnails" aria-label="Phim nổi bật">
+            ${thumbMovies.map((hm, i) => {
+              const isActive = customMovie ? hm.slug === movie.slug : i === this.heroIndex;
+              return `
+                <div class="cinema-thumb-card ${isActive ? "active" : ""}" onclick="app.setHeroSlide(${i})" title="${hm.title}">
+                  <img src="${this.getMovieBackdrop(hm)}" alt="${hm.title}" loading="lazy" decoding="async" />
+                </div>
+              `;
+            }).join("")}
           </div>
         </div>
       </section>
@@ -1645,7 +1611,6 @@ class AppleCinemaApp {
             <span class="vision-card-genre">${primaryGenre}</span>
             <h3 class="vision-card-title" title="${movie.title}">${movie.title}</h3>
             <p class="vision-card-desc">${movie.originTitle} (${movie.year}) • ${movie.episodeCurrent || movie.quality}</p>
-            <span class="vision-card-seemore">Xem thêm...</span>
           </div>
           <button class="vision-card-play-white" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" title="Xem ngay">
             <i class="fas fa-play"></i>
@@ -2128,6 +2093,32 @@ class AppleCinemaApp {
 
     const inMyList = this.isInMyList(movie);
     const relatedItems = this.service.getRelatedMovies(movie, 12);
+    const relatedMovieSlugs = new Set(relatedItems.map(item => item.movie?.slug).filter(Boolean));
+    relatedMovieSlugs.add(movie.slug);
+
+    const primaryGenre = (movie.genres && movie.genres[0]) || "";
+    let sameGenreMovies = [];
+    if (primaryGenre) {
+      sameGenreMovies = this.service.movies.filter(m => 
+        m && m.slug && !relatedMovieSlugs.has(m.slug) && 
+        Array.isArray(m.genres) && 
+        m.genres.includes(primaryGenre)
+      );
+    }
+    if (sameGenreMovies.length < 12 && Array.isArray(movie.genres)) {
+      for (let gIdx = 1; gIdx < movie.genres.length; gIdx++) {
+        const extraGenre = movie.genres[gIdx];
+        const extraList = this.service.movies.filter(m => 
+          m && m.slug && !relatedMovieSlugs.has(m.slug) && 
+          !sameGenreMovies.some(sg => sg.slug === m.slug) &&
+          Array.isArray(m.genres) && 
+          m.genres.includes(extraGenre)
+        );
+        sameGenreMovies.push(...extraList);
+        if (sameGenreMovies.length >= 12) break;
+      }
+    }
+    const finalSameGenreMovies = sameGenreMovies.slice(0, 12);
     const currentEp = movie.episodes[this.currentEpisodeIndex] || movie.episodes[0];
     const backdropUrl = this.getMovieBackdrop(movie);
 
@@ -2392,12 +2383,11 @@ class AppleCinemaApp {
             </div>
           </div>
 
-          <!-- Tab Panel 2: Same Genre Grid -->
+          <!-- Tab Panel 2: Same Genre Grid (Khác biệt 100%, không bao giờ trùng với Tab 1) -->
           <div id="modalTabPanelFranchise" style="padding-top: 20px; display: none;">
             <div class="movie-grid">
-              ${relatedItems
-                .slice(0, 8)
-                .map(({ movie: m }) => this.renderMovieCardHTML(m))
+              ${finalSameGenreMovies
+                .map((m) => this.renderMovieCardHTML(m))
                 .join("")}
             </div>
           </div>
@@ -3036,11 +3026,11 @@ class AppleCinemaApp {
         lowLatencyMode: false,
         progressive: true,
         startFragPrefetch: true,
-        backBufferLength: 30,
-        maxBufferLength: 30,
-        maxMaxBufferLength: 60,
-        maxBufferSize: 45 * 1000 * 1000,
-        maxBufferHole: 0.5,
+        backBufferLength: 60,
+        maxBufferLength: 60,
+        maxMaxBufferLength: 120,
+        maxBufferSize: 60 * 1000 * 1000,
+        maxBufferHole: 0.8,
         highBufferWatchdogPeriod: 2,
         nudgeOffset: 0.2,
         nudgeMaxRetry: 10,
@@ -3049,25 +3039,12 @@ class AppleCinemaApp {
         maxFragLookUpTolerance: 0.25,
         startLevel: -1,
         capLevelToPlayerSize: false,
-        abrEwmaDefaultEstimate: 15000000
+        abrEwmaDefaultEstimate: 5000000
       });
 
       // Đăng ký toàn bộ sự kiện TRƯỚC khi gọi loadSource & attachMedia để không bao giờ bỏ lỡ MANIFEST_PARSED
       this.hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
         const levels = this.hlsInstance?.levels || [];
-        if (levels.length > 1) {
-          let highestIdx = levels.length - 1;
-          let maxMetric = 0;
-          levels.forEach((lvl, idx) => {
-            const metric = (lvl.width || 0) * (lvl.height || 0) * (lvl.bitrate || 1);
-            if (metric > maxMetric) {
-              maxMetric = metric;
-              highestIdx = idx;
-            }
-          });
-          this.hlsInstance.nextLoadLevel = highestIdx;
-          this.hlsInstance.nextLevel = highestIdx;
-        }
         this.inspectHlsLevels(levels);
         this.renderDynamicQualityButtons();
         this.renderDynamicResumeButtons();
@@ -3651,9 +3628,8 @@ class AppleCinemaApp {
       }
     }
 
-    // Mặc định (native-max, 4K-upscale, 2K-upscale): khóa ở mức bitrate / độ phân giải gốc cao nhất của file .m3u8
-    this.hlsInstance.currentLevel = maxIdx;
-    this.hlsInstance.nextLevel = maxIdx;
+    // Mặc định (Auto / native-max): dùng bộ điều tốc ABR thích ứng băng thông để không bao giờ bị khựng hình
+    this.hlsInstance.currentLevel = -1;
   }
 
   applyVideoQualityVisuals() {

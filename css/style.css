@@ -1647,10 +1647,9 @@ body::-webkit-scrollbar {
 }
 
 body.modal-open .vision-stage,
-body.modal-open .spatial-room-bg {
-  visibility: hidden !important;
-  pointer-events: none !important;
-  animation: none !important;
+body.modal-open .spatial-room-bg,
+body.modal-open .ambient-canvas {
+  display: none !important;
 }
 
 .detail-modal-backdrop.open {
@@ -4141,6 +4140,328 @@ body {
 }
 
 /* ==========================================================================
+   CINEMA FULL-BLEED HERO & MODERN STREAMING SHOWCASE (CHỢPHIM / NETFLIX STYLE)
+   ========================================================================== */
+.cinema-home-layout,
+.cinema-category-layout,
+.cinema-settings-layout,
+.cinema-schedule-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+  min-width: 0;
+}
+
+.cinema-showcase-hero {
+  position: relative;
+  width: 100%;
+  height: clamp(520px, 66vh, 660px);
+  min-height: 520px;
+  border-radius: 28px;
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: -webkit-radial-gradient(white, black);
+  -webkit-clip-path: inset(0 round 28px);
+  clip-path: inset(0 round 28px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    0 24px 60px rgba(0, 0, 0, 0.65);
+  background: #0d0f14;
+  padding: 0 !important;
+}
+
+.cinema-showcase-hero .vision-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  border-radius: 28px;
+  -webkit-clip-path: inset(0 round 28px);
+  clip-path: inset(0 round 28px);
+  image-rendering: auto !important;
+  transform: translateZ(0);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cinema-showcase-hero .vision-hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 28px;
+  background:
+    linear-gradient(90deg, rgba(8, 10, 15, 0.98) 0%, rgba(8, 10, 15, 0.88) 36%, rgba(8, 10, 15, 0.45) 65%, rgba(8, 10, 15, 0.12) 100%),
+    linear-gradient(180deg, rgba(8, 10, 15, 0.25) 0%, rgba(8, 10, 15, 0) 25%, rgba(8, 10, 15, 0.6) 75%, rgba(8, 10, 15, 1) 100%);
+}
+
+.cinema-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: 44px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.cinema-hero-info {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 3;
+}
+
+.cinema-hero-title {
+  font-size: clamp(2.2rem, 4.4vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.12;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.85);
+}
+
+.cinema-hero-sub {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 6px;
+  margin-bottom: 12px;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.cinema-meta-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cinema-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.badge-imdb {
+  background: rgba(245, 197, 24, 0.18);
+  color: #f5c518;
+  border: 1px solid rgba(245, 197, 24, 0.45);
+  font-weight: 800;
+}
+
+.badge-tmdb {
+  background: rgba(1, 180, 228, 0.18);
+  color: #01b4e4;
+  border: 1px solid rgba(1, 180, 228, 0.45);
+  font-weight: 800;
+}
+
+.badge-res {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.badge-year {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-status {
+  background: rgba(52, 199, 89, 0.16);
+  color: #34c759;
+  border: 1px solid rgba(52, 199, 89, 0.38);
+}
+
+.cinema-genre-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.cinema-genre-pill {
+  padding: 4px 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.cinema-hero-desc {
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 580px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 22px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.cinema-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cinema-play-glow-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #f0a732;
+  color: #0d0e12 !important;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  cursor: pointer;
+  box-shadow:
+    0 0 32px rgba(240, 167, 50, 0.65),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s ease;
+}
+
+.cinema-play-glow-btn:hover {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 45px rgba(240, 167, 50, 0.85),
+    0 10px 28px rgba(0, 0, 0, 0.6);
+}
+
+.cinema-play-glow-btn i {
+  color: #0d0e12 !important;
+  margin-left: 3px;
+}
+
+.cinema-action-capsule {
+  height: 54px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: rgba(24, 27, 36, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.cinema-capsule-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.15rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.cinema-capsule-btn:hover {
+  color: #f0a732;
+  transform: scale(1.18);
+}
+
+.cinema-capsule-btn.favorited i {
+  color: #ff3b30 !important;
+}
+
+.cinema-capsule-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Bottom-Right Thumbnail Carousel Strip */
+.cinema-hero-thumbnails {
+  position: absolute;
+  right: 44px;
+  bottom: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 5;
+}
+
+.cinema-thumb-card {
+  width: 92px;
+  height: 54px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  background: #14151b;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: -webkit-radial-gradient(white, black);
+  -webkit-clip-path: inset(0 round 12px);
+  clip-path: inset(0 round 12px);
+  transition:
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+.cinema-thumb-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  -webkit-clip-path: inset(0 round 12px);
+  clip-path: inset(0 round 12px);
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+.cinema-thumb-card:hover {
+  transform: translateY(-2px) scale(1.05);
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+.cinema-thumb-card.active {
+  border-color: #ffffff !important;
+  transform: scale(1.1) !important;
+  box-shadow:
+    0 0 24px rgba(255, 255, 255, 0.75),
+    0 8px 24px rgba(0, 0, 0, 0.6) !important;
+  z-index: 2;
+}
+
+/* ==========================================================================
    RIGHT MAIN COLUMN: HERO BANNER & "YOU MIGHT LIKE" CARDS
    ========================================================================== */
 .vision-main-col {
@@ -4412,29 +4733,36 @@ body {
 .vision-feature-card {
   position: relative;
   width: 100%;
-  height: 235px;
+  height: 245px;
   border-radius: 24px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: #1a1b1f;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: -webkit-radial-gradient(white, black);
+  -webkit-clip-path: inset(0 round 24px);
+  clip-path: inset(0 round 24px);
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: #111216;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 14px;
-  contain: layout paint;
+  padding: 16px;
   transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transition:
-    border-color 0.18s ease,
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s ease;
+    border-color 0.2s ease,
+    transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.26s ease;
 }
 
 .vision-feature-card:hover {
-  border-color: rgba(255, 255, 255, 0.48);
-  transform: translateY(-2px) scale(1.008);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.65);
+  transform: translate3d(0, -6px, 0);
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.28);
 }
 
 .vision-feature-img {
@@ -4444,21 +4772,26 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: center 25%;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
+  border-radius: 24px;
+  -webkit-clip-path: inset(0 round 24px);
+  clip-path: inset(0 round 24px);
   transform: translateZ(0);
   z-index: 0;
+  pointer-events: none;
 }
 
 .vision-feature-shade {
   position: absolute;
   inset: 0;
   z-index: 1;
+  border-radius: 24px;
+  pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(10, 12, 16, 0.05) 0%,
-    rgba(10, 12, 16, 0.45) 48%,
-    rgba(10, 12, 16, 0.92) 100%
+    rgba(10, 12, 16, 0) 0%,
+    rgba(10, 12, 16, 0.2) 32%,
+    rgba(10, 12, 16, 0.82) 72%,
+    rgba(10, 12, 16, 0.98) 100%
   );
 }
 
@@ -5621,6 +5954,16 @@ body.modal-open .apple-player-bar {
     height: 56px !important;
     width: min(385px, calc(100vw - 32px)) !important;
   }
+  .cinema-showcase-hero {
+    height: 520px !important;
+  }
+  .cinema-hero-content {
+    padding: 34px 34px !important;
+  }
+  .cinema-hero-thumbnails {
+    right: 30px !important;
+    bottom: 30px !important;
+  }
 }
 
 /* C2. iPad Portrait (Dựng đứng: 768px – 919px: iPad 10.2", iPad Air, iPad Mini) */
@@ -5634,6 +5977,16 @@ body.modal-open .apple-player-bar {
   .vision-window {
     border-radius: 24px !important;
     padding: 16px 16px 22px !important;
+  }
+  .cinema-showcase-hero {
+    height: 480px !important;
+  }
+  .cinema-hero-content {
+    padding: 28px 24px !important;
+  }
+  .cinema-hero-thumbnails {
+    right: 20px !important;
+    bottom: 20px !important;
   }
   .vision-topbar {
     grid-template-columns: 1fr auto !important;
@@ -5786,6 +6139,83 @@ body.modal-open .apple-player-bar {
     padding: 16px !important;
     border-radius: 20px !important;
     margin-bottom: 16px !important;
+  }
+
+  /* Cinema Showcase Hero trên Điện thoại */
+  .cinema-showcase-hero {
+    height: auto !important;
+    min-height: 440px !important;
+    border-radius: 20px !important;
+    -webkit-clip-path: inset(0 round 20px) !important;
+    clip-path: inset(0 round 20px) !important;
+    margin-bottom: 14px !important;
+  }
+  .cinema-hero-content {
+    padding: 24px 18px 20px !important;
+    justify-content: flex-end !important;
+  }
+  .cinema-hero-title {
+    font-size: clamp(1.4rem, 6vw, 1.85rem) !important;
+    line-height: 1.2 !important;
+  }
+  .cinema-hero-sub {
+    font-size: 0.8rem !important;
+    margin-bottom: 8px !important;
+  }
+  .cinema-meta-badges {
+    gap: 6px !important;
+    margin-bottom: 8px !important;
+  }
+  .cinema-badge {
+    font-size: 0.68rem !important;
+    padding: 2px 6px !important;
+  }
+  .cinema-genre-pills {
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+  }
+  .cinema-genre-pill {
+    font-size: 0.72rem !important;
+    padding: 2px 9px !important;
+  }
+  .cinema-hero-desc {
+    font-size: 0.8rem !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    margin-bottom: 14px !important;
+  }
+  .cinema-play-glow-btn {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 1.15rem !important;
+  }
+  .cinema-action-capsule {
+    height: 48px !important;
+    padding: 0 16px !important;
+    gap: 14px !important;
+  }
+  .cinema-capsule-btn {
+    font-size: 1rem !important;
+  }
+  .cinema-hero-thumbnails {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    margin-top: 18px !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    padding-bottom: 4px !important;
+    gap: 8px !important;
+    scrollbar-width: none !important;
+  }
+  .cinema-hero-thumbnails::-webkit-scrollbar {
+    display: none !important;
+  }
+  .cinema-thumb-card {
+    flex: 0 0 76px !important;
+    height: 44px !important;
+    border-radius: 9px !important;
   }
   .vision-hero-bottom {
     flex-direction: column !important;
@@ -8132,20 +8562,17 @@ body.video-cursor-hidden *,
    ========================================================================== */
 #hlsVideoElement,
 .active-video-container video {
-  image-rendering: -webkit-optimize-contrast !important;
-  image-rendering: high-quality !important;
+  filter: none !important;
+  image-rendering: auto !important;
   transform: translateZ(0) !important;
-  backface-visibility: hidden !important;
+  will-change: transform;
 }
 
 #hlsVideoElement.quality-4k-enhanced,
 .active-video-container video.quality-4k-enhanced {
   filter: none !important;
-  image-rendering: -webkit-optimize-contrast !important;
-  image-rendering: high-quality !important;
-  -webkit-font-smoothing: antialiased !important;
+  image-rendering: auto !important;
   transform: translateZ(0) !important;
-  backface-visibility: hidden !important;
 }
 
 /* Ẩn hoàn toàn các nút khử logo/banner theo yêu cầu người dùng */
@@ -8742,28 +9169,23 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (hover: hover) {
   .vision-feature-card:hover,
   .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -7px, 0) scale(1.024) !important;
-    border-color: rgba(255, 255, 255, 0.72) !important;
+    transform: translate3d(0, -6px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
-      inset 0 1px 1px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.58),
-      0 0 24px rgba(255, 255, 255, 0.12) !important;
+      0 20px 42px rgba(0, 0, 0, 0.65),
+      0 0 0 1px rgba(255, 255, 255, 0.4) !important;
     z-index: 4;
-  }
-
-  .vision-feature-card:hover .vision-feature-img,
-  .vision-feature-card.is-hero-previewing .vision-feature-img {
-    transform: scale(1.075) translateZ(0);
   }
 
   .vision-feature-card:hover .vision-card-play-white {
     transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.75);
+    background: #ffffff !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6) !important;
   }
 
   .vision-trailer-card.is-hero-previewing {
     border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 255, 255, 0.14) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.35) !important;
   }
 }
 
