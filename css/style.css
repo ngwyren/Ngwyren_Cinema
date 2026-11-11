@@ -47,6 +47,7 @@
   --radius-lg: 20px;
   --radius-xl: 26px;
   --radius-pill: 9999px;
+  --window-radius: 30px;
 
   /* Motion Graphics Easing Curves (Ease-In-Out & Apple Spring) */
   --ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -3382,7 +3383,14 @@ body {
 .vision-window {
   width: 100%;
   min-height: calc(100vh - 16px);
-  border-radius: 30px;
+  border-radius: var(--window-radius, 30px) !important;
+  background-clip: padding-box !important;
+  -webkit-background-clip: padding-box !important;
+  overflow: clip !important;
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-clip-path: inset(0 round var(--window-radius, 30px));
+  clip-path: inset(0 round var(--window-radius, 30px));
   background: #0d0f14;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -3430,10 +3438,12 @@ body {
 }
 
 .vision-topbar-home-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: scale(1.08);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: scale(1.08) !important;
+  color: #ffffff !important;
 }
 
 .vision-topbar-home-btn:active {
@@ -3522,12 +3532,12 @@ body {
 }
 
 .vision-nav-pill.active {
-  background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(255, 255, 255, 0.38);
-  color: #ffffff;
-  box-shadow:
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.5),
-    0 2px 10px rgba(0, 0, 0, 0.28);
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
+  filter: none !important;
+  text-shadow: none !important;
   transform: none;
 }
 
@@ -3569,7 +3579,10 @@ body {
 .vision-circle-btn:hover {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.12) !important;
-  transform: scale(1.12);
+  border: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: scale(1.08);
 }
 
 .vision-circle-btn:active {
@@ -3577,11 +3590,12 @@ body {
 }
 
 .vision-circle-btn.active {
-  background: rgba(255, 255, 255, 0.22) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
   color: #ffffff !important;
   border-radius: 50% !important;
-  border: 1px solid rgba(255, 255, 255, 0.45) !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
+  filter: none !important;
 }
 
 .vision-circle-btn.active i {
@@ -3645,17 +3659,17 @@ body {
 }
 
 .vision-notif-flyout {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
+  position: fixed !important;
+  top: calc(74px + env(safe-area-inset-top, 0px)) !important;
+  right: max(24px, env(safe-area-inset-right, 24px)) !important;
   width: min(420px, 92vw);
-  max-height: calc(100vh - 120px);
+  max-height: min(640px, calc(100vh - 100px));
   background: rgba(18, 18, 26, 0.95);
   backdrop-filter: blur(48px) saturate(1.8) contrast(1.05);
   -webkit-backdrop-filter: blur(48px) saturate(1.8) contrast(1.05);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 24px;
-  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.8), inset 0 1px 1.5px rgba(255, 255, 255, 0.35), 0 0 32px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 68px rgba(0, 0, 0, 0.85), inset 0 1px 1.5px rgba(255, 255, 255, 0.3) !important;
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -4551,8 +4565,8 @@ body {
   opacity: 1 !important;
   border: 2px solid #ffffff !important;
   box-shadow:
-    0 0 16px rgba(255, 255, 255, 0.65),
-    0 6px 18px rgba(0, 0, 0, 0.6) !important;
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 8px 22px rgba(0, 0, 0, 0.7) !important;
   transform: none !important; /* Đảm bảo 100% tất cả thẻ bằng nhau, không bị cái to cái nhỏ */
   z-index: 2 !important;
 }
@@ -4911,11 +4925,10 @@ body {
   background: rgba(255, 255, 255, 0.22);
   border-color: rgba(255, 255, 255, 0.65);
   color: #ffffff;
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.35), 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .vision-card-more.active i {
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85));
   animation: appleStarPop 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -5356,7 +5369,7 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1.5px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.45);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -5553,13 +5566,13 @@ body {
   justify-content: center;
   font-size: 0.9rem;
   cursor: pointer;
-  box-shadow: 0 0 14px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
   transition: all 0.2s ease;
 }
 
 .mini-play-glow-btn:hover {
   transform: scale(1.12);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
 .mini-actions-group {
@@ -5978,6 +5991,9 @@ body.modal-open .apple-player-bar {
 
 /* C1. iPad Landscape (Nằm ngang: 920px – 1180px: iPad Pro, iPad Air, Galaxy Tab) */
 @media (min-width: 920px) and (max-width: 1180px) {
+  :root {
+    --window-radius: 26px;
+  }
   .vision-stage {
     padding: 16px 18px 90px 18px !important;
   }
@@ -5985,7 +6001,9 @@ body.modal-open .apple-player-bar {
     display: none !important;
   }
   .vision-window {
-    border-radius: 26px !important;
+    border-radius: var(--window-radius, 26px) !important;
+    -webkit-clip-path: inset(0 round var(--window-radius, 26px)) !important;
+    clip-path: inset(0 round var(--window-radius, 26px)) !important;
     padding: 18px 20px 24px !important;
   }
   .vision-topbar {
@@ -6038,6 +6056,9 @@ body.modal-open .apple-player-bar {
 
 /* C2. iPad Portrait (Dựng đứng: 768px – 919px: iPad 10.2", iPad Air, iPad Mini) */
 @media (min-width: 768px) and (max-width: 919px) {
+  :root {
+    --window-radius: 24px;
+  }
   .vision-stage {
     padding: 14px 14px 140px 14px !important;
   }
@@ -6045,7 +6066,9 @@ body.modal-open .apple-player-bar {
     display: none !important;
   }
   .vision-window {
-    border-radius: 24px !important;
+    border-radius: var(--window-radius, 24px) !important;
+    -webkit-clip-path: inset(0 round var(--window-radius, 24px)) !important;
+    clip-path: inset(0 round var(--window-radius, 24px)) !important;
     padding: 16px 16px 22px !important;
   }
   .cinema-showcase-hero {
@@ -6113,6 +6136,9 @@ body.modal-open .apple-player-bar {
 
 /* --- D. THIẾT BỊ 3: ĐIỆN THOẠI DI ĐỘNG / SMARTPHONE (<= 767px: iPhone, Samsung, Xiaomi) --- */
 @media (max-width: 767px) {
+  :root {
+    --window-radius: 20px;
+  }
   .vision-stage {
     padding: 6px 6px calc(146px + env(safe-area-inset-bottom, 0px)) 6px !important;
   }
@@ -6120,7 +6146,9 @@ body.modal-open .apple-player-bar {
     display: none !important;
   }
   .vision-window {
-    border-radius: 20px !important;
+    border-radius: var(--window-radius, 20px) !important;
+    -webkit-clip-path: inset(0 round var(--window-radius, 20px)) !important;
+    clip-path: inset(0 round var(--window-radius, 20px)) !important;
     padding: 12px 10px 18px !important;
   }
 
@@ -6558,7 +6586,7 @@ body.modal-open .apple-player-bar {
 .vision-hero-dot.active {
   width: 22px;
   background: #ffffff;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
 }
 
 /* ==========================================================================
@@ -7044,6 +7072,14 @@ html.dragging-glass .vision-left-dock {
    APPLE visionOS UNIFIED FLUID GLASS ENGINE (ZERO-GLITCH 0% -> 100% CONTINUOUS LERP)
    -------------------------------------------------------------------------- */
 .vision-window {
+  border-radius: var(--window-radius, 30px) !important;
+  background-clip: padding-box !important;
+  -webkit-background-clip: padding-box !important;
+  overflow: clip !important;
+  isolation: isolate;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  -webkit-clip-path: inset(0 round var(--window-radius, 30px));
+  clip-path: inset(0 round var(--window-radius, 30px));
   backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
   border-color: rgba(255, 255, 255, var(--glass-border-alpha, 0.28)) !important;
@@ -7270,7 +7306,6 @@ html.dragging-glass .vision-left-dock {
   );
   border: 1.5px solid rgba(255, 255, 255, 0.72) !important;
   box-shadow:
-    0 0 14px 1px rgba(255, 255, 255, 0.35),
     inset 0 1px 1px rgba(255, 255, 255, 0.75),
     inset 0 -1px 0.8px rgba(255, 255, 255, 0.15),
     0 4px 14px rgba(0, 0, 0, 0.35) !important;
@@ -7455,8 +7490,12 @@ html.dragging-glass .vision-left-dock {
 [data-theme="emerald"] .vision-nav-pill.active,
 [data-theme="aurora"] .vision-nav-pill.active,
 [data-theme="amber"] .vision-nav-pill.active {
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.5) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
   filter: none !important;
+  text-shadow: none !important;
 }
 
 /* ==========================================================================
@@ -8775,9 +8814,9 @@ body.video-cursor-hidden *,
 
   /* Bảng Thông Báo trên iPad: Luôn nằm dưới topbar, không che các icon */
   .vision-notif-flyout {
-    position: absolute !important;
-    top: calc(100% + 12px) !important;
-    right: 0 !important;
+    position: fixed !important;
+    top: calc(74px + env(safe-area-inset-top, 0px)) !important;
+    right: 20px !important;
     left: auto !important;
     width: min(420px, 90vw) !important;
     max-height: calc(85dvh) !important;
@@ -9300,8 +9339,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.65),
-      0 0 24px rgba(255, 255, 255, 0.16) !important;
+      0 20px 42px rgba(0, 0, 0, 0.65) !important;
     z-index: 5 !important;
   }
 
@@ -9314,7 +9352,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: scale(1.12) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
-    box-shadow: 0 0 22px rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
 
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
@@ -9328,8 +9366,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.65),
-      0 0 24px rgba(255, 255, 255, 0.16) !important;
+      0 20px 42px rgba(0, 0, 0, 0.65) !important;
   }
 
   .movie-card:hover .movie-poster-wrap img {
@@ -9338,7 +9375,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   .movie-card:hover .hover-play-center {
     transform: scale(1.12) !important;
-    box-shadow: 0 0 22px rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
 
   /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
@@ -9348,8 +9385,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1px rgba(255, 255, 255, 0.45),
-      0 18px 38px rgba(0, 0, 0, 0.62),
-      0 0 20px rgba(255, 255, 255, 0.15) !important;
+      0 18px 38px rgba(0, 0, 0, 0.62) !important;
     z-index: 5 !important;
   }
 
@@ -9361,7 +9397,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: translate(-50%, -50%) scale(1.12) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
-    box-shadow: 0 0 22px rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
 
   /* Side Trailer Cards */
@@ -9515,14 +9551,14 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: scale(1.05) translate3d(0, -2px, 0) !important;
     background: rgba(255, 255, 255, 0.96) !important;
     color: #0b0c10 !important;
-    box-shadow: 0 0 28px rgba(255, 255, 255, 0.85), 0 10px 28px rgba(0, 0, 0, 0.6) !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
 
   .btn-glass-secondary:hover {
     transform: scale(1.04) translate3d(0, -1px, 0) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
     background: rgba(255, 255, 255, 0.16) !important;
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
   }
 
   /* Nút Server (Server 1, Server 2, Thuyết Minh, Trailer) */
@@ -9536,14 +9572,14 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .ep-pill-btn:hover {
     transform: translate3d(0, -3px, 0) scale(1.04) !important;
     border-color: rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.45) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 
   /* Nút điều khiển góc trên (Đèn, Thu nhỏ, Đóng) */
   .modal-ctrl-btn:hover {
     transform: scale(1.14) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 
   /* Tabs Trong Modal (Nội dung tương tự, Cùng thể loại) */
@@ -9633,7 +9669,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   cursor: pointer;
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(255, 255, 255, 0.45) !important;
+    inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
 }
 
@@ -9641,7 +9677,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transform: scale(1.05) translate3d(0, -2px, 0);
   box-shadow:
     0 14px 36px rgba(0, 0, 0, 0.6),
-    0 0 28px rgba(255, 255, 255, 0.75) !important;
+    inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
 }
 
 .explore-load-more-btn:active {
@@ -9676,7 +9712,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .schedule-tab-btn:hover {
     transform: scale(1.05) translate3d(0, -2px, 0) !important;
     border-color: rgba(255, 255, 255, 0.65) !important;
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
   }
 }
 
@@ -9687,7 +9723,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 .schedule-tab-btn.active {
   transform: scale(1.04) !important;
   border-color: #ffffff !important;
-  box-shadow: 0 0 22px rgba(255, 255, 255, 0.55), 0 10px 28px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Thẻ Lịch Chiếu: Cascade PS5 + 3D Spring Hover Lift */
@@ -9718,8 +9754,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.65),
-      0 0 24px rgba(255, 255, 255, 0.16) !important;
+      0 20px 42px rgba(0, 0, 0, 0.65) !important;
     z-index: 5 !important;
   }
 
@@ -9731,7 +9766,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: scale(1.14) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
-    box-shadow: 0 0 24px rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
 }
 
@@ -9750,9 +9785,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transform-origin: top right;
   border: 1px solid rgba(255, 255, 255, 0.22) !important;
   box-shadow:
-    0 24px 68px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1.5px rgba(255, 255, 255, 0.35),
-    0 0 32px rgba(255, 255, 255, 0.1) !important;
+    0 24px 68px rgba(0, 0, 0, 0.85),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.35) !important;
 }
 
 @keyframes ps5FlyoutSpringIn {
@@ -9785,10 +9819,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .notif-tab-btn.active {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.18) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3), 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
+  filter: none !important;
 }
 
 .notif-movie-item,
@@ -9812,7 +9847,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: translate3d(4px, 0, 0) scale(1.015) !important;
     background: rgba(255, 255, 255, 0.12) !important;
     border-color: rgba(255, 255, 255, 0.45) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0.5px rgba(255, 255, 255, 0.25) !important;
   }
 
   .notif-movie-item:hover .notif-movie-thumb {
@@ -9850,8 +9885,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.45) !important;
     box-shadow:
       0 16px 36px rgba(0, 0, 0, 0.55),
-      inset 0 1px 1.5px rgba(255, 255, 255, 0.3),
-      0 0 20px rgba(255, 255, 255, 0.08) !important;
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.3) !important;
   }
 }
 
@@ -9863,7 +9897,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .filter-chip:hover {
     transform: scale(1.06) translate3d(0, -2px, 0) !important;
     border-color: rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
   }
 }
 
@@ -9872,7 +9906,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .filter-chip.active {
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.55) !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
 
 .vision-toggle-btn {
@@ -9882,7 +9916,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (hover: hover) {
   .vision-toggle-btn:hover {
     transform: scale(1.08) !important;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
   }
 }
 
@@ -9891,7 +9925,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-toggle-btn.on {
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.6) !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.5), 0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
 
 .ios-slider-icon {
@@ -9915,7 +9949,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-btn-outline:hover {
     transform: scale(1.05) translate3d(0, -1px, 0) !important;
     border-color: rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 }
 
@@ -10004,7 +10038,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (hover: hover) {
   .btn-quick-save-client:hover {
     transform: scale(1.05) !important;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 }
 
@@ -10027,8 +10061,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   border-color: rgba(255, 255, 255, 0.75) !important;
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.35),
-    0 10px 24px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(255, 255, 255, 0.2) !important;
+    0 10px 24px rgba(0, 0, 0, 0.5) !important;
   transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
@@ -10036,8 +10069,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   animation: ps5FlyoutSpringIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1.5px rgba(255, 255, 255, 0.35),
-    0 0 28px rgba(255, 255, 255, 0.1) !important;
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.35) !important;
 }
 
 .search-suggestion-item {
@@ -10049,7 +10081,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .search-suggestion-item:hover {
     transform: translate3d(6px, 0, 0) scale(1.015) !important;
     background: rgba(255, 255, 255, 0.14) !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.2) !important;
   }
 }
 
@@ -10064,7 +10096,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (hover: hover) {
   .btn-sync-now:hover {
     transform: scale(1.02) !important;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
   }
 }
 
@@ -10084,7 +10116,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (hover: hover) {
   .mini-play-glow-btn:hover {
     transform: scale(1.12) !important;
-    box-shadow: 0 0 24px rgba(255, 255, 255, 0.85) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
 }
 
@@ -10115,7 +10147,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .mini-cinema-expand-btn:hover {
     transform: scale(1.06) !important;
     border-color: rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 0 16px rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
   }
 }
 
@@ -10139,10 +10171,12 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-nav-pill.active {
-  background: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(255, 255, 255, 0.16) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.38) !important;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 4px 14px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
+  filter: none !important;
+  text-shadow: none !important;
 }
 
 .vision-circle-btn {
@@ -10151,13 +10185,15 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 @media (hover: hover) {
   .vision-circle-btn:hover {
-    transform: scale(1.16) !important;
-    background: rgba(255, 255, 255, 0.16) !important;
+    transform: scale(1.08) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: none !important;
+    filter: none !important;
   }
 }
 
 .vision-circle-btn:active {
-  transform: scale(0.9) !important;
+  transform: scale(0.92) !important;
 }
 
 .vision-topbar-home-btn {
@@ -10166,13 +10202,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 @media (hover: hover) {
   .vision-topbar-home-btn:hover {
-    transform: scale(1.16) !important;
-    background: rgba(255, 255, 255, 0.16) !important;
+    transform: scale(1.08) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.32) !important;
+    box-shadow: none !important;
+    filter: none !important;
   }
 }
 
 .vision-topbar-home-btn:active {
-  transform: scale(0.9) !important;
+  transform: scale(0.92) !important;
 }
 
 .vision-profile-pill {
@@ -10183,7 +10222,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-profile-pill:hover {
     transform: scale(1.04) translate3d(0, -1px, 0) !important;
     border-color: rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 16px rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
   }
 }
 

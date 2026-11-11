@@ -50,7 +50,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.3.70" />
+  <link rel="stylesheet" href="css/style.css?v=2.3.71" />
 </head>
 <body>
 
@@ -59,6 +59,10 @@
 
   <!-- Toast Notifications -->
   <div class="apple-toast-container" id="toastContainer"></div>
+
+  <!-- Cinema Notification Center Flyout & Tap Backdrop (Fixed to Body for Clean visionOS Layering) -->
+  <div class="vision-notif-backdrop" id="visionNotifBackdrop" onclick="app.closeNotificationCenter()" style="display: none;"></div>
+  <div class="vision-notif-flyout" id="visionNotifFlyout" style="display: none;" onclick="event.stopPropagation()"></div>
 
   <!-- ========================================================================
        VISION PRO SPATIAL STAGE (LEFT FLOATING ICON PILL + MAIN GLASS WINDOW)
@@ -137,10 +141,6 @@
             <i class="fas fa-bell"></i>
             <span class="vision-notif-dot"></span>
           </button>
-
-          <!-- Cinema Notification Center Flyout & Tap Backdrop -->
-          <div class="vision-notif-backdrop" id="visionNotifBackdrop" onclick="app.closeNotificationCenter()" style="display: none;"></div>
-          <div class="vision-notif-flyout" id="visionNotifFlyout" style="display: none;" onclick="event.stopPropagation()"></div>
 
           <div class="vision-profile-pill" id="topProfilePill" onclick="app.openAuthModal()" title="Hồ sơ & Đăng nhập">
             <div class="vision-avatar" id="topProfileAvatar">
@@ -332,10 +332,10 @@
   </svg>
 
   <!-- High-Performance Deferred Scripts (Fast boot under 50ms, catalog loaded in background) -->
-  <script src="js/auth-config.js?v=2.3.70" defer></script>
-  <script src="js/data.js?v=2.3.70" defer></script>
-  <script src="js/air-schedule.js?v=2.3.70" defer></script>
-  <script src="js/app.js?v=2.3.70" defer></script>
-  <script src="js/movies-catalog.js?v=2.3.70" defer></script>
+  <script src="js/auth-config.js?v=2.3.71" defer></script>
+  <script src="js/data.js?v=2.3.71" defer></script>
+  <script src="js/air-schedule.js?v=2.3.71" defer></script>
+  <script src="js/app.js?v=2.3.71" defer></script>
+  <script src="js/movies-catalog.js?v=2.3.71" defer></script>
 </body>
 </html>
