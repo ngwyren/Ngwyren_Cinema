@@ -3193,18 +3193,18 @@ class AppleCinemaApp {
 
     if (isVtvgoMovie) {
       const vtvUrl = ep?.vtvgoUrl || movie.vtvgoUrl || "https://vtvgo.vn/watch/2E4t";
-      const isVtvActive = this.currentServerMode === "vtvgo" || (!this.currentServerMode || this.currentServerMode === "hls-1");
-      const isYtActive = this.currentServerMode === "youtube" || this.currentServerMode === "embed-1";
+      const isYtActive = this.currentServerMode === "youtube" || !this.currentServerMode || this.currentServerMode === "hls-1";
+      const isVtvActive = this.currentServerMode === "vtvgo";
       return `
-        <button class="server-btn ${isVtvActive ? "active" : ""}" id="srvBtnVtvgo"
-                onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'vtvgo')" title="Phát Server VTVgo Bản Gốc Đài VTV (Không Phụ Đề)">
-          <i class="fas fa-tower-broadcast"></i> Server VTVgo
-        </button>
         <button class="server-btn ${isYtActive ? "active" : ""}" id="srvBtnYouTube"
-                onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'youtube')" title="Phát Server YouTube 4K Ultra HD">
-          <i class="fab fa-youtube"></i> Server YouTube (4K)
+                onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'youtube')" title="Phát Server 1: YouTube 4K (Miễn Phí • Không Cần Gói Trả Phí)">
+          <i class="fab fa-youtube"></i> Server 1 (YouTube 4K Miễn Phí)
         </button>
-        <a href="${vtvUrl}" target="_blank" rel="noopener noreferrer" class="server-btn" style="text-decoration: none;" title="Mở trực tiếp trên VTVgo">
+        <button class="server-btn ${isVtvActive ? "active" : ""}" id="srvBtnVtvgo"
+                onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'vtvgo')" title="Server 2: VTVgo Bản Gốc Đài VTV (Yêu cầu tài khoản VTVgo MAX 95k)">
+          <i class="fas fa-tv"></i> Server VTVgo (Gói 95k)
+        </button>
+        <a href="${vtvUrl}" target="_blank" rel="noopener noreferrer" class="server-btn" style="text-decoration: none;" title="Mở trực tiếp trên VTVgo (Dành cho tài khoản VTVgo MAX)">
           <i class="fas fa-arrow-up-right-from-square"></i> Mở trên VTVgo
         </a>
         ${
@@ -3417,11 +3417,18 @@ class AppleCinemaApp {
         iframeEl.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups");
         iframeEl.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture; fullscreen");
       }
+      if (isYouTube) {
+        this.applyYouTubeBestQualityAndNoCaptions(iframeEl);
+      }
       const finalUrl = isYouTube ? this.formatYouTubeEmbedUrl(iframeUrl) : iframeUrl;
       iframeEl.src = finalUrl;
       iframeEl.style.display = "block";
       if (isYouTube) {
-        this.applyYouTubeBestQualityAndNoCaptions(iframeEl);
+        setTimeout(() => {
+          try {
+            iframeEl.contentWindow?.postMessage(JSON.stringify({ event: "listening" }), "*");
+          } catch (_) {}
+        }, 150);
       }
     }
   }
@@ -3538,19 +3545,24 @@ class AppleCinemaApp {
       }
     } else if (serverMode === "vtvgo") {
       this.currentServerMode = "vtvgo";
-      streamUrl = episode?.vtvgoUrl || movie.vtvgoUrl || episode?.embed || "";
-    } else if (serverMode === "youtube") {
-      this.currentServerMode = "youtube";
-      const ytAlt = episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")));
-      streamUrl = ytAlt?.embed || (episode?.embed && episode.embed.includes("youtube") ? episode.embed : "");
+      streamUrl = episode?.vtvgoUrl || movie.vtvgoUrl || "https://vtvgo.vn/watch/2E4t";
+    } else if (serverMode === "youtube" || serverMode === "hls-1") {
+      if (movie.vtvgoUrl || episode?.vtvgoUrl) {
+        this.currentServerMode = "youtube";
+        const ytAlt = episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")));
+        streamUrl = ytAlt?.embed || episode?.embed || "";
+      } else {
+        streamUrl = (episode && episode.source) || (ncEp && ncEp.source) || "";
+      }
     } else if (serverMode === "dub-1") {
       streamUrl = (dubEp && dubEp.source) || (episode && episode.source) || "";
     } else if (serverMode === "embed-1" || serverMode === "nguonc-1") {
       streamUrl = (ncEp && ncEp.source) || (ncEp && ncEp.embed) || (episode && episode.embed) || (episode && episode.source) || "";
     } else {
       if (movie.vtvgoUrl || episode?.vtvgoUrl) {
-        this.currentServerMode = "vtvgo";
-        streamUrl = episode?.vtvgoUrl || movie.vtvgoUrl || episode?.embed || "";
+        this.currentServerMode = "youtube";
+        const ytAlt = episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")));
+        streamUrl = ytAlt?.embed || episode?.embed || "";
       } else {
         streamUrl = (episode && episode.source) || (ncEp && ncEp.source) || "";
       }
