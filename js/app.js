@@ -559,11 +559,17 @@ class AppleCinemaApp {
     const continueItems = [];
     for (const h of (this.watchHistory || [])) {
       if (!h || !h.slug) continue;
-      const movie = this.findMovie(h.slug) || {
+      const foundMovie = this.findMovie(h.slug);
+      const fallbackImg = "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg";
+      const movie = foundMovie ? {
+        ...foundMovie,
+        poster: foundMovie.poster || foundMovie.backdrop || h.poster || fallbackImg,
+        backdrop: foundMovie.backdrop || foundMovie.poster || h.backdrop || fallbackImg
+      } : {
         slug: h.slug,
         title: h.title || h.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-        poster: h.poster || "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg",
-        backdrop: h.backdrop || h.poster || "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg",
+        poster: h.poster || fallbackImg,
+        backdrop: h.backdrop || h.poster || fallbackImg,
         type: "series"
       };
       const progress = Number(h.progress) || 15;
@@ -593,10 +599,11 @@ class AppleCinemaApp {
             const ep = movie.episodes?.[epIndex] || movie.episodes?.[0];
             const epLabel = ep?.name ? this.formatEpisodeLabel(ep.name, `Tập ${epIndex + 1}`) : (movie.type === "series" ? `Tập ${epIndex + 1}` : "Bản Full");
             const timeStr = currentTime > 0 ? this.formatSeconds(currentTime) : "";
+            const thumbImg = movie.backdrop || movie.poster || "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg";
             return `
               <div class="continue-shelf-card" style="--card-stagger: ${idx};" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})">
                 <div class="continue-shelf-thumb">
-                  <img src="${movie.backdrop || movie.poster}" alt="${movie.title}" loading="lazy" decoding="async" />
+                  <img src="${thumbImg}" alt="${movie.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
                   <div class="continue-shelf-play"><i class="fas fa-play"></i></div>
                   <div class="continue-shelf-badge">${epLabel}</div>
                   <div class="continue-shelf-bar">
@@ -1936,7 +1943,7 @@ class AppleCinemaApp {
            onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})"
            title="Tiếp tục xem ${movie.title}">
         <div class="vision-continue-thumb-box">
-          <img class="vision-continue-thumb" src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async" />
+          <img class="vision-continue-thumb" src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
           <div class="vision-continue-progress-bg">
             <div class="vision-continue-progress-fill" style="width: ${pct}%;"></div>
           </div>
@@ -2058,7 +2065,7 @@ class AppleCinemaApp {
           (m, idx) => `
         <div class="chart-row-item" onclick="app.openMovieModal('${m.slug}', false)">
           <span class="chart-rank-num">${idx + 1}</span>
-          <img class="chart-thumb" src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async" />
+          <img class="chart-thumb" src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
           <div class="chart-info">
             <div class="chart-title">${m.title}</div>
             <div class="chart-sub">${m.originTitle} • ${m.country}</div>
@@ -3182,6 +3189,35 @@ class AppleCinemaApp {
   buildServerButtonsHTML(movie, epIndex = 0) {
     if (!movie) return "";
     const ep = movie.episodes?.[epIndex] || movie.episodes?.[0];
+    const isVtvgoMovie = Boolean(movie.vtvgoUrl || ep?.vtvgoUrl);
+
+    if (isVtvgoMovie) {
+      const vtvUrl = ep?.vtvgoUrl || movie.vtvgoUrl || "https://vtvgo.vn/watch/2E4t";
+      const isVtvActive = this.currentServerMode === "vtvgo" || (!this.currentServerMode || this.currentServerMode === "hls-1");
+      const isYtActive = this.currentServerMode === "youtube" || this.currentServerMode === "embed-1";
+      return `
+        <button class="server-btn ${isVtvActive ? "active" : ""}" id="srvBtnVtvgo"
+                onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'vtvgo')" title="Phát Server VTVgo Bản Gốc Đài VTV (Không Phụ Đề)">
+          <i class="fas fa-tower-broadcast"></i> Server VTVgo
+        </button>
+        <button class="server-btn ${isYtActive ? "active" : ""}" id="srvBtnYouTube"
+                onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'youtube')" title="Phát Server YouTube 4K Ultra HD">
+          <i class="fab fa-youtube"></i> Server YouTube (4K)
+        </button>
+        <a href="${vtvUrl}" target="_blank" rel="noopener noreferrer" class="server-btn" style="text-decoration: none;" title="Mở trực tiếp trên VTVgo">
+          <i class="fas fa-arrow-up-right-from-square"></i> Mở trên VTVgo
+        </a>
+        ${
+          movie.trailerUrl
+            ? `<button class="server-btn ${this.currentServerMode === "trailer" ? "active" : ""}" id="srvBtnTrailer"
+                      onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'trailer')" title="Xem Trailer">
+                <i class="fab fa-youtube"></i> Trailer
+              </button>`
+            : ""
+        }
+      `;
+    }
+
     const hasEmbed2 = Boolean(movie.nguoncEpisodes && movie.nguoncEpisodes.length > 0) || Boolean(ep?.embed);
     const hasDub = Boolean(movie.dubEpisodes && movie.dubEpisodes.length > 0);
 
@@ -3373,6 +3409,14 @@ class AppleCinemaApp {
     }
     if (iframeEl && iframeUrl) {
       const isYouTube = iframeUrl.includes("youtube.com") || iframeUrl.includes("youtu.be");
+      const isVtvgo = iframeUrl.includes("vtvgo.vn");
+      if (isVtvgo) {
+        iframeEl.removeAttribute("sandbox");
+        iframeEl.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture; fullscreen");
+      } else {
+        iframeEl.setAttribute("sandbox", "allow-scripts allow-same-origin allow-presentation allow-forms allow-popups");
+        iframeEl.setAttribute("allow", "autoplay; encrypted-media; picture-in-picture; fullscreen");
+      }
       const finalUrl = isYouTube ? this.formatYouTubeEmbedUrl(iframeUrl) : iframeUrl;
       iframeEl.src = finalUrl;
       iframeEl.style.display = "block";
@@ -3492,12 +3536,24 @@ class AppleCinemaApp {
       if (selectedAltObj) {
         streamUrl = selectedAltObj.source || selectedAltObj.embed || "";
       }
+    } else if (serverMode === "vtvgo") {
+      this.currentServerMode = "vtvgo";
+      streamUrl = episode?.vtvgoUrl || movie.vtvgoUrl || episode?.embed || "";
+    } else if (serverMode === "youtube") {
+      this.currentServerMode = "youtube";
+      const ytAlt = episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")));
+      streamUrl = ytAlt?.embed || (episode?.embed && episode.embed.includes("youtube") ? episode.embed : "");
     } else if (serverMode === "dub-1") {
       streamUrl = (dubEp && dubEp.source) || (episode && episode.source) || "";
     } else if (serverMode === "embed-1" || serverMode === "nguonc-1") {
       streamUrl = (ncEp && ncEp.source) || (ncEp && ncEp.embed) || (episode && episode.embed) || (episode && episode.source) || "";
     } else {
-      streamUrl = (episode && episode.source) || (ncEp && ncEp.source) || "";
+      if (movie.vtvgoUrl || episode?.vtvgoUrl) {
+        this.currentServerMode = "vtvgo";
+        streamUrl = episode?.vtvgoUrl || movie.vtvgoUrl || episode?.embed || "";
+      } else {
+        streamUrl = (episode && episode.source) || (ncEp && ncEp.source) || "";
+      }
     }
 
     // Bóc tách trực tiếp luồng .m3u8 nếu nằm trong wrapper ?url=
@@ -3552,6 +3608,8 @@ class AppleCinemaApp {
     if (!isDirectM3u8) {
       let fallbackEmbed =
         selectedAltObj ? (selectedAltObj.embed || selectedAltObj.source) :
+        serverMode === "vtvgo" ? (episode?.vtvgoUrl || movie.vtvgoUrl || episode?.embed || "") :
+        serverMode === "youtube" ? (episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")))?.embed || episode?.embed || "") :
         (streamUrl && (streamUrl.includes("http") || streamUrl.includes("//")))
           ? streamUrl
           : serverMode === "embed-1"
