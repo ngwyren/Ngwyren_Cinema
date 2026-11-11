@@ -363,7 +363,7 @@ class AppleCinemaApp {
     const trending10 = this.getRealtimeTrendingMovies(contextToUse, 10);
     if (stackEl) {
       const trending6 = trending10.slice(0, 6);
-      stackEl.innerHTML = trending6.map((m) => this.renderVisionTrailerCardHTML(m)).join("");
+      stackEl.innerHTML = trending6.map((m, idx) => this.renderVisionTrailerCardHTML(m, idx)).join("");
     }
     const youMightLikeEl = document.getElementById("visionYouMightLikeGrid");
     if (youMightLikeEl && !contextToUse) {
@@ -530,7 +530,7 @@ class AppleCinemaApp {
             <span class="vision-panel-sort">Hôm nay</span>
           </div>
           <div class="vision-trailer-stack" id="visionLiveTrendingStack">
-            ${sourceTrailers.map((m) => this.renderVisionTrailerCardHTML(m)).join("")}
+            ${sourceTrailers.map((m, idx) => this.renderVisionTrailerCardHTML(m, idx)).join("")}
           </div>
         </div>
 
@@ -568,12 +568,12 @@ class AppleCinemaApp {
           <button class="vision-see-all-pill" onclick="app.setNavigation('lich-su')">Xem Tất Cả (${continueItems.length})</button>
         </div>
         <div class="vision-continue-shelf-grid">
-          ${continueItems.slice(0, 4).map(({ movie, epIndex, progress, currentTime }) => {
+          ${continueItems.slice(0, 4).map(({ movie, epIndex, progress, currentTime }, idx) => {
             const ep = movie.episodes?.[epIndex] || movie.episodes?.[0];
             const epLabel = ep?.name ? this.formatEpisodeLabel(ep.name, `Tập ${epIndex + 1}`) : (movie.type === "series" ? `Tập ${epIndex + 1}` : "Bản Full");
             const timeStr = currentTime > 0 ? this.formatSeconds(currentTime) : "";
             return `
-              <div class="continue-shelf-card" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})">
+              <div class="continue-shelf-card" style="--card-stagger: ${idx};" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})">
                 <div class="continue-shelf-thumb">
                   <img src="${movie.backdrop || movie.poster}" alt="${movie.title}" loading="lazy" decoding="async" />
                   <div class="continue-shelf-play"><i class="fas fa-play"></i></div>
@@ -1610,7 +1610,7 @@ class AppleCinemaApp {
     const mainPosterFallback = this.getMoviePoster(movie) || mainBackdrop;
 
     return `
-      <section class="vision-hero-banner cinema-showcase-hero" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
+      <section class="vision-hero-banner cinema-showcase-hero ps5-hero-morph-anim" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
         <img class="vision-hero-bg" src="${mainBackdrop}" alt="${movie.title}" fetchpriority="high" decoding="async"
              onerror="this.onerror=null;this.src='${mainPosterFallback}';" />
         <div class="vision-hero-overlay"></div>
@@ -1631,6 +1631,8 @@ class AppleCinemaApp {
             <div class="cinema-genre-pills">
               ${(movie.genres || []).slice(0, 4).map((g) => `<span class="cinema-genre-pill">${g}</span>`).join("")}
             </div>
+
+            ${this.renderPs5HeroSavesHTML(movie)}
 
             <p class="cinema-hero-desc">${cleanSynopsis}</p>
 
@@ -1668,9 +1670,11 @@ class AppleCinemaApp {
     `;
   }
 
-  renderVisionTrailerCardHTML(movie) {
+  renderVisionTrailerCardHTML(movie, idx = 0) {
+    const staggerIdx = Math.min(typeof idx === "number" ? idx : 0, 7);
     return `
       <article class="vision-trailer-card"
+               style="--card-stagger: ${staggerIdx};"
                onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
@@ -1778,7 +1782,7 @@ class AppleCinemaApp {
           </div>
         </div>
         <div class="movie-track" id="${trackId}">
-          ${displayMovies.map((m) => this.renderMovieCardHTML(m)).join("")}
+          ${displayMovies.map((m, idx) => this.renderMovieCardHTML(m, null, idx)).join("")}
         </div>
       </section>
     `;
@@ -1803,7 +1807,7 @@ class AppleCinemaApp {
           </div>
         </div>
         <div class="movie-track" id="${trackId}">
-          ${topMovies.map((m, idx) => this.renderMovieCardHTML(m, idx + 1)).join("")}
+          ${topMovies.map((m, idx) => this.renderMovieCardHTML(m, idx + 1, idx)).join("")}
         </div>
       </section>
     `;
@@ -1866,7 +1870,7 @@ class AppleCinemaApp {
     `;
   }
 
-  renderMovieCardHTML(movie, rankNum = null) {
+  renderMovieCardHTML(movie, rankNum = null, index = 0) {
     const inMyList = this.isInMyList(movie);
     const is4k = Boolean(
       (movie.quality && movie.quality.toString().toUpperCase() === "4K") &&
@@ -1878,9 +1882,11 @@ class AppleCinemaApp {
     const epText = movie.type === "series"
       ? (movie.episodeCurrent || "Tập mới")
       : (this.getMovieLanguageLabel(movie).split("+")[0].trim() || "Full");
+    const staggerIdx = Math.min(typeof index === "number" ? index : 0, 11);
 
     return `
       <article class="movie-card ${rankNum ? "ranked-card" : ""}"
+               style="--card-stagger: ${staggerIdx};"
                onclick="app.openMovieModal('${movie.slug}', true)">
         <div class="movie-poster-wrap">
           <img src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async"
@@ -2513,7 +2519,7 @@ class AppleCinemaApp {
           <div id="modalTabPanelRelated" style="padding-top: 20px;">
             <div class="movie-grid">
               ${relatedItems
-                .map(({ movie: rel }) => this.renderMovieCardHTML(rel))
+                .map(({ movie: rel }, idx) => this.renderMovieCardHTML(rel, null, idx))
                 .join("")}
             </div>
           </div>
@@ -2522,7 +2528,7 @@ class AppleCinemaApp {
           <div id="modalTabPanelFranchise" style="padding-top: 20px; display: none;">
             <div class="movie-grid">
               ${finalSameGenreMovies
-                .map((m) => this.renderMovieCardHTML(m))
+                .map((m, idx) => this.renderMovieCardHTML(m, null, idx))
                 .join("")}
             </div>
           </div>
@@ -4841,7 +4847,7 @@ class AppleCinemaApp {
       if (newHero) {
         newHero.classList.remove("vision-hero-slide-anim", "ps5-hero-morph-anim");
         requestAnimationFrame(() => {
-          newHero.classList.add("vision-hero-slide-anim");
+          newHero.classList.add("ps5-hero-morph-anim");
         });
       }
     }

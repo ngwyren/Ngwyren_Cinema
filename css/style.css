@@ -9138,19 +9138,24 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   animation: ps5HeroBackdropZoom 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.ps5-hero-morph-anim .vision-hero-genres {
+.ps5-hero-morph-anim .vision-hero-genres,
+.ps5-hero-morph-anim .cinema-genre-pills {
   animation: ps5HeroTextSlideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
 }
 
-.ps5-hero-morph-anim .vision-hero-title {
+.ps5-hero-morph-anim .vision-hero-title,
+.ps5-hero-morph-anim .cinema-hero-title {
   animation: ps5HeroTextSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
 }
 
-.ps5-hero-morph-anim .ps5-hero-meta-row {
+.ps5-hero-morph-anim .ps5-hero-meta-row,
+.ps5-hero-morph-anim .cinema-hero-sub,
+.ps5-hero-morph-anim .cinema-meta-badges {
   animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.09s both;
 }
 
-.ps5-hero-morph-anim .vision-hero-desc {
+.ps5-hero-morph-anim .vision-hero-desc,
+.ps5-hero-morph-anim .cinema-hero-desc {
   animation: ps5HeroTextSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
 }
 
@@ -9158,7 +9163,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   animation: ps5HeroTextSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
-.ps5-hero-morph-anim .vision-hero-actions {
+.ps5-hero-morph-anim .vision-hero-actions,
+.ps5-hero-morph-anim .cinema-hero-actions {
   animation: ps5HeroTextSlideUp 0.54s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
 }
 
@@ -9184,7 +9190,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
-/* --- 10D. visionOS + PS5 Feature Cards (Frosted Genre Pill, See More & 3D Hover) --- */
+/* --- 10D. PS5 SPATIAL MOTION TOÀN DIỆN CHO TẤT CẢ THẺ PHIM & LƯỚI TRÊN TOÀN WEB --- */
 .vision-card-genre {
   display: inline-flex !important;
   align-items: center;
@@ -9214,40 +9220,134 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   color: #ffffff;
 }
 
-.vision-feature-card {
-  animation: none !important;
-  transform: translateZ(0);
+/* 1. Hiệu ứng Cascade Lướt Vào Đẳng Cấp PlayStation 5 cho Mọi Thẻ Phim */
+.vision-feature-card,
+.movie-card,
+.continue-shelf-card,
+.vision-trailer-card,
+.chart-column-card {
+  animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 32ms) both !important;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   transition:
-    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.2s ease,
-    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s ease,
+    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.vision-feature-card .vision-feature-img {
-  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
+.vision-feature-card .vision-feature-img,
+.movie-card .movie-poster-wrap img,
+.continue-shelf-card .continue-shelf-thumb img,
+.vision-trailer-card img {
+  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
 }
 
+/* 2. Hiệu ứng Nâng 3D Lơ Lửng & Viền Phát Sáng PS5 Gaming Khi Rê Chuột / Focus */
 @media (hover: hover) {
+  /* Feature Cards (Khám Phá, Phim Lẻ, Phim Bộ, Anime, Netflix, Đã Lưu, Lịch Sử) */
   .vision-feature-card:hover,
+  .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -6px, 0) !important;
+    transform: translate3d(0, -7px, 0) scale(1.025) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
       0 20px 42px rgba(0, 0, 0, 0.65),
-      0 0 0 1px rgba(255, 255, 255, 0.4) !important;
-    z-index: 4;
+      0 0 24px rgba(255, 255, 255, 0.16) !important;
+    z-index: 5 !important;
+  }
+
+  .vision-feature-card:hover .vision-feature-img,
+  .vision-feature-card.is-hero-previewing .vision-feature-img {
+    transform: scale(1.07) translateZ(0) !important;
   }
 
   .vision-feature-card:hover .vision-card-play-white {
-    transform: scale(1.1);
+    transform: scale(1.12) !important;
     background: #ffffff !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6) !important;
+    color: #0b0c10 !important;
+    box-shadow: 0 0 22px rgba(255, 255, 255, 0.8) !important;
   }
 
-  .vision-trailer-card.is-hero-previewing {
-    border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.35) !important;
+  /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
+  .movie-card:hover,
+  .movie-card:focus-visible {
+    transform: translate3d(0, -7px, 0) scale(1.025) !important;
+    z-index: 5 !important;
   }
+
+  .movie-card:hover .movie-poster-wrap {
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow:
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
+      0 20px 42px rgba(0, 0, 0, 0.65),
+      0 0 24px rgba(255, 255, 255, 0.16) !important;
+  }
+
+  .movie-card:hover .movie-poster-wrap img {
+    transform: scale(1.07) translateZ(0) !important;
+  }
+
+  .movie-card:hover .hover-play-center {
+    transform: scale(1.12) !important;
+    box-shadow: 0 0 22px rgba(255, 255, 255, 0.8) !important;
+  }
+
+  /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
+  .continue-shelf-card:hover,
+  .continue-shelf-card:focus-visible {
+    transform: translate3d(0, -6px, 0) scale(1.025) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.45),
+      0 18px 38px rgba(0, 0, 0, 0.62),
+      0 0 20px rgba(255, 255, 255, 0.15) !important;
+    z-index: 5 !important;
+  }
+
+  .continue-shelf-card:hover .continue-shelf-thumb img {
+    transform: scale(1.07) translateZ(0) !important;
+  }
+
+  .continue-shelf-card:hover .continue-shelf-play {
+    transform: translate(-50%, -50%) scale(1.12) !important;
+    background: #ffffff !important;
+    color: #0b0c10 !important;
+    box-shadow: 0 0 22px rgba(255, 255, 255, 0.8) !important;
+  }
+
+  /* Side Trailer Cards */
+  .vision-trailer-card:hover,
+  .vision-trailer-card.is-hero-previewing {
+    transform: translate3d(0, -5px, 0) scale(1.02) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.4),
+      0 16px 34px rgba(0, 0, 0, 0.55),
+      0 0 18px rgba(255, 255, 255, 0.14) !important;
+    z-index: 5 !important;
+  }
+
+  .vision-trailer-card:hover img {
+    transform: scale(1.06) translateZ(0) !important;
+  }
+
+  /* Chart Column Cards */
+  .chart-column-card:hover {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+/* Micro-spring feedback khi chạm / nhấn vào bất kỳ thẻ hoặc nút bấm nào */
+.vision-feature-card:active,
+.movie-card:active,
+.continue-shelf-card:active,
+.vision-trailer-card:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.08s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
 }
 
 .vision-card-play-white {
@@ -9257,7 +9357,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @keyframes ps5CardCascadeIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, 14px, 0) scale(0.97);
+    transform: translate3d(0, 16px, 0) scale(0.97);
   }
   100% {
     opacity: 1;
