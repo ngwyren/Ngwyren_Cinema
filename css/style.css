@@ -8434,6 +8434,357 @@ body.video-cursor-hidden *,
   }
 }
 
+/* ==========================================================================
+   10. PS5 "GAME SCREEN & SAVES" + VISION OS SPATIAL MOTION UI/UX (v2.3.58)
+   Concept: Dribbble #10181844 (Playstation 5 Interface Concept - Game Screen & Saves)
+   + visionOS Spatial Cinema Reference Cards & Hero Morphing
+   ========================================================================== */
+
+/* Khi người dùng tắt PS5 Spatial Motion (chọn Bản Gốc v2.3.57 trong Cài Đặt) */
+html[data-ps5-motion="false"] .ps5-hero-meta-row,
+html[data-ps5-motion="false"] .ps5-hero-saves-strip,
+html[data-ps5-motion="false"] .vision-card-genre,
+html[data-ps5-motion="false"] .vision-card-seemore {
+  display: none !important;
+}
+
+/* --- 10A. PS5 Hero Banner Metadata Row (98% Match • Năm • Full HD • Tập • 5.1) --- */
+html[data-ps5-motion="true"] .vision-hero-banner {
+  min-height: 425px;
+  height: auto;
+  transition:
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ps5-hero-meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: -2px;
+  margin-bottom: 2px;
+}
+
+.ps5-match-pill {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #34c759;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 10px rgba(52, 199, 89, 0.35);
+}
+
+.ps5-meta-year {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.ps5-meta-box {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.94);
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* --- 10B. PS5 "Game Screen & Saves" — Save Slots & Quick-Launch Episode Strip --- */
+.ps5-hero-saves-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.ps5-save-slot-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 10px 11px;
+  border-radius: 14px;
+  background: rgba(20, 24, 34, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  color: #ffffff;
+  font-family: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0.5px rgba(255, 255, 255, 0.35),
+    0 10px 24px rgba(0, 0, 0, 0.42);
+  transition:
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.24s ease;
+}
+
+.ps5-save-slot-pill:hover {
+  transform: translate3d(0, -2px, 0) scale(1.02);
+  background: rgba(34, 40, 56, 0.88);
+  border-color: rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    0 14px 30px rgba(0, 0, 0, 0.55);
+}
+
+.ps5-save-slot-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(52, 199, 89, 0.2);
+  border: 1px solid rgba(52, 199, 89, 0.55);
+  color: #38ef7d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.76rem;
+  flex-shrink: 0;
+}
+
+.ps5-save-slot-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.ps5-save-slot-title {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.ps5-save-slot-sub {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.ps5-save-slot-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.ps5-save-slot-bar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #30d158, #38ef7d);
+  border-radius: 999px;
+}
+
+/* Quick-Launch Episode / Stream Chips on PS5 Hero Stage */
+.ps5-ep-quick-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 13px;
+  border-radius: 999px;
+  background: rgba(24, 26, 34, 0.68);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: inherit;
+  font-size: 0.73rem;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.ps5-ep-quick-chip i {
+  font-size: 0.64rem;
+  opacity: 0.85;
+}
+
+.ps5-ep-quick-chip.is-latest {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.42);
+  color: #ffffff;
+}
+
+.ps5-ep-quick-chip:hover {
+  transform: translate3d(0, -2px, 0) scale(1.04);
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #111216 !important;
+}
+
+.ps5-ep-quick-chip:hover i {
+  color: #111216 !important;
+  opacity: 1;
+}
+
+/* --- 10C. PS5 Context-Driven Hero Morphing & Staggered Cascade Keyframes --- */
+.ps5-hero-morph-anim .vision-hero-bg {
+  animation: ps5HeroBackdropZoom 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.ps5-hero-morph-anim .vision-hero-genres {
+  animation: ps5HeroTextSlideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
+}
+
+.ps5-hero-morph-anim .vision-hero-title {
+  animation: ps5HeroTextSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+}
+
+.ps5-hero-morph-anim .ps5-hero-meta-row {
+  animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.09s both;
+}
+
+.ps5-hero-morph-anim .vision-hero-desc {
+  animation: ps5HeroTextSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.ps5-hero-morph-anim .ps5-hero-saves-strip {
+  animation: ps5HeroTextSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.ps5-hero-morph-anim .vision-hero-actions {
+  animation: ps5HeroTextSlideUp 0.54s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+@keyframes ps5HeroBackdropZoom {
+  0% {
+    opacity: 0.38;
+    transform: scale(1.075) translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ps5HeroTextSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* --- 10D. visionOS + PS5 Feature Cards (Frosted Genre Pill, See More & 3D Hover) --- */
+html[data-ps5-motion="true"] .vision-card-genre {
+  display: inline-flex !important;
+  align-items: center;
+  padding: 3px 10px;
+  margin-bottom: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+html[data-ps5-motion="true"] .vision-card-seemore {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.56);
+  margin-top: 1px;
+  transition: color 0.2s ease;
+}
+
+html[data-ps5-motion="true"] .vision-feature-card:hover .vision-card-seemore {
+  color: #ffffff;
+}
+
+html[data-ps5-motion="true"] .vision-feature-card {
+  animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 35ms) both;
+  transition:
+    transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease,
+    box-shadow 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html[data-ps5-motion="true"] .vision-feature-card .vision-feature-img {
+  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  html[data-ps5-motion="true"] .vision-feature-card:hover,
+  html[data-ps5-motion="true"] .vision-feature-card.is-hero-previewing {
+    transform: translate3d(0, -7px, 0) scale(1.024) !important;
+    border-color: rgba(255, 255, 255, 0.72) !important;
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.48),
+      0 20px 42px rgba(0, 0, 0, 0.58),
+      0 0 24px rgba(255, 255, 255, 0.12) !important;
+    z-index: 4;
+  }
+
+  html[data-ps5-motion="true"] .vision-feature-card:hover .vision-feature-img,
+  html[data-ps5-motion="true"] .vision-feature-card.is-hero-previewing .vision-feature-img {
+    transform: scale(1.075) translateZ(0);
+  }
+
+  html[data-ps5-motion="true"] .vision-feature-card:hover .vision-card-play-white {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.75);
+  }
+
+  html[data-ps5-motion="true"] .vision-trailer-card.is-hero-previewing {
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 255, 255, 0.14) !important;
+  }
+}
+
+.vision-card-play-white {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+}
+
+@keyframes ps5CardCascadeIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@media (max-width: 767px) {
+  .ps5-hero-saves-strip {
+    gap: 6px;
+  }
+  .ps5-ep-quick-chip {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.68rem;
+  }
+  .ps5-save-slot-pill {
+    padding: 6px 11px 8px 9px;
+  }
+}
+
+
 
 
 

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Ngwyren Cinema</title>
+  <meta name="description" content="Ngwyren Cinema — Trải nghiệm xem phim trực tuyến đẳng cấp visionOS Spatial Glass với hơn 1.700+ phim Full HD Vietsub & Thuyết minh." />
+
+  <!-- Open Graph / Facebook / Discord / Zalo / Telegram -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ngwyren.github.io/Ngwyren_Cinema/" />
+  <meta property="og:site_name" content="Ngwyren Cinema" />
+  <meta property="og:title" content="Ngwyren Cinema" />
+  <meta property="og:description" content="Trải nghiệm xem phim trực tuyến đẳng cấp visionOS Spatial Glass với hơn 1.700+ phim Full HD Vietsub & Thuyết minh." />
+  <meta property="og:image" content="https://ngwyren.github.io/Ngwyren_Cinema/og-image.png?v=4.0" />
+  <meta property="og:image:secure_url" content="https://ngwyren.github.io/Ngwyren_Cinema/og-image.png?v=4.0" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="Ngwyren Cinema Logo" />
+
+  <!-- Twitter / Discord Card Preview -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Ngwyren Cinema" />
+  <meta name="twitter:description" content="Trải nghiệm xem phim trực tuyến đẳng cấp visionOS Spatial Glass với hơn 1.700+ phim Full HD Vietsub & Thuyết minh." />
+  <meta name="twitter:image" content="https://ngwyren.github.io/Ngwyren_Cinema/og-image.png?v=4.0" />
+
+  <!-- Favicons & Apple Touch Icons -->
+  <link rel="icon" type="image/png" href="og-image.png?v=4.0" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=4.0" />
+  <link rel="shortcut icon" href="og-image.png?v=4.0" />
+  <link rel="image_src" href="https://ngwyren.github.io/Ngwyren_Cinema/og-image.png?v=4.0" />
+
+  <!-- Fonts, Image CDN & HLS Video Stream Preconnects -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://phimimg.com" crossorigin />
+  <link rel="preconnect" href="https://s6.kkphimplayer6.com" crossorigin />
+  <link rel="preconnect" href="https://s3.phim1280.tv" crossorigin />
+  <link rel="dns-prefetch" href="https://phimimg.com" />
+  <link rel="dns-prefetch" href="https://s6.kkphimplayer6.com" />
+  <link rel="dns-prefetch" href="https://s3.phim1280.tv" />
+  <link rel="dns-prefetch" href="https://phimapi.com" />
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- HLS.js for playing .m3u8 streams (deferred for instant non-blocking load) -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
+
+  <!-- Google Identity Services (GIS) for Real Google Sign-In -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css?v=2.3.57" />
+</head>
+<body>
+
+  <!-- Spatial Environment Backdrop (Static Zero-Lag Soft Room Lighting) -->
+  <div class="spatial-room-bg" aria-hidden="true"></div>
+
+  <!-- Toast Notifications -->
+  <div class="apple-toast-container" id="toastContainer"></div>
+
+  <!-- ========================================================================
+       VISION PRO SPATIAL STAGE (LEFT FLOATING ICON PILL + MAIN GLASS WINDOW)
+       ======================================================================== -->
+  <div class="vision-stage">
+
+    <!-- FLOATING LEFT VERTICAL ICON PILL DOCK (LIKE VISION OS) -->
+    <aside class="vision-left-dock" id="appleSidebar" aria-label="Thanh điều hướng nhanh" style="--dock-idx: 0;">
+      <span class="vision-dock-indicator" id="visionDockIndicator" aria-hidden="true"></span>
+      <button class="vision-dock-icon active" data-nav="kham-pha" data-dock-idx="0" data-label="Khám Phá" onclick="app.resetAllFilters()" title="Trang chủ Khám Phá">
+        <i class="fas fa-house"></i>
+      </button>
+      <button class="vision-dock-icon" data-nav="yeu-thich" data-dock-idx="1" data-label="Đã Lưu" onclick="app.setNavigation('yeu-thich')" title="Danh sách Đã Lưu">
+        <i class="fas fa-star"></i>
+      </button>
+      <button class="vision-dock-icon" data-nav="anime" data-dock-idx="2" data-label="Anime" onclick="app.setNavigation('anime')" title="Kho Phim Anime">
+        <i class="fas fa-dragon"></i>
+      </button>
+      <button class="vision-dock-icon" data-nav="lich-chieu" data-dock-idx="3" data-label="Lịch Chiếu" onclick="app.setNavigation('lich-chieu')" title="Lịch Chiếu Phim">
+        <i class="fas fa-calendar-days"></i>
+      </button>
+      <button class="vision-dock-icon" data-nav="cai-dat" data-dock-idx="4" data-label="Cài Đặt" onclick="app.setNavigation('cai-dat')" title="Cài Đặt Hệ Thống">
+        <i class="fas fa-gear"></i>
+      </button>
+    </aside>
+
+    <!-- MAIN SPATIAL GLASS WINDOW -->
+    <div class="vision-window">
+
+      <!-- TOP SPATIAL NAVIGATION BAR -->
+      <header class="vision-topbar">
+        <!-- Left Search Pill -->
+        <div class="topbar-search-container">
+          <div class="vision-search-pill">
+            <i class="fas fa-magnifying-glass"></i>
+            <input
+              type="text"
+              id="topSearchInput"
+              placeholder="Tìm kiếm phim, anime, diễn viên..."
+              autocomplete="off"
+            />
+            <button class="search-clear-btn" id="searchClearBtn" onclick="app.clearSearch()" title="Xóa tìm kiếm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <!-- Instant Search Results Glass Dropdown -->
+          <div class="search-dropdown" id="searchDropdown"></div>
+        </div>
+
+        <!-- Center Category Pills (Khám Phá | Phim Lẻ | Phim Bộ | Anime | Lịch Chiếu | Netflix) -->
+        <nav class="vision-nav-pills" id="visionNavPills" aria-label="Danh mục chính">
+          <button class="vision-nav-pill active" data-nav="kham-pha" onclick="app.setNavigation('kham-pha')">Khám Phá</button>
+          <button class="vision-nav-pill" data-nav="phim-le" onclick="app.setNavigation('phim-le')">Phim Lẻ</button>
+          <button class="vision-nav-pill" data-nav="phim-bo" onclick="app.setNavigation('phim-bo')">Phim Bộ</button>
+          <button class="vision-nav-pill" data-nav="anime" onclick="app.setNavigation('anime')">Anime</button>
+          <button class="vision-nav-pill" data-nav="lich-chieu" onclick="app.setNavigation('lich-chieu')">Lịch Chiếu</button>
+          <button class="vision-nav-pill" data-nav="netflix" onclick="app.setNavigation('netflix')">Netflix</button>
+        </nav>
+
+        <!-- Right Notification & User Profile Pill -->
+        <div class="vision-topbar-right">
+          <button class="vision-circle-btn" id="notifBellBtn" onclick="app.toggleNotificationCenter(event)" title="Thông báo phim hôm nay, tin tức & phim sắp chiếu">
+            <i class="fas fa-bell"></i>
+            <span class="vision-notif-dot"></span>
+          </button>
+
+          <!-- Cinema Notification Center Flyout (Hôm nay có phim gì • Tin tức • Sắp chiếu) -->
+          <div class="vision-notif-flyout" id="visionNotifFlyout" style="display: none;" onclick="event.stopPropagation()"></div>
+
+          <div class="vision-profile-pill" id="topProfilePill" onclick="app.openAuthModal()" title="Hồ sơ & Đăng nhập">
+            <div class="vision-avatar" id="topProfileAvatar">
+              <div class="profile-avatar-letter" style="background: rgba(255, 255, 255, 0.16); color: #ffffff;">G</div>
+            </div>
+            <div class="vision-profile-text">
+              <span class="vision-profile-name" id="topProfileName">Guest</span>
+              <span class="vision-profile-handle" id="topProfileHandle" style="display:none;"></span>
+            </div>
+            <i class="fas fa-chevron-down vision-profile-arrow"></i>
+          </div>
+        </div>
+      </header>
+
+      <!-- DYNAMIC MAIN CONTENT (2-COLUMN VISION OS DASHBOARD OR CATEGORY GRID) -->
+      <main class="vision-content-area" id="mainContentWrapper">
+        <!-- Rendered instantly by js/app.js -->
+      </main>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       FLOATING MINI-PLAYER BAR (COMPACT VISION OS PILL)
+       ======================================================================== -->
+  <footer class="apple-player-bar" id="applePlayerBar" aria-label="Thanh phát phim thu nhỏ">
+    <!-- 1. Trạng thái thu gọn (Capsule Bar thanh lịch tối giản chuẩn Apple) -->
+    <div class="player-compact-bar">
+      <div class="player-now-info" onclick="app.openMovieModal(app.playingMovie?.slug || 'thanh-guom-diet-quy-vo-han-thanh-465645', false)">
+        <div class="player-now-art">
+          <img id="nowPlayingArt" src="https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg" alt="Now Playing" />
+        </div>
+        <div class="player-now-text">
+          <div class="player-now-title">
+            <div class="eq-bars paused" id="nowPlayingEq">
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+            </div>
+            <span id="nowPlayingTitleText">Thanh Gươm Diệt Quỷ: Vô Hạn Thành</span>
+          </div>
+          <div class="player-now-sub" id="nowPlayingSubText">Bản Điện Ảnh Full • FHD Vietsub</div>
+        </div>
+      </div>
+
+      <div class="player-transport">
+        <div class="transport-btns">
+          <button class="transport-btn" onclick="app.stepNowPlayingEpisode(-1)" title="Tập trước / Phim liên quan">
+            <i class="fas fa-backward-step"></i>
+          </button>
+          <button class="transport-play-main" onclick="app.toggleNowPlayingPlayPause()" title="Phát / Tạm dừng">
+            <i class="fas fa-play" id="nowPlayingPlayIcon"></i>
+          </button>
+          <button class="transport-btn" onclick="app.stepNowPlayingEpisode(1)" title="Tập tiếp theo / Phim liên quan">
+            <i class="fas fa-forward-step"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Trạng thái phóng to thành MÀN HÌNH NHỎ (Chỉ hiện phim) -->
+    <div class="player-mini-screen-view" id="playerMiniScreenView">
+      <!-- Màn hình phim 16:9 thu nhỏ -->
+      <div class="mini-screen-display" onclick="app.openMovieModal(app.playingMovie?.slug, true, app.currentEpisodeIndex)" title="Bấm để mở rạp phim toàn màn hình">
+        <img id="nowPlayingIslandBackdrop" src="https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg" alt="Preview" class="mini-screen-backdrop" />
+        <div class="mini-screen-gradient"></div>
+        <div class="mini-screen-play-pulse">
+          <i class="fas fa-play" id="miniScreenCenterPlayIcon"></i>
+        </div>
+        <div class="mini-screen-badges">
+          <span class="mini-badge-live" id="nowPlayingIslandLiveBadge"><span class="badge-dot"></span> <span id="nowPlayingIslandLiveText">ĐANG PHÁT</span></span>
+          <span class="mini-badge-meta" id="nowPlayingIslandDuration">Full HD</span>
+        </div>
+      </div>
+
+      <!-- Bảng điều khiển tinh gọn phía dưới màn hình -->
+      <div class="mini-screen-footer">
+        <div class="mini-footer-title-row">
+          <h4 class="mini-movie-title" id="nowPlayingIslandTitle">Thanh Gươm Diệt Quỷ: Vô Hạn Thành</h4>
+          <div class="mini-movie-tags">
+            <span class="mini-chip" id="nowPlayingIslandQuality">FHD</span>
+            <span class="mini-chip" id="nowPlayingIslandLang">Vietsub</span>
+            <span class="mini-chip" id="nowPlayingIslandEp">Full</span>
+          </div>
+        </div>
+
+        <!-- Scrubber tua thời gian -->
+        <div class="mini-scrub-row">
+          <span class="mini-time-label" id="nowPlayingIslandCurrentTime">00:00</span>
+          <div class="mini-scrub-bar" onclick="app.openMovieModal(app.playingMovie?.slug, true, app.currentEpisodeIndex)">
+            <div class="mini-scrub-progress" id="nowPlayingIslandScrubFill"></div>
+          </div>
+          <span class="mini-time-label" id="nowPlayingIslandTotalTime">--:--</span>
+        </div>
+
+        <!-- Các nút điều khiển Pro -->
+        <div class="mini-ctrls-row">
+          <div class="mini-btn-group">
+            <button class="mini-ctrl-btn" onclick="app.seekRelative(-5)" title="Lùi 5 giây">
+              <i class="fas fa-rotate-left"></i>
+            </button>
+            <button class="mini-ctrl-btn" onclick="app.stepNowPlayingEpisode(-1)" title="Tập trước">
+              <i class="fas fa-backward-step"></i>
+            </button>
+            <button class="mini-play-glow-btn" onclick="app.toggleNowPlayingPlayPause()" title="Phát / Tạm dừng">
+              <i class="fas fa-play" id="nowPlayingIslandPlayIcon"></i>
+            </button>
+            <button class="mini-ctrl-btn" onclick="app.stepNowPlayingEpisode(1)" title="Tập tiếp theo">
+              <i class="fas fa-forward-step"></i>
+            </button>
+            <button class="mini-ctrl-btn" onclick="app.seekRelative(5)" title="Tiến 5 giây">
+              <i class="fas fa-rotate-right"></i>
+            </button>
+          </div>
+
+          <div class="mini-actions-group">
+            <button class="mini-icon-btn" id="miniPlayerFavBtn" onclick="app.toggleMyList(app.playingMovie?.slug, event)" title="Lưu vào Yêu thích">
+              <i class="far fa-star" id="miniPlayerFavIcon"></i>
+            </button>
+            <button class="mini-cinema-expand-btn" onclick="app.openMovieModal(app.playingMovie?.slug, true, app.currentEpisodeIndex)" title="Mở rạp phim toàn màn hình">
+              <i class="fas fa-expand"></i> <span>Rạp Phim</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MOBILE & TABLET FLOATING BOTTOM DOCK
+       ======================================================================== -->
+  <nav class="liquid-mobile-dock" id="liquidMobileDock" aria-label="Điều hướng nhanh">
+    <button class="dock-tab-btn active" data-nav="kham-pha" onclick="app.resetAllFilters()">
+      <i class="fas fa-house"></i>
+      <span>Khám Phá</span>
+    </button>
+    <button class="dock-tab-btn" data-nav="anime" onclick="app.setNavigation('anime')">
+      <i class="fas fa-dragon"></i>
+      <span>Anime</span>
+    </button>
+    <button class="dock-tab-btn" data-nav="lich-chieu" onclick="app.setNavigation('lich-chieu')">
+      <i class="fas fa-calendar-days"></i>
+      <span>Lịch Chiếu</span>
+    </button>
+    <button class="dock-tab-btn" data-nav="netflix" onclick="app.setNavigation('netflix')">
+      <i class="fas fa-circle-play"></i>
+      <span>Netflix</span>
+    </button>
+    <button class="dock-tab-btn" data-nav="yeu-thich" onclick="app.setNavigation('yeu-thich')">
+      <i class="fas fa-star"></i>
+      <span>Đã Lưu</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================
+       USER PROFILE & AUTH MODAL (GOOGLE LOGIN + GUEST CUSTOMIZATION)
+       ======================================================================== -->
+  <div class="detail-modal-backdrop auth-modal-backdrop" id="authModal" onclick="if(event.target === this) app.closeAuthModal()">
+    <div class="detail-modal-sheet auth-modal-sheet" id="authSheet">
+      <!-- Populated dynamically by js/app.js -->
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MOVIE DETAIL & HLS PLAYER MODAL
+       ======================================================================== -->
+  <div class="detail-modal-backdrop" id="movieDetailModal" onclick="if(event.target === this) app.closeMovieModal()">
+    <div class="detail-modal-sheet" id="movieDetailSheet">
+      <!-- Populated dynamically by js/app.js -->
+    </div>
+  </div>
+
+  <!-- Apple Vision & Apple TV 4K Ultra HD Reality Sharpening Engine -->
+  <svg id="apple4kFilters" style="position: absolute; width: 0; height: 0; pointer-events: none; overflow: hidden;" aria-hidden="true">
+    <defs>
+      <!-- 4K Ultra Sharp Kernel: Spatial convolution high-frequency edge enhancement with zero luminance drift -->
+      <filter id="apple4kSharpen" color-interpolation-filters="sRGB" x="-5%" y="-5%" width="110%" height="110%">
+        <feConvolveMatrix
+          order="3,3"
+          preserveAlpha="true"
+          kernelMatrix="
+             0   -0.45   0
+           -0.45  2.80 -0.45
+             0   -0.45   0"
+        />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- High-Performance Deferred Scripts -->
+  <script src="js/movies-catalog.js?v=2.3.57" defer></script>
+  <script src="js/air-schedule.js?v=2.3.57" defer></script>
+  <script src="js/data.js?v=2.3.57" defer></script>
+  <script src="js/auth-config.js?v=2.3.57" defer></script>
+  <script src="js/app.js?v=2.3.57" defer></script>
+</body>
+</html>

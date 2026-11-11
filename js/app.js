@@ -38,6 +38,7 @@ class AppleCinemaApp {
       glassPercent: 50,
       glassBlur: "standard",
       ambientGlow: true,
+      ps5SpatialMotion: true,
       defaultServer: "hls-1",
       defaultQuality: "native-max",
       autoPlayOnOpen: false,
@@ -45,6 +46,9 @@ class AppleCinemaApp {
       defaultLightsOff: false,
       heroAutoRotate: true
     });
+    if (this.settings.ps5SpatialMotion === undefined) {
+      this.settings.ps5SpatialMotion = true;
+    }
     if (this.settings.defaultServer === "dub-1") {
       this.settings.defaultServer = "hls-1";
       this.saveStorage("apple_cinema_settings", this.settings);
@@ -683,6 +687,19 @@ class AppleCinemaApp {
                   <span>${s.ambientGlow !== false ? 'Bật' : 'Tắt'}</span>
                 </button>
               </div>
+
+              <!-- Row 4: PS5 Game Screen & Saves Spatial Motion + 1-Click Backup Restore -->
+              <div class="vision-setting-row">
+                <div class="vision-setting-info">
+                  <strong>Giao diện PS5 Spatial Motion & Save Slots</strong>
+                  <span style="font-size: 0.74rem; color: rgba(255,255,255,0.58);">Hiệu ứng chuyển cảnh Hero 3D khi lướt thẻ phim & chọn nhanh Save Slot / Tập phim trực tiếp trên màn hình chính (Có thể tắt về bản gốc v2.3.57 bất kỳ lúc nào)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                  <button class="vision-toggle-btn ${s.ps5SpatialMotion !== false ? 'on' : ''}" onclick="app.updateSetting('ps5SpatialMotion', ${s.ps5SpatialMotion === false})">
+                    <span>${s.ps5SpatialMotion !== false ? 'Đang Bật (PS5)' : 'Bản Gốc v2.3.57'}</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- Card 2: Trải Nghiệm Rạp Chiếu -->
@@ -932,6 +949,10 @@ class AppleCinemaApp {
     const root = document.documentElement;
     root.setAttribute("data-theme", s.theme || "default");
     root.setAttribute("data-ambient", s.ambientGlow !== false ? "true" : "false");
+    root.setAttribute("data-ps5-motion", s.ps5SpatialMotion !== false ? "true" : "false");
+    if (document.body) {
+      document.body.classList.toggle("ps5-spatial-ui", s.ps5SpatialMotion !== false);
+    }
 
     let percent = 50;
     if (s.glassPercent !== undefined) percent = Number(s.glassPercent);
@@ -967,11 +988,11 @@ class AppleCinemaApp {
   updateSetting(key, value) {
     this.settings[key] = value;
     this.saveStorage("apple_cinema_settings", this.settings);
-    if (key === "theme" || key === "glassBlur" || key === "ambientGlow") this.applyTheme();
+    if (key === "theme" || key === "glassBlur" || key === "ambientGlow" || key === "ps5SpatialMotion") this.applyTheme();
     if (key === "defaultServer") this.currentServerMode = value;
     if (key === "defaultQuality") this.currentQuality = value;
     if (key === "defaultLightsOff") this.lightsOff = Boolean(value);
-    if (this.currentNav === "cai-dat") {
+    if (this.currentNav === "cai-dat" || key === "ps5SpatialMotion") {
       this.renderMainView();
     }
     this.showToast("Đã lưu thay đổi cài đặt hệ thống");
@@ -983,6 +1004,7 @@ class AppleCinemaApp {
       glassPercent: 50,
       glassBlur: "standard",
       ambientGlow: true,
+      ps5SpatialMotion: true,
       defaultServer: "hls-1",
       defaultQuality: "native-max",
       autoPlayOnOpen: false,
@@ -1332,8 +1354,149 @@ class AppleCinemaApp {
   }
 
   /* ==========================================================================
-     VISION OS SPATIAL HTML BUILDERS (HERO, TRAILER STACK, CONTINUE & CARDS)
+     VISION OS SPATIAL & PS5 "GAME SCREEN & SAVES" HTML BUILDERS
      ========================================================================== */
+  getMovieLatestSaveSlot(movie) {
+    if (!movie) return null;
+    const histItem = (this.watchHistory || []).find((h) => h && h.slug === movie.slug);
+    const epIndex = histItem ? Number(histItem.epIndex) || 0 : 0;
+    const prog = this.getPlaybackProgress ? this.getPlaybackProgress(movie.slug, epIndex) : null;
+    const percent = prog?.percentage || histItem?.progress || 0;
+    const currentTime = prog?.currentTime || histItem?.currentTime || 0;
+    if (percent <= 0 && !histItem) return null;
+
+    const epObj = movie.episodes?.[epIndex];
+    const epLabel =
+      movie.type === "series"
+        ? this.formatEpisodeLabel(epObj?.name, `Tập ${epIndex + 1}`)
+        : "Bản Full";
+    const timeStr = currentTime > 5 ? this.formatSeconds(currentTime) : "Đang xem";
+    return {
+      epIndex,
+      epLabel,
+      percent: Math.max(5, Math.min(99, Math.round(percent || 15))),
+      currentTime,
+      timeStr
+    };
+  }
+
+  renderPs5HeroSavesHTML(movie) {
+    if (!movie || this.settings?.ps5SpatialMotion === false) return "";
+    const saveSlot = this.getMovieLatestSaveSlot(movie);
+    const chips = [];
+
+    if (saveSlot) {
+      chips.push(`
+        <button class="ps5-save-slot-pill is-saved" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true, ${saveSlot.epIndex})" title="Tiếp tục từ điểm lưu">
+          <span class="ps5-save-slot-icon"><i class="fas fa-floppy-disk"></i></span>
+          <span class="ps5-save-slot-body">
+            <span class="ps5-save-slot-title">Save Slot • ${saveSlot.epLabel}</span>
+            <span class="ps5-save-slot-sub">${saveSlot.timeStr} (${saveSlot.percent}%)</span>
+          </span>
+          <span class="ps5-save-slot-bar"><span style="width: ${saveSlot.percent}%;"></span></span>
+        </button>
+      `);
+    }
+
+    if (movie.type === "series") {
+      let totalEps = Array.isArray(movie.episodes) ? movie.episodes.length : 0;
+      const curMatch = String(movie.episodeCurrent || "").match(/(\d+)/);
+      if (curMatch) {
+        const parsed = parseInt(curMatch[1], 10);
+        if (parsed > totalEps && parsed <= 300) totalEps = parsed;
+      }
+      if (totalEps < 1) totalEps = 1;
+
+      const quickIndices = [0, 1, 2].filter((idx) => idx < totalEps);
+      if (totalEps > 3) {
+        quickIndices.push(totalEps - 1);
+      }
+
+      for (const idx of quickIndices) {
+        if (saveSlot && saveSlot.epIndex === idx && quickIndices.length > 1) continue;
+        const epName = movie.episodes?.[idx]?.name
+          ? this.formatEpisodeLabel(movie.episodes[idx].name, `Tập ${idx + 1}`)
+          : `Tập ${idx + 1}`;
+        const isLatest = totalEps > 3 && idx === totalEps - 1;
+        chips.push(`
+          <button class="ps5-ep-quick-chip ${isLatest ? "is-latest" : ""}"
+                  onpointerenter="app.warmUpMovieStream('${movie.slug}', ${idx})"
+                  onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true, ${idx})"
+                  title="Phát ngay ${epName}">
+            <i class="fas fa-play"></i>
+            <span>${isLatest ? `${epName} (Mới)` : epName}</span>
+          </button>
+        `);
+      }
+    } else {
+      chips.push(`
+        <button class="ps5-ep-quick-chip is-latest"
+                onpointerenter="app.warmUpMovieStream('${movie.slug}', 0)"
+                onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true, 0)">
+          <i class="fas fa-bolt"></i>
+          <span>Bản ${movie.quality || "Full HD"} • ${this.getMovieLanguageLabel(movie).split("+")[0].trim() || "Vietsub"}</span>
+        </button>
+      `);
+    }
+
+    return `
+      <div class="ps5-hero-saves-strip">
+        ${chips.join("")}
+      </div>
+    `;
+  }
+
+  handleCardPointerEnter(slug, cardEl = null, epIndex = 0) {
+    this.warmUpMovieStream(slug, epIndex);
+    if (this.settings?.ps5SpatialMotion === false) return;
+    if (typeof window !== "undefined" && window.matchMedia && !window.matchMedia("(hover: hover)").matches) {
+      return;
+    }
+
+    if (this._ps5HeroPreviewTimer) {
+      clearTimeout(this._ps5HeroPreviewTimer);
+    }
+
+    this._ps5HeroPreviewTimer = setTimeout(() => {
+      this.previewMovieOnHero(slug, cardEl);
+    }, 150);
+  }
+
+  handleCardPointerLeave(cardEl = null) {
+    if (this._ps5HeroPreviewTimer) {
+      clearTimeout(this._ps5HeroPreviewTimer);
+      this._ps5HeroPreviewTimer = null;
+    }
+    if (cardEl) {
+      cardEl.classList.remove("is-hero-previewing");
+    }
+    this.resumeHeroAutoRotate();
+  }
+
+  previewMovieOnHero(slug, cardEl = null) {
+    if (this.settings?.ps5SpatialMotion === false) return;
+    const movie = this.findMovie(slug);
+    if (!movie) return;
+    const heroEl = document.getElementById("heroShowcase");
+    if (!heroEl) return;
+
+    // Không morph lại nếu phim đang hiển thị sẵn trên Hero
+    if (heroEl.dataset.heroSlug === movie.slug) return;
+
+    this.pauseHeroAutoRotate();
+
+    document.querySelectorAll(".is-hero-previewing").forEach((el) => el.classList.remove("is-hero-previewing"));
+    if (cardEl) cardEl.classList.add("is-hero-previewing");
+
+    heroEl.outerHTML = this.renderHeroHTML(movie);
+    const newHero = document.getElementById("heroShowcase");
+    if (newHero) {
+      newHero.classList.remove("ps5-hero-morph-anim");
+      void newHero.offsetWidth;
+      newHero.classList.add("ps5-hero-morph-anim");
+    }
+  }
+
   renderHeroHTML(customMovie = null, customKicker = "Thịnh Hành") {
     const movie = customMovie || this.heroMovies[this.heroIndex] || this.service.movies[0];
     if (!movie) return "";
@@ -1341,16 +1504,20 @@ class AppleCinemaApp {
     const prevIdx = (this.heroIndex - 1 + this.heroMovies.length) % this.heroMovies.length;
     const nextIdx = (this.heroIndex + 1) % this.heroMovies.length;
     const cleanSynopsis = (movie.synopsis || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const matchScore = movie.matchScore || (95 + ((movie.title || "").length % 5));
+    const saveSlot = this.getMovieLatestSaveSlot(movie);
+    const primaryPlayEp = saveSlot ? saveSlot.epIndex : 0;
+    const primaryPlayLabel = saveSlot ? `Tiếp Tục ${saveSlot.epLabel}` : "Xem Ngay";
 
     return `
-      <section class="vision-hero-banner" id="heroShowcase" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
+      <section class="vision-hero-banner" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
         <img class="vision-hero-bg" src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" fetchpriority="high" decoding="async" />
         <div class="vision-hero-overlay"></div>
 
         <div class="vision-hero-top">
           <div class="vision-hero-dots">
-            ${this.heroMovies.map((_, i) => `
-              <button class="vision-hero-dot ${i === this.heroIndex ? "active" : ""}" onclick="app.setHeroSlide(${i})" aria-label="Slide ${i + 1}"></button>
+            ${this.heroMovies.map((hm, i) => `
+              <button class="vision-hero-dot ${(customMovie ? hm.slug === movie.slug : i === this.heroIndex) ? "active" : ""}" onclick="app.setHeroSlide(${i})" aria-label="Slide ${i + 1}"></button>
             `).join("")}
           </div>
         </div>
@@ -1358,15 +1525,26 @@ class AppleCinemaApp {
         <div class="vision-hero-bottom">
           <div class="vision-hero-info">
             <div class="vision-hero-genres">
-              ${movie.genres.slice(0, 4).map((g) => `<span class="vision-genre-tag">${g}</span>`).join("")}
+              ${(movie.genres || []).slice(0, 4).map((g) => `<span class="vision-genre-tag">${g}</span>`).join("")}
             </div>
 
             <h1 class="vision-hero-title">${movie.title}</h1>
+
+            <div class="ps5-hero-meta-row">
+              <span class="ps5-match-pill">${matchScore}% Match</span>
+              <span class="ps5-meta-year">${movie.year || 2026}</span>
+              <span class="ps5-meta-box">${movie.quality || "Full HD"}</span>
+              <span class="ps5-meta-box">${movie.type === "series" ? (movie.episodeCurrent || "Phim Bộ") : (movie.duration || "Chiếu Rạp")}</span>
+              <span class="ps5-meta-box">5.1</span>
+            </div>
+
             <p class="vision-hero-desc">${cleanSynopsis}</p>
 
+            ${this.renderPs5HeroSavesHTML(movie)}
+
             <div class="vision-hero-actions">
-              <button class="vision-btn-watch" onclick="app.openMovieModal('${movie.slug}', true)">
-                <i class="fas fa-play"></i> Xem Ngay
+              <button class="vision-btn-watch" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})">
+                <i class="fas fa-play"></i> ${primaryPlayLabel}
               </button>
               <button class="vision-btn-outline" onclick="app.toggleMyList('${movie.slug}', event)">
                 <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
@@ -1393,7 +1571,10 @@ class AppleCinemaApp {
 
   renderVisionTrailerCardHTML(movie) {
     return `
-      <article class="vision-trailer-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', true)">
+      <article class="vision-trailer-card"
+               onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
+               onpointerleave="app.handleCardPointerLeave(this)"
+               onclick="app.openMovieModal('${movie.slug}', true)">
         <img src="${this.getMovieBackdrop(movie)}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
              onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/16ea0557ca40cd54a3d25c6750a65c0b.jpg'" />
         <div class="vision-trailer-overlay">
@@ -1413,7 +1594,11 @@ class AppleCinemaApp {
     const timeText = prog ? `Đã xem ${this.formatSeconds(prog.currentTime)} (${pct}%)` : `${epName} • ${movie.quality}`;
 
     return `
-      <div class="vision-continue-item" onpointerenter="app.warmUpMovieStream('${movie.slug}', ${epIndex})" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})" title="Tiếp tục xem ${movie.title}">
+      <div class="vision-continue-item"
+           onpointerenter="app.handleCardPointerEnter('${movie.slug}', this, ${epIndex})"
+           onpointerleave="app.handleCardPointerLeave(this)"
+           onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})"
+           title="Tiếp tục xem ${movie.title}">
         <div class="vision-continue-thumb-box">
           <img class="vision-continue-thumb" src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async" />
           <div class="vision-continue-progress-bg">
@@ -1437,8 +1622,14 @@ class AppleCinemaApp {
     const loadAttr = isAboveFold
       ? `loading="eager" fetchpriority="high" decoding="async"`
       : `loading="lazy" fetchpriority="low" decoding="async"`;
+    const primaryGenre = (movie.genres && movie.genres[0]) || (movie.type === "series" ? "Phim Bộ" : "Điện Ảnh");
+    const staggerIdx = Math.min(index, 7);
     return `
-      <article class="vision-feature-card" onpointerenter="app.warmUpMovieStream('${movie.slug}')" onclick="app.openMovieModal('${movie.slug}', true)">
+      <article class="vision-feature-card"
+               style="--card-stagger: ${staggerIdx};"
+               onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
+               onpointerleave="app.handleCardPointerLeave(this)"
+               onclick="app.openMovieModal('${movie.slug}', true)">
         <img class="vision-feature-img" src="${this.getMoviePoster(movie)}" alt="${movie.title}" ${loadAttr}
              onerror="this.onerror=null;this.src='https://phimimg.com/upload/vod/20250722-1/66ee196318069c6ede9450a5f76a4648.jpg'" />
         <div class="vision-feature-shade"></div>
@@ -1451,8 +1642,10 @@ class AppleCinemaApp {
 
         <div class="vision-feature-bottom">
           <div class="vision-feature-meta">
+            <span class="vision-card-genre">${primaryGenre}</span>
             <h3 class="vision-card-title" title="${movie.title}">${movie.title}</h3>
             <p class="vision-card-desc">${movie.originTitle} (${movie.year}) • ${movie.episodeCurrent || movie.quality}</p>
+            <span class="vision-card-seemore">Xem thêm...</span>
           </div>
           <button class="vision-card-play-white" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" title="Xem ngay">
             <i class="fas fa-play"></i>
@@ -4465,14 +4658,16 @@ class AppleCinemaApp {
 
   setHeroSlide(index) {
     this.heroIndex = index;
+    document.querySelectorAll(".is-hero-previewing").forEach((el) => el.classList.remove("is-hero-previewing"));
     const heroEl = document.getElementById("heroShowcase");
     if (heroEl) {
       heroEl.outerHTML = this.renderHeroHTML();
       const newHero = document.getElementById("heroShowcase");
       if (newHero) {
-        newHero.classList.remove("vision-hero-slide-anim");
+        const animClass = this.settings?.ps5SpatialMotion !== false ? "ps5-hero-morph-anim" : "vision-hero-slide-anim";
+        newHero.classList.remove("vision-hero-slide-anim", "ps5-hero-morph-anim");
         requestAnimationFrame(() => {
-          newHero.classList.add("vision-hero-slide-anim");
+          newHero.classList.add(animClass);
         });
       }
     }
