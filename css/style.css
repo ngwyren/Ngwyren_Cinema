@@ -2495,6 +2495,7 @@ body.modal-open .ambient-canvas {
 }
 
 .apple-player-bar {
+  display: none !important;
   position: fixed;
   bottom: 14px;
   left: calc(var(--sidebar-width) + 24px);
@@ -3186,7 +3187,7 @@ body {
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 16px 20px 96px 20px !important;
+  padding: 16px 20px 32px 20px !important;
   min-height: 100vh;
 }
 
@@ -3377,45 +3378,80 @@ body {
   }
 }
 
-/* Main Translucent Frosted Spatial Glass Window (Full Width & Height) */
+/* Main Spatial Glass Window (Full Width & Height - Siêu Tối Ưu GPU 120fps, Không Giật Lag) */
 .vision-window {
   width: 100%;
   min-height: calc(100vh - 16px);
   border-radius: 30px;
-  background: linear-gradient(
-    145deg,
-    rgba(92, 95, 102, 0.62) 0%,
-    rgba(58, 60, 66, 0.68) 48%,
-    rgba(42, 44, 50, 0.76) 100%
-  );
-  backdrop-filter: blur(28px) saturate(165%);
-  -webkit-backdrop-filter: blur(28px) saturate(165%);
-  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  background: #0d0f14;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
   box-shadow:
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.45),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.12),
-    0 32px 80px rgba(0, 0, 0, 0.52);
+    inset 0 1px 1px rgba(255, 255, 255, 0.16),
+    0 32px 80px rgba(0, 0, 0, 0.65);
   padding: 20px 24px 28px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Top Spatial Bar inside Window */
+/* Top Spatial Bar inside Window (Ngay Ngắn Chuẩn CSS Grid 3 Cột) */
 .vision-topbar {
   display: grid;
-  grid-template-columns: 280px 1fr auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
+}
+
+/* Cụm Bên Trái: Nút Home + Thanh Tìm Kiếm */
+.topbar-left-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.vision-topbar-home-btn {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.vision-topbar-home-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.08);
+  color: #ffffff;
+}
+
+.vision-topbar-home-btn:active {
+  transform: scale(0.95);
+}
+
+.topbar-search-container {
+  width: 250px;
+  position: relative;
 }
 
 .vision-search-pill {
-  height: 44px;
+  height: 42px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.24);
-  padding: 0 16px;
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.2);
+  padding: 0 14px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -3506,7 +3542,59 @@ body {
 .vision-topbar-right {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+/* Nút Cài Đặt & Đã Lưu 1 Bên Trên Web/Desktop (Chuẩn yêu cầu người dùng) */
+.vision-topbar-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.vision-topbar-action-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+  color: #ffffff;
+}
+
+.vision-topbar-action-btn.active {
+  background: #ffffff !important;
+  color: #0b0c10 !important;
+  border-color: #ffffff !important;
+  font-weight: 600;
+}
+
+.vision-topbar-action-btn.active i {
+  color: #0b0c10 !important;
+}
+
+.vision-topbar-action-btn i {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.vision-topbar-action-btn .topbar-saved-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: #f5c518;
+  color: #000000;
+  padding: 1px 6px;
+  border-radius: 999px;
+  line-height: 1.2;
 }
 
 .vision-circle-btn {
@@ -4307,52 +4395,58 @@ body {
 .cinema-hero-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
+/* Nút Play và Capsule Bằng Nhau 100% (52px == 52px), Màu Trắng Chuẩn Theo Yêu Cầu */
 .cinema-play-glow-btn {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: #f0a732;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
   color: #0d0e12 !important;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.35rem;
-  cursor: pointer;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.25rem !important;
+  cursor: pointer !important;
   box-shadow:
-    0 0 32px rgba(240, 167, 50, 0.65),
-    0 8px 24px rgba(0, 0, 0, 0.5);
+    0 0 28px rgba(255, 255, 255, 0.55),
+    0 8px 24px rgba(0, 0, 0, 0.55) !important;
   transition:
     transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s ease;
+    box-shadow 0.22s ease !important;
 }
 
 .cinema-play-glow-btn:hover {
-  transform: scale(1.08);
+  transform: scale(1.08) !important;
   box-shadow:
-    0 0 45px rgba(240, 167, 50, 0.85),
-    0 10px 28px rgba(0, 0, 0, 0.6);
+    0 0 38px rgba(255, 255, 255, 0.85),
+    0 10px 28px rgba(0, 0, 0, 0.65) !important;
 }
 
 .cinema-play-glow-btn i {
   color: #0d0e12 !important;
-  margin-left: 3px;
+  margin-left: 3px !important;
 }
 
 .cinema-action-capsule {
-  height: 54px;
-  padding: 0 20px;
-  border-radius: 999px;
-  background: rgba(24, 27, 36, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  display: inline-flex;
-  align-items: center;
-  gap: 18px;
+  height: 52px !important;
+  min-height: 52px !important;
+  max-height: 52px !important;
+  padding: 0 20px !important;
+  border-radius: 999px !important;
+  background: rgba(24, 27, 36, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  box-sizing: border-box !important;
 }
 
 .cinema-capsule-btn {
@@ -6035,6 +6129,18 @@ body.modal-open .apple-player-bar {
   }
   .vision-topbar-right {
     gap: 8px !important;
+  }
+  .vision-topbar-action-btn .action-btn-text {
+    display: none !important;
+  }
+  .vision-topbar-action-btn {
+    padding: 0 10px !important;
+    height: 36px !important;
+  }
+  .vision-topbar-home-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
   }
   .vision-profile-text,
   .vision-profile-arrow {

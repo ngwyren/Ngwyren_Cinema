@@ -53,7 +53,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.3.62" />
+  <link rel="stylesheet" href="css/style.css?v=2.3.63" />
 </head>
 <body>
 
@@ -93,22 +93,27 @@
 
       <!-- TOP SPATIAL NAVIGATION BAR -->
       <header class="vision-topbar">
-        <!-- Left Search Pill -->
-        <div class="topbar-search-container">
-          <div class="vision-search-pill">
-            <i class="fas fa-magnifying-glass"></i>
-            <input
-              type="text"
-              id="topSearchInput"
-              placeholder="Tìm kiếm phim, anime, diễn viên..."
-              autocomplete="off"
-            />
-            <button class="search-clear-btn" id="searchClearBtn" onclick="app.clearSearch()" title="Xóa tìm kiếm">
-              <i class="fas fa-times"></i>
-            </button>
+        <!-- Left: Home Button + Quick Search Bar -->
+        <div class="topbar-left-cluster">
+          <button class="vision-topbar-home-btn" onclick="app.resetAllFilters()" title="Trang Chủ Khám Phá">
+            <i class="fas fa-house"></i>
+          </button>
+          <div class="topbar-search-container">
+            <div class="vision-search-pill">
+              <i class="fas fa-magnifying-glass"></i>
+              <input
+                type="text"
+                id="topSearchInput"
+                placeholder="Tìm kiếm phim, anime, diễn viên..."
+                autocomplete="off"
+              />
+              <button class="search-clear-btn" id="searchClearBtn" onclick="app.clearSearch()" title="Xóa tìm kiếm">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <!-- Instant Search Results Glass Dropdown -->
+            <div class="search-dropdown" id="searchDropdown"></div>
           </div>
-          <!-- Instant Search Results Glass Dropdown -->
-          <div class="search-dropdown" id="searchDropdown"></div>
         </div>
 
         <!-- Center Category Pills (Khám Phá | Phim Lẻ | Phim Bộ | Anime | Lịch Chiếu | Netflix) -->
@@ -121,8 +126,18 @@
           <button class="vision-nav-pill" data-nav="netflix" onclick="app.setNavigation('netflix')">Netflix</button>
         </nav>
 
-        <!-- Right Notification & User Profile Pill -->
+        <!-- Right Notification, Settings, Saved & User Profile Pill -->
         <div class="vision-topbar-right">
+          <button class="vision-topbar-action-btn" data-nav="yeu-thich" onclick="app.setNavigation('yeu-thich')" title="Danh Sách Phim Đã Lưu">
+            <i class="fas fa-star"></i>
+            <span class="action-btn-text">Đã Lưu</span>
+            <span class="topbar-saved-badge" id="topbarSavedCount" style="display: none;">0</span>
+          </button>
+          <button class="vision-topbar-action-btn" data-nav="cai-dat" onclick="app.setNavigation('cai-dat')" title="Cài Đặt Hệ Thống">
+            <i class="fas fa-gear"></i>
+            <span class="action-btn-text">Cài Đặt</span>
+          </button>
+
           <button class="vision-circle-btn" id="notifBellBtn" onclick="app.toggleNotificationCenter(event)" title="Thông báo phim hôm nay, tin tức & phim sắp chiếu">
             <i class="fas fa-bell"></i>
             <span class="vision-notif-dot"></span>
@@ -153,9 +168,9 @@
   </div>
 
   <!-- ========================================================================
-       FLOATING MINI-PLAYER BAR (COMPACT VISION OS PILL)
+       FLOATING MINI-PLAYER BAR (ĐÃ ẨN THEO YÊU CẦU NGƯỜI DÙNG ĐỂ TỐI ƯU GIAO DIỆN)
        ======================================================================== -->
-  <footer class="apple-player-bar" id="applePlayerBar" aria-label="Thanh phát phim thu nhỏ">
+  <footer class="apple-player-bar" id="applePlayerBar" aria-label="Thanh phát phim thu nhỏ" style="display: none !important;">
     <!-- 1. Trạng thái thu gọn (Capsule Bar thanh lịch tối giản chuẩn Apple) -->
     <div class="player-compact-bar">
       <div class="player-now-info" onclick="app.openMovieModal(app.playingMovie?.slug || 'thanh-guom-diet-quy-vo-han-thanh-465645', false)">
@@ -321,10 +336,10 @@
   </svg>
 
   <!-- High-Performance Deferred Scripts -->
-  <script src="js/movies-catalog.js?v=2.3.62" defer></script>
-  <script src="js/air-schedule.js?v=2.3.62" defer></script>
-  <script src="js/data.js?v=2.3.62" defer></script>
-  <script src="js/auth-config.js?v=2.3.62" defer></script>
-  <script src="js/app.js?v=2.3.62" defer></script>
+  <script src="js/movies-catalog.js?v=2.3.63" defer></script>
+  <script src="js/air-schedule.js?v=2.3.63" defer></script>
+  <script src="js/data.js?v=2.3.63" defer></script>
+  <script src="js/auth-config.js?v=2.3.63" defer></script>
+  <script src="js/app.js?v=2.3.63" defer></script>
 </body>
 </html>
