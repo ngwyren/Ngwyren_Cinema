@@ -1906,7 +1906,7 @@ class AppleCinemaApp {
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
         <img src="${trailerImg}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
-             onerror="if(this.src!=='${trailerFallback}'){this.src='${trailerFallback}';}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22 viewBox=%220 0 640 360%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%2314141c%22/><circle cx=%22320%22 cy=%22180%22 r=%2244%22 fill=%22%23252535%22/><path d=%22M310 162 L335 180 L310 198 Z%22 fill=%22%23ffffff%22/></svg>';}" />
+             onerror="if(this.src!=='${trailerFallback}'){this.src='${trailerFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
         <div class="vision-trailer-overlay">
           <div class="vision-trailer-title">${movie.title}</div>
           <button class="vision-trailer-play" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" aria-label="Phát">
@@ -1963,7 +1963,7 @@ class AppleCinemaApp {
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
         <img class="vision-feature-img" src="${cardImg}" alt="${movie.title}" ${loadAttr}
-             onerror="if(this.src!=='${cardFallback}'){this.src='${cardFallback}';}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22640%22 height=%22360%22 viewBox=%220 0 640 360%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%2314141c%22/><circle cx=%22320%22 cy=%22180%22 r=%2244%22 fill=%22%23252535%22/><path d=%22M310 162 L335 180 L310 198 Z%22 fill=%22%23ffffff%22/></svg>';}" />
+             onerror="if(this.src!=='${cardFallback}'){this.src='${cardFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
         <div class="vision-feature-shade"></div>
 
         <div class="vision-feature-bottom">
@@ -2121,7 +2121,7 @@ class AppleCinemaApp {
                onclick="app.openMovieModal('${movie.slug}', true)">
         <div class="movie-poster-wrap">
           <img src="${posterImg}" alt="${movie.title}" loading="lazy" decoding="async"
-               onerror="if(this.src!=='${posterFallback}'){this.src='${posterFallback}';}else{this.onerror=null;this.src='data:image/svg+xml;charset=UTF-8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22450%22 viewBox=%220 0 300 450%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%2314141c%22/><circle cx=%22150%22 cy=%22225%22 r=%2240%22 fill=%22%23252535%22/><path d=%22M140 210 L165 225 L140 240 Z%22 fill=%22%23ffffff%22/></svg>';}" />
+               onerror="if(this.src!=='${posterFallback}'){this.src='${posterFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
           <div class="poster-badges-top">
             ${qualityBadge}
             <span class="ribbon-ep">${epText}</span>
@@ -2381,6 +2381,10 @@ class AppleCinemaApp {
   getMovieBackdrop(movie) {
     if (!movie) return "";
     let b = movie.backdrop || "";
+    if (movie.slug === "ky-niem-20-nam-harry-potter-tro-lai-hogwarts" || (b && (b.includes("582cfc3e5dfd9d5926c8df377cfdae8e.jpg") || b.includes("c9fa0002166699dae85f43924f0c4bb2.jpg")))) {
+      b = "https://phimimg.com/upload/vod/20231020-1/51606bf1d40a501b93ecdc3cdcfd90e9.jpg";
+      movie.backdrop = b;
+    }
     if (movie.slug === "nhung-ke-dot-nhap" || (b && b.includes("6fef435967db666de4292991d5362450.jpg"))) {
       b = "https://phimimg.com/upload/vod/20260128-1/ad88fd9f6544ed2266385be6051ef4e2.jpg";
       movie.backdrop = b;
@@ -2423,6 +2427,11 @@ class AppleCinemaApp {
   getMoviePoster(movie) {
     if (!movie) return "";
     let p = movie.poster || "";
+    if (movie.slug === "ky-niem-20-nam-harry-potter-tro-lai-hogwarts" || (p && (p.includes("c9fa0002166699dae85f43924f0c4bb2.jpg") || p.includes("582cfc3e5dfd9d5926c8df377cfdae8e.jpg")))) {
+      p = "https://phimimg.com/upload/vod/20231020-1/dbb3bcb8568615af4f47ff62b055be5c.jpg";
+      movie.poster = p;
+      movie.backdrop = "https://phimimg.com/upload/vod/20231020-1/51606bf1d40a501b93ecdc3cdcfd90e9.jpg";
+    }
     if (movie.slug === "nhung-ke-dot-nhap" || (p && p.includes("6fef435967db666de4292991d5362450.jpg"))) {
       p = "https://phimimg.com/upload/vod/20260128-1/ad88fd9f6544ed2266385be6051ef4e2.jpg";
       movie.poster = p;
@@ -2449,6 +2458,49 @@ class AppleCinemaApp {
     const resolved = (match && match.poster) ? match.poster : (p || movie.backdrop || "");
     movie._cachedPoster = resolved;
     return resolved;
+  }
+
+  handleImageFallback(imgEl, slug) {
+    if (!imgEl) return;
+    if (imgEl.dataset.fallbackTried === "done") return;
+    imgEl.dataset.fallbackTried = "done";
+
+    if (slug) {
+      const cleanSlug = slug.replace(/^pm-|^wp-|^pa-|^nc-/, "");
+      fetch(`https://phimapi.com/phim/${cleanSlug}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.status && data.movie) {
+            const m = data.movie;
+            let newImg = m.thumb_url || m.poster_url;
+            if (newImg) {
+              if (!newImg.startsWith("http")) newImg = `https://phimimg.com/${newImg.replace(/^\//, "")}`;
+              if (newImg !== imgEl.src) {
+                imgEl.src = newImg;
+                const localMovie = this.findMovie(slug);
+                if (localMovie) {
+                  localMovie.poster = newImg;
+                  localMovie.backdrop = newImg;
+                  localMovie._cachedPoster = newImg;
+                  localMovie._cachedBackdrop = newImg;
+                }
+                return;
+              }
+            }
+          }
+          this.applyDefaultPosterFallback(imgEl);
+        })
+        .catch(() => {
+          this.applyDefaultPosterFallback(imgEl);
+        });
+    } else {
+      this.applyDefaultPosterFallback(imgEl);
+    }
+  }
+
+  applyDefaultPosterFallback(imgEl) {
+    if (!imgEl) return;
+    imgEl.src = "https://phimimg.com/upload/vod/20250602-1/0f3aebe145b25b985a1deece53635c99.jpg";
   }
 
   getMovieLanguageLabel(movie) {
