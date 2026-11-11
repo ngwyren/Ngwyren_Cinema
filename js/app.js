@@ -2299,6 +2299,10 @@ class AppleCinemaApp {
       b = "https://phimimg.com/upload/vod/20250827-1/eddefbf4813488f89a6f0c766f69f82f.jpg";
       movie.backdrop = b;
     }
+    if (b.includes("df397df5febe232a5dfae961b866c1ef.jpg") || (movie.slug && movie.slug.includes("tau-ngam-sat-mau-den") && (!b || b.includes("20230919-1")))) {
+      b = "https://phimimg.com/upload/vod/20231016-1/6a45585d457b3d77e91cbe7757f28c94.jpg";
+      movie.backdrop = b;
+    }
     if (movie._cachedBackdrop) return movie._cachedBackdrop;
     const isSuspicious = !b ||
       (movie.poster && b === movie.poster) ||
@@ -2331,6 +2335,10 @@ class AppleCinemaApp {
     let p = movie.poster || "";
     if (p.includes("20240807-1/9b47e2fa1c0c660e527d216f4ad47f87.jpg") || p.includes("img-aec7d896061b5c2d9a890e9529d1b3d9af793c89fb395b82f9cb86d0631697da")) {
       p = "https://phimimg.com/upload/vod/20250827-1/aabb76a70d8afd21ddf2be37381c7587.jpg";
+      movie.poster = p;
+    }
+    if (p.includes("5fc3521d9be85a9df677cf7d41f17fa3.jpg") || (movie.slug && movie.slug.includes("tau-ngam-sat-mau-den") && (!p || p.includes("20230919-1")))) {
+      p = "https://phimimg.com/upload/vod/20231016-1/b015db4de6e3973c7c183880406d2d1f.jpg";
       movie.poster = p;
     }
     if (movie._cachedPoster) return movie._cachedPoster;
