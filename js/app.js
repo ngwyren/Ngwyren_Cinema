@@ -3277,7 +3277,7 @@ class AppleCinemaApp {
       "cc_load_policy=0", // Tắt phụ đề mặc định
       "cc_lang_pref=none",
       "iv_load_policy=3", // Tắt quảng cáo / chú thích nổi
-      "vq=hd1080",        // Luôn ưu tiên độ phân giải cao nhất
+      "vq=hd2160",        // Luôn ưu tiên độ phân giải 4K Ultra HD (2160p) cao nhất
       "playsinline=1",
       "modestbranding=1"
     ];
@@ -3317,10 +3317,10 @@ class AppleCinemaApp {
       sendCmd("setOption", ["cc", "track", {}]);
       sendCmd("setOption", ["captions", "fontSize", 0]);
 
-      // 2. Ép chất lượng cao nhất (1080p Full HD / High-Res)
+      // 2. Ép chất lượng 4K Ultra HD cao nhất (2160p / High-Res)
       sendCmd("setPlaybackQuality", ["highres"]);
-      sendCmd("setPlaybackQuality", ["hd1080"]);
-      sendCmd("setPlaybackQualityRange", ["hd1080", "highres"]);
+      sendCmd("setPlaybackQuality", ["hd2160"]);
+      sendCmd("setPlaybackQualityRange", ["hd2160", "highres"]);
     };
 
     // Khi iframe vừa nạp xong
