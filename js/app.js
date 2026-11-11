@@ -3985,6 +3985,10 @@ class AppleCinemaApp {
 
   stopModalVideo() {
     this.isPlaying = false;
+    this._introSkippedKey = null;
+    const skipBtn = document.getElementById("appleSkipIntroBtn");
+    if (skipBtn) skipBtn.classList.remove("visible");
+
     const currentMov = this.playingMovie || this.selectedMovie;
     if (currentMov) {
       this.setNowPlayingBar(currentMov, this.currentEpisodeIndex, false);
@@ -4356,92 +4360,114 @@ class AppleCinemaApp {
     const genres = Array.isArray(movie.genres) ? movie.genres.map((g) => String(g).toLowerCase()) : [];
     const tags = Array.isArray(movie.sectionTags) ? movie.sectionTags : [];
     const cSlug = movie.countrySlug || "";
-    const isSeries = movie.type === "series";
+    const isSeries = movie.type === "series" || (movie.episodeTotal && movie.episodeTotal !== "1" && movie.episodeTotal !== 1);
 
-    // 1. Phim / Anime có mốc Intro cụ thể đã định nghĩa sẵn
+    // 1. Phim / Anime có mốc Intro cụ thể đã cấu hình sẵn trong dữ liệu
     if (typeof movie.introStart === "number" && typeof movie.introEnd === "number") {
       return { start: movie.introStart, end: movie.introEnd, target: movie.introEnd, label: "Bỏ qua Intro" };
     }
 
-    // Star Wars: The Clone Wars (~36s)
-    if (slug.includes("clone-war")) {
-      return { start: 1, end: 36, target: 36, label: "Bỏ qua Giới Thiệu (00:36)" };
+    // Star Wars / The Clone Wars (~36s)
+    if (slug.includes("clone-war") || slug.includes("star-wars")) {
+      return { start: 1, end: 40, target: 36, label: "Bỏ qua Giới Thiệu (00:36)" };
     }
 
-    // One Piece (Intro + Tóm tắt + Nhạc OP dài 3 phút - 3 phút 15 giây)
+    // One Piece / Đảo Hải Tặc (Intro + Tóm tắt + Nhạc OP dài 3 phút - 3 phút 15 giây)
     if (slug.includes("one-piece") || slug.includes("dao-hai-tac")) {
-      return { start: 1, end: 195, target: 195, label: "Bỏ qua Tóm tắt & OP (03:15)" };
+      return { start: 1, end: 195, target: 195, label: "Bỏ qua Tóm Tắt & OP (03:15)" };
     }
 
     // Conan (Đoạn độc thoại của Conan + Nhạc OP ~2 phút)
-    if (slug.includes("conan")) {
+    if (slug.includes("conan") || slug.includes("tham-tu-lung-danh")) {
       return { start: 1, end: 125, target: 125, label: "Bỏ qua Giới Thiệu & OP (02:05)" };
     }
 
     // Naruto & Boruto (Tóm tắt + Nhạc OP ~2 phút 10 giây)
     if (slug.includes("naruto") || slug.includes("boruto")) {
-      return { start: 1, end: 130, target: 130, label: "Bỏ qua Tóm Tắt & OP (02:10)" };
+      return { start: 1, end: 135, target: 130, label: "Bỏ qua Tóm Tắt & OP (02:10)" };
     }
 
-    // Anime Nhật Bản (Thanh Gươm Diệt Quỷ, Chú Thuật Hồi Chiến, Chainsaw Man...):
+    // Dragon Ball / Bảy Viên Ngọc Rồng (~1 phút 50 giây)
+    if (slug.includes("dragon-ball") || slug.includes("bay-vien-ngoc-rong")) {
+      return { start: 1, end: 115, target: 110, label: "Bỏ qua Tóm Tắt & OP (01:50)" };
+    }
+
+    // Doraemon & Cậu Bé Bút Chì Shin
+    if (slug.includes("doraemon") || slug.includes("shin-cau-be")) {
+      return { start: 1, end: 80, target: 75, label: "Bỏ qua Nhạc Mở Đầu (01:15)" };
+    }
+
+    // Anime Nhật Bản (Thanh Gươm Diệt Quỷ, Chú Thuật Hồi Chiến, Chainsaw Man, v.v.):
     const isAnime = tags.includes("anime") || genres.some((g) => /anime|hoạt hình/i.test(g)) || cSlug === "nhat-ban";
     if (isAnime) {
-      // Trường hợp có Cold Open: Sau phút đầu tiên nhạc OP mới nổi lên
-      if (currentTime > 75 && currentTime < 210) {
-        return { start: 75, end: 200, target: 195, label: "Bỏ qua Nhạc Mở Đầu (OP)" };
+      // Trường hợp có Cold Open: Sau 1-2 phút cảnh dẫn truyện thì nhạc OP mới nổi lên
+      if (currentTime >= 60 && currentTime <= 240) {
+        return { start: 60, end: 210, target: 195, label: "Bỏ qua Nhạc Mở Đầu (OP)" };
       }
-      // Mở đầu tiêu chuẩn 90s (1 phút 30 giây chuẩn Anime Nhật Bản)
-      return { start: 1, end: 92, target: 90, label: "Bỏ qua Nhạc Mở Đầu (01:30)" };
+      // Mở đầu tiêu chuẩn 90s (1 phút 30 giây chuẩn công nghiệp Anime Nhật)
+      return { start: 1, end: 95, target: 90, label: "Bỏ qua Nhạc Mở Đầu (01:30)" };
     }
 
-    // Hoạt hình 3D Trung Quốc (Đấu La, Đấu Phá, Hoàn Mỹ Thế Giới...): Nhạc OP dài ~85s
-    const isDonghua3D = tags.includes("hoat-hinh-3d") || genres.some((g) => /hoạt hình 3d/i.test(g));
+    // Hoạt hình 3D Trung Quốc (Đấu La, Đấu Phá, Hoàn Mỹ Thế Giới, Tiên Nghịch...): Nhạc OP dài ~85s
+    const isDonghua3D = tags.includes("hoat-hinh-3d") || genres.some((g) => /hoạt hình 3d|tiên hiệp|huyền huyễn/i.test(g));
     if (isDonghua3D) {
-      return { start: 1, end: 88, target: 85, label: "Bỏ qua Nhạc Đầu Phim" };
+      return { start: 1, end: 90, target: 85, label: "Bỏ qua Nhạc Đầu Phim (01:25)" };
     }
 
     // Phim Bộ Trung Quốc (C-Drama / Cổ Trang): Bài hát mở đầu dài chuẩn 1m50s - 2m (110s - 120s)
-    if (cSlug === "trung-quoc" && isSeries) {
-      return { start: 1, end: 118, target: 115, label: "Bỏ qua Nhạc Đầu Phim (01:55)" };
+    if ((cSlug === "trung-quoc" || movie.country === "Trung Quốc") && isSeries) {
+      return { start: 1, end: 120, target: 115, label: "Bỏ qua Nhạc Đầu Phim (01:55)" };
     }
 
     // Phim Bộ Hàn Quốc (K-Drama): Nhạc mở đầu chuẩn 70s - 80s
-    if (cSlug === "han-quoc" && isSeries) {
-      return { start: 1, end: 78, target: 75, label: "Bỏ qua Đoạn Mở Đầu (01:15)" };
+    if ((cSlug === "han-quoc" || movie.country === "Hàn Quốc") && isSeries) {
+      return { start: 1, end: 82, target: 78, label: "Bỏ qua Đoạn Mở Đầu (01:18)" };
     }
 
     // Phim Bộ Âu Mỹ & Netflix Originals: Đoạn giới thiệu chuẩn 45s - 60s
-    if (tags.includes("netflix") || cSlug === "au-my") {
-      return { start: 1, end: 58, target: 55, label: "Bỏ qua Intro Netflix" };
+    if (tags.includes("netflix") || cSlug === "au-my" || movie.country === "Âu Mỹ") {
+      return { start: 1, end: 62, target: 58, label: "Bỏ qua Intro Netflix" };
     }
 
-    // Phim Lẻ Chiếu Rạp (Single Movies): Đoạn logo hãng phim & nhà sản xuất mở đầu ~65s
-    if (movie.type === "single") {
-      return { start: 2, end: 70, target: 65, label: "Bỏ qua Giới Thiệu Đầu Phim" };
+    // Phim Lẻ Chiếu Rạp (Single Movies): Đoạn logo hãng phim & nhà sản xuất mở đầu ~65s (chỉ áp dụng nếu thời lượng >= 300s)
+    if (movie.type === "single" || !isSeries) {
+      if (!duration || duration >= 300) {
+        return { start: 2, end: 75, target: 70, label: "Bỏ qua Giới Thiệu Đầu Phim" };
+      }
     }
 
     // Phim bộ chung
-    return { start: 1, end: 78, target: 75, label: "Bỏ qua Intro" };
+    return { start: 1, end: 82, target: 78, label: "Bỏ qua Intro" };
   }
 
   updateSkipIntroButtonState(videoEl, movie, epIndex = 0) {
     const btn = document.getElementById("appleSkipIntroBtn");
     if (!btn || !videoEl) return;
+    if (videoEl.style.display === "none") {
+      btn.classList.remove("visible");
+      return;
+    }
     const mov = movie || this.playingMovie || this.selectedMovie;
     const cur = videoEl.currentTime || 0;
-    const intro = this.getMovieIntroWindow(mov, videoEl.duration, cur);
+    const dur = videoEl.duration || 0;
+    const intro = this.getMovieIntroWindow(mov, dur, cur);
     if (!intro) {
       btn.classList.remove("visible");
       return;
     }
     const epKey = `${mov?.slug || ""}-${epIndex}`;
-    if (cur < intro.start && this._introSkippedKey === epKey) {
-      this._introSkippedKey = null;
+
+    // Nếu người dùng tua ngược lại trước target hoặc trước mốc bắt đầu, cho phép nút hiện lại
+    if (this._introSkippedKey === epKey) {
+      if (cur < intro.start || cur < (intro.target || intro.end) - 8) {
+        this._introSkippedKey = null;
+      }
     }
+
     const shouldShow =
       this._introSkippedKey !== epKey &&
       cur >= intro.start &&
-      cur <= intro.end - 1;
+      cur <= (intro.end - 1);
 
     btn.classList.toggle("visible", shouldShow);
     if (shouldShow && intro.label) {
@@ -4456,10 +4482,11 @@ class AppleCinemaApp {
       e.stopPropagation();
     }
     const videoEl = document.getElementById("hlsVideoElement");
-    if (!videoEl) return;
+    if (!videoEl || videoEl.style.display === "none") return;
     const mov = this.playingMovie || this.selectedMovie;
     const cur = videoEl.currentTime || 0;
-    const intro = this.getMovieIntroWindow(mov, videoEl.duration, cur);
+    const dur = videoEl.duration || 0;
+    const intro = this.getMovieIntroWindow(mov, dur, cur);
     if (!intro) return;
 
     const targetTime = intro.target || intro.end;
@@ -4470,7 +4497,7 @@ class AppleCinemaApp {
     if (btn) btn.classList.remove("visible");
 
     videoEl.currentTime = targetTime;
-    const pct = videoEl.duration ? (targetTime / videoEl.duration) * 100 : 0;
+    const pct = dur ? (targetTime / dur) * 100 : 0;
     const fill = document.getElementById("appleScrubFill");
     const thumb = document.getElementById("appleScrubThumb");
     if (fill) fill.style.width = `${pct}%`;
@@ -5561,7 +5588,9 @@ class AppleCinemaApp {
   }
 
   hasUnsyncedLocalChanges(cloudData) {
-    if (!cloudData || !Array.isArray(cloudData.history)) return true;
+    if (!cloudData) return true;
+    if (cloudData.forceReset || cloudData.action === "RESET_CLOUD") return false;
+    if (!Array.isArray(cloudData.history)) return true;
     const cloudSlugs = new Set(cloudData.history.map((h) => h?.slug).filter(Boolean));
     for (const h of (this.watchHistory || [])) {
       if (h?.slug && !cloudSlugs.has(h.slug)) return true;
@@ -5574,36 +5603,54 @@ class AppleCinemaApp {
 
     let hasChanged = false;
 
-    // 1. Hợp nhất Lịch Sử & Tiếp Tục Xem (Two-Way Union Merge)
-    if (Array.isArray(cloudData.history) && cloudData.history.length > 0) {
-      const merged = this.sanitizeAndDedupeHistory([
-        ...(this.watchHistory || []),
-        ...cloudData.history
-      ]);
-      if (merged.length !== (this.watchHistory || []).length || JSON.stringify(merged) !== JSON.stringify(this.watchHistory)) {
-        this.watchHistory = merged;
-        this.saveStorage("apple_cinema_history", this.watchHistory, true);
-        hasChanged = true;
-      }
-    }
+    // A. Xử lý gói LÀM SẠCH / ĐÈ LÊN CLOUD (RESET_CLOUD / forceReset)
+    if (cloudData.forceReset || cloudData.action === "RESET_CLOUD") {
+      const cleanHistory = this.sanitizeAndDedupeHistory(Array.isArray(cloudData.history) ? cloudData.history : []);
+      const cleanMyList = this.sanitizeAndDedupeMyList(Array.isArray(cloudData.myList) ? cloudData.myList : []);
 
-    // 2. Hợp nhất Danh Sách Yêu Thích
-    if (Array.isArray(cloudData.myList) && cloudData.myList.length > 0) {
-      const mergedList = this.sanitizeAndDedupeMyList([
-        ...(this.myList || []),
-        ...cloudData.myList
-      ]);
-      if (mergedList.length !== (this.myList || []).length) {
-        this.myList = mergedList;
-        this.saveStorage("apple_cinema_mylist", this.myList, true);
-        hasChanged = true;
-      }
-    }
+      this.watchHistory = cleanHistory;
+      this.saveStorage("apple_cinema_history", this.watchHistory, true);
 
-    // 3. Hợp nhất Tiến Độ Từng Tập
-    if (cloudData.progress && typeof cloudData.progress === "object") {
-      this.playbackProgress = { ...(cloudData.progress || {}), ...(this.playbackProgress || {}) };
-      this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+      this.myList = cleanMyList;
+      this.saveStorage("apple_cinema_mylist", this.myList, true);
+
+      if (cloudData.progress && typeof cloudData.progress === "object") {
+        this.playbackProgress = { ...cloudData.progress };
+        this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+      }
+      hasChanged = true;
+    } else {
+      // B. Hợp nhất Lịch Sử & Tiếp Tục Xem 2 chiều (Two-Way Union Merge)
+      if (Array.isArray(cloudData.history) && cloudData.history.length > 0) {
+        const merged = this.sanitizeAndDedupeHistory([
+          ...(this.watchHistory || []),
+          ...cloudData.history
+        ]);
+        if (merged.length !== (this.watchHistory || []).length || JSON.stringify(merged) !== JSON.stringify(this.watchHistory)) {
+          this.watchHistory = merged;
+          this.saveStorage("apple_cinema_history", this.watchHistory, true);
+          hasChanged = true;
+        }
+      }
+
+      // 2. Hợp nhất Danh Sách Yêu Thích
+      if (Array.isArray(cloudData.myList) && cloudData.myList.length > 0) {
+        const mergedList = this.sanitizeAndDedupeMyList([
+          ...(this.myList || []),
+          ...cloudData.myList
+        ]);
+        if (mergedList.length !== (this.myList || []).length) {
+          this.myList = mergedList;
+          this.saveStorage("apple_cinema_mylist", this.myList, true);
+          hasChanged = true;
+        }
+      }
+
+      // 3. Hợp nhất Tiến Độ Từng Tập
+      if (cloudData.progress && typeof cloudData.progress === "object") {
+        this.playbackProgress = { ...(cloudData.progress || {}), ...(this.playbackProgress || {}) };
+        this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+      }
     }
 
     // 4. Đồng bộ Profile nếu là Google
@@ -5640,6 +5687,69 @@ class AppleCinemaApp {
     }
     this.updateSidebarCounts();
     this.showToast(`🎉 Đã đồng bộ hoàn tất! Hiện có ${this.watchHistory.length} phim đang xem.`);
+  }
+
+  async resetCloudDataAndPushLocal() {
+    this.showToast("🧹 Đang làm sạch Cloud và đẩy dữ liệu hiện tại lên...");
+    this.cloudSyncing = true;
+    this.renderCloudSyncBadge(true);
+
+    const topic = this.getCloudSyncTopic();
+    const payload = {
+      app: "ngwyren-cinema",
+      action: "RESET_CLOUD",
+      forceReset: true,
+      cloudKey: this.cloudSyncKey,
+      sourceDevice: this.deviceId,
+      timestamp: Date.now(),
+      profile: this.userProfile,
+      myList: this.myList || [],
+      history: this.watchHistory || [],
+      progress: this.playbackProgress || {}
+    };
+
+    try {
+      await fetch(`https://ntfy.sh/${topic}`, {
+        method: "POST",
+        headers: {
+          "Title": "Ngwyren Cinema Cloud Reset",
+          "Priority": "high",
+          "Tags": "cinema,reset,sync"
+        },
+        body: JSON.stringify(payload)
+      });
+      this.lastCloudSyncTime = Date.now();
+      this.saveStorage("ngwyren_last_cloud_sync", this.lastCloudSyncTime, true);
+      const contShelf = document.getElementById("continueWatchingShelf");
+      if (contShelf) {
+        contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
+      }
+      this.updateSidebarCounts();
+      this.showToast(`✨ Đã làm sạch Cloud! Đã đồng bộ ${this.watchHistory.length} phim sang Laptop, iPad & iPhone.`);
+    } catch (e) {
+      console.warn("[CloudSync] resetCloudDataAndPushLocal error:", e);
+      this.showToast("⚠️ Không thể kết nối tới Cloud. Vui lòng kiểm tra mạng!");
+    } finally {
+      this.cloudSyncing = false;
+      this.renderCloudSyncBadge(false);
+    }
+  }
+
+  async clearAllContinueWatchingHistory() {
+    const ok = confirm("Bạn có chắc muốn xóa sạch toàn bộ lịch sử Tiếp Tục Xem trên thiết bị này và Đám Mây không?");
+    if (!ok) return;
+    this.watchHistory = [];
+    this.saveStorage("apple_cinema_history", [], true);
+    await this.resetCloudDataAndPushLocal();
+    const contShelf = document.getElementById("continueWatchingShelf");
+    if (contShelf) {
+      contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
+    }
+    this.updateSidebarCounts();
+    if (this.currentNav === "lich-su") {
+      this.renderMainView();
+    }
+    this.showToast("🗑️ Đã xóa sạch toàn bộ lịch sử Tiếp Tục Xem!");
   }
 
   async syncWithGoogleAccount(email, notify = false) {
@@ -6055,9 +6165,20 @@ class AppleCinemaApp {
           </div>
         </div>
 
-        <button class="btn-sync-all-devices" onclick="app.manualForceSyncAllDevices()" style="margin: 12px 0 8px; width: 100%; padding: 13px 18px; border-radius: 14px; background: rgba(0, 240, 255, 0.16); border: 1px solid rgba(0, 240, 255, 0.4); color: #00f0ff; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.88rem; transition: all 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);">
-          <i class="fas fa-rotate"></i> Đồng Bộ Ngay (PC • Laptop • iPad • iPhone)
-        </button>
+        <div class="auth-sync-actions-group" style="margin: 12px 0 8px; display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn-sync-all-devices" onclick="app.manualForceSyncAllDevices()" style="width: 100%; padding: 13px 18px; border-radius: 14px; background: rgba(0, 240, 255, 0.16); border: 1px solid rgba(0, 240, 255, 0.4); color: #00f0ff; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.88rem; transition: all 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);">
+            <i class="fas fa-rotate"></i> Đồng Bộ Ngay (PC • Laptop • iPad • iPhone)
+          </button>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button class="btn-clean-cloud" onclick="app.resetCloudDataAndPushLocal()" title="Xóa dữ liệu cũ trên Cloud và ghi đè danh sách phim hiện tại của thiết bị này" style="padding: 10px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.78rem; transition: all 0.2s ease;">
+              <i class="fas fa-cloud-arrow-up" style="color: #38bdf8;"></i> Đè Lên Cloud
+            </button>
+            <button class="btn-clear-history-cloud" onclick="app.clearAllContinueWatchingHistory()" title="Xóa sạch toàn bộ phim đang xem dở trên máy và Cloud" style="padding: 10px 10px; border-radius: 12px; background: rgba(255, 59, 48, 0.14); border: 1px solid rgba(255, 59, 48, 0.38); color: #ff6b6b; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.78rem; transition: all 0.2s ease;">
+              <i class="fas fa-trash-can"></i> Xóa Lịch Sử
+            </button>
+          </div>
+        </div>
 
         <button class="btn-google-signout" onclick="app.logoutProfile()">
           <i class="fas fa-arrow-right-from-bracket"></i> Đăng Xuất Tài Khoản
