@@ -2211,6 +2211,14 @@ class AppleCinemaApp {
     const movie = this.findMovie(slug);
     if (!movie) return;
 
+    // Tự động khôi phục đúng tập phim đang xem dở nếu người dùng click từ trang chủ hoặc tìm kiếm
+    if ((epIndex === 0 || epIndex === undefined) && movie.type === "series") {
+      const histItem = (this.watchHistory || []).find((h) => h && h.slug === movie.slug);
+      if (histItem && typeof histItem.epIndex === "number" && histItem.epIndex > 0) {
+        epIndex = histItem.epIndex;
+      }
+    }
+
     // Tạm dừng bộ xoay Hero ở nền khi đang mở rạp phim để giải phóng 100% GPU cho trình phát video
     if (this.heroTimer) {
       clearInterval(this.heroTimer);
@@ -3479,6 +3487,14 @@ class AppleCinemaApp {
     this.detectedAdRanges = [];
     this.actualVideoRes = { width: 0, height: 0, bitrateMbps: 0 };
 
+    const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
+    const targetResumeTime = (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95)
+      ? savedProg.currentTime
+      : 0;
+    videoEl._targetResumeTime = targetResumeTime;
+    videoEl._userScrubbed = false;
+    videoEl._lastSavedPos = targetResumeTime > 0 ? targetResumeTime : 0;
+
     const isAppleTouchDevice =
       typeof navigator !== "undefined" &&
       (/(iPhone|iPad|iPod)/i.test(navigator.userAgent || "") ||
@@ -3494,6 +3510,7 @@ class AppleCinemaApp {
         lowLatencyMode: false,
         progressive: true,
         startFragPrefetch: true,
+        startPosition: targetResumeTime > 5 ? targetResumeTime : -1,
         backBufferLength: 60,
         maxBufferLength: 60,
         maxMaxBufferLength: 120,
@@ -3510,6 +3527,26 @@ class AppleCinemaApp {
         abrEwmaDefaultEstimate: 5000000
       });
 
+      let hasAppliedResume = false;
+      const applyResumeTimeSafely = () => {
+        if (hasAppliedResume || targetResumeTime <= 5) return;
+        try {
+          if (videoEl.duration && videoEl.duration > targetResumeTime) {
+            if (Math.abs(videoEl.currentTime - targetResumeTime) > 2) {
+              videoEl.currentTime = targetResumeTime;
+            }
+            hasAppliedResume = true;
+          } else if (videoEl.readyState >= 1) {
+            videoEl.currentTime = targetResumeTime;
+            hasAppliedResume = true;
+          }
+        } catch (_) {}
+      };
+
+      videoEl.addEventListener("loadedmetadata", applyResumeTimeSafely);
+      videoEl.addEventListener("canplay", applyResumeTimeSafely);
+      videoEl.addEventListener("playing", applyResumeTimeSafely);
+
       // Đăng ký toàn bộ sự kiện TRƯỚC khi gọi loadSource & attachMedia để không bao giờ bỏ lỡ MANIFEST_PARSED
       this.hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
         const levels = this.hlsInstance?.levels || [];
@@ -3518,17 +3555,12 @@ class AppleCinemaApp {
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
         videoEl.play().catch(() => {});
-        const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
-        if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
-          const applySavedTime = () => {
-            if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
-              if (Math.abs(videoEl.currentTime - savedProg.currentTime) > 2) {
-                videoEl.currentTime = savedProg.currentTime;
-              }
-            }
-          };
-          videoEl.addEventListener("loadedmetadata", applySavedTime, { once: true });
-          applySavedTime();
+        applyResumeTimeSafely();
+      });
+
+      this.hlsInstance.on(window.Hls.Events.FRAG_LOADED, () => {
+        if (!hasAppliedResume && targetResumeTime > 5) {
+          applyResumeTimeSafely();
         }
       });
 
@@ -3617,23 +3649,36 @@ class AppleCinemaApp {
     // Trên iPhone & iPad: Ưu tiên trình giải mã phần cứng Apple AVPlayer Native HLS (mượt 120Hz ProMotion, 0% tải JS CPU)
     if (isAppleTouchDevice && canPlayNativeHls) {
       videoEl.src = streamUrl;
+      let hasNativeResume = false;
+      const doNativeResume = () => {
+        if (hasNativeResume || targetResumeTime <= 5) return;
+        try {
+          if (Math.abs(videoEl.currentTime - targetResumeTime) > 2) {
+            videoEl.currentTime = targetResumeTime;
+          }
+          hasNativeResume = true;
+        } catch (_) {}
+      };
+
       const onNativeMeta = () => {
         this.actualVideoRes.width = videoEl.videoWidth || 1920;
         this.actualVideoRes.height = videoEl.videoHeight || 1080;
         this.renderDynamicQualityButtons();
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
-        const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
-        if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
-          videoEl.currentTime = savedProg.currentTime;
-        }
+        doNativeResume();
         videoEl.play().catch(() => {});
       };
+      const onNativeCanPlay = () => {
+        doNativeResume();
+      };
       videoEl.addEventListener("loadedmetadata", onNativeMeta, { once: true });
+      videoEl.addEventListener("canplay", onNativeCanPlay, { once: true });
       videoEl.addEventListener(
         "error",
         () => {
           videoEl.removeEventListener("loadedmetadata", onNativeMeta);
+          videoEl.removeEventListener("canplay", onNativeCanPlay);
           videoEl.removeAttribute("src");
           startHlsJsEngine();
         },
@@ -3642,6 +3687,16 @@ class AppleCinemaApp {
       videoEl.play().catch(() => {});
     } else if (!startHlsJsEngine() && canPlayNativeHls) {
       videoEl.src = streamUrl;
+      let hasNativeResume2 = false;
+      const doNativeResume2 = () => {
+        if (hasNativeResume2 || targetResumeTime <= 5) return;
+        try {
+          if (Math.abs(videoEl.currentTime - targetResumeTime) > 2) {
+            videoEl.currentTime = targetResumeTime;
+          }
+          hasNativeResume2 = true;
+        } catch (_) {}
+      };
       videoEl.addEventListener(
         "loadedmetadata",
         () => {
@@ -3650,14 +3705,12 @@ class AppleCinemaApp {
           this.renderDynamicQualityButtons();
           this.renderDynamicResumeButtons();
           this.applyVideoQualityVisuals();
-          const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
-          if (savedProg && savedProg.currentTime > 5 && savedProg.percentage < 95) {
-            videoEl.currentTime = savedProg.currentTime;
-          }
+          doNativeResume2();
           videoEl.play().catch(() => {});
         },
         { once: true }
       );
+      videoEl.addEventListener("canplay", doNativeResume2, { once: true });
       videoEl.play().catch(() => {});
     }
 
@@ -3703,6 +3756,10 @@ class AppleCinemaApp {
 
       // Tự động lưu vị trí xem dở mỗi 10 giây (không gọi renderDynamicResumeButtons làm giật layout khi đang phát)
       if (cur > 5 && (!videoEl._lastSavedPos || Math.abs(cur - videoEl._lastSavedPos) >= 10)) {
+        // BẢO VỆ TIẾN TRÌNH: Khi vừa mở phim, nếu chưa tua tới điểm xem dở và người dùng chưa tự tua tay, KHÔNG ghi đè tiến trình thấp
+        if (videoEl._targetResumeTime > 15 && cur < videoEl._targetResumeTime - 8 && !videoEl._userScrubbed) {
+          return;
+        }
         videoEl._lastSavedPos = cur;
         if (this.selectedMovie) {
           this.savePlaybackProgress(this.selectedMovie.slug, this.currentEpisodeIndex, cur, dur);
@@ -4498,82 +4555,84 @@ class AppleCinemaApp {
     const cSlug = movie.countrySlug || "";
     const isSeries = movie.type === "series" || (movie.episodeTotal && movie.episodeTotal !== "1" && movie.episodeTotal !== 1);
 
-    // 1. Phim / Anime có mốc Intro cụ thể đã cấu hình sẵn trong dữ liệu
-    if (typeof movie.introStart === "number" && typeof movie.introEnd === "number") {
+    // 1. Phim Lẻ Chiếu Rạp / Điện Ảnh (Single Movies):
+    // KHÔNG tự động bật Skip Intro bừa bãi. Trong điện ảnh, các cảnh mở đầu là nội dung phim thực sự (lời dẫn truyện, mở màn tình huống).
+    // Chỉ kích hoạt nếu phim có tọa độ introStart và introEnd được cấu hình chính xác trong dữ liệu.
+    if (movie.type === "single" || !isSeries) {
+      if (typeof movie.introStart === "number" && typeof movie.introEnd === "number" && movie.introEnd > movie.introStart) {
+        return { start: movie.introStart, end: movie.introEnd, target: movie.introEnd, label: "Bỏ qua Giới Thiệu" };
+      }
+      return null;
+    }
+
+    // 2. Bảo vệ nội dung: Nếu đã xem qua phút thứ 2:15 (> 135s), đoạn mở đầu đã kết thúc -> không hiển thị nút Skip Intro
+    if (currentTime > 135) return null;
+
+    // 3. Phim / Anime có mốc Intro cụ thể đã cấu hình sẵn trong dữ liệu
+    if (typeof movie.introStart === "number" && typeof movie.introEnd === "number" && movie.introEnd > movie.introStart) {
       return { start: movie.introStart, end: movie.introEnd, target: movie.introEnd, label: "Bỏ qua Intro" };
     }
 
-    // Star Wars / The Clone Wars (~36s)
+    // Star Wars / The Clone Wars (~35s)
     if (slug.includes("clone-war") || slug.includes("star-wars")) {
-      return { start: 1, end: 40, target: 36, label: "Bỏ qua Giới Thiệu (00:36)" };
+      return { start: 2, end: 38, target: 35, label: "Bỏ qua Giới Thiệu (00:35)" };
     }
 
-    // One Piece / Đảo Hải Tặc (Intro + Tóm tắt + Nhạc OP dài 3 phút - 3 phút 15 giây)
+    // One Piece / Đảo Hải Tặc (Tóm tắt + OP chuẩn ~2 phút 15 giây, không nhảy lố vào cốt truyện)
     if (slug.includes("one-piece") || slug.includes("dao-hai-tac")) {
-      return { start: 1, end: 195, target: 195, label: "Bỏ qua Tóm Tắt & OP (03:15)" };
+      return { start: 2, end: 140, target: 135, label: "Bỏ qua Tóm Tắt & OP (02:15)" };
     }
 
-    // Conan (Đoạn độc thoại của Conan + Nhạc OP ~2 phút)
+    // Conan (Đoạn độc thoại của Conan + Nhạc OP ~1 phút 40 giây)
     if (slug.includes("conan") || slug.includes("tham-tu-lung-danh")) {
-      return { start: 1, end: 125, target: 125, label: "Bỏ qua Giới Thiệu & OP (02:05)" };
+      return { start: 2, end: 105, target: 100, label: "Bỏ qua Giới Thiệu & OP (01:40)" };
     }
 
-    // Naruto & Boruto (Tóm tắt + Nhạc OP ~2 phút 10 giây)
+    // Naruto & Boruto (Tóm tắt + Nhạc OP ~1 phút 40 giây)
     if (slug.includes("naruto") || slug.includes("boruto")) {
-      return { start: 1, end: 135, target: 130, label: "Bỏ qua Tóm Tắt & OP (02:10)" };
+      return { start: 2, end: 105, target: 100, label: "Bỏ qua Tóm Tắt & OP (01:40)" };
     }
 
-    // Dragon Ball / Bảy Viên Ngọc Rồng (~1 phút 50 giây)
+    // Dragon Ball / Bảy Viên Ngọc Rồng (~1 phút 30 giây)
     if (slug.includes("dragon-ball") || slug.includes("bay-vien-ngoc-rong")) {
-      return { start: 1, end: 115, target: 110, label: "Bỏ qua Tóm Tắt & OP (01:50)" };
+      return { start: 2, end: 95, target: 90, label: "Bỏ qua Tóm Tắt & OP (01:30)" };
     }
 
-    // Doraemon & Cậu Bé Bút Chì Shin
+    // Doraemon & Cậu Bé Bút Chì Shin (~1 phút)
     if (slug.includes("doraemon") || slug.includes("shin-cau-be")) {
-      return { start: 1, end: 80, target: 75, label: "Bỏ qua Nhạc Mở Đầu (01:15)" };
+      return { start: 2, end: 65, target: 60, label: "Bỏ qua Nhạc Mở Đầu (01:00)" };
     }
 
-    // Anime Nhật Bản (Thanh Gươm Diệt Quỷ, Chú Thuật Hồi Chiến, Chainsaw Man, v.v.):
+    // Anime Nhật Bản (Thanh Gươm Diệt Quỷ, Jujutsu Kaisen, Chainsaw Man...):
+    // Nhạc Opening Anime chuẩn 89 giây, tua chính xác tới 88s (01:28), không nhảy lố
     const isAnime = tags.includes("anime") || genres.some((g) => /anime|hoạt hình/i.test(g)) || cSlug === "nhat-ban";
     if (isAnime) {
-      // Trường hợp có Cold Open: Sau 1-2 phút cảnh dẫn truyện thì nhạc OP mới nổi lên
-      if (currentTime >= 60 && currentTime <= 240) {
-        return { start: 60, end: 210, target: 195, label: "Bỏ qua Nhạc Mở Đầu (OP)" };
-      }
-      // Mở đầu tiêu chuẩn 90s (1 phút 30 giây chuẩn công nghiệp Anime Nhật)
-      return { start: 1, end: 95, target: 90, label: "Bỏ qua Nhạc Mở Đầu (01:30)" };
+      return { start: 2, end: 92, target: 88, label: "Bỏ qua Nhạc Mở Đầu (01:28)" };
     }
 
-    // Hoạt hình 3D Trung Quốc (Đấu La, Đấu Phá, Hoàn Mỹ Thế Giới, Tiên Nghịch...): Nhạc OP dài ~85s
+    // Hoạt hình 3D Trung Quốc (Đấu La, Đấu Phá, Hoàn Mỹ Thế Giới, Tiên Nghịch...): Nhạc OP ~80s
     const isDonghua3D = tags.includes("hoat-hinh-3d") || genres.some((g) => /hoạt hình 3d|tiên hiệp|huyền huyễn/i.test(g));
     if (isDonghua3D) {
-      return { start: 1, end: 90, target: 85, label: "Bỏ qua Nhạc Đầu Phim (01:25)" };
+      return { start: 2, end: 85, target: 80, label: "Bỏ qua Nhạc Đầu Phim (01:20)" };
     }
 
-    // Phim Bộ Trung Quốc (C-Drama / Cổ Trang): Bài hát mở đầu dài chuẩn 1m50s - 2m (110s - 120s)
+    // Phim Bộ Trung Quốc (C-Drama / Cổ Trang): Nhạc mở đầu chuẩn 90s (01:30)
     if ((cSlug === "trung-quoc" || movie.country === "Trung Quốc") && isSeries) {
-      return { start: 1, end: 120, target: 115, label: "Bỏ qua Nhạc Đầu Phim (01:55)" };
+      return { start: 2, end: 95, target: 90, label: "Bỏ qua Nhạc Đầu Phim (01:30)" };
     }
 
-    // Phim Bộ Hàn Quốc (K-Drama): Nhạc mở đầu chuẩn 70s - 80s
+    // Phim Bộ Hàn Quốc (K-Drama): Nhạc mở đầu chuẩn 65s (01:05)
     if ((cSlug === "han-quoc" || movie.country === "Hàn Quốc") && isSeries) {
-      return { start: 1, end: 82, target: 78, label: "Bỏ qua Đoạn Mở Đầu (01:18)" };
+      return { start: 2, end: 70, target: 65, label: "Bỏ qua Đoạn Mở Đầu (01:05)" };
     }
 
-    // Phim Bộ Âu Mỹ & Netflix Originals: Đoạn giới thiệu chuẩn 45s - 60s
+    // Phim Bộ Âu Mỹ & Netflix Originals: Đoạn giới thiệu chuẩn 45s (00:45)
     if (tags.includes("netflix") || cSlug === "au-my" || movie.country === "Âu Mỹ") {
-      return { start: 1, end: 62, target: 58, label: "Bỏ qua Intro Netflix" };
+      return { start: 2, end: 48, target: 44, label: "Bỏ qua Intro Netflix (00:44)" };
     }
 
-    // Phim Lẻ Chiếu Rạp (Single Movies): Đoạn logo hãng phim & nhà sản xuất mở đầu ~65s (chỉ áp dụng nếu thời lượng >= 300s)
-    if (movie.type === "single" || !isSeries) {
-      if (!duration || duration >= 300) {
-        return { start: 2, end: 75, target: 70, label: "Bỏ qua Giới Thiệu Đầu Phim" };
-      }
-    }
-
-    // Phim bộ chung
-    return { start: 1, end: 82, target: 78, label: "Bỏ qua Intro" };
+    // Phim bộ chung: Giới hạn 60s
+    return { start: 2, end: 65, target: 60, label: "Bỏ qua Intro (01:00)" };
   }
 
   updateSkipIntroButtonState(videoEl, movie, epIndex = 0) {
@@ -4649,6 +4708,7 @@ class AppleCinemaApp {
     if (e) e.stopPropagation();
     const videoEl = document.getElementById("hlsVideoElement");
     if (!videoEl || isNaN(videoEl.duration) || videoEl.duration <= 0) return;
+    videoEl._userScrubbed = true;
 
     // Tích lũy thời gian tua nhanh/lùi khi bấm liên tục (Debounce chống nhấp nháy đen decoder)
     if (this._seekAccumulatorTimer) {
@@ -4833,6 +4893,7 @@ class AppleCinemaApp {
       window.removeEventListener("touchmove", onMouseMove);
       window.removeEventListener("touchend", onMouseUp);
       videoEl.currentTime = targetTime;
+      videoEl._userScrubbed = true;
     };
 
     window.addEventListener("mousemove", onMouseMove);
@@ -5111,6 +5172,22 @@ class AppleCinemaApp {
   recordWatchHistory(slug, epIndex = 0) {
     const movie = this.findMovie(slug);
     const canonicalSlug = movie ? movie.slug : slug;
+    const existing = (this.watchHistory || []).find((h) => h && h.slug === canonicalSlug);
+    const savedProg = this.getPlaybackProgress(canonicalSlug, epIndex);
+
+    // BẢO LƯU TIẾN TRÌNH: Giữ nguyên currentTime và progress nếu phim đã được xem dở
+    const preservedProgress = (savedProg && savedProg.percentage > 0)
+      ? savedProg.percentage
+      : (existing && existing.epIndex === epIndex && existing.progress > 0)
+      ? existing.progress
+      : 15;
+
+    const preservedCurrentTime = (savedProg && savedProg.currentTime > 0)
+      ? savedProg.currentTime
+      : (existing && existing.epIndex === epIndex && existing.currentTime > 0)
+      ? existing.currentTime
+      : 0;
+
     this.watchHistory = this.sanitizeAndDedupeHistory([
       {
         slug: canonicalSlug,
@@ -5118,8 +5195,8 @@ class AppleCinemaApp {
         poster: movie?.poster || "",
         backdrop: movie?.backdrop || "",
         epIndex,
-        progress: 15,
-        currentTime: 0,
+        progress: preservedProgress,
+        currentTime: preservedCurrentTime,
         timestamp: Date.now()
       },
       ...(this.watchHistory || [])
@@ -5497,14 +5574,29 @@ class AppleCinemaApp {
     };
     this.saveStorage("ngwyren_playback_progress", progressMap);
 
-    const histItem = this.watchHistory.find((h) => h.slug === slug);
+    let histItem = (this.watchHistory || []).find((h) => h && h.slug === slug);
     if (histItem) {
       histItem.progress = percentage;
       histItem.epIndex = epIndex;
       histItem.currentTime = Math.floor(currentTime);
       histItem.timestamp = Date.now();
-      this.saveStorage("apple_cinema_history", this.watchHistory);
+    } else {
+      const movie = this.findMovie(slug);
+      this.watchHistory = this.sanitizeAndDedupeHistory([
+        {
+          slug,
+          title: movie?.title || "",
+          poster: movie?.poster || "",
+          backdrop: movie?.backdrop || "",
+          epIndex,
+          progress: percentage,
+          currentTime: Math.floor(currentTime),
+          timestamp: Date.now()
+        },
+        ...(this.watchHistory || [])
+      ]);
     }
+    this.saveStorage("apple_cinema_history", this.watchHistory);
   }
 
   getPlaybackProgress(slug, epIndex = 0) {
@@ -6395,6 +6487,7 @@ class AppleCinemaApp {
     const isClosed = flyout.style.display === "none" || !flyout.style.display;
     if (isClosed) {
       this.renderNotificationFlyout(this.activeNotifTab || "today");
+      this.positionNotificationFlyout();
       flyout.classList.add("ps5-flyout-anim");
       flyout.style.display = "flex";
       if (backdrop) {
@@ -6404,8 +6497,50 @@ class AppleCinemaApp {
       if (bellBtn) bellBtn.classList.add("active");
       const dot = document.querySelector(".vision-notif-dot");
       if (dot) dot.style.display = "none";
+
+      if (!this._notifAnchorBound) {
+        this._notifAnchorBound = true;
+        const reAnchor = () => {
+          if (flyout.style.display !== "none") {
+            this.positionNotificationFlyout();
+          }
+        };
+        window.addEventListener("resize", reAnchor);
+        window.addEventListener("scroll", reAnchor, { passive: true });
+      }
     } else {
       this.closeNotificationCenter();
+    }
+  }
+
+  positionNotificationFlyout() {
+    const flyout = document.getElementById("visionNotifFlyout");
+    const bellBtn = document.getElementById("notifBellBtn");
+    if (!flyout || !bellBtn) return;
+
+    const rect = bellBtn.getBoundingClientRect();
+    const isMobile = window.innerWidth <= 640;
+
+    if (isMobile) {
+      // Trên điện thoại: Neo ngay dưới chân nút chuông, không che đè topbar
+      const topPos = Math.round(rect.bottom + 8);
+      flyout.style.setProperty("top", `${topPos}px`, "important");
+      flyout.style.setProperty("left", "10px", "important");
+      flyout.style.setProperty("right", "10px", "important");
+      flyout.style.setProperty("width", "auto", "important");
+      flyout.style.setProperty("max-width", "none", "important");
+      flyout.style.setProperty("max-height", `calc(100dvh - ${topPos + 18}px)`, "important");
+    } else {
+      // Trên PC, Laptop, iPad:
+      // Neo ngay dưới chân icon chuông thông báo (cách 10px),
+      // Căn mép phải gióng thẳng hàng với nút chuông để menu xổ xuống tự nhiên
+      const topPos = Math.round(rect.bottom + 10);
+      const rightPos = Math.max(16, Math.round(window.innerWidth - rect.right));
+      flyout.style.setProperty("top", `${topPos}px`, "important");
+      flyout.style.setProperty("right", `${rightPos}px`, "important");
+      flyout.style.setProperty("left", "auto", "important");
+      flyout.style.setProperty("width", "min(420px, 92vw)", "important");
+      flyout.style.setProperty("max-height", `calc(100vh - ${topPos + 24}px)`, "important");
     }
   }
 
