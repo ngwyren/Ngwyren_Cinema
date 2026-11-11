@@ -5769,16 +5769,13 @@ class AppleCinemaApp {
     const isClosed = flyout.style.display === "none" || !flyout.style.display;
     if (isClosed) {
       this.renderNotificationFlyout(this.activeNotifTab || "today");
+      flyout.classList.add("ps5-flyout-anim");
       flyout.style.display = "flex";
       if (backdrop) {
         backdrop.style.display = "block";
         requestAnimationFrame(() => backdrop.classList.add("open"));
       }
       if (bellBtn) bellBtn.classList.add("active");
-      flyout.classList.remove("ps5-flyout-anim");
-      requestAnimationFrame(() => {
-        flyout.classList.add("ps5-flyout-anim");
-      });
       const dot = document.querySelector(".vision-notif-dot");
       if (dot) dot.style.display = "none";
     } else {
@@ -5802,16 +5799,19 @@ class AppleCinemaApp {
   }
 
   switchNotifTab(tab) {
+    if (this.activeNotifTab === tab) return;
     this.activeNotifTab = tab;
-    this.renderNotificationFlyout(tab);
+    const content = document.querySelector(".notif-flyout-content");
+    const tabs = document.querySelectorAll(".notif-tab-btn");
+    if (content && tabs.length > 0) {
+      tabs.forEach((btn) => btn.classList.toggle("active", btn.getAttribute("data-tab") === tab));
+      content.innerHTML = this.getNotifTabBodyHTML(tab);
+    } else {
+      this.renderNotificationFlyout(tab);
+    }
   }
 
-  renderNotificationFlyout(activeTab = "today") {
-    const flyout = document.getElementById("visionNotifFlyout");
-    if (!flyout) return;
-
-    this.activeNotifTab = activeTab;
-
+  getNotifTabBodyHTML(activeTab = "today") {
     const schedule = window.NGWYREN_AIR_SCHEDULE || {};
     const dayNames = {
       "thu-2": "Thứ 2",
@@ -5949,6 +5949,22 @@ class AppleCinemaApp {
         `;
       }
     }
+    return bodyHTML;
+  }
+
+  renderNotificationFlyout(activeTab = "today") {
+    const flyout = document.getElementById("visionNotifFlyout");
+    if (!flyout) return;
+
+    this.activeNotifTab = activeTab;
+
+    const schedule = window.NGWYREN_AIR_SCHEDULE || {};
+    const now = new Date();
+    const jsDay = now.getDay();
+    const todayKey = jsDay === 0 ? "chu-nhat" : `thu-${jsDay + 1}`;
+    const todayItems = schedule[todayKey] || [];
+
+    const bodyHTML = this.getNotifTabBodyHTML(activeTab);
 
     flyout.innerHTML = `
       <div class="notif-flyout-header">
@@ -5962,13 +5978,13 @@ class AppleCinemaApp {
       </div>
 
       <div class="notif-tabs-bar">
-        <button class="notif-tab-btn ${activeTab === "today" ? "active" : ""}" onclick="app.switchNotifTab('today')">
+        <button class="notif-tab-btn ${activeTab === "today" ? "active" : ""}" data-tab="today" onclick="app.switchNotifTab('today')">
           <i class="fas fa-play-circle"></i> Hôm Nay (${todayItems.length})
         </button>
-        <button class="notif-tab-btn ${activeTab === "news" ? "active" : ""}" onclick="app.switchNotifTab('news')">
+        <button class="notif-tab-btn ${activeTab === "news" ? "active" : ""}" data-tab="news" onclick="app.switchNotifTab('news')">
           <i class="fas fa-newspaper"></i> Tin Tức
         </button>
-        <button class="notif-tab-btn ${activeTab === "upcoming" ? "active" : ""}" onclick="app.switchNotifTab('upcoming')">
+        <button class="notif-tab-btn ${activeTab === "upcoming" ? "active" : ""}" data-tab="upcoming" onclick="app.switchNotifTab('upcoming')">
           <i class="fas fa-calendar-plus"></i> Sắp Chiếu
         </button>
       </div>

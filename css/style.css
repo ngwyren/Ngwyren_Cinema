@@ -3665,8 +3665,8 @@ body {
   width: min(420px, 92vw);
   max-height: min(640px, calc(100vh - 100px));
   background: rgba(18, 18, 26, 0.95);
-  backdrop-filter: blur(48px) saturate(1.8) contrast(1.05);
-  -webkit-backdrop-filter: blur(48px) saturate(1.8) contrast(1.05);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 24px;
   box-shadow: 0 24px 68px rgba(0, 0, 0, 0.85), inset 0 1px 1.5px rgba(255, 255, 255, 0.3) !important;
@@ -3674,8 +3674,10 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: notifFlyoutIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: top right;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @keyframes notifFlyoutIn {
@@ -9779,28 +9781,48 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 /* --- 2. THÔNG BÁO (NOTIFICATION FLYOUT & ITEMS) --- */
-.vision-notif-flyout,
 .vision-notif-flyout.ps5-flyout-anim {
-  animation: ps5FlyoutSpringIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: ps5FlyoutSmoothIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   transform-origin: top right;
-  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow:
     0 24px 68px rgba(0, 0, 0, 0.85),
-    inset 0 1px 1.5px rgba(255, 255, 255, 0.35) !important;
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.3) !important;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+@keyframes ps5FlyoutSmoothIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
 
 @keyframes ps5FlyoutSpringIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, -18px, 0) scale(0.92);
-  }
-  70% {
-    opacity: 1;
-    transform: translate3d(0, 3px, 0) scale(1.015);
+    transform: translate3d(0, -10px, 0) scale(0.96);
   }
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes ps5ItemSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -9828,7 +9850,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .notif-movie-item,
 .notif-news-item {
-  animation: ps5ItemSlideUp 0.36s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--item-stagger, 0) * 32ms) both !important;
+  animation: ps5ItemSlideUp 0.26s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--item-stagger, 0) * 18ms) both !important;
+  will-change: transform, opacity;
   transition:
     transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.2s ease,
