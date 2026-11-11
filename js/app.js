@@ -631,7 +631,7 @@ class AppleCinemaApp {
         <!-- Settings Grid (2-Column Glass Cards) -->
         <div class="vision-settings-grid">
             <!-- Card Theme: Giao Diện & Không Gian Thị Giác -->
-            <div class="vision-settings-card" style="grid-column: 1 / -1;">
+            <div class="vision-settings-card" style="grid-column: 1 / -1; --card-stagger: 0;">
               <div class="vision-settings-card-header">
                 <div>
                   <h3>Chủ Đề & Không Gian</h3>
@@ -696,7 +696,7 @@ class AppleCinemaApp {
             </div>
 
             <!-- Card 2: Trải Nghiệm Rạp Chiếu -->
-            <div class="vision-settings-card">
+            <div class="vision-settings-card" style="--card-stagger: 1;">
               <div class="vision-settings-card-header">
                 <div>
                   <h3>Trải Nghiệm Rạp Chiếu</h3>
@@ -775,12 +775,13 @@ class AppleCinemaApp {
     const dayItems = schedule[currentDayKey] || [];
 
     const tabsHTML = dayKeys
-      .map((k) => {
+      .map((k, idx) => {
         const isToday = k === todayKey;
         const isActive = k === currentDayKey;
         const count = (schedule[k] || []).length;
         return `
           <button class="schedule-tab-btn ${isActive ? "active" : ""} ${isToday ? "is-today" : ""}"
+                  style="--tab-stagger: ${idx};"
                   onclick="app.selectScheduleDay('${k}')"
                   data-day="${k}">
             ${isToday ? '<span class="tab-today-badge-outer"><i class="fas fa-circle-dot"></i> Hôm nay</span>' : ""}
@@ -794,10 +795,10 @@ class AppleCinemaApp {
 
     const cardsHTML = dayItems.length > 0
       ? dayItems
-          .map((m) => {
+          .map((m, idx) => {
             const genresHTML = (m.genres || []).slice(0, 2).map((g) => `<span class="sch-genre-tag">${g}</span>`).join("");
             return `
-              <article class="schedule-card-glass" onclick="app.openMovieModal('${m.slug}', true)">
+              <article class="schedule-card-glass" style="--card-stagger: ${idx};" onclick="app.openMovieModal('${m.slug}', true)">
                 <div class="schedule-card-media">
                   <img src="${m.poster || m.backdrop}" alt="${m.title}" loading="lazy" decoding="async"
                        onerror="this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg'" />
@@ -4787,8 +4788,8 @@ class AppleCinemaApp {
         results.length > 0
           ? results
               .map(
-                (m) => `
-            <div class="search-suggestion-item" onclick="app.selectSearchResult('${m.slug}')">
+                (m, idx) => `
+            <div class="search-suggestion-item" style="--item-stagger: ${idx};" onclick="app.selectSearchResult('${m.slug}')">
               <img src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async" />
               <div class="search-suggestion-info">
                 <div class="search-suggestion-title">${m.title}</div>
@@ -5758,16 +5759,24 @@ class AppleCinemaApp {
     if (flyout.style.display === "none" || !flyout.style.display) {
       this.renderNotificationFlyout(this.activeNotifTab || "today");
       flyout.style.display = "flex";
+      flyout.classList.remove("ps5-flyout-anim");
+      requestAnimationFrame(() => {
+        flyout.classList.add("ps5-flyout-anim");
+      });
       const dot = document.querySelector(".vision-notif-dot");
       if (dot) dot.style.display = "none";
     } else {
       flyout.style.display = "none";
+      flyout.classList.remove("ps5-flyout-anim");
     }
   }
 
   closeNotificationCenter() {
     const flyout = document.getElementById("visionNotifFlyout");
-    if (flyout) flyout.style.display = "none";
+    if (flyout) {
+      flyout.style.display = "none";
+      flyout.classList.remove("ps5-flyout-anim");
+    }
   }
 
   switchNotifTab(tab) {
@@ -5851,8 +5860,8 @@ class AppleCinemaApp {
 
     if (activeTab === "today") {
       if (todayItems.length > 0) {
-        bodyHTML = todayItems.slice(0, 10).map((m) => `
-          <div class="notif-movie-item" onclick="app.openMovieModal('${m.slug}', true); app.closeNotificationCenter();">
+        bodyHTML = todayItems.slice(0, 10).map((m, idx) => `
+          <div class="notif-movie-item" style="--item-stagger: ${idx};" onclick="app.openMovieModal('${m.slug}', true); app.closeNotificationCenter();">
             <img class="notif-movie-thumb" src="${m.poster || m.backdrop}" alt="${m.title}" loading="lazy"
                  onerror="this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg'" />
             <div class="notif-movie-info">
@@ -5877,8 +5886,8 @@ class AppleCinemaApp {
         `;
       }
     } else if (activeTab === "news") {
-      bodyHTML = cinemaNews.map((n) => `
-        <div class="notif-news-item" onclick="app.openMovieModal('${n.slug}', true); app.closeNotificationCenter();">
+      bodyHTML = cinemaNews.map((n, idx) => `
+        <div class="notif-news-item" style="--item-stagger: ${idx};" onclick="app.openMovieModal('${n.slug}', true); app.closeNotificationCenter();">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span class="notif-news-tag"><i class="fas fa-bolt"></i> ${n.tag}</span>
             <span style="font-size: 0.72rem; color: rgba(255,255,255,0.5);">${n.date}</span>
@@ -5893,8 +5902,8 @@ class AppleCinemaApp {
           <div style="font-size: 0.76rem; font-weight: 700; color: #00f0ff; margin: 4px 0 8px; text-transform: uppercase;">
             <i class="far fa-calendar-star"></i> Phát sóng ngày mai (${dayNames[tomorrowKey]})
           </div>
-        ` + tomorrowItems.slice(0, 10).map((m) => `
-          <div class="notif-movie-item" onclick="app.openMovieModal('${m.slug}', true); app.closeNotificationCenter();">
+        ` + tomorrowItems.slice(0, 10).map((m, idx) => `
+          <div class="notif-movie-item" style="--item-stagger: ${idx};" onclick="app.openMovieModal('${m.slug}', true); app.closeNotificationCenter();">
             <img class="notif-movie-thumb" src="${m.poster || m.backdrop}" alt="${m.title}" loading="lazy"
                  onerror="this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg'" />
             <div class="notif-movie-info">
@@ -6061,8 +6070,13 @@ class AppleCinemaApp {
       }
     }
 
+    sheet.className = "detail-modal-sheet auth-modal-sheet ps5-modal-sheet ps5-modal-anim";
     modal.classList.add("open");
     document.body.classList.add("modal-open");
+    sheet.classList.remove("ps5-modal-anim");
+    requestAnimationFrame(() => {
+      sheet.classList.add("ps5-modal-anim");
+    });
   }
 
   saveGoogleClientIdFromModal() {
@@ -6157,6 +6171,8 @@ class AppleCinemaApp {
     const modal = document.getElementById("authModal");
     if (!modal) return;
     modal.classList.remove("open");
+    const sheet = document.getElementById("authSheet");
+    if (sheet) sheet.classList.remove("ps5-modal-anim");
     if (!document.getElementById("movieDetailModal")?.classList.contains("open")) {
       document.body.classList.remove("modal-open");
     }

@@ -9607,6 +9607,539 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   color: #0b0c10;
 }
 
+/* ==========================================================================
+   10G. PS5 SPATIAL MOTION TOÀN DIỆN CHO TẤT CẢ (LỊCH CHIẾU, THÔNG BÁO, CÀI ĐẶT, ĐĂNG NHẬP, TÌM KIẾM & HỆ THỐNG)
+   ========================================================================== */
+
+/* --- 1. LỊCH CHIẾU PHIM (AIR SCHEDULE) --- */
+.schedule-hero-panel {
+  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.schedule-tabs-bar {
+  animation: ps5ModalItemSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+.schedule-tab-btn {
+  animation: ps5CardCascadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--tab-stagger, 0) * 28ms) both;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease !important;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .schedule-tab-btn:hover {
+    transform: scale(1.05) translate3d(0, -2px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.65) !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+.schedule-tab-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.schedule-tab-btn.active {
+  transform: scale(1.04) !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 0 22px rgba(255, 255, 255, 0.55), 0 10px 28px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Thẻ Lịch Chiếu: Cascade PS5 + 3D Spring Hover Lift */
+.schedule-card-glass {
+  animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 32ms) both !important;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s ease,
+    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.schedule-card-media img {
+  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+.sch-play-icon {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.28s ease !important;
+}
+
+@media (hover: hover) {
+  .schedule-card-glass:hover,
+  .schedule-card-glass:focus-visible {
+    transform: translate3d(0, -7px, 0) scale(1.025) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow:
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
+      0 20px 42px rgba(0, 0, 0, 0.65),
+      0 0 24px rgba(255, 255, 255, 0.16) !important;
+    z-index: 5 !important;
+  }
+
+  .schedule-card-glass:hover .schedule-card-media img {
+    transform: scale(1.07) translateZ(0) !important;
+  }
+
+  .schedule-card-glass:hover .sch-play-icon {
+    transform: scale(1.14) !important;
+    background: #ffffff !important;
+    color: #0b0c10 !important;
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.85) !important;
+  }
+}
+
+.schedule-card-glass:active {
+  transform: scale(0.97) !important;
+}
+
+.schedule-empty-state {
+  animation: ps5CardCascadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* --- 2. THÔNG BÁO (NOTIFICATION FLYOUT & ITEMS) --- */
+.vision-notif-flyout,
+.vision-notif-flyout.ps5-flyout-anim {
+  animation: ps5FlyoutSpringIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  transform-origin: top right;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  box-shadow:
+    0 24px 68px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.35),
+    0 0 32px rgba(255, 255, 255, 0.1) !important;
+}
+
+@keyframes ps5FlyoutSpringIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -18px, 0) scale(0.92);
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(0, 3px, 0) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.notif-tab-btn {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+@media (hover: hover) {
+  .notif-tab-btn:hover {
+    transform: scale(1.05) !important;
+  }
+}
+
+.notif-tab-btn:active {
+  transform: scale(0.95) !important;
+}
+
+.notif-tab-btn.active {
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.5) !important;
+}
+
+.notif-movie-item,
+.notif-news-item {
+  animation: ps5ItemSlideUp 0.36s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--item-stagger, 0) * 32ms) both !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.notif-movie-thumb {
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform;
+}
+
+@media (hover: hover) {
+  .notif-movie-item:hover,
+  .notif-news-item:hover {
+    transform: translate3d(4px, 0, 0) scale(1.015) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .notif-movie-item:hover .notif-movie-thumb {
+    transform: scale(1.08) !important;
+  }
+}
+
+.notif-movie-item:active,
+.notif-news-item:active {
+  transform: scale(0.97) !important;
+}
+
+.notif-view-all-link {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+}
+
+.notif-view-all-link:hover {
+  transform: scale(1.06) !important;
+  color: #ffffff !important;
+}
+
+/* --- 3. CÀI ĐẶT HỆ THỐNG (SETTINGS VIEW & TOGGLES) --- */
+.vision-settings-banner {
+  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.vision-settings-card {
+  animation: ps5CardCascadeIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 80ms) both !important;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.26s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-settings-card:hover {
+    transform: translate3d(0, -4px, 0) scale(1.008) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
+    box-shadow:
+      0 16px 36px rgba(0, 0, 0, 0.55),
+      inset 0 1px 1.5px rgba(255, 255, 255, 0.3),
+      0 0 20px rgba(255, 255, 255, 0.08) !important;
+  }
+}
+
+.filter-chip {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .filter-chip:hover {
+    transform: scale(1.06) translate3d(0, -2px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.3) !important;
+  }
+}
+
+.filter-chip:active {
+  transform: scale(0.95) !important;
+}
+
+.filter-chip.active {
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.55) !important;
+}
+
+.vision-toggle-btn {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.22s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-toggle-btn:hover {
+    transform: scale(1.08) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.35) !important;
+  }
+}
+
+.vision-toggle-btn:active {
+  transform: scale(0.92) !important;
+}
+
+.vision-toggle-btn.on {
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.6) !important;
+}
+
+.ios-slider-icon {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+}
+
+.ios-slider-icon:hover {
+  transform: scale(1.15) !important;
+  color: #ffffff !important;
+}
+
+.ios-slider-icon:active {
+  transform: scale(0.9) !important;
+}
+
+.vision-btn-outline {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-btn-outline:hover {
+    transform: scale(1.05) translate3d(0, -1px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.4) !important;
+  }
+}
+
+.vision-btn-outline:active {
+  transform: scale(0.95) !important;
+}
+
+/* --- 4. ĐĂNG NHẬP / HỒ SƠ (AUTH MODAL & ACTIONS) --- */
+.auth-modal-sheet {
+  transform: translate3d(0, 28px, 0) scale(0.95) !important;
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: transform, opacity;
+}
+
+.auth-modal-backdrop.open .auth-modal-sheet,
+.auth-modal-sheet.ps5-modal-anim {
+  transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+.auth-modal-sheet.ps5-modal-anim .auth-header {
+  animation: ps5ModalItemSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both !important;
+}
+
+.auth-modal-sheet.ps5-modal-anim .auth-google-hero,
+.auth-modal-sheet.ps5-modal-anim .auth-logged-card {
+  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both !important;
+}
+
+.auth-modal-sheet.ps5-modal-anim .btn-google-login-main,
+.auth-modal-sheet.ps5-modal-anim .google-btn-wrapper {
+  animation: ps5ModalItemSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both !important;
+}
+
+.auth-modal-sheet.ps5-modal-anim .google-project-connect-card,
+.auth-modal-sheet.ps5-modal-anim .google-quick-email-login {
+  animation: ps5ModalItemSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both !important;
+}
+
+.auth-modal-sheet.ps5-modal-anim .auth-guest-notice,
+.auth-modal-sheet.ps5-modal-anim .btn-google-signout {
+  animation: ps5ModalItemSlideUp 0.56s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both !important;
+}
+
+.btn-google-login-main {
+  transition:
+    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.24s ease,
+    border-color 0.2s ease !important;
+}
+
+@media (hover: hover) {
+  .btn-google-login-main:hover {
+    transform: scale(1.03) translate3d(0, -2px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.9) !important;
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.55),
+      0 0 24px rgba(66, 133, 244, 0.45) !important;
+  }
+}
+
+.btn-google-login-main:active {
+  transform: scale(0.96) !important;
+}
+
+.btn-google-signout {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .btn-google-signout:hover {
+    transform: scale(1.03) translate3d(0, -1px, 0) !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.35) !important;
+  }
+}
+
+.btn-google-signout:active {
+  transform: scale(0.96) !important;
+}
+
+.btn-quick-save-client {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease !important;
+}
+
+@media (hover: hover) {
+  .btn-quick-save-client:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.4) !important;
+  }
+}
+
+.btn-quick-save-client:active {
+  transform: scale(0.94) !important;
+}
+
+.btn-text-email-toggle {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+}
+
+.btn-text-email-toggle:hover {
+  transform: scale(1.04) !important;
+  color: #ffffff !important;
+}
+
+/* --- 5. TÌM KIẾM (SEARCH DROPDOWN & LIVE SUGGESTIONS) --- */
+.vision-search-pill:focus-within {
+  transform: scale(1.02) !important;
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.35),
+    0 10px 24px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.search-dropdown.open {
+  animation: ps5FlyoutSpringIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.35),
+    0 0 28px rgba(255, 255, 255, 0.1) !important;
+}
+
+.search-suggestion-item {
+  animation: ps5ItemSlideUp 0.34s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--item-stagger, 0) * 28ms) both !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .search-suggestion-item:hover {
+    transform: translate3d(6px, 0, 0) scale(1.015) !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), 0 0 14px rgba(255, 255, 255, 0.1) !important;
+  }
+}
+
+.search-suggestion-item:active {
+  transform: scale(0.97) !important;
+}
+
+.btn-sync-now {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .btn-sync-now:hover {
+    transform: scale(1.02) !important;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.35) !important;
+  }
+}
+
+.btn-sync-now:active {
+  transform: scale(0.97) !important;
+}
+
+/* --- 6. THANH NOW PLAYING & ĐIỀU KHIỂN DƯỚI CÙNG --- */
+.apple-player-bar {
+  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+}
+
+.mini-play-glow-btn {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, background 0.2s ease !important;
+}
+
+@media (hover: hover) {
+  .mini-play-glow-btn:hover {
+    transform: scale(1.12) !important;
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.85) !important;
+  }
+}
+
+.mini-play-glow-btn:active {
+  transform: scale(0.92) !important;
+}
+
+.mini-ctrl-btn {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+}
+
+@media (hover: hover) {
+  .mini-ctrl-btn:hover {
+    transform: scale(1.15) !important;
+    color: #ffffff !important;
+  }
+}
+
+.mini-ctrl-btn:active {
+  transform: scale(0.9) !important;
+}
+
+.mini-cinema-expand-btn {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .mini-cinema-expand-btn:hover {
+    transform: scale(1.06) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.4) !important;
+  }
+}
+
+.mini-cinema-expand-btn:active {
+  transform: scale(0.94) !important;
+}
+
+/* --- 7. CÁC NÚT ĐIỀU HƯỚNG DANH MỤC & TOPBAR --- */
+.vision-nav-pill {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-nav-pill:hover {
+    transform: scale(1.05) translate3d(0, -1px, 0) !important;
+  }
+}
+
+.vision-nav-pill:active {
+  transform: scale(0.94) !important;
+}
+
+.vision-nav-pill.active {
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.5) !important;
+}
+
+.vision-circle-btn {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-circle-btn:hover {
+    transform: scale(1.16) !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+  }
+}
+
+.vision-circle-btn:active {
+  transform: scale(0.9) !important;
+}
+
+.vision-topbar-home-btn {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-topbar-home-btn:hover {
+    transform: scale(1.16) !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+  }
+}
+
+.vision-topbar-home-btn:active {
+  transform: scale(0.9) !important;
+}
+
+.vision-profile-pill {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.22s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-profile-pill:hover {
+    transform: scale(1.04) translate3d(0, -1px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 0 16px rgba(255, 255, 255, 0.15) !important;
+  }
+}
+
+.vision-profile-pill:active {
+  transform: scale(0.95) !important;
+}
+
+
 
 
 
