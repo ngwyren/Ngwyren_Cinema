@@ -9313,21 +9313,21 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 .continue-shelf-card,
 .vision-trailer-card,
 .chart-column-card {
-  animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 32ms) both !important;
+  animation: ps5CardCascadeIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 16ms) both;
   will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition:
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s ease,
-    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1),
+    border-color 0.26s ease,
+    box-shadow 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
 }
 
 .vision-feature-card .vision-feature-img,
 .movie-card .movie-poster-wrap img,
 .continue-shelf-card .continue-shelf-thumb img,
 .vision-trailer-card img {
-  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
   will-change: transform;
 }
 
@@ -9337,17 +9337,17 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:hover,
   .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -7px, 0) scale(1.025) !important;
+    transform: translate3d(0, -6px, 0) scale(1.025) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.65) !important;
+      0 18px 40px rgba(0, 0, 0, 0.65) !important;
     z-index: 5 !important;
   }
 
   .vision-feature-card:hover .vision-feature-img,
   .vision-feature-card.is-hero-previewing .vision-feature-img {
-    transform: scale(1.07) translateZ(0) !important;
+    transform: scale(1.06) translateZ(0) !important;
   }
 
   .vision-feature-card:hover .vision-card-play-white {
@@ -9360,7 +9360,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
   .movie-card:hover,
   .movie-card:focus-visible {
-    transform: translate3d(0, -7px, 0) scale(1.025) !important;
+    transform: translate3d(0, -6px, 0) scale(1.025) !important;
     z-index: 5 !important;
   }
 
@@ -9368,11 +9368,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.65) !important;
+      0 18px 40px rgba(0, 0, 0, 0.65) !important;
   }
 
   .movie-card:hover .movie-poster-wrap img {
-    transform: scale(1.07) translateZ(0) !important;
+    transform: scale(1.06) translateZ(0) !important;
   }
 
   .movie-card:hover .hover-play-center {
@@ -9392,7 +9392,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .continue-shelf-card:hover .continue-shelf-thumb img {
-    transform: scale(1.07) translateZ(0) !important;
+    transform: scale(1.06) translateZ(0) !important;
   }
 
   .continue-shelf-card:hover .continue-shelf-play {
@@ -9435,7 +9435,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-card-play-white {
-  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease;
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.28s ease !important;
 }
 
 @keyframes ps5CardCascadeIn {
@@ -9735,33 +9735,33 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition:
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s ease,
-    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1),
+    border-color 0.26s ease,
+    box-shadow 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
 }
 
 .schedule-card-media img {
-  transition: transform 0.48s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
   will-change: transform;
 }
 
 .sch-play-icon {
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.28s ease !important;
+  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1), background 0.2s ease, box-shadow 0.28s ease !important;
 }
 
 @media (hover: hover) {
   .schedule-card-glass:hover,
   .schedule-card-glass:focus-visible {
-    transform: translate3d(0, -7px, 0) scale(1.025) !important;
+    transform: translate3d(0, -6px, 0) scale(1.025) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow:
       inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 20px 42px rgba(0, 0, 0, 0.65) !important;
+      0 18px 40px rgba(0, 0, 0, 0.65) !important;
     z-index: 5 !important;
   }
 
   .schedule-card-glass:hover .schedule-card-media img {
-    transform: scale(1.07) translateZ(0) !important;
+    transform: scale(1.06) translateZ(0) !important;
   }
 
   .schedule-card-glass:hover .sch-play-icon {

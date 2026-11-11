@@ -164,9 +164,13 @@ class AppleCinemaApp {
       const normalized = {
         ...item,
         slug: canonicalSlug,
+        title: movie?.title || item.title || "",
+        poster: movie?.poster || item.poster || "",
+        backdrop: movie?.backdrop || item.backdrop || "",
         epIndex: Number(item.epIndex) || 0,
         progress: Number(item.progress) || 15,
-        timestamp: Number(item.timestamp) || 0
+        currentTime: Number(item.currentTime) || 0,
+        timestamp: Number(item.timestamp) || Date.now()
       };
       const existing = bySlug.get(canonicalSlug);
       if (!existing || normalized.timestamp > existing.timestamp || (normalized.timestamp === existing.timestamp && normalized.epIndex > existing.epIndex)) {
@@ -546,24 +550,33 @@ class AppleCinemaApp {
   renderContinueWatchingShelfHTML() {
     const seenContinueSlugs = new Set();
     const continueItems = [];
-    for (const h of this.watchHistory) {
-      const movie = this.findMovie(h?.slug);
-      const progress = h?.progress || 0;
-      if (movie && progress > 0 && progress < 95 && !seenContinueSlugs.has(movie.slug)) {
+    for (const h of (this.watchHistory || [])) {
+      if (!h || !h.slug) continue;
+      const movie = this.findMovie(h.slug) || {
+        slug: h.slug,
+        title: h.title || h.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        poster: h.poster || "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg",
+        backdrop: h.backdrop || h.poster || "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg",
+        type: "series"
+      };
+      const progress = Number(h.progress) || 15;
+      if (progress > 0 && progress < 95 && !seenContinueSlugs.has(movie.slug)) {
         seenContinueSlugs.add(movie.slug);
         continueItems.push({
           movie,
-          epIndex: h.epIndex || 0,
+          epIndex: Number(h.epIndex) || 0,
           progress,
-          currentTime: h.currentTime || 0
+          currentTime: Number(h.currentTime) || 0
         });
       }
     }
 
-    if (continueItems.length === 0) return "";
+    if (continueItems.length === 0) {
+      return `<div id="continueWatchingShelf" style="display: none;"></div>`;
+    }
 
     return `
-      <section class="vision-shelf-section vision-continue-watching-shelf">
+      <section id="continueWatchingShelf" class="vision-shelf-section vision-continue-watching-shelf">
         <div class="vision-shelf-header">
           <h2 class="vision-shelf-title"><i class="fas fa-clock-rotate-left" style="margin-right: 8px;"></i>Tiếp Tục Xem</h2>
           <button class="vision-see-all-pill" onclick="app.setNavigation('lich-su')">Xem Tất Cả (${continueItems.length})</button>
@@ -1332,6 +1345,10 @@ class AppleCinemaApp {
     if (countLabel) {
       const remaining = Math.max(0, allMovies.length - (this.exploreGridLimit || 24));
       countLabel.textContent = `${remaining} phim còn lại`;
+    }
+    const contShelf = document.getElementById("continueWatchingShelf");
+    if (contShelf) {
+      contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
     }
   }
 
@@ -4934,14 +4951,22 @@ class AppleCinemaApp {
     this.watchHistory = this.sanitizeAndDedupeHistory([
       {
         slug: canonicalSlug,
+        title: movie?.title || "",
+        poster: movie?.poster || "",
+        backdrop: movie?.backdrop || "",
         epIndex,
         progress: 15,
+        currentTime: 0,
         timestamp: Date.now()
       },
       ...(this.watchHistory || [])
     ]);
     this.saveStorage("apple_cinema_history", this.watchHistory);
     this.updateSidebarCounts();
+    const contShelf = document.getElementById("continueWatchingShelf");
+    if (contShelf) {
+      contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
+    }
   }
 
   updateSidebarCounts() {
@@ -5376,99 +5401,77 @@ class AppleCinemaApp {
      CLOUD DATABASE SYNC ENGINE (LƯU TRỮ & ĐỒNG BỘ ĐÁM MÂY XUYÊN THIẾT BỊ 100% TỰ ĐỘNG)
      ========================================================================== */
   initCloudSync() {
-    this.cloudSyncKey = this.loadStorage("ngwyren_cloud_key", "");
-    if (!this.cloudSyncKey) {
-      this.cloudSyncKey = "NGW-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-      this.saveStorage("ngwyren_cloud_key", this.cloudSyncKey);
-    }
-    this.cloudObjId = this.loadStorage("ngwyren_cloud_obj_id", "");
+    this.deviceId = this.loadStorage("ngwyren_device_id", "") || ("dev_" + Math.random().toString(36).substring(2, 9));
+    this.saveStorage("ngwyren_device_id", this.deviceId);
+
+    this.cloudSyncKey = this.loadStorage("ngwyren_cloud_key", "") || "NGW-869O8P";
+    this.saveStorage("ngwyren_cloud_key", this.cloudSyncKey);
+
     this.cloudEndpoint = window.NGWYREN_AUTH_CONFIG?.cloudStorageEndpoint || "https://api.restful-api.dev/objects";
     this.cloudRegistryId = window.NGWYREN_AUTH_CONFIG?.cloudRegistryId || "ff808181a09d98f701a1c8e5ff580442";
     this.cloudSyncDebounce = null;
     this.cloudSyncing = false;
     this.lastCloudSyncTime = this.loadStorage("ngwyren_last_cloud_sync", 0);
 
-    // 1. Tự động đồng bộ tài khoản Google ngay khi mở trang nếu đã đăng nhập
-    if (this.userProfile?.type === "google" && this.userProfile?.handle && this.userProfile.handle.includes("@")) {
-      setTimeout(() => this.syncWithGoogleAccount(this.userProfile.handle, false), 1200);
-    } else if (this.cloudObjId) {
-      setTimeout(() => this.syncFromCloud(this.cloudObjId, false), 1500);
-    }
+    // 1. Tải và đồng bộ đám mây ngay khi mở web (300ms non-blocking)
+    setTimeout(() => this.syncFromCloud(false), 300);
 
-    // 2. Tự động đồng bộ thời gian thực khi chuyển đổi qua lại giữa 2 máy (Tab Focus / Visibility Change)
+    // 2. Kích hoạt kết nối Live SSE Realtime (Khi PC tạm dừng hoặc xem phim, Laptop/iPad/iPhone nhận ngay lập tức)
+    this.initLiveSyncStream();
+
+    // 3. Tự động đồng bộ lại khi chuyển qua lại giữa các máy (Tab Focus / Visibility Change)
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
-        if (this.userProfile?.type === "google" && this.userProfile?.handle && this.userProfile.handle.includes("@")) {
-          this.syncWithGoogleAccount(this.userProfile.handle, false);
-        } else if (this.cloudObjId) {
-          this.syncFromCloud(this.cloudObjId, false);
-        }
+        this.syncFromCloud(false);
       }
+    });
+    window.addEventListener("focus", () => {
+      this.syncFromCloud(false);
     });
   }
 
-  async getCloudRegistry() {
-    try {
-      const resp = await fetch(`${this.cloudEndpoint}/${this.cloudRegistryId}`);
-      if (resp.ok) {
-        const json = await resp.json();
-        return json?.data || { app: "ngwyren-cinema", users: {}, codes: {} };
+  getCloudSyncTopic() {
+    if (this.userProfile?.handle && this.userProfile.handle.includes("@")) {
+      const email = this.userProfile.handle.toLowerCase();
+      if (email.includes("ngwyrentandinh")) {
+        return "ngwyren_cinema_user_ngwyrentandinh";
       }
-    } catch (e) {
-      console.warn("[CloudRegistry] Lỗi đọc registry:", e);
+      return "ngwyren_cinema_user_" + email.replace(/[^a-z0-9]/g, "_");
     }
-    return { app: "ngwyren-cinema", users: {}, codes: {} };
+    if (this.cloudSyncKey && this.cloudSyncKey.startsWith("NGW-") && this.cloudSyncKey !== "NGW-TEST") {
+      return "ngwyren_cinema_code_" + this.cloudSyncKey.toLowerCase().replace(/[^a-z0-9]/g, "_");
+    }
+    return "ngwyren_cinema_user_ngwyrentandinh";
   }
 
-  async updateCloudRegistry(updaterFn) {
+  initLiveSyncStream() {
     try {
-      const current = await this.getCloudRegistry();
-      const updatedData = updaterFn(current) || current;
-      await fetch(`${this.cloudEndpoint}/${this.cloudRegistryId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: "NGWYREN_CINEMA_GLOBAL_REGISTRY",
-          data: updatedData
-        })
-      });
-    } catch (e) {
-      console.warn("[CloudRegistry] Lỗi cập nhật registry:", e);
-    }
-  }
-
-  async syncWithGoogleAccount(email, notify = false) {
-    if (!email) return;
-    const cleanEmail = email.toLowerCase().trim();
-    try {
-      const reg = await this.getCloudRegistry();
-      const targetObjId = reg.users?.[cleanEmail];
-
-      if (targetObjId) {
-        this.cloudObjId = targetObjId;
-        this.saveStorage("ngwyren_cloud_obj_id", targetObjId);
-        await this.syncFromCloud(targetObjId, notify);
-      } else {
-        // Chưa có trên cloud -> Đẩy dữ liệu hiện tại lên và đăng ký email
-        await this.syncToCloud(notify);
-        if (this.cloudObjId) {
-          await this.updateCloudRegistry((data) => {
-            if (!data.users) data.users = {};
-            data.users[cleanEmail] = this.cloudObjId;
-            if (this.cloudSyncKey) {
-              if (!data.codes) data.codes = {};
-              data.codes[this.cloudSyncKey] = this.cloudObjId;
+      if (this._syncEventSource) {
+        this._syncEventSource.close();
+      }
+      const topic = this.getCloudSyncTopic();
+      const es = new EventSource(`https://ntfy.sh/${topic}/sse`);
+      this._syncEventSource = es;
+      es.onmessage = (event) => {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.event === "message" && parsed.message) {
+            const payload = JSON.parse(parsed.message);
+            if (payload && payload.app === "ngwyren-cinema" && payload.sourceDevice !== this.deviceId) {
+              this.mergeCloudState(payload, false);
             }
-            return data;
-          });
-        }
-      }
+          }
+        } catch (e) {}
+      };
+      es.onerror = () => {
+        // SSE tự động kết nối lại khi mạng ổn định
+      };
     } catch (e) {
-      console.warn("[GoogleSync] Lỗi đồng bộ tài khoản Google:", e);
+      console.warn("[CloudSync] Live SSE init error:", e);
     }
   }
 
-  triggerCloudSync(debounceMs = 1500) {
+  triggerCloudSync(debounceMs = 1200) {
     if (this.cloudSyncDebounce) clearTimeout(this.cloudSyncDebounce);
     this.cloudSyncDebounce = setTimeout(() => {
       this.syncToCloud(false);
@@ -5480,150 +5483,169 @@ class AppleCinemaApp {
     this.cloudSyncing = true;
     this.renderCloudSyncBadge(true);
 
+    const topic = this.getCloudSyncTopic();
+    const payload = {
+      app: "ngwyren-cinema",
+      cloudKey: this.cloudSyncKey,
+      sourceDevice: this.deviceId,
+      timestamp: Date.now(),
+      profile: this.userProfile,
+      myList: this.myList || [],
+      history: this.watchHistory || [],
+      progress: this.playbackProgress || {}
+    };
+
     try {
-      const payload = {
-        name: `NGWYREN_CLOUD_${this.cloudSyncKey}`,
-        data: {
-          app: "ngwyren-cinema",
-          cloudKey: this.cloudSyncKey,
-          updatedAt: Date.now(),
-          profile: this.userProfile,
-          myList: this.myList || [],
-          history: this.watchHistory || [],
-          progress: this.playbackProgress || {}
-        }
-      };
-
-      let resp;
-      if (this.cloudObjId) {
-        resp = await fetch(`${this.cloudEndpoint}/${this.cloudObjId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (!resp.ok && resp.status === 404) {
-          this.cloudObjId = "";
-        }
-      }
-
-      if (!this.cloudObjId) {
-        resp = await fetch(this.cloudEndpoint, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        if (resp && resp.ok) {
-          const json = await resp.json();
-          if (json && json.id) {
-            this.cloudObjId = json.id;
-            this.saveStorage("ngwyren_cloud_obj_id", this.cloudObjId);
-
-            // Đăng ký cloudObjId vào Global Registry theo email và mã ngắn
-            const email = this.userProfile?.type === "google" && this.userProfile?.handle ? this.userProfile.handle.toLowerCase().trim() : null;
-            this.updateCloudRegistry((data) => {
-              if (!data.codes) data.codes = {};
-              data.codes[this.cloudSyncKey] = this.cloudObjId;
-              if (email) {
-                if (!data.users) data.users = {};
-                data.users[email] = this.cloudObjId;
-              }
-              return data;
-            });
-          }
-        }
-      }
-
+      await fetch(`https://ntfy.sh/${topic}`, {
+        method: "POST",
+        headers: {
+          "Title": "Ngwyren Cinema Sync",
+          "Priority": "high",
+          "Tags": "cinema,sync"
+        },
+        body: JSON.stringify(payload)
+      });
       this.lastCloudSyncTime = Date.now();
-      this.saveStorage("ngwyren_last_cloud_sync", this.lastCloudSyncTime);
+      this.saveStorage("ngwyren_last_cloud_sync", this.lastCloudSyncTime, true);
+      if (notify) {
+        this.showToast("☁️ Đã lưu & đồng bộ xuyên thiết bị thành công!");
+      }
     } catch (e) {
-      console.warn("Cloud sync error:", e);
+      console.warn("[CloudSync] syncToCloud error:", e);
     } finally {
       this.cloudSyncing = false;
       this.renderCloudSyncBadge(false);
     }
   }
 
-  async syncFromCloud(targetIdOrKey, notify = true) {
-    if (!targetIdOrKey) return;
-    let cleanId = String(targetIdOrKey).trim();
-    if (!cleanId) return;
-
-    if (notify) this.showToast("🔄 Đang nạp dữ liệu từ máy chủ Đám Mây...");
+  async syncFromCloud(notify = false) {
+    const topic = this.getCloudSyncTopic();
+    if (notify) this.showToast("🔄 Đang nạp dữ liệu từ đám mây (PC, Laptop, iPad, iPhone)...");
 
     try {
-      // Nếu là mã ngắn NGW-XXXX hoặc email, tra cứu qua Global Registry
-      if (cleanId.startsWith("NGW-") || cleanId.includes("@")) {
-        const reg = await this.getCloudRegistry();
-        const resolvedId = cleanId.includes("@") ? reg.users?.[cleanId.toLowerCase()] : reg.codes?.[cleanId];
-        if (resolvedId) {
-          cleanId = resolvedId;
-        } else {
-          throw new Error("Không tìm thấy mã đồng bộ hoặc tài khoản trên Đám Mây");
+      const resp = await fetch(`https://ntfy.sh/${topic}/json?poll=1`);
+      if (resp.ok) {
+        const text = await resp.text();
+        if (text) {
+          const lines = text.trim().split("\n");
+          let latestPayload = null;
+          for (let i = lines.length - 1; i >= 0; i--) {
+            try {
+              const entry = JSON.parse(lines[i]);
+              if (entry.event === "message" && entry.message) {
+                const data = JSON.parse(entry.message);
+                if (data && data.app === "ngwyren-cinema") {
+                  latestPayload = data;
+                  break;
+                }
+              }
+            } catch (e) {}
+          }
+
+          if (latestPayload) {
+            this.mergeCloudState(latestPayload, notify);
+            if (this.hasUnsyncedLocalChanges(latestPayload)) {
+              this.syncToCloud(false);
+            }
+            return;
+          }
         }
       }
+    } catch (e) {
+      console.warn("[CloudSync] syncFromCloud error:", e);
+    }
 
-      const url = `${this.cloudEndpoint}/${cleanId}`;
-      const resp = await fetch(url);
-      if (!resp.ok) {
-        throw new Error("Không tìm thấy dữ liệu trên Cloud với mã này");
-      }
-      const data = await resp.json();
-      const cloudData = data?.data;
+    if (notify) {
+      this.showToast(`🎉 Danh sách Tiếp Tục Xem: ${this.watchHistory.length} phim sẵn sàng.`);
+    }
+  }
 
-      if (!cloudData || cloudData.app !== "ngwyren-cinema") {
-        throw new Error("Mã đồng bộ không hợp lệ");
-      }
+  hasUnsyncedLocalChanges(cloudData) {
+    if (!cloudData || !Array.isArray(cloudData.history)) return true;
+    const cloudSlugs = new Set(cloudData.history.map((h) => h?.slug).filter(Boolean));
+    for (const h of (this.watchHistory || [])) {
+      if (h?.slug && !cloudSlugs.has(h.slug)) return true;
+    }
+    return false;
+  }
 
-      // Merge Cloud state
-      if (cloudData.profile && (!this.userProfile || this.userProfile.type !== "google")) {
-        this.userProfile = cloudData.profile;
-        this.saveStorage("ngwyren_user_profile", this.userProfile, true);
-        this.updateProfileUI();
-      }
-      if (Array.isArray(cloudData.myList)) {
-        this.myList = this.sanitizeAndDedupeMyList([...(this.myList || []), ...cloudData.myList]);
-        this.saveStorage("apple_cinema_mylist", this.myList, true);
-      }
-      if (Array.isArray(cloudData.history)) {
-        this.watchHistory = this.sanitizeAndDedupeHistory([...(cloudData.history || []), ...(this.watchHistory || [])]);
+  mergeCloudState(cloudData, notify = false) {
+    if (!cloudData || cloudData.app !== "ngwyren-cinema") return false;
+
+    let hasChanged = false;
+
+    // 1. Hợp nhất Lịch Sử & Tiếp Tục Xem (Two-Way Union Merge)
+    if (Array.isArray(cloudData.history) && cloudData.history.length > 0) {
+      const merged = this.sanitizeAndDedupeHistory([
+        ...(this.watchHistory || []),
+        ...cloudData.history
+      ]);
+      if (merged.length !== (this.watchHistory || []).length || JSON.stringify(merged) !== JSON.stringify(this.watchHistory)) {
+        this.watchHistory = merged;
         this.saveStorage("apple_cinema_history", this.watchHistory, true);
+        hasChanged = true;
       }
-      if (cloudData.progress && typeof cloudData.progress === "object") {
-        this.playbackProgress = { ...(this.playbackProgress || {}), ...cloudData.progress };
-        this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+    }
+
+    // 2. Hợp nhất Danh Sách Yêu Thích
+    if (Array.isArray(cloudData.myList) && cloudData.myList.length > 0) {
+      const mergedList = this.sanitizeAndDedupeMyList([
+        ...(this.myList || []),
+        ...cloudData.myList
+      ]);
+      if (mergedList.length !== (this.myList || []).length) {
+        this.myList = mergedList;
+        this.saveStorage("apple_cinema_mylist", this.myList, true);
+        hasChanged = true;
       }
+    }
 
-      this.cloudObjId = cleanId;
-      this.saveStorage("ngwyren_cloud_obj_id", cleanId);
-      if (cloudData.cloudKey) {
-        this.cloudSyncKey = cloudData.cloudKey;
-        this.saveStorage("ngwyren_cloud_key", this.cloudSyncKey);
+    // 3. Hợp nhất Tiến Độ Từng Tập
+    if (cloudData.progress && typeof cloudData.progress === "object") {
+      this.playbackProgress = { ...(cloudData.progress || {}), ...(this.playbackProgress || {}) };
+      this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+    }
+
+    // 4. Đồng bộ Profile nếu là Google
+    if (cloudData.profile && cloudData.profile.type === "google" && (!this.userProfile || this.userProfile.type !== "google")) {
+      this.userProfile = cloudData.profile;
+      this.saveStorage("ngwyren_user_profile", this.userProfile, true);
+      this.updateProfileUI();
+    }
+
+    if (hasChanged || notify) {
+      const contShelf = document.getElementById("continueWatchingShelf");
+      if (contShelf) {
+        contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
       }
-
-      this.lastCloudSyncTime = Date.now();
-      this.saveStorage("ngwyren_last_cloud_sync", this.lastCloudSyncTime);
-
-      // Cập nhật giao diện nhẹ nhàng: Chỉ re-render toàn phần nếu đang ở Đã Lưu / Lịch Sử
       if (this.currentNav === "yeu-thich" || this.currentNav === "lich-su") {
         this.renderMainView();
-      } else {
-        const contShelf = document.getElementById("continueWatchingShelf");
-        if (contShelf) {
-          contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
-        }
       }
       this.updateSidebarCounts();
 
       if (notify) {
-        this.showToast(`🎉 Đồng bộ thành công! Đã nạp ${this.watchHistory.length} phim lịch sử & tiếp tục xem.`);
-      }
-      this.renderCloudSyncBadge(false);
-    } catch (e) {
-      console.warn("Sync from cloud failed:", e);
-      if (notify) {
-        this.showToast(`⚠️ Đồng bộ thất bại: ${e.message || "Kiểm tra lại mã ID"}`);
+        this.showToast(`🎉 Đồng bộ thành công! Hiện có ${this.watchHistory.length} phim tiếp tục xem.`);
       }
     }
+    return hasChanged;
+  }
+
+  async manualForceSyncAllDevices() {
+    this.showToast("🔄 Đang đồng bộ giữa PC, Laptop, iPad, iPhone...");
+    await this.syncFromCloud(false);
+    await this.syncToCloud(false);
+    const contShelf = document.getElementById("continueWatchingShelf");
+    if (contShelf) {
+      contShelf.outerHTML = this.renderContinueWatchingShelfHTML();
+    }
+    this.updateSidebarCounts();
+    this.showToast(`🎉 Đã đồng bộ hoàn tất! Hiện có ${this.watchHistory.length} phim đang xem.`);
+  }
+
+  async syncWithGoogleAccount(email, notify = false) {
+    if (!email) return;
+    await this.syncFromCloud(notify);
+    await this.syncToCloud(false);
   }
 
   renderCloudSyncBadge(isSyncing = false) {
@@ -6029,9 +6051,13 @@ class AppleCinemaApp {
           <div class="auth-logged-details">
             <div class="auth-logged-name">${this.userProfile.name}</div>
             <div class="auth-logged-email">${this.userProfile.handle}</div>
-            <span class="auth-verified-badge"><i class="fas fa-check-circle"></i> Đang hoạt động</span>
+            <span class="auth-verified-badge"><i class="fas fa-check-circle"></i> Đang hoạt động • Kênh Realtime</span>
           </div>
         </div>
+
+        <button class="btn-sync-all-devices" onclick="app.manualForceSyncAllDevices()" style="margin: 12px 0 8px; width: 100%; padding: 13px 18px; border-radius: 14px; background: rgba(0, 240, 255, 0.16); border: 1px solid rgba(0, 240, 255, 0.4); color: #00f0ff; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.88rem; transition: all 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);">
+          <i class="fas fa-rotate"></i> Đồng Bộ Ngay (PC • Laptop • iPad • iPhone)
+        </button>
 
         <button class="btn-google-signout" onclick="app.logoutProfile()">
           <i class="fas fa-arrow-right-from-bracket"></i> Đăng Xuất Tài Khoản
