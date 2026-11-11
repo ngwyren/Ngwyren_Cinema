@@ -10,6 +10,7 @@ class AppleCinemaApp {
     this.currentSegment = "all"; // all | series | single
     this.activeGenreFilter = "Tất cả";
     this.visibleGridLimit = 24;
+    this.exploreGridLimit = 24;
     this.heroMovies = [];
     this.heroIndex = 0;
     this.heroTimer = null;
@@ -1050,10 +1051,19 @@ class AppleCinemaApp {
 
     if (isDefaultExplore) {
       const trending10 = this.getRealtimeTrendingMovies(null, 10);
-      const youMightLike = trending10.slice(6, 10).length === 4 ? trending10.slice(6, 10) : this.service.movies.slice(1, 5);
+      const youMightLike = trending10.slice(2, 10).length >= 8 ? trending10.slice(2, 10) : this.service.movies.slice(1, 9);
+      const singlesFeatured = this.service.movies.filter((m) => m.type === "single").slice(0, 8);
+      const seriesFeatured = this.service.movies.filter((m) => m.type === "series").slice(0, 8);
       const animeFeatured = this.getMoviesByTag("anime").slice(0, 8);
       const netflixFeatured = this.getMoviesByTag("netflix").slice(0, 8);
       const koreanFeatured = this.getMoviesByCountry("han-quoc").slice(0, 8);
+      const chineseFeatured = this.getMoviesByCountry("trung-quoc").slice(0, 8);
+      const hollywoodFeatured = (this.countryCache.get("au-my") || this.countryCache.get("my") || []).slice(0, 8);
+
+      const allExploreMovies = this.service.movies;
+      const currentExploreLimit = this.exploreGridLimit || 24;
+      const exploreGridList = allExploreMovies.slice(0, currentExploreLimit);
+      const remainingCount = Math.max(0, allExploreMovies.length - currentExploreLimit);
 
       container.innerHTML = `
         <div class="cinema-home-layout">
@@ -1062,7 +1072,7 @@ class AppleCinemaApp {
 
           ${this.renderContinueWatchingShelfHTML()}
 
-          <!-- BẠN ĐANG QUAN TÂM GÌ? (Chuẩn ảnh mẫu ChợPhim / Netflix) -->
+          <!-- 1. BẠN ĐANG QUAN TÂM GÌ? (8 Phim Đề Xuất Hot) -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
               <h2 class="vision-shelf-title">Bạn đang quan tâm gì?</h2>
@@ -1073,33 +1083,59 @@ class AppleCinemaApp {
             </div>
           </section>
 
-          <!-- Anime Row -->
+          <!-- 2. PHIM CHIẾU RẠP & BOM TẤN MỚI NHẤT -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
-              <h2 class="vision-shelf-title">Anime</h2>
+              <h2 class="vision-shelf-title"><i class="fas fa-film" style="margin-right: 8px;"></i>Phim Chiếu Rạp & Bom Tấn Mới Nhất</h2>
+              <button class="vision-see-all-pill" onclick="app.setNavigation('phim-le')">
+                Xem Tất Cả (${this.service.movies.filter((m) => m.type === "single").length})
+              </button>
+            </div>
+            <div class="vision-cards-grid-4">
+              ${singlesFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+            </div>
+          </section>
+
+          <!-- 3. PHIM BỘ ĐANG HOT & CẬP NHẬT MỚI -->
+          <section class="vision-shelf-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title"><i class="fas fa-tv" style="margin-right: 8px;"></i>Phim Bộ Đang Hot & Cập Nhật Mới</h2>
+              <button class="vision-see-all-pill" onclick="app.setNavigation('phim-bo')">
+                Xem Tất Cả (${this.service.movies.filter((m) => m.type === "series").length})
+              </button>
+            </div>
+            <div class="vision-cards-grid-4">
+              ${seriesFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+            </div>
+          </section>
+
+          <!-- 4. ANIME TUYỂN CHỌN -->
+          <section class="vision-shelf-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title"><i class="fas fa-dragon" style="margin-right: 8px;"></i>Anime Tuyển Chọn</h2>
               <button class="vision-see-all-pill" onclick="app.setNavigation('anime')">
                 Xem Tất Cả (${this.getMoviesByTag("anime").length})
               </button>
             </div>
             <div class="vision-cards-grid-4">
-              ${animeFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
+              ${animeFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
             </div>
           </section>
 
-          <!-- Netflix Row -->
+          <!-- 5. PHIM ĐỘC QUYỀN NETFLIX -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
-              <h2 class="vision-shelf-title">Phim Độc Quyền Netflix</h2>
+              <h2 class="vision-shelf-title"><i class="fas fa-play" style="margin-right: 8px;"></i>Phim Độc Quyền Netflix</h2>
               <button class="vision-see-all-pill" onclick="app.setNavigation('netflix')">
                 Xem Tất Cả (${this.getMoviesByTag("netflix").length})
               </button>
             </div>
             <div class="vision-cards-grid-4">
-              ${netflixFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
+              ${netflixFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
             </div>
           </section>
 
-          <!-- Korean Row -->
+          <!-- 6. PHIM HÀN QUỐC THỊNH HÀNH -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
               <h2 class="vision-shelf-title">Phim Hàn Quốc Thịnh Hành</h2>
@@ -1108,7 +1144,63 @@ class AppleCinemaApp {
               </button>
             </div>
             <div class="vision-cards-grid-4">
-              ${koreanFeatured.map((m) => this.renderVisionFeatureCardHTML(m, 99)).join("")}
+              ${koreanFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+            </div>
+          </section>
+
+          <!-- 7. PHIM TRUNG QUỐC ĐẶC SẮC -->
+          ${chineseFeatured.length > 0 ? `
+            <section class="vision-shelf-section">
+              <div class="vision-shelf-header">
+                <h2 class="vision-shelf-title">Phim Trung Quốc Đặc Sắc</h2>
+                <button class="vision-see-all-pill" onclick="app.setNavigation('trung-quoc')">
+                  Xem Tất Cả (${this.getMoviesByCountry("trung-quoc").length})
+                </button>
+              </div>
+              <div class="vision-cards-grid-4">
+                ${chineseFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+              </div>
+            </section>
+          ` : ""}
+
+          <!-- 8. PHIM ÂU MỸ / HOLLYWOOD -->
+          ${hollywoodFeatured.length > 0 ? `
+            <section class="vision-shelf-section">
+              <div class="vision-shelf-header">
+                <h2 class="vision-shelf-title">Phim Âu Mỹ & Bom Tấn Hollywood</h2>
+                <button class="vision-see-all-pill" onclick="app.setNavigation('au-my')">
+                  Xem Tất Cả (${(this.countryCache.get("au-my") || []).length})
+                </button>
+              </div>
+              <div class="vision-cards-grid-4">
+                ${hollywoodFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+              </div>
+            </section>
+          ` : ""}
+
+          <!-- 9. TOÀN BỘ KHO PHIM KHÁM PHÁ (VỚI NÚT HIỂN THỊ THÊM PHIM) -->
+          <section class="vision-shelf-section explore-all-catalog-section">
+            <div class="vision-shelf-header">
+              <h2 class="vision-shelf-title" id="exploreAllMoviesCountTitle">
+                <i class="fas fa-compass" style="margin-right: 8px;"></i>Khám Phá Toàn Bộ Kho Phim (${allExploreMovies.length}+ Phim)
+              </h2>
+            </div>
+            <div class="vision-cards-grid-4" id="exploreAllMoviesGrid">
+              ${exploreGridList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+            </div>
+            <div class="explore-load-more-wrap">
+              ${remainingCount > 0 ? `
+                <button class="explore-load-more-btn" onclick="app.loadMoreExplore()">
+                  <i class="fas fa-plus"></i> Hiển Thị Thêm 24 Phim (<span id="exploreRemainingCount">${remainingCount} phim còn lại</span>)
+                </button>
+              ` : `
+                <div style="padding: 16px; color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+                  🎉 Đã hiển thị toàn bộ ${allExploreMovies.length} phim trong kho Ngwyren Cinema!
+                </div>
+              `}
+              <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+                <i class="fas fa-arrow-up"></i> Lên Đầu Trang
+              </button>
             </div>
           </section>
         </div>
@@ -1190,6 +1282,56 @@ class AppleCinemaApp {
   loadMoreMovies(step = 120) {
     this.visibleGridLimit += step;
     this.renderMainView();
+  }
+
+  loadMoreExplore(step = 24) {
+    this.exploreGridLimit = (this.exploreGridLimit || 24) + step;
+    const grid = document.getElementById("exploreAllMoviesGrid");
+    const countLabel = document.getElementById("exploreRemainingCount");
+    const loadMoreWrap = document.querySelector(".explore-load-more-wrap");
+    const allMovies = this.service.movies;
+    if (grid) {
+      grid.innerHTML = allMovies
+        .slice(0, this.exploreGridLimit)
+        .map((m, idx) => this.renderVisionFeatureCardHTML(m, idx))
+        .join("");
+    }
+    const remaining = Math.max(0, allMovies.length - this.exploreGridLimit);
+    if (countLabel) {
+      if (remaining > 0) {
+        countLabel.textContent = `${remaining} phim còn lại`;
+      } else if (loadMoreWrap) {
+        loadMoreWrap.innerHTML = `
+          <div style="padding: 16px; color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+            🎉 Đã hiển thị toàn bộ ${allMovies.length} phim trong kho Ngwyren Cinema!
+          </div>
+          <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+            <i class="fas fa-arrow-up"></i> Lên Đầu Trang
+          </button>
+        `;
+      }
+    }
+  }
+
+  updateExploreCountsAndGrid() {
+    if (this.currentNav !== "kham-pha") return;
+    const titleEl = document.getElementById("exploreAllMoviesCountTitle");
+    const allMovies = this.service.movies;
+    if (titleEl) {
+      titleEl.innerHTML = `<i class="fas fa-compass" style="margin-right: 8px;"></i>Khám Phá Toàn Bộ Kho Phim (${allMovies.length}+ Phim)`;
+    }
+    const grid = document.getElementById("exploreAllMoviesGrid");
+    if (grid) {
+      grid.innerHTML = allMovies
+        .slice(0, this.exploreGridLimit || 24)
+        .map((m, idx) => this.renderVisionFeatureCardHTML(m, idx))
+        .join("");
+    }
+    const countLabel = document.getElementById("exploreRemainingCount");
+    if (countLabel) {
+      const remaining = Math.max(0, allMovies.length - (this.exploreGridLimit || 24));
+      countLabel.textContent = `${remaining} phim còn lại`;
+    }
   }
 
   getFilteredCatalog() {
@@ -1312,6 +1454,8 @@ class AppleCinemaApp {
   resetAllFilters() {
     this.currentSegment = "all";
     this.activeGenreFilter = "Tất cả";
+    this.visibleGridLimit = 24;
+    this.exploreGridLimit = 24;
     this.customFilterTitle = null;
     this.customFilterValue = null;
     document.querySelectorAll(".segment-btn").forEach((b) => {
@@ -1660,7 +1804,7 @@ class AppleCinemaApp {
               return `
                 <div class="cinema-thumb-card ${isActive ? "active" : ""}" onclick="app.setHeroSlide(${i})" title="${hm.title}">
                   <img src="${thumbUrl}" alt="${hm.title}" fetchpriority="high" decoding="async"
-                       onerror="this.onerror=null;this.src='${fallbackUrl}';" />
+                       onerror="if(this.src!=='${fallbackUrl}'){this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://phimimg.com/upload/vod/20241229-1/309e1f1623755fa993140a83167f577b.jpg';}" />
                 </div>
               `;
             }).join("")}
@@ -2010,9 +2154,9 @@ class AppleCinemaApp {
     const sheet = document.getElementById("movieDetailSheet");
     if (sheet) {
       sheet.scrollTop = 0;
-      sheet.classList.remove("modal-movie-switch");
+      sheet.classList.remove("modal-movie-switch", "ps5-modal-anim");
       requestAnimationFrame(() => {
-        sheet.classList.add("modal-movie-switch");
+        sheet.classList.add("modal-movie-switch", "ps5-modal-anim");
       });
     }
 
@@ -2150,8 +2294,8 @@ class AppleCinemaApp {
   getMovieBackdrop(movie) {
     if (!movie) return "";
     let b = movie.backdrop || "";
-    if (b.includes("20240807-1/f4b1d683a48e8e7428863f64c1ad6161.jpg")) {
-      b = "https://phimimg.com/upload/vod/20241229-1/309e1f1623755fa993140a83167f577b.jpg";
+    if (b.includes("20240807-1/f4b1d683a48e8e7428863f64c1ad6161.jpg") || b.includes("img-2edeaab3f6c4fad2efa3f86568c7e77d478f927de1bd1d9f362b806bde49d7c9")) {
+      b = "https://phimimg.com/upload/vod/20250827-1/eddefbf4813488f89a6f0c766f69f82f.jpg";
       movie.backdrop = b;
     }
     if (movie._cachedBackdrop) return movie._cachedBackdrop;
@@ -2184,8 +2328,8 @@ class AppleCinemaApp {
   getMoviePoster(movie) {
     if (!movie) return "";
     let p = movie.poster || "";
-    if (p.includes("20240807-1/9b47e2fa1c0c660e527d216f4ad47f87.jpg")) {
-      p = "https://phimimg.com/upload/vod/20241229-1/01a129f40195c588ebc3d00c225fa33c.jpg";
+    if (p.includes("20240807-1/9b47e2fa1c0c660e527d216f4ad47f87.jpg") || p.includes("img-aec7d896061b5c2d9a890e9529d1b3d9af793c89fb395b82f9cb86d0631697da")) {
+      p = "https://phimimg.com/upload/vod/20250827-1/aabb76a70d8afd21ddf2be37381c7587.jpg";
       movie.poster = p;
     }
     if (movie._cachedPoster) return movie._cachedPoster;
@@ -2231,6 +2375,7 @@ class AppleCinemaApp {
   renderModalContent(movie, isPlayingNow = false) {
     const sheet = document.getElementById("movieDetailSheet");
     if (!sheet) return;
+    sheet.className = "detail-modal-sheet ps5-modal-sheet ps5-modal-anim";
 
     const inMyList = this.isInMyList(movie);
     const relatedItems = this.service.getRelatedMovies(movie, 12);
@@ -2543,6 +2688,7 @@ class AppleCinemaApp {
       .map(
         (ep, idx) => `
       <button class="ep-pill-btn ${idx === this.currentEpisodeIndex ? "active" : ""}"
+              style="--ep-stagger: ${Math.min(idx, 20)};"
               onclick="app.startVideoPlayback(app.selectedMovie, ${idx}, app.currentServerMode || 'hls-1')">
         <span>${this.formatEpisodeLabel(ep.name, "Tập " + (idx + 1))}</span>
         <i class="fas ${idx === this.currentEpisodeIndex ? "fa-volume-high" : "fa-play"}" style="font-size: 0.72rem;"></i>

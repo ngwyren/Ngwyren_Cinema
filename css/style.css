@@ -9379,6 +9379,234 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
+/* ==========================================================================
+   10E. PS5 "GAME SCREEN & SAVES" MOVIE MODAL / TAB XEM PHIM MOTION
+   ========================================================================== */
+
+/* 1. Backdrop làm mờ & tối chuẩn không gian PS5 Cinema */
+.detail-modal-backdrop {
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* 2. Cửa sổ Rạp Chiếu Modal Nảy Lên Với Đường Cong Vật Lý PS5 Spring */
+.detail-modal-sheet {
+  transform: translate3d(0, 32px, 0) scale(0.96) !important;
+  transition:
+    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    max-width 0.35s ease !important;
+  will-change: transform, opacity;
+}
+
+.detail-modal-backdrop.open .detail-modal-sheet,
+.detail-modal-sheet.ps5-modal-anim {
+  transform: translate3d(0, 0, 0) scale(1) !important;
+}
+
+/* 3. Phóng To & Hiển Thị Mượt Mà Ảnh Bìa Hero Backdrop Trong Modal (Cinematic Reveal) */
+.detail-modal-sheet.ps5-modal-anim .player-cover-preview,
+.detail-modal-backdrop.open .player-cover-preview {
+  animation: ps5ModalCoverZoom 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  will-change: transform, opacity;
+}
+
+/* 4. Hiệu Ứng Trượt So Le Tuần Tự (Cascade Elements) Khi Mở Tab Xem Phim */
+.detail-modal-sheet.ps5-modal-anim .modal-top-controls {
+  animation: ps5ModalControlPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .player-cover-content h2 {
+  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .player-cover-content p {
+  animation: ps5ModalItemSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .hero-actions {
+  animation: ps5ModalItemSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim #playerToolbarContainer {
+  animation: ps5ModalItemSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .hero-meta-pills {
+  animation: ps5ModalItemSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .modal-synopsis,
+.detail-modal-sheet.ps5-modal-anim .modal-cast-meta {
+  animation: ps5ModalItemSlideUp 0.54s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .episodes-header-bar {
+  animation: ps5ModalItemSlideUp 0.56s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .episodes-grid .ep-pill-btn {
+  animation: ps5CardCascadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--ep-stagger, 0) * 20ms) both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .modal-tabs-nav {
+  animation: ps5ModalItemSlideUp 0.58s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .movie-grid {
+  animation: ps5ModalItemSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both !important;
+}
+
+/* 5. Tương Tác Xúc Giác PS5 Cho Nút Phát & Nút Điều Khiển Trong Modal */
+.btn-primary-play {
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s ease,
+    background 0.2s ease !important;
+}
+
+@media (hover: hover) {
+  .btn-primary-play:hover {
+    transform: scale(1.05) translate3d(0, -2px, 0) !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    color: #0b0c10 !important;
+    box-shadow: 0 0 28px rgba(255, 255, 255, 0.85), 0 10px 28px rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .btn-glass-secondary:hover {
+    transform: scale(1.04) translate3d(0, -1px, 0) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    background: rgba(255, 255, 255, 0.16) !important;
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.25) !important;
+  }
+
+  /* Nút Server (Server 1, Server 2, Thuyết Minh, Trailer) */
+  .server-btn:hover {
+    transform: translate3d(0, -2px, 0) scale(1.04) !important;
+    border-color: rgba(255, 255, 255, 0.65) !important;
+    color: #ffffff !important;
+  }
+
+  /* Tập phim (Episode Pills) */
+  .ep-pill-btn:hover {
+    transform: translate3d(0, -3px, 0) scale(1.04) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.45) !important;
+  }
+
+  /* Nút điều khiển góc trên (Đèn, Thu nhỏ, Đóng) */
+  .modal-ctrl-btn:hover {
+    transform: scale(1.14) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.35) !important;
+  }
+
+  /* Tabs Trong Modal (Nội dung tương tự, Cùng thể loại) */
+  .modal-tab-btn:hover {
+    transform: scale(1.04) !important;
+  }
+}
+
+.btn-primary-play:active {
+  transform: scale(0.95) !important;
+}
+
+.btn-glass-secondary:active,
+.server-btn:active,
+.ep-pill-btn:active,
+.modal-ctrl-btn:active,
+.modal-tab-btn:active {
+  transform: scale(0.95) !important;
+}
+
+/* Keyframes cho Modal PS5 */
+@keyframes ps5ModalCoverZoom {
+  0% {
+    opacity: 0.45;
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ps5ModalItemSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes ps5ModalControlPop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0) scale(0.88);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   10F. KHÁM PHÁ EXTENDED CATALOG & "HIỂN THỊ THÊM" (LOAD MORE) STYLING
+   ========================================================================== */
+.explore-all-catalog-section {
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.explore-load-more-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 36px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.explore-load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 34px;
+  border-radius: 999px;
+  background: #ffffff !important;
+  color: #0b0c10 !important;
+  font-size: 0.95rem;
+  font-weight: 800;
+  border: none !important;
+  cursor: pointer;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.45) !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
+}
+
+.explore-load-more-btn:hover {
+  transform: scale(1.05) translate3d(0, -2px, 0);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.6),
+    0 0 28px rgba(255, 255, 255, 0.75) !important;
+}
+
+.explore-load-more-btn:active {
+  transform: scale(0.96);
+}
+
+.explore-load-more-btn i {
+  font-size: 0.88rem;
+  color: #0b0c10;
+}
+
 
 
 

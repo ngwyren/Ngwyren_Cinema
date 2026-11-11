@@ -1223,6 +1223,8 @@ class PhimmoiService {
       window.app.updateSidebarCounts();
       if (window.app.currentNav && window.app.currentNav !== "kham-pha") {
         window.app.renderMainView();
+      } else if (window.app.currentNav === "kham-pha" && typeof window.app.updateExploreCountsAndGrid === "function") {
+        window.app.updateExploreCountsAndGrid();
       }
     }
   }
