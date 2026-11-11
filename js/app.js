@@ -1035,6 +1035,9 @@ class AppleCinemaApp {
   clearWatchHistory() {
     this.watchHistory = [];
     this.saveStorage("apple_cinema_history", this.watchHistory);
+    if (this.userProfile?.email) {
+      this.syncToCloud(false);
+    }
     this.updateSidebarCounts();
     this.renderMainView();
     this.showToast("Đã xóa toàn bộ lịch sử xem phim");
@@ -1043,6 +1046,9 @@ class AppleCinemaApp {
   clearMyList() {
     this.myList = [];
     this.saveStorage("apple_cinema_mylist", this.myList);
+    if (this.userProfile?.email) {
+      this.syncToCloud(false);
+    }
     this.updateSidebarCounts();
     this.renderMainView();
     this.showToast("Đã làm trống danh sách phim đã lưu");
@@ -6650,21 +6656,6 @@ class AppleCinemaApp {
             <div class="auth-logged-name">${this.userProfile.name}</div>
             <div class="auth-logged-email">${this.userProfile.handle}</div>
             <span class="auth-verified-badge"><i class="fas fa-check-circle"></i> Đang hoạt động • Kênh Realtime</span>
-          </div>
-        </div>
-
-        <div class="auth-sync-actions-group" style="margin: 12px 0 8px; display: flex; flex-direction: column; gap: 8px;">
-          <button class="btn-sync-all-devices" onclick="app.manualForceSyncAllDevices()" style="width: 100%; padding: 13px 18px; border-radius: 14px; background: rgba(0, 240, 255, 0.16); border: 1px solid rgba(0, 240, 255, 0.4); color: #00f0ff; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.88rem; transition: all 0.24s cubic-bezier(0.2, 0.9, 0.3, 1);">
-            <i class="fas fa-rotate"></i> Đồng Bộ Ngay (PC • Laptop • iPad • iPhone)
-          </button>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-            <button class="btn-clean-cloud" onclick="app.resetCloudDataAndPushLocal()" title="Xóa dữ liệu cũ trên Cloud và ghi đè danh sách phim hiện tại của thiết bị này" style="padding: 10px 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.2); color: #e2e8f0; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.78rem; transition: all 0.2s ease;">
-              <i class="fas fa-cloud-arrow-up" style="color: #38bdf8;"></i> Đè Lên Cloud
-            </button>
-            <button class="btn-clear-history-cloud" onclick="app.clearAllContinueWatchingHistory()" title="Xóa sạch toàn bộ phim đang xem dở trên máy và Cloud" style="padding: 10px 10px; border-radius: 12px; background: rgba(255, 59, 48, 0.14); border: 1px solid rgba(255, 59, 48, 0.38); color: #ff6b6b; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 0.78rem; transition: all 0.2s ease;">
-              <i class="fas fa-trash-can"></i> Xóa Lịch Sử
-            </button>
           </div>
         </div>
 
