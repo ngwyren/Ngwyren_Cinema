@@ -3179,46 +3179,20 @@ body {
   will-change: transform;
 }
 
-/* Spatial Stage: Full-Screen Edge-to-Edge with Left Floating Pill Dock */
+/* Spatial Stage: Full-Screen Edge-to-Edge Toàn Màn Hình */
 .vision-stage {
   position: relative;
   z-index: 2;
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 8px 10px 98px 76px;
+  padding: 16px 20px 96px 20px !important;
   min-height: 100vh;
 }
 
-/* Floating Left Vertical Icon Pill Dock (visionOS Side Launcher Matching Main Window Glass) */
+/* Floating Left Vertical Icon Pill Dock (Đã ẩn theo yêu cầu người dùng) */
 .vision-left-dock {
-  --dock-idx: 0;
-  position: fixed;
-  left: 18px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 50;
-  width: 56px;
-  height: auto !important;
-  padding: 10px 0;
-  border-radius: 999px;
-  background: linear-gradient(
-    145deg,
-    rgba(92, 95, 102, 0.62) 0%,
-    rgba(58, 60, 66, 0.68) 48%,
-    rgba(42, 44, 50, 0.76) 100%
-  );
-  backdrop-filter: blur(28px) saturate(165%);
-  -webkit-backdrop-filter: blur(28px) saturate(165%);
-  border: 1.5px solid rgba(255, 255, 255, 0.28);
-  box-shadow:
-    inset 0 1.5px 1px rgba(255, 255, 255, 0.45),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.12),
-    0 24px 60px rgba(0, 0, 0, 0.52);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  display: none !important;
 }
 
 /* Sliding Liquid Glass Pill Indicator inside Dock (Silky Smooth 120fps Glide with Radiant White Halo Glow) */
@@ -4153,11 +4127,14 @@ body {
   min-width: 0;
 }
 
-.cinema-showcase-hero {
-  position: relative;
-  width: 100%;
-  height: clamp(520px, 66vh, 660px);
-  min-height: 520px;
+.cinema-showcase-hero,
+.vision-hero-banner {
+  position: relative !important;
+  width: 100% !important;
+  height: clamp(560px, 72vh, 680px) !important;
+  min-height: 560px !important;
+  max-height: 680px !important;
+  box-sizing: border-box !important;
   border-radius: 28px;
   overflow: hidden;
   isolation: isolate;
@@ -5858,15 +5835,10 @@ body.modal-open .apple-player-bar {
 /* --- B. THIẾT BỊ 1: MÁY TÍNH BÀN / DESKTOP / MÀN HÌNH LỚN (> 1180px) --- */
 @media (min-width: 1181px) {
   .vision-stage {
-    padding: 22px 24px 96px 104px;
+    padding: 18px 24px 96px 24px !important;
   }
   .vision-left-dock {
-    display: flex !important;
-    left: 20px !important;
-    width: 56px !important;
-    height: auto !important;
-    padding: 10px 0 !important;
-    gap: 12px !important;
+    display: none !important;
   }
   .vision-dashboard-grid {
     display: grid !important;
@@ -5885,7 +5857,7 @@ body.modal-open .apple-player-bar {
     display: none !important;
   }
   .apple-player-bar:not(:hover):not(.is-expanded) {
-    left: calc(50% + 40px) !important;
+    left: 50% !important;
     right: auto !important;
     transform: translate3d(-50%, 0, 0) !important;
     bottom: 18px !important;
@@ -5900,15 +5872,10 @@ body.modal-open .apple-player-bar {
 /* C1. iPad Landscape (Nằm ngang: 920px – 1180px: iPad Pro, iPad Air, Galaxy Tab) */
 @media (min-width: 920px) and (max-width: 1180px) {
   .vision-stage {
-    padding: 16px 16px 90px 84px !important;
+    padding: 16px 18px 90px 18px !important;
   }
   .vision-left-dock {
-    display: flex !important;
-    left: 14px !important;
-    width: 56px !important;
-    height: auto !important;
-    padding: 10px 0 !important;
-    gap: 12px !important;
+    display: none !important;
   }
   .vision-window {
     border-radius: 26px !important;
@@ -5943,7 +5910,7 @@ body.modal-open .apple-player-bar {
     display: none !important;
   }
   .apple-player-bar:not(:hover):not(.is-expanded) {
-    left: calc(50% + 34px) !important;
+    left: 50% !important;
     right: auto !important;
     transform: translate3d(-50%, 0, 0) !important;
     bottom: 18px !important;
@@ -8883,10 +8850,15 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   display: none !important;
 }
 
-/* --- 10A. PS5 Hero Banner Metadata Row (98% Match • Năm • Full HD • Tập • 5.1) --- */
-.vision-hero-banner {
-  min-height: 425px;
-  height: auto;
+/* --- 10A. PS5 Hero Banner Metadata Row (Đồng nhất chiều cao chuẩn rạp 100%) --- */
+.vision-hero-banner,
+.cinema-showcase-hero {
+  position: relative !important;
+  width: 100% !important;
+  height: clamp(560px, 72vh, 680px) !important;
+  min-height: 560px !important;
+  max-height: 680px !important;
+  box-sizing: border-box !important;
   transition:
     border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
