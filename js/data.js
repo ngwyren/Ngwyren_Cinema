@@ -24,6 +24,383 @@ const PHIMMOI_CONFIG = {
  */
 const PHIMMOI_SEED_MOVIES = [
   {
+    "id": "pa-ke-kien-tao",
+    "slug": "ke-kien-tao",
+    "crawlSlug": "ke-kien-tao",
+    "title": "Kẻ Kiến Tạo",
+    "originTitle": "The Creator",
+    "poster": "https://phimimg.com/upload/vod/20251010-1/e6f308eb5366226d016045c3b80d37ca.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20251010-1/1f1c6b6ff250e556050b9263967174d2.jpg",
+    "type": "single",
+    "sectionTags": [
+      "hot",
+      "vietsub",
+      "ai",
+      "phim-le"
+    ],
+    "quality": "FHD",
+    "language": "Vietsub",
+    "duration": "134 phút",
+    "episodeCurrent": "Full",
+    "episodeTotal": 1,
+    "year": 2023,
+    "rating": 9.4,
+    "matchScore": 98,
+    "country": "Canada",
+    "countrySlug": "canada",
+    "genres": [
+      "Khoa Học",
+      "Viễn Tưởng",
+      "Hành Động",
+      "Phiêu Lưu",
+      "Tâm Lý"
+    ],
+    "director": "Gareth Edwards",
+    "cast": [
+      "John David Washington",
+      "Madeleine Yuna Voyles",
+      "Gemma Chan",
+      "Allison Janney",
+      "Ken Watanabe",
+      "Sturgill Simpson",
+      "Amar Chadha-Patel",
+      "Marc Menchaca",
+      "Robbie Tann",
+      "Ralph Ineson",
+      "Michael Esper",
+      "Veronica Ngo",
+      "Ian Verdun",
+      "Daniel Ray Rodriguez",
+      "Rad Pereira",
+      "Syd Skidmore"
+    ],
+    "ambientColors": [
+      "#ffffff",
+      "#d4d4d4",
+      "#a3a3a3"
+    ],
+    "trailerUrl": "https://www.youtube.com/watch?v=XMvMTmDYtyE",
+    "synopsis": "Từ Biên kịch/Đạo diễn Gareth Edwards (&quot;Rogue One,&quot; &quot;Godzilla&quot;) mang đến một bộ phim hành động viễn tưởng lấy bối cảnh cuộc chiến trong tương lai giữa loài người và trí tuệ nhân tạo. Joshua, một cựu đặc vụ đang đau buồn trước sự mất tích của người vợ, được thuê để tiêu diệt Creator, kẻ đã đứng sau phát triển một loại vũ khí có sức mạnh chấm dứt mọi cuộc chiến và sự sống của toàn thể nhân loại. Joshua và nhóm đặc vụ tinh nhuệ đã lần theo dấu vết tiến vào lãnh thổ bị A.I chiếm đóng, chỉ để khám phá ra vũ khí hủy diệt thế giới mà anh ta được giao tiêu diệt là một A.I dưới hình hài của một đứa trẻ.",
+    "episodes": [
+      {
+        "name": "Full",
+        "slug": "full",
+        "source": "https://s6.kkphimplayer6.com/20251010/cNiLF7OZ/index.m3u8"
+      }
+    ],
+    "sourceSite": "kkphim"
+  },
+  {
+    "id": "pa-nguoi-may-troi-day",
+    "slug": "nguoi-may-troi-day",
+    "crawlSlug": "nguoi-may-troi-day",
+    "title": "Người Máy Trỗi Dậy",
+    "originTitle": "Ex Machina",
+    "poster": "https://phimimg.com/upload/vod/20231026-1/6154722fdafdf3d65ee58321cc8bef36.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20231026-1/9a8ecc565dd764bbc35f49a6be94b533.jpg",
+    "type": "single",
+    "sectionTags": [
+      "hot",
+      "vietsub",
+      "ai",
+      "phim-le"
+    ],
+    "quality": "HD",
+    "language": "Vietsub",
+    "duration": "108 phút",
+    "episodeCurrent": "Full",
+    "episodeTotal": 1,
+    "year": 2015,
+    "rating": 9.4,
+    "matchScore": 98,
+    "country": "Anh",
+    "countrySlug": "anh",
+    "genres": [
+      "Chính Kịch",
+      "Khoa Học",
+      "Viễn Tưởng"
+    ],
+    "director": "Alex Garland",
+    "cast": [
+      "Domhnall Gleeson",
+      "Alicia Vikander",
+      "Oscar Isaac",
+      "Sonoya Mizuno",
+      "Corey Johnson",
+      "Claire Selby",
+      "Symara A. Templeman",
+      "Gana Bayarsaikhan",
+      "Tiffany Pisani",
+      "Elina Alminas",
+      "Chelsea Li",
+      "Dan Pappaspanos"
+    ],
+    "ambientColors": [
+      "#ffffff",
+      "#d4d4d4",
+      "#a3a3a3"
+    ],
+    "trailerUrl": "",
+    "synopsis": "Caleb, một lập trình viên 26 tuổi làm việc tại một công ty internet lớn nhất thế giới, chiến thắng một cuộc thi dành lấy một tuần tu nghiệp thuộc Nathan. Nhưng khi Caleb đến, anh thấy rằng anh sẽ phải tham gia vào một thí nghiệm kỳ lạ và hấp dẫn. Trong đó, anh phải làm việc với trí tuệ nhân tạo (A.I) thực sự đầu tiên của thế giới, nó nằm trong cơ thể của robot mang hình hài môt cô gái xinh đẹp.",
+    "episodes": [
+      {
+        "name": "Full",
+        "slug": "full",
+        "source": "https://s2.phim1280.tv/20231028/EtMSfAys/index.m3u8"
+      }
+    ],
+    "sourceSite": "kkphim"
+  },
+  {
+    "id": "pa-ai-tri-tue-nhan-tao",
+    "slug": "ai-tri-tue-nhan-tao",
+    "crawlSlug": "ai-tri-tue-nhan-tao",
+    "title": "AI – Trí Tuệ Nhân Tạo",
+    "originTitle": "A.I. Artificial Intelligence",
+    "poster": "https://phimimg.com/upload/vod/20240220-1/fb1ce6de20885fc632452ccd0c1069aa.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20240220-1/85da021b9a13d802c226cdf4a3f1b393.jpg",
+    "type": "single",
+    "sectionTags": [
+      "hot",
+      "vietsub",
+      "ai",
+      "phim-le"
+    ],
+    "quality": "HD",
+    "language": "Vietsub",
+    "duration": "146 phút",
+    "episodeCurrent": "Full",
+    "episodeTotal": 1,
+    "year": 2001,
+    "rating": 9.4,
+    "matchScore": 98,
+    "country": "Âu Mỹ",
+    "countrySlug": "au-my",
+    "genres": [
+      "Viễn Tưởng",
+      "Khoa Học"
+    ],
+    "director": "",
+    "cast": [],
+    "ambientColors": [
+      "#ffffff",
+      "#d4d4d4",
+      "#a3a3a3"
+    ],
+    "trailerUrl": "",
+    "synopsis": "Trong tương lai không xa, mũ đá cực đã tan chảy và sự trỗi dậy của vùng biển đại dương đã nhấn chìm tất cả các thành phố ven biển trên thế giới. Rút tiền vào nội địa của các lục địa, loài người tiếp tục tiến lên, đạt đến điểm tạo ra robot thực tế (được gọi là mechas) để phục vụ họ. Một trong những công ty sản xuất Mecha xây dựng David, một đứa trẻ nhân tạo là người đầu tiên có cảm xúc thực sự, đặc biệt là một tình yêu không bao giờ kết thúc dành cho Mẹ, Monica. Monica là người phụ nữ nhận nuôi anh ta thay thế cho con trai thực sự của cô ấy, người vẫn ở Cryo-Stasis, bị mắc kẹt bởi một căn bệnh nan y. David đang sống hạnh phúc với Monica và chồng, nhưng khi con trai thực sự của họ trở về nhà sau khi chữa trị được phát hiện, cuộc sống của anh ta thay đổi đáng kể",
+    "episodes": [
+      {
+        "name": "Full",
+        "slug": "full",
+        "source": "https://s2.phim1280.tv/20240302/HSaryiWp/index.m3u8"
+      }
+    ],
+    "sourceSite": "kkphim"
+  },
+  {
+    "id": "pa-toi-pham-nhan-ban-2049",
+    "slug": "toi-pham-nhan-ban-2049",
+    "crawlSlug": "toi-pham-nhan-ban-2049",
+    "title": "Tội Phạm Nhân Bản 2049",
+    "originTitle": "Blade Runner 2049",
+    "poster": "https://phimimg.com/upload/vod/20250526-1/c2f16d5873f9bbd24c6c951ff88bf1b9.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250526-1/47cf1c718a533e0e05b24ad2c99da768.jpg",
+    "type": "single",
+    "sectionTags": [
+      "hot",
+      "vietsub",
+      "ai",
+      "phim-le"
+    ],
+    "quality": "FHD",
+    "language": "Vietsub",
+    "duration": "164 phút",
+    "episodeCurrent": "Full",
+    "episodeTotal": 1,
+    "year": 2017,
+    "rating": 9.4,
+    "matchScore": 98,
+    "country": "Canada",
+    "countrySlug": "canada",
+    "genres": [
+      "Khoa Học",
+      "Viễn Tưởng",
+      "Chính Kịch"
+    ],
+    "director": "Denis Villeneuve",
+    "cast": [
+      "Ryan Gosling",
+      "Harrison Ford",
+      "Ana de Armas",
+      "Dave Bautista",
+      "Robin Wright",
+      "Sylvia Hoeks",
+      "Mackenzie Davis",
+      "Jared Leto",
+      "Carla Juri",
+      "Hiam Abbass",
+      "Lennie James",
+      "David Dastmalchian",
+      "Sean Young",
+      "Edward James Olmos",
+      "Barkhad Abdi",
+      "Wood Harris",
+      "Tómas Lemarquis",
+      "Salli"
+    ],
+    "ambientColors": [
+      "#ffffff",
+      "#d4d4d4",
+      "#a3a3a3"
+    ],
+    "trailerUrl": "https://www.youtube.com/watch?v=geFtxCSz8xI",
+    "synopsis": "Một chàng trai trẻ khám phá ra bí mật khiến xã hội rơi vào cảnh hỗn mang. Anh lên đường đi tìm một người khác đã mất tích cách đây ba mươi năm, để rồi cả hai cùng bước vào hành trình cứu thế giới. 35 năm sau ngày phần đầu tiên ra mắt, Blade Runner trở lại với những gương mặt mới, câu chuyện mới, đầy hứa hẹn vẫn sẽ giữ được cái “chất” khiến thương hiệu này trở thành tác phẩm kinh điển trong lịch sử điện ảnh. Nhà sản xuất vừa tung ra trailer đầu tiên của phim do bộ đôi Ridley Scott - sản xuất và Denis Villeneuve - đạo diễn với vô số tình tiết bất ngờ có thể hứa hẹn đây là sẽ bom tấn đáng để chúng ta ra rạp thưởng thức. Phim được xem là tác phẩm kinh điển của thể loại khoa học viễn tưởng.",
+    "episodes": [
+      {
+        "name": "Full",
+        "slug": "full",
+        "source": "https://s6.kkphimplayer6.com/20250525/M8S1sKG4/index.m3u8"
+      }
+    ],
+    "sourceSite": "kkphim"
+  },
+  {
+    "id": "pa-toi-pham-nhan-ban",
+    "slug": "toi-pham-nhan-ban",
+    "crawlSlug": "toi-pham-nhan-ban",
+    "title": "Tội Phạm Nhân Bản",
+    "originTitle": "Blade Runner",
+    "poster": "https://phimimg.com/upload/vod/20231020-1/2ce10643cc72a99eeec844b23225e385.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20231020-1/d6ba2c7eb0a3f8960e3628448c0a53a5.jpg",
+    "type": "single",
+    "sectionTags": [
+      "hot",
+      "vietsub",
+      "ai",
+      "phim-le"
+    ],
+    "quality": "HD",
+    "language": "Vietsub",
+    "duration": "118 phút",
+    "episodeCurrent": "Full",
+    "episodeTotal": 1,
+    "year": 1982,
+    "rating": 9.4,
+    "matchScore": 98,
+    "country": "Âu Mỹ",
+    "countrySlug": "au-my",
+    "genres": [
+      "Khoa Học",
+      "Chính Kịch",
+      "Tâm Lý",
+      "Viễn Tưởng"
+    ],
+    "director": "Ridley Scott",
+    "cast": [
+      "Harrison Ford",
+      "Rutger Hauer",
+      "Sean Young",
+      "Edward James Olmos",
+      "M. Emmet Walsh",
+      "Daryl Hannah",
+      "William Sanderson",
+      "Brion James",
+      "Joe Turkel",
+      "Joanna Cassidy",
+      "James Hong",
+      "Kevin Thompson",
+      "Hy Pyke",
+      "Kimiko Hiroshige",
+      "Ben Astar",
+      "Dawna Lee Heising",
+      "Alexis Rhee",
+      "Bob Ok"
+    ],
+    "ambientColors": [
+      "#ffffff",
+      "#d4d4d4",
+      "#a3a3a3"
+    ],
+    "trailerUrl": "",
+    "synopsis": "Blade Runner lấy bối cảnh thế giới tương lai, nơi ô nhiễm môi trường, khủng hoảng lương thực khiến cuộc sống của con người trở thành địa ngục. Để thoát khỏi diệt vong, nhân loại tiến hành khai phá các hành tinh khác trong vũ trụ để thành lập thuộc địa. Họ sử dụng người nhân bản do Eldon Tyrell chế tạo làm nguồn lao động chính. Người nhân bản được tạo ra rất giống với con người, có cảm xúc, suy nghĩ nhưng có tuổi thọ nhất định ở một số phiên bản. Blade Runner là lực lượng cảnh sát được thành lập để săn đuổi và tiêu diệt những người nhân bản lẩn trốn trên trái đất. Trong phần này, các Blade Runner đều là con người. Sang phần phim Blade Runner 2049, các Nexus-9 cũng được tham gia lực lượng này.",
+    "episodes": [
+      {
+        "name": "Full",
+        "slug": "full",
+        "source": "https://s1.phim1280.tv/20231022/Kx5nJkFb/index.m3u8"
+      }
+    ],
+    "sourceSite": "kkphim"
+  },
+  {
+    "id": "pa-chappie",
+    "slug": "chappie",
+    "crawlSlug": "chappie",
+    "title": "Chappie",
+    "originTitle": "Chappie",
+    "poster": "https://phimimg.com/upload/vod/20231021-1/2d480d6025099bd105d8b103981ce013.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20231021-1/5ba2bd440e4f5903f32d0f6b66c5e821.jpg",
+    "type": "single",
+    "sectionTags": [
+      "hot",
+      "vietsub",
+      "ai",
+      "phim-le"
+    ],
+    "quality": "HD",
+    "language": "Vietsub",
+    "duration": "120 phút",
+    "episodeCurrent": "Full",
+    "episodeTotal": 1,
+    "year": 2015,
+    "rating": 9.4,
+    "matchScore": 98,
+    "country": "Âu Mỹ",
+    "countrySlug": "au-my",
+    "genres": [
+      "Hình Sự",
+      "Hành Động",
+      "Khoa Học",
+      "Viễn Tưởng"
+    ],
+    "director": "Neill Blomkamp",
+    "cast": [
+      "Sharlto Copley",
+      "Dev Patel",
+      "Hugh Jackman",
+      "Ninja",
+      "Yo-Landi Visser",
+      "Sigourney Weaver",
+      "Chris Shields",
+      "Anderson Cooper",
+      "Jose Pablo Cantillo",
+      "Brandon Auret",
+      "Johnny Selema",
+      "Maurice Carpede",
+      "Jason Cope",
+      "Kevin Otto",
+      "Bill Marchant",
+      "Robert Hobbs",
+      "Eugene Khumbanyiwa"
+    ],
+    "ambientColors": [
+      "#ffffff",
+      "#d4d4d4",
+      "#a3a3a3"
+    ],
+    "trailerUrl": "",
+    "synopsis": "Bộ phim Chappie xoay quanh câu chuyện về một chú robot của lực lượng cảnh sát Johannesburg, bị hỏng sau một trận đánh, Chappie được một nhà khoa học trẻ khôi phục lại và “thổi hồn” vào biến cậu thành khác biệt. Chappie có linh hồn, có tình cảm và có suy nghĩ như một con người. Ẩn trong vẻ ngoài lạnh lùng cứng nhắc của một robot cảnh sát, linh hồn Chappie non nớt và ngây thơ như một đứa trẻ. Và hơn bao giờ hết, cậu có một niềm thiết tha mãnh liệt với cuộc sống.",
+    "episodes": [
+      {
+        "name": "Full",
+        "slug": "full",
+        "source": "https://s2.phim1280.tv/20231022/k63SYGvE/index.m3u8"
+      }
+    ],
+    "sourceSite": "kkphim"
+  },
+  {
       "id": "mai-2024",
       "slug": "mai-2024",
       "crawlSlug": "mai-2024",

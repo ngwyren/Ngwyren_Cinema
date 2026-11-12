@@ -1090,6 +1090,16 @@ class AppleCinemaApp {
       const seriesFeatured = this.service.movies.filter((m) => m.type === "series").slice(0, 8);
       const animeFeatured = this.getMoviesByTag("anime").slice(0, 8);
       const netflixFeatured = this.getMoviesByTag("netflix").slice(0, 8);
+      const allAiMovies = this.service.movies.filter((m) =>
+        (m.sectionTags && m.sectionTags.includes("ai")) ||
+        ((m.genres && m.genres.some(g => (g || "").toLowerCase().includes("viễn tưởng") || (g || "").toLowerCase().includes("khoa học"))) &&
+        (
+          (m.title && /ai|robot|người máy|cyborg|trí tuệ nhân tạo|ma trận|creator/i.test(m.title)) ||
+          (m.originTitle && /ai|robot|cyborg|terminator|matrix|creator|artificial|blade runner|m3gan|upgrade/i.test(m.originTitle)) ||
+          (m.synopsis && /trí tuệ nhân tạo|trí thông minh nhân tạo|robot|người máy|cyborg|hệ thống ai/i.test(m.synopsis))
+        ))
+      );
+      const aiFeatured = allAiMovies.slice(0, 8);
       const koreanFeatured = this.getMoviesByCountry("han-quoc").slice(0, 8);
       const chineseFeatured = this.getMoviesByCountry("trung-quoc").slice(0, 8);
       const hollywoodFeatured = (this.countryCache.get("au-my") || this.countryCache.get("my") || []).slice(0, 8);
@@ -1169,7 +1179,22 @@ class AppleCinemaApp {
             </div>
           </section>
 
-          <!-- 6. PHIM HÀN QUỐC THỊNH HÀNH -->
+          <!-- 6. VŨ TRỤ TRÍ TUỆ NHÂN TẠO & ROBOT (AI) -->
+          ${aiFeatured.length > 0 ? `
+            <section class="vision-shelf-section">
+              <div class="vision-shelf-header">
+                <h2 class="vision-shelf-title"><i class="fas fa-robot" style="margin-right: 8px;"></i>Vũ Trụ Trí Tuệ Nhân Tạo & Robot (AI)</h2>
+                <button class="vision-see-all-pill" onclick="app.setNavigation('ai')">
+                  Xem Tất Cả (${allAiMovies.length})
+                </button>
+              </div>
+              <div class="vision-cards-grid-4">
+                ${aiFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+              </div>
+            </section>
+          ` : ""}
+
+          <!-- 7. PHIM HÀN QUỐC THỊNH HÀNH -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
               <h2 class="vision-shelf-title">Phim Hàn Quốc Thịnh Hành</h2>
@@ -1415,6 +1440,19 @@ class AppleCinemaApp {
     let subtitle = "Kho phim chất lượng cao Ngwyren Cinema";
 
     switch (this.currentNav) {
+      case "ai":
+        base = base.filter((m) =>
+          (m.sectionTags && m.sectionTags.includes("ai")) ||
+          ((m.genres && m.genres.some(g => (g || "").toLowerCase().includes("viễn tưởng") || (g || "").toLowerCase().includes("khoa học"))) &&
+          (
+            (m.title && /ai|robot|người máy|cyborg|trí tuệ nhân tạo|ma trận|creator/i.test(m.title)) ||
+            (m.originTitle && /ai|robot|cyborg|terminator|matrix|creator|artificial|blade runner|m3gan|upgrade/i.test(m.originTitle)) ||
+            (m.synopsis && /trí tuệ nhân tạo|trí thông minh nhân tạo|robot|người máy|cyborg|hệ thống ai/i.test(m.synopsis))
+          ))
+        );
+        title = "Vũ Trụ Phim Trí Tuệ Nhân Tạo & Robot (AI)";
+        subtitle = "Những kiệt tác điện ảnh đỉnh cao về AI, người máy và tương lai công nghệ loài người";
+        break;
       case "netflix":
         base = this.getMoviesByTag("netflix");
         title = "Phim Độc Quyền Netflix";
