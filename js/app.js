@@ -1090,16 +1090,6 @@ class AppleCinemaApp {
       const seriesFeatured = this.service.movies.filter((m) => m.type === "series").slice(0, 8);
       const animeFeatured = this.getMoviesByTag("anime").slice(0, 8);
       const netflixFeatured = this.getMoviesByTag("netflix").slice(0, 8);
-      const allAiMovies = this.service.movies.filter((m) =>
-        (m.sectionTags && m.sectionTags.includes("ai")) ||
-        ((m.genres && m.genres.some(g => (g || "").toLowerCase().includes("viễn tưởng") || (g || "").toLowerCase().includes("khoa học"))) &&
-        (
-          (m.title && /ai|robot|người máy|cyborg|trí tuệ nhân tạo|ma trận|creator/i.test(m.title)) ||
-          (m.originTitle && /ai|robot|cyborg|terminator|matrix|creator|artificial|blade runner|m3gan|upgrade/i.test(m.originTitle)) ||
-          (m.synopsis && /trí tuệ nhân tạo|trí thông minh nhân tạo|robot|người máy|cyborg|hệ thống ai/i.test(m.synopsis))
-        ))
-      );
-      const aiFeatured = allAiMovies.slice(0, 8);
       const koreanFeatured = this.getMoviesByCountry("han-quoc").slice(0, 8);
       const chineseFeatured = this.getMoviesByCountry("trung-quoc").slice(0, 8);
       const hollywoodFeatured = (this.countryCache.get("au-my") || this.countryCache.get("my") || []).slice(0, 8);
@@ -1179,22 +1169,7 @@ class AppleCinemaApp {
             </div>
           </section>
 
-          <!-- 6. VŨ TRỤ TRÍ TUỆ NHÂN TẠO & ROBOT (AI) -->
-          ${aiFeatured.length > 0 ? `
-            <section class="vision-shelf-section">
-              <div class="vision-shelf-header">
-                <h2 class="vision-shelf-title"><i class="fas fa-robot" style="margin-right: 8px;"></i>Vũ Trụ Trí Tuệ Nhân Tạo & Robot (AI)</h2>
-                <button class="vision-see-all-pill" onclick="app.setNavigation('ai')">
-                  Xem Tất Cả (${allAiMovies.length})
-                </button>
-              </div>
-              <div class="vision-cards-grid-4">
-                ${aiFeatured.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
-              </div>
-            </section>
-          ` : ""}
-
-          <!-- 7. PHIM HÀN QUỐC THỊNH HÀNH -->
+          <!-- 6. PHIM HÀN QUỐC THỊNH HÀNH -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
               <h2 class="vision-shelf-title">Phim Hàn Quốc Thịnh Hành</h2>
@@ -1237,7 +1212,7 @@ class AppleCinemaApp {
             </section>
           ` : ""}
 
-          <!-- 9. TOÀN BỘ KHO PHIM KHÁM PHÁ (VỚI NÚT HIỂN THỊ THÊM PHIM) -->
+          <!-- 9. TOÀN BỘ KHO PHIM KHÁM PHÁ (VỚI NÚT XEM THÊM PHIM) -->
           <section class="vision-shelf-section explore-all-catalog-section">
             <div class="vision-shelf-header">
               <h2 class="vision-shelf-title" id="exploreAllMoviesCountTitle">
@@ -1250,20 +1225,12 @@ class AppleCinemaApp {
             </div>
             <div class="explore-load-more-wrap">
               ${remainingCount > 0 ? `
-                <button class="explore-load-more-btn" onclick="app.loadMoreExplore(100)">
-                  <i class="fas fa-plus"></i> Hiển Thị Thêm 100 Phim (<span id="exploreRemainingCount">${remainingCount} phim còn lại</span>)
-                </button>
-                <button class="explore-load-all-btn" onclick="app.loadAllExplore()">
-                  <i class="fas fa-sparkles"></i> 🌟 Hiển Thị Tất Cả Luôn (${allExploreMovies.length} Phim)
+                <button class="explore-load-more-btn" onclick="app.loadMoreExplore(24)">
+                  Xem Thêm Phim
                 </button>
               ` : `
-                <div style="padding: 16px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; font-weight: 600; text-align: center; width: 100%;">
-                  🎉 Đã hiển thị toàn bộ ${allExploreMovies.length} phim trong kho Ngwyren Cinema!
-                </div>
+                <div class="explore-all-loaded-text">Đã hiển thị tất cả phim</div>
               `}
-              <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-                <i class="fas fa-arrow-up"></i> Lên Đầu Trang
-              </button>
             </div>
           </section>
         </div>
@@ -1330,23 +1297,16 @@ class AppleCinemaApp {
 
   renderLoadMoreButtonsHTML(totalCount) {
     if (this.visibleGridLimit >= totalCount) return "";
-    const remaining = totalCount - this.visibleGridLimit;
     return `
-      <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; margin-top: 24px;">
-        <button class="btn-primary-play" onclick="app.loadMoreMovies(100)">
-          <i class="fas fa-plus"></i> Hiển Thị Thêm 100 Phim (+${Math.min(100, remaining)} phim)
-        </button>
-        <button class="explore-load-all-btn" onclick="app.loadAllCategoryMovies(${totalCount})">
-          <i class="fas fa-sparkles"></i> 🌟 Hiển Thị Tất Cả Luôn (${totalCount} Phim)
-        </button>
-        <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-          <i class="fas fa-arrow-up"></i> Lên Đầu Trang
+      <div class="explore-load-more-wrap">
+        <button class="explore-load-more-btn" onclick="app.loadMoreMovies(24)">
+          Xem Thêm Phim
         </button>
       </div>
     `;
   }
 
-  loadMoreMovies(step = 100) {
+  loadMoreMovies(step = 24) {
     this.visibleGridLimit += step;
     this.renderMainView();
   }
@@ -1357,10 +1317,9 @@ class AppleCinemaApp {
     this.showNotification(`Đã tải và hiển thị toàn bộ ${totalCount || ""} phim!`, "success");
   }
 
-  loadMoreExplore(step = 100) {
+  loadMoreExplore(step = 24) {
     this.exploreGridLimit = (this.exploreGridLimit || 24) + step;
     const grid = document.getElementById("exploreAllMoviesGrid");
-    const countLabel = document.getElementById("exploreRemainingCount");
     const loadMoreWrap = document.querySelector(".explore-load-more-wrap");
     const allMovies = this.service.movies;
     if (grid) {
@@ -1373,16 +1332,9 @@ class AppleCinemaApp {
     if (remaining <= 0) {
       if (loadMoreWrap) {
         loadMoreWrap.innerHTML = `
-          <div style="padding: 16px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; font-weight: 600; text-align: center; width: 100%;">
-            🎉 Đã hiển thị toàn bộ ${allMovies.length} phim trong kho Ngwyren Cinema!
-          </div>
-          <button class="vision-btn-outline" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-            <i class="fas fa-arrow-up"></i> Lên Đầu Trang
-          </button>
+          <div class="explore-all-loaded-text">Đã hiển thị tất cả phim</div>
         `;
       }
-    } else if (countLabel) {
-      countLabel.textContent = `${remaining} phim còn lại`;
     }
   }
 
