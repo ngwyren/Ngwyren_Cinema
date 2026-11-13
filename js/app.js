@@ -1307,7 +1307,24 @@ class AppleCinemaApp {
   }
 
   loadMoreMovies(step = 24) {
-    this.visibleGridLimit += step;
+    const prevLimit = this.visibleGridLimit || 24;
+    this.visibleGridLimit = prevLimit + step;
+    const { list } = this.getFilteredCatalog();
+    const grid = document.querySelector(".cinema-view-grid .vision-cards-grid-4, .cinema-view-grid .vision-catalog-grid");
+    const loadMoreWrap = document.querySelector(".explore-load-more-wrap");
+    if (grid) {
+      const nextBatch = list.slice(prevLimit, this.visibleGridLimit);
+      if (nextBatch.length > 0) {
+        const frag = document.createRange().createContextualFragment(
+          nextBatch.map((m, idx) => this.renderVisionFeatureCardHTML(m, prevLimit + idx)).join("")
+        );
+        grid.appendChild(frag);
+      }
+      if (this.visibleGridLimit >= list.length && loadMoreWrap) {
+        loadMoreWrap.innerHTML = `<div class="explore-all-loaded-text">Đã hiển thị tất cả phim</div>`;
+      }
+      return;
+    }
     this.renderMainView();
   }
 
@@ -1318,15 +1335,19 @@ class AppleCinemaApp {
   }
 
   loadMoreExplore(step = 24) {
-    this.exploreGridLimit = (this.exploreGridLimit || 24) + step;
+    const prevLimit = this.exploreGridLimit || 24;
+    this.exploreGridLimit = prevLimit + step;
     const grid = document.getElementById("exploreAllMoviesGrid");
     const loadMoreWrap = document.querySelector(".explore-load-more-wrap");
     const allMovies = this.service.movies;
     if (grid) {
-      grid.innerHTML = allMovies
-        .slice(0, this.exploreGridLimit)
-        .map((m, idx) => this.renderVisionFeatureCardHTML(m, idx))
-        .join("");
+      const nextBatch = allMovies.slice(prevLimit, this.exploreGridLimit);
+      if (nextBatch.length > 0) {
+        const frag = document.createRange().createContextualFragment(
+          nextBatch.map((m, idx) => this.renderVisionFeatureCardHTML(m, prevLimit + idx)).join("")
+        );
+        grid.appendChild(frag);
+      }
     }
     const remaining = Math.max(0, allMovies.length - this.exploreGridLimit);
     if (remaining <= 0) {
@@ -2204,9 +2225,27 @@ class AppleCinemaApp {
     } catch (_) {}
   }
 
+  findScheduleMovie(slug) {
+    if (!slug || typeof window === "undefined" || !window.NGWYREN_AIR_SCHEDULE) return null;
+    for (const day of Object.keys(window.NGWYREN_AIR_SCHEDULE)) {
+      const items = window.NGWYREN_AIR_SCHEDULE[day] || [];
+      const found = items.find((it) => it && it.slug === slug);
+      if (found) return found;
+    }
+    return null;
+  }
+
   async openMovieModal(slug, autoPlay = true, epIndex = 0) {
     const movie = this.findMovie(slug);
-    if (!movie) return;
+    if (!movie) {
+      const sched = this.findScheduleMovie(slug);
+      if (sched) {
+        this.showToast(`📅 "${sched.title}" dự kiến phát sóng lúc ${sched.airTime || "sớm nhất"}. Vui lòng quay lại sau!`, "info");
+      } else {
+        this.showToast("Phim đang cập nhật tập mới, vui lòng quay lại sau!", "info");
+      }
+      return;
+    }
 
     // Tự động khôi phục đúng tập phim đang xem dở nếu người dùng click từ trang chủ hoặc tìm kiếm
     if ((epIndex === 0 || epIndex === undefined) && movie.type === "series") {
@@ -4356,6 +4395,9 @@ class AppleCinemaApp {
     if (videoEl) {
       videoEl.pause();
       videoEl.removeAttribute("src");
+      try {
+        videoEl.load();
+      } catch (_) {}
     }
     const iframeEl = document.getElementById("trailerIframeElement");
     if (iframeEl) {
@@ -4365,7 +4407,10 @@ class AppleCinemaApp {
 
   destroyHls() {
     if (this.hlsInstance) {
-      this.hlsInstance.destroy();
+      try {
+        this.hlsInstance.stopLoad();
+        this.hlsInstance.destroy();
+      } catch (_) {}
       this.hlsInstance = null;
     }
   }
@@ -5123,12 +5168,24 @@ class AppleCinemaApp {
 
     if (clearBtn) clearBtn.classList.toggle("visible", query.length > 0);
 
+    if (this._localSearchDebounce) {
+      clearTimeout(this._localSearchDebounce);
+      this._localSearchDebounce = null;
+    }
+    clearTimeout(this.searchDebounce);
+
     if (!query) {
       if (dropdown) dropdown.classList.remove("open");
       return;
     }
 
-    // 1. TÌM KIẾM TỨC THÌ 0ms VỚI CHỈ MỤC ĐÃ ĐƯỢC TIỀN TÍNH TOÁN (SMART RELEVANCE RANKING)
+    // 1. TÌM KIẾM TỨC THÌ VỚI CHỈ MỤC ĐÃ ĐƯỢC TIỀN TÍNH TOÁN (Micro-debounce 25ms chống nghẽn phím khi gõ nhanh)
+    this._localSearchDebounce = setTimeout(() => {
+      this._executeLocalSearch(query, dropdown);
+    }, 25);
+  }
+
+  _executeLocalSearch(query, dropdown) {
     const q = query.toLowerCase();
     const qNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(q) : q;
     const qTokens = qNorm ? qNorm.split(" ").filter(Boolean) : [];
@@ -5170,10 +5227,10 @@ class AppleCinemaApp {
     scored.sort((a, b) => b.score - a.score || (b.movie.year || 0) - (a.movie.year || 0));
     const quickMatches = scored.slice(0, 8).map((it) => it.movie);
 
-    // Hiển thị NGAY LẬP TỨC (0ms) cho người dùng mà không cần chờ đợi
+    // Hiển thị kết quả khớp ngay lập tức
     this.renderSearchDropdown(query, quickMatches, false);
 
-    // 2. TÌM NÂNG CAO TRỰC TUYẾN PHIMAPI (Debounce siêu tốc 120ms để mở rộng kết quả)
+    // 2. TÌM NÂNG CAO TRỰC TUYẾN PHIMAPI (Debounce 120ms để mở rộng kết quả)
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(async () => {
       const fullMatches = await this.service.searchMovies(query);

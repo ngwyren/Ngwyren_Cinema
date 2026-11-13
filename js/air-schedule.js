@@ -329,9 +329,9 @@ window.NGWYREN_AIR_SCHEDULE = {
       "source": "donghua"
     },
     {
-      "slug": "ta-troi-sinh-da-la-nhan-vat-phan-dien",
-      "title": "Ta Trời Sinh Đã Là Nhân Vật Phản Diện",
-      "originTitle": "Ta Trời Sinh Đã Là Nhân Vật Phản Diện",
+      "slug": "huyen-huyen-ta-thien-menh-trum-phan-dien",
+      "title": "Huyền Huyễn: Ta! Thiên Mệnh Trùm Phản Diện",
+      "originTitle": "Huyền Huyễn: Ta! Thiên Mệnh Trùm Phản Diện",
       "poster": "https://phimimg.com/uploads/movies/20260726/huyen-huyen-ta-thien-menh-trum-phan-dien-poster.webp",
       "backdrop": "https://phimimg.com/uploads/movies/20260726/huyen-huyen-ta-thien-menh-trum-phan-dien-thumb.webp",
       "quality": "1080",
@@ -342,7 +342,7 @@ window.NGWYREN_AIR_SCHEDULE = {
         "Tiên Hiệp",
         "Tu Tiên"
       ],
-      "currentEpisode": "Đang cập nhật",
+      "currentEpisode": "Tập 12",
       "country": "Trung Quốc",
       "rating": 9.6,
       "source": "donghua"
