@@ -76,6 +76,7 @@ class AppleCinemaApp {
   async init() {
     this.initGlobalAdBlocker();
     this.applyTheme();
+    this.ensureFullCatalogLoaded();
     this.buildFastIndexes();
     this.cleanPersonalListsOnBoot();
     this.setupHeroMovies();
@@ -241,73 +242,51 @@ class AppleCinemaApp {
     } catch (e) {}
   }
 
+  pickNonRepeatingHeroMovie(candidateMovies, storageKey = "ngwyren_recent_hero_slugs") {
+    if (!candidateMovies || candidateMovies.length === 0) return null;
+    const storage = typeof window !== "undefined" && window.localStorage ? window.localStorage : (typeof localStorage !== "undefined" ? localStorage : null);
+    let history = [];
+    try {
+      const raw = storage ? storage.getItem(storageKey) : null;
+      if (raw) history = JSON.parse(raw);
+      if (!Array.isArray(history)) history = [];
+    } catch (_) {
+      history = [];
+    }
+
+    // Cửa sổ chống trùng: lưu vết 18 lần load gần nhất (hoặc N-2 nếu danh sách nhỏ)
+    const recentWindow = Math.min(18, Math.max(1, candidateMovies.length - 2));
+    const recentSlugs = history.slice(-recentWindow);
+
+    let available = candidateMovies.filter((m) => m && m.slug && !recentSlugs.includes(m.slug));
+
+    // Nếu đã duyệt hết kho ứng viên, loại trừ ít nhất bộ phim của lần load ngay trước đó
+    if (available.length === 0) {
+      const lastSlug = history[history.length - 1];
+      available = candidateMovies.filter((m) => m && m.slug && m.slug !== lastSlug);
+    }
+    if (available.length === 0) {
+      available = candidateMovies;
+    }
+
+    // Chọn ngẫu nhiên 1 phim từ tập hợp chưa trùng lặp
+    const chosen = available[Math.floor(Math.random() * available.length)];
+    if (chosen && chosen.slug) {
+      history.push(chosen.slug);
+      try {
+        if (storage) {
+          storage.setItem(storageKey, JSON.stringify(history.slice(-30)));
+        }
+      } catch (_) {}
+    }
+    return chosen;
+  }
+
   setupHeroMovies() {
-    const candidateSlugs = [
-      "thanh-guom-diet-quy-vo-han-thanh-465645",
-      "matchbox-phim-dien-anh",
-      "squid-game-3-765752",
-      "dia-dao-mat-troi-trong-bong-toi",
-      "tai-xe-an-danh-phan-3",
-      "nhiem-vu-bat-kha-thi-nghiep-bao-phan-2-1",
-      "chainsaw-man-the-movie-chuong-reze",
-      "phi-vu-dong-troi-2",
-      "cau-be-mat-tich-phan-5",
-      "chu-thuat-hoi-chien-hoai-ngoc-ngoc-chiet-the-movie",
-      "tham-tu-kien-ky-an-khong-dau",
-      "good-boy-18",
-      "nha-gia-tien",
-      "cu-roi-tu-than-2-diem-chet",
-      "100-ngay-lua-doi",
-      "dich-nhan-kiet-lang-nhan-kiep"
-    ];
-
-    // Bộ lọc chuẩn 16:9 widescreen HD cho ảnh banner Hero Showcase (loại bỏ ảnh poster dọc, ảnh mờ)
-    const isWidescreenHd = (m) => {
-      if (!m || !m.backdrop || !m.poster) return false;
-      const b = m.backdrop;
-      if (b === m.poster) return false;
-      if (b.includes("animevsub") || b.includes("animevietsub")) return false;
-      if (b.includes("data/poster") || b.includes("-poster.") || b.includes("/poster/")) return false;
-      if (b.endsWith("-poster.webp") || b.endsWith("-poster.jpg")) return false;
-      if (b.includes("nguonc.com")) return false;
-      return true;
-    };
-
-    // Lọc các phim bom tấn có ảnh nền nét từ ứng viên và catalog
-    const seedMovies = candidateSlugs
-      .map((s) => this.service.slugMap.get(s))
-      .filter((m) => isWidescreenHd(m));
-
-    const catalogHdMovies = this.service.movies
-      .filter((m) => isWidescreenHd(m) && (m.rating >= 8.0 || m.year >= 2024))
-      .slice(0, 45);
-
-    const pool = Array.from(new Set([...seedMovies, ...catalogHdMovies]));
-
-    // Xáo trộn ngẫu nhiên hoàn toàn mỗi lần tải lại trang (Fisher-Yates Shuffle)
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-
-    // Chọn ngẫu nhiên 8 phim xuất sắc & chọn vị trí slide mở đầu ngẫu nhiên (đổi liên tục mỗi lần load web)
-    this.heroMovies = pool.slice(0, 8);
-    this.heroIndex = Math.floor(Math.random() * this.heroMovies.length);
-
-    // Preload ảnh Hero đầu tiên ở mức ưu tiên cao nhất để hiển thị tức thì 0ms
-    const activeHero = this.heroMovies[this.heroIndex];
-    if (activeHero) {
-      const heroImgUrl = this.getMovieBackdrop(activeHero);
-      if (heroImgUrl && typeof document !== "undefined" && !document.getElementById("heroPreloadLink")) {
-        const link = document.createElement("link");
-        link.id = "heroPreloadLink";
-        link.rel = "preload";
-        link.as = "image";
-        link.href = heroImgUrl;
-        link.setAttribute("fetchpriority", "high");
-        document.head.appendChild(link);
-      }
-    }
+    this.ensureFullCatalogLoaded();
+    this._heroTracks = {};
+    this.heroIndex = 0;
+    this.heroMovies = this.getActiveHeroMovies();
   }
 
   /* ==========================================================================
@@ -406,6 +385,7 @@ class AppleCinemaApp {
     }
 
     this.currentNav = navKey;
+    if (this._heroTracks) delete this._heroTracks[navKey];
     this.heroIndex = 0;
     this.customFilterTitle = customTitle;
     this.activeGenreFilter = "Tất cả";
@@ -1684,8 +1664,13 @@ class AppleCinemaApp {
   }
 
   getActiveHeroMovies() {
+    this.ensureFullCatalogLoaded();
     const nav = this.currentNav || "kham-pha";
-    let pool = [];
+
+    // Sử dụng lại track trong phiên hiển thị hiện tại để trượt slide & auto-rotate mượt mà
+    if (this._heroTracks && this._heroTracks[nav] && this._heroTracks[nav].length > 0) {
+      return this._heroTracks[nav];
+    }
 
     const isWidescreenHd = (m) => {
       if (!m || !m.backdrop || !m.poster) return false;
@@ -1698,8 +1683,11 @@ class AppleCinemaApp {
       return true;
     };
 
+    let candidateSlugs = [];
+    let fallbackCategoryMovies = [];
+
     if (nav === "anime") {
-      const topAnimeSlugs = [
+      candidateSlugs = [
         "thanh-guom-diet-quy-vo-han-thanh",
         "chainsaw-man-the-movie-chuong-reze",
         "chu-thuat-hoi-chien-hoai-ngoc-ngoc-chiet-the-movie",
@@ -1710,30 +1698,29 @@ class AppleCinemaApp {
         "doraemon-nobita-va-cuoc-phieu-luu-vao-the-gioi-trong-tranh",
         "thanh-guom-diet-quy-phan-4-lang-tho-ren"
       ];
-      const featured = topAnimeSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
-      const catalogAnime = this.service.movies.filter(
+      fallbackCategoryMovies = this.service.movies.filter(
         (m) =>
           ((m.sectionTags && m.sectionTags.includes("anime")) ||
             (m.genres && m.genres.some((g) => /anime|hoạt hình/i.test(g))) ||
             m.countrySlug === "nhat-ban") &&
           isWidescreenHd(m)
       );
-      pool = Array.from(new Set([...featured, ...catalogAnime]));
     } else if (nav === "phim-le") {
-      const topSingleSlugs = [
+      candidateSlugs = [
         "nhiem-vu-bat-kha-thi-nghiep-bao-phan-2-1",
         "dia-dao-mat-troi-trong-bong-toi",
+        "mai",
         "tham-tu-kien-ky-an-khong-dau",
         "nha-gia-tien",
         "cu-roi-tu-than-2-diem-chet",
         "matchbox-phim-dien-anh",
-        "dich-nhan-kiet-lang-nhan-kiep"
+        "dich-nhan-kiet-lang-nhan-kiep",
+        "ke-kien-tao",
+        "oppenheimer"
       ];
-      const featured = topSingleSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
-      const catalogSingles = this.service.movies.filter((m) => m.type === "single" && isWidescreenHd(m));
-      pool = Array.from(new Set([...featured, ...catalogSingles]));
+      fallbackCategoryMovies = this.service.movies.filter((m) => m.type === "single" && isWidescreenHd(m));
     } else if (nav === "phim-bo") {
-      const topSeriesSlugs = [
+      candidateSlugs = [
         "tai-xe-an-danh-phan-3",
         "cau-be-mat-tich-phan-5",
         "tro-choi-con-muc-phan-3",
@@ -1744,11 +1731,9 @@ class AppleCinemaApp {
         "khom-lung",
         "100-ngay-lua-doi"
       ];
-      const featured = topSeriesSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
-      const catalogSeries = this.service.movies.filter((m) => m.type === "series" && isWidescreenHd(m));
-      pool = Array.from(new Set([...featured, ...catalogSeries]));
+      fallbackCategoryMovies = this.service.movies.filter((m) => m.type === "series" && isWidescreenHd(m));
     } else if (nav === "netflix") {
-      const topNetflixSlugs = [
+      candidateSlugs = [
         "tro-choi-con-muc-phan-3",
         "cau-be-mat-tich-phan-5",
         "thu-tu-phan-2",
@@ -1757,40 +1742,87 @@ class AppleCinemaApp {
         "bang-chuot-cau-chuyen-tho-san-quai-vat",
         "tho-san-quai-vat-phan-4"
       ];
-      const featured = topNetflixSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
-      const netflixMovies = this.service.movies.filter(
+      fallbackCategoryMovies = this.service.movies.filter(
         (m) => m.sectionTags && m.sectionTags.includes("netflix") && isWidescreenHd(m)
       );
-      pool = Array.from(new Set([...featured, ...netflixMovies]));
     } else if (nav === "viet-nam") {
-      pool = this.getMoviesByCountry("viet-nam").filter(isWidescreenHd);
+      fallbackCategoryMovies = this.getMoviesByCountry("viet-nam").filter(isWidescreenHd);
     } else if (nav === "han-quoc") {
-      pool = this.getMoviesByCountry("han-quoc").filter(isWidescreenHd);
+      fallbackCategoryMovies = this.getMoviesByCountry("han-quoc").filter(isWidescreenHd);
     } else if (nav === "trung-quoc") {
-      pool = this.getMoviesByCountry("trung-quoc").filter(isWidescreenHd);
+      fallbackCategoryMovies = this.getMoviesByCountry("trung-quoc").filter(isWidescreenHd);
     } else if (nav === "au-my") {
-      pool = this.getMoviesByCountry("au-my").filter(isWidescreenHd);
+      fallbackCategoryMovies = this.getMoviesByCountry("au-my").filter(isWidescreenHd);
     } else {
-      // Default: Khám Phá (Home) - Ưu tiên các siêu phẩm bom tấn thịnh hành nhất
-      const topTrendingHome = [
+      // Default: Khám Phá (Home) - Tập hợp 24 bom tấn đỉnh cao đa thể loại
+      candidateSlugs = [
         "thanh-guom-diet-quy-vo-han-thanh",
         "nhiem-vu-bat-kha-thi-nghiep-bao-phan-2-1",
+        "mai",
+        "dia-dao-mat-troi-trong-bong-toi",
         "tai-xe-an-danh-phan-3",
         "chainsaw-man-the-movie-chuong-reze",
         "cau-be-mat-tich-phan-5",
-        "dia-dao-mat-troi-trong-bong-toi",
         "tham-tu-lung-danh-conan-ngoi-sao-5-canh-1-trieu-do",
-        "tro-choi-con-muc-phan-3"
+        "tro-choi-con-muc-phan-3",
+        "chu-thuat-hoi-chien-hoai-ngoc-ngoc-chiet-the-movie",
+        "one-piece-film-red",
+        "tham-tu-kien-ky-an-khong-dau",
+        "nha-gia-tien",
+        "cu-roi-tu-than-2-diem-chet",
+        "matchbox-phim-dien-anh",
+        "thu-tu-phan-2",
+        "good-boy-18",
+        "the-gioi-khong-loi-thoat-phan-3",
+        "kho-do-danh",
+        "khom-lung",
+        "doraemon-nobita-va-cuoc-phieu-luu-vao-the-gioi-trong-tranh",
+        "100-ngay-lua-doi",
+        "dich-nhan-kiet-lang-nhan-kiep",
+        "ke-kien-tao"
       ];
-      const featuredHome = topTrendingHome.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
-      pool = Array.from(new Set([...featuredHome, ...(this.heroMovies || []), ...this.service.movies.filter(isWidescreenHd)]));
+      fallbackCategoryMovies = this.service.movies.filter((m) => isWidescreenHd(m) && (m.rating >= 8.5 || m.year >= 2024));
     }
 
-    if (!pool || pool.length === 0) {
-      pool = this.heroMovies && this.heroMovies.length > 0 ? this.heroMovies : this.service.movies;
+    const curated = candidateSlugs.map((s) => this.findMovie(s)).filter((m) => m && isWidescreenHd(m));
+    const allCandidates = curated.length >= 8 ? curated : Array.from(new Set([...curated, ...fallbackCategoryMovies]));
+
+    if (!allCandidates || allCandidates.length === 0) {
+      return (this.heroMovies && this.heroMovies.length > 0 ? this.heroMovies : this.service.movies).slice(0, 8);
     }
 
-    return pool.slice(0, 8);
+    // CHỌN 1 PHIM KHÁC BIỆT HOÀN TOÀN KHÔNG TRÙNG LẶP VỚI CÁC LẦN LOAD TRƯỚC
+    const storageKey = `ngwyren_hero_history_${nav}`;
+    const chosenHero = this.pickNonRepeatingHeroMovie(allCandidates, storageKey) || allCandidates[0];
+
+    // Xây dựng dải 8 phim cho Hero: Đặt phim được chọn lên đầu (Index 0)
+    const otherCandidates = allCandidates.filter((m) => m && m.slug !== chosenHero.slug);
+    for (let i = otherCandidates.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [otherCandidates[i], otherCandidates[j]] = [otherCandidates[j], otherCandidates[i]];
+    }
+
+    const heroTrack = [chosenHero, ...otherCandidates.slice(0, 7)];
+    if (!this._heroTracks) this._heroTracks = {};
+    this._heroTracks[nav] = heroTrack;
+    this.heroIndex = 0;
+
+    // Preload ngay ảnh nền của phim Hero được chọn ở độ ưu tiên cao nhất
+    const heroBackdrop = this.getMovieBackdrop(chosenHero);
+    if (heroBackdrop && typeof document !== "undefined") {
+      let link = document.getElementById("heroPreloadLink");
+      if (!link) {
+        link = document.createElement("link");
+        link.id = "heroPreloadLink";
+        link.rel = "preload";
+        link.as = "image";
+        document.head.appendChild(link);
+      }
+      link.href = heroBackdrop;
+      link.setAttribute("fetchpriority", "high");
+    }
+
+    return heroTrack;
   }
 
   attachHeroSwipeHandlers() {
