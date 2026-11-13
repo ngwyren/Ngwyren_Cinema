@@ -4807,6 +4807,9 @@ body {
   gap: 8px;
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, box-shadow 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: transform;
 }
 
 .vision-btn-watch i {
@@ -4816,6 +4819,13 @@ body {
 
 .vision-btn-watch:hover {
   background: #f0f0f2;
+  transform: translate3d(0, -1.5px, 0) scale(1.025) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+.vision-btn-watch:active {
+  transform: translate3d(0, 0, 0) scale(0.96) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-btn-outline {
@@ -4832,10 +4842,20 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: transform;
 }
 
 .vision-btn-outline:hover {
   background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translate3d(0, -1.5px, 0) scale(1.025) !important;
+}
+
+.vision-btn-outline:active {
+  transform: translate3d(0, 0, 0) scale(0.96) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-btn-dots {
@@ -4849,6 +4869,20 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, border-color 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: transform;
+}
+
+.vision-btn-dots:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translate3d(0, -1px, 0) scale(1.05) !important;
+}
+
+.vision-btn-dots:active {
+  transform: translate3d(0, 0, 0) scale(0.94) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-hero-arrows {
@@ -4917,10 +4951,21 @@ body {
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: transform;
 }
 
 .vision-see-all-pill:hover {
   background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.45);
+  transform: translate3d(0, -1px, 0) scale(1.025);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.vision-see-all-pill:active {
+  transform: translate3d(0, 0, 0) scale(0.96);
+  transition-duration: 0.1s;
 }
 
 .vision-cards-grid-4 {
@@ -5961,18 +6006,21 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   cursor: grab;
   border: none;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: transform;
 }
 
 .ios-native-range::-webkit-slider-thumb:hover {
-  transform: scale(1.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+  transform: translate3d(0, 0, 0) scale(1.08) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 255, 255, 0.4) !important;
 }
 
 .ios-native-range::-webkit-slider-thumb:active {
   cursor: grabbing;
-  transform: scale(1.15);
-  box-shadow: 0 4px 18px rgba(0, 122, 255, 0.6), 0 0 0 3px rgba(0, 122, 255, 0.35);
+  transform: translate3d(0, 0, 0) scale(1.14) !important;
+  box-shadow: 0 4px 18px rgba(0, 122, 255, 0.6), 0 0 0 3px rgba(0, 122, 255, 0.35) !important;
+  transition-duration: 0.1s !important;
 }
 
 .ios-native-range::-moz-range-thumb {
@@ -5983,18 +6031,21 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   cursor: grab;
   border: none;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: transform;
 }
 
 .ios-native-range::-moz-range-thumb:hover {
-  transform: scale(1.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.55);
+  transform: translate3d(0, 0, 0) scale(1.08) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 0 2px rgba(255, 255, 255, 0.4) !important;
 }
 
 .ios-native-range::-moz-range-thumb:active {
   cursor: grabbing;
-  transform: scale(1.15);
-  box-shadow: 0 4px 18px rgba(0, 122, 255, 0.6), 0 0 0 3px rgba(0, 122, 255, 0.35);
+  transform: translate3d(0, 0, 0) scale(1.14) !important;
+  box-shadow: 0 4px 18px rgba(0, 122, 255, 0.6), 0 0 0 3px rgba(0, 122, 255, 0.35) !important;
+  transition-duration: 0.1s !important;
 }
 
 .ios-native-range::-moz-range-track {
@@ -7565,9 +7616,13 @@ html.dragging-glass .vision-left-dock {
 /* ==========================================================================
    FIX: TRIỆT TIÊU HOÀN TOÀN NHẢY SHAPE KHI RÊ CHUỘT (ZERO POSITION JUMP)
    ========================================================================== */
-.filter-chip:hover,
+.segment-btn {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
 .segment-btn:hover {
-  transform: none !important;
+  transform: translate3d(0, -1px, 0) scale(1.02) !important;
 }
 
 /* ==========================================================================
@@ -7583,11 +7638,6 @@ html.dragging-glass .vision-left-dock {
 .filter-chip {
   flex-shrink: 0 !important;
   box-sizing: border-box !important;
-  transform: none !important;
-}
-
-.filter-chip:hover {
-  transform: none !important;
 }
 
 /* ==========================================================================
@@ -10018,56 +10068,108 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 /* --- 3. CÀI ĐẶT HỆ THỐNG (SETTINGS VIEW & TOGGLES) --- */
 .vision-settings-banner {
   animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform: translateZ(0) !important;
 }
 
 .vision-settings-card {
   animation: ps5CardCascadeIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 80ms) both !important;
-  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease, box-shadow 0.26s ease !important;
+  transition:
+    border-color 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translateZ(0) !important;
+  will-change: auto;
 }
 
 @media (hover: hover) {
   .vision-settings-card:hover {
-    transform: translate3d(0, -4px, 0) scale(1.008) !important;
-    border-color: rgba(255, 255, 255, 0.45) !important;
+    transform: translateZ(0) !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
     box-shadow:
-      0 16px 36px rgba(0, 0, 0, 0.55),
-      inset 0 1px 1.5px rgba(255, 255, 255, 0.3) !important;
+      0 12px 32px rgba(0, 0, 0, 0.45),
+      inset 0 1px 1px rgba(255, 255, 255, 0.22) !important;
   }
 }
 
 .filter-chip {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
   .filter-chip:hover {
-    transform: scale(1.06) translate3d(0, -2px, 0) !important;
-    border-color: rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
+    transform: translate3d(0, -1.5px, 0) scale(1.025) !important;
+    background-color: rgba(255, 255, 255, 0.16) !important;
+    border-color: rgba(255, 255, 255, 0.48) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0.5px rgba(255, 255, 255, 0.3) !important;
   }
 }
 
 .filter-chip:active {
-  transform: scale(0.95) !important;
+  transform: translate3d(0, 0, 0) scale(0.96) !important;
+  transition-duration: 0.1s !important;
 }
 
 .filter-chip.active {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
   box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.4), 0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
 
+@media (hover: hover) {
+  .filter-chip.active:hover {
+    transform: translate3d(0, -1.5px, 0) scale(1.025) !important;
+    background-color: rgba(255, 255, 255, 0.26) !important;
+    border-color: rgba(255, 255, 255, 0.75) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+  }
+}
+
 .vision-toggle-btn {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.22s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
   .vision-toggle-btn:hover {
-    transform: scale(1.08) !important;
+    transform: translate3d(0, -1px, 0) scale(1.03) !important;
+    background-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.42) !important;
+    color: #ffffff !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .vision-toggle-btn.on:hover {
+    transform: translate3d(0, -1px, 0) scale(1.03) !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.45), 0 2px 10px rgba(0, 0, 0, 0.3) !important;
   }
 }
 
 .vision-toggle-btn:active {
-  transform: scale(0.92) !important;
+  transform: translate3d(0, 0, 0) scale(0.94) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-toggle-btn.on {
@@ -10075,32 +10177,46 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .ios-slider-icon {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
 }
 
-.ios-slider-icon:hover {
-  transform: scale(1.15) !important;
-  color: #ffffff !important;
+@media (hover: hover) {
+  .ios-slider-icon:hover {
+    transform: translate3d(0, 0, 0) scale(1.1) !important;
+    color: #ffffff !important;
+  }
 }
 
 .ios-slider-icon:active {
-  transform: scale(0.9) !important;
+  transform: translate3d(0, 0, 0) scale(0.92) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-btn-outline {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
 }
 
 @media (hover: hover) {
   .vision-btn-outline:hover {
-    transform: scale(1.05) translate3d(0, -1px, 0) !important;
+    transform: translate3d(0, -1px, 0) scale(1.03) !important;
     border-color: rgba(255, 255, 255, 0.8) !important;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 }
 
 .vision-btn-outline:active {
-  transform: scale(0.95) !important;
+  transform: translate3d(0, 0, 0) scale(0.95) !important;
+  transition-duration: 0.1s !important;
 }
 
 /* --- 4. ĐĂNG NHẬP / HỒ SƠ (AUTH MODAL & ACTIONS) --- */
@@ -10303,17 +10419,31 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 7. CÁC NÚT ĐIỀU HƯỚNG DANH MỤC & TOPBAR --- */
 .vision-nav-pill {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
   .vision-nav-pill:hover {
-    transform: scale(1.05) translate3d(0, -1px, 0) !important;
+    transform: translate3d(0, -1px, 0) scale(1.025) !important;
+    background-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
   }
 }
 
 .vision-nav-pill:active {
-  transform: scale(0.94) !important;
+  transform: translate3d(0, 0, 0) scale(0.95) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-nav-pill.active {
@@ -10326,54 +10456,86 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-circle-btn {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
   .vision-circle-btn:hover {
-    transform: scale(1.08) !important;
-    background: rgba(255, 255, 255, 0.12) !important;
-    box-shadow: none !important;
+    transform: translate3d(0, -1px, 0) scale(1.05) !important;
+    background-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
     filter: none !important;
   }
 }
 
 .vision-circle-btn:active {
-  transform: scale(0.92) !important;
+  transform: translate3d(0, 0, 0) scale(0.92) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-topbar-home-btn {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
   .vision-topbar-home-btn:hover {
-    transform: scale(1.08) !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.32) !important;
-    box-shadow: none !important;
+    transform: translate3d(0, -1px, 0) scale(1.05) !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
     filter: none !important;
   }
 }
 
 .vision-topbar-home-btn:active {
-  transform: scale(0.92) !important;
+  transform: translate3d(0, 0, 0) scale(0.92) !important;
+  transition-duration: 0.1s !important;
 }
 
 .vision-profile-pill {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.22s ease !important;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 @media (hover: hover) {
   .vision-profile-pill:hover {
-    transform: scale(1.04) translate3d(0, -1px, 0) !important;
-    border-color: rgba(255, 255, 255, 0.6) !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
+    transform: translate3d(0, -1px, 0) scale(1.025) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
   }
 }
 
 .vision-profile-pill:active {
-  transform: scale(0.95) !important;
+  transform: translate3d(0, 0, 0) scale(0.95) !important;
+  transition-duration: 0.1s !important;
 }
 
 /* ==========================================================================
