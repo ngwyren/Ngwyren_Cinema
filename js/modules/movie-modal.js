@@ -390,13 +390,6 @@
     const is4k = (this.currentQuality === "4K" || this.currentQuality === "4k") && hasReal4kStream;
 
     sheet.innerHTML = `
-      <!-- Top Floating Modal Controls: Tinh gọn chỉ có nút phóng to theo yêu cầu người dùng -->
-      <div class="modal-top-controls">
-        <button class="modal-ctrl-btn icon-only" id="modalTopExpandBtn" onclick="app.toggleVideoFullscreen(event)" title="Phóng to toàn màn hình (F)" aria-label="Phóng to">
-          <i class="fas fa-expand" id="modalTopExpandIcon"></i>
-        </button>
-      </div>
-
       <!-- 16:9 Cinema Stage (Cover Preview + Active HLS/YouTube Player) -->
       <div class="modal-player-stage">
         <div class="player-cover-preview" id="modalCoverPreview"
@@ -561,11 +554,6 @@
                     </div>
                   </div>
 
-                  <!-- Tốc độ phát -->
-                  <button class="apple-ctrl-btn apple-speed-btn" id="appleSpeedBtn" onclick="app.cyclePlaybackSpeed(event)" title="Tốc độ phát">
-                    <span id="appleSpeedText">1.0x</span>
-                  </button>
-
                   <!-- Picture in Picture -->
                   <button class="apple-ctrl-btn" onclick="app.toggleVideoPip(event)" title="Hình trong hình (PiP)">
                     <i class="fas fa-clone"></i>
@@ -592,9 +580,6 @@
           ${this.buildQualityButtonsHTML(movie)}
           <button class="toolbar-next-ep-btn" id="toolbarNextEpBtn" onclick="app.playNextEpisode(event)" title="Tập tiếp theo (Shift + N)">
             <i class="fas fa-forward-step"></i>
-          </button>
-        </div>
-      </div>
           </button>
         </div>
       </div>
@@ -855,17 +840,9 @@
       ep?.altSources?.some((a) => a.is4k === true)
     );
 
-    // Phim không có định dạng 4K thực tế thì chỉ hiển thị duy nhất nút Full HD (không hiện nút 4K ảo)
+    // Phim không có định dạng 4K thực tế thì không hiện nút chất lượng ở ngoài toolbar (tránh nút Full HD đơn độc)
     if (!hasReal4kStream) {
-      return `
-        <div class="quality-selector-group" id="qualitySelectorGroup" role="group" aria-label="Độ phân giải Full HD">
-          <button class="quality-pill-btn active" 
-                  onclick="app.handleQualityPillClick('Full HD', false)"
-                  title="Full HD 1080p • Nét Chuẩn Bản Quyền Từ Máy Chủ">
-            Full HD
-          </button>
-        </div>
-      `;
+      return "";
     }
 
     const is4k = this.currentQuality === "4K" || this.currentQuality === "4k";

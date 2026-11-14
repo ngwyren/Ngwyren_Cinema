@@ -50,7 +50,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.4.3" />
+  <link rel="stylesheet" href="css/style.css?v=2.4.4" />
 </head>
 <body>
 
@@ -83,7 +83,7 @@
         <i class="fas fa-star"></i>
       </button>
       <button class="vision-dock-icon" data-nav="anime" data-dock-idx="2" data-label="Anime" onclick="app.setNavigation('anime')" title="Kho Phim Anime">
-        <i class="fas fa-dragon"></i>
+        <i class="anime-konoha-icon"></i>
       </button>
       <button class="vision-dock-icon" data-nav="lich-chieu" data-dock-idx="3" data-label="Lịch Chiếu" onclick="app.setNavigation('lich-chieu')" title="Lịch Chiếu Phim">
         <i class="fas fa-calendar-days"></i>
@@ -126,14 +126,12 @@
           </button>
         </div>
 
-        <!-- Center Category Pills (Khám Phá | Phim Lẻ | Phim Bộ | Anime | Lịch Chiếu | Netflix) -->
+        <!-- Center Category Pills (Khám Phá | Phim Lẻ | Phim Bộ | Anime) -->
         <nav class="vision-nav-pills" id="visionNavPills" aria-label="Danh mục chính">
           <button class="vision-nav-pill active" data-nav="kham-pha" onclick="app.setNavigation('kham-pha')">Khám Phá</button>
           <button class="vision-nav-pill" data-nav="phim-le" onclick="app.setNavigation('phim-le')">Phim Lẻ</button>
           <button class="vision-nav-pill" data-nav="phim-bo" onclick="app.setNavigation('phim-bo')">Phim Bộ</button>
-          <button class="vision-nav-pill" data-nav="anime" onclick="app.setNavigation('anime')">Anime</button>
-          <button class="vision-nav-pill" data-nav="lich-chieu" onclick="app.setNavigation('lich-chieu')">Lịch Chiếu</button>
-          <button class="vision-nav-pill" data-nav="netflix" onclick="app.setNavigation('netflix')">Netflix</button>
+          <button class="vision-nav-pill" data-nav="anime" onclick="app.setNavigation('anime')"><i class="anime-konoha-icon"></i> Anime</button>
         </nav>
 
         <!-- Right Notification, Settings, Saved & User Profile Pill -->
@@ -280,28 +278,20 @@
   </footer>
 
   <!-- ========================================================================
-       MOBILE & TABLET FLOATING BOTTOM DOCK
+       MOBILE & TABLET FLOATING BOTTOM DOCK (CHỈ HIỆN ICON TINH GỌN CHUẨN APPLE)
        ======================================================================== -->
   <nav class="liquid-mobile-dock" id="liquidMobileDock" aria-label="Điều hướng nhanh">
-    <button class="dock-tab-btn active" data-nav="kham-pha" onclick="app.resetAllFilters()">
+    <button class="dock-tab-btn active" data-nav="kham-pha" onclick="app.resetAllFilters()" title="Khám Phá" aria-label="Khám Phá">
       <i class="fas fa-house"></i>
-      <span>Khám Phá</span>
     </button>
-    <button class="dock-tab-btn" data-nav="anime" onclick="app.setNavigation('anime')">
-      <i class="fas fa-dragon"></i>
-      <span>Anime</span>
+    <button class="dock-tab-btn" data-nav="anime" onclick="app.setNavigation('anime')" title="Anime" aria-label="Anime">
+      <i class="anime-konoha-icon"></i>
     </button>
-    <button class="dock-tab-btn" data-nav="lich-chieu" onclick="app.setNavigation('lich-chieu')">
-      <i class="fas fa-calendar-days"></i>
-      <span>Lịch Chiếu</span>
-    </button>
-    <button class="dock-tab-btn" data-nav="netflix" onclick="app.setNavigation('netflix')">
+    <button class="dock-tab-btn" data-nav="netflix" onclick="app.setNavigation('netflix')" title="Netflix" aria-label="Netflix">
       <i class="fas fa-circle-play"></i>
-      <span>Netflix</span>
     </button>
-    <button class="dock-tab-btn" data-nav="yeu-thich" onclick="app.setNavigation('yeu-thich')">
+    <button class="dock-tab-btn" data-nav="yeu-thich" onclick="app.setNavigation('yeu-thich')" title="Đã Lưu" aria-label="Đã Lưu">
       <i class="fas fa-star"></i>
-      <span>Đã Lưu</span>
     </button>
   </nav>
 
@@ -341,17 +331,17 @@
   </svg>
 
   <!-- High-Performance Deferred Scripts (Fast boot under 50ms, catalog loaded in background) -->
-  <script src="js/auth-config.js?v=2.4.3" defer></script>
-  <script src="js/data.js?v=2.4.3" defer></script>
-  <script src="js/air-schedule.js?v=2.4.3" defer></script>
-  <script src="js/movies-catalog.js?v=2.4.3" defer></script>
-  <script src="js/core/system-bus.js?v=2.4.3" defer></script>
-  <script src="js/app.js?v=2.4.3" defer></script>
-  <script src="js/modules/navigation-ui.js?v=2.4.3" defer></script>
-  <script src="js/modules/movie-modal.js?v=2.4.3" defer></script>
-  <script src="js/modules/video-player.js?v=2.4.3" defer></script>
-  <script src="js/modules/search-filter.js?v=2.4.3" defer></script>
-  <script src="js/modules/user-cloud-sync.js?v=2.4.3" defer></script>
-  <script src="js/bootstrap.js?v=2.4.3" defer></script>
+  <script src="js/auth-config.js?v=2.4.4" defer></script>
+  <script src="js/data.js?v=2.4.4" defer></script>
+  <script src="js/air-schedule.js?v=2.4.4" defer></script>
+  <script src="js/movies-catalog.js?v=2.4.4" defer></script>
+  <script src="js/core/system-bus.js?v=2.4.4" defer></script>
+  <script src="js/app.js?v=2.4.4" defer></script>
+  <script src="js/modules/navigation-ui.js?v=2.4.4" defer></script>
+  <script src="js/modules/movie-modal.js?v=2.4.4" defer></script>
+  <script src="js/modules/video-player.js?v=2.4.4" defer></script>
+  <script src="js/modules/search-filter.js?v=2.4.4" defer></script>
+  <script src="js/modules/user-cloud-sync.js?v=2.4.4" defer></script>
+  <script src="js/bootstrap.js?v=2.4.4" defer></script>
 </body>
 </html>

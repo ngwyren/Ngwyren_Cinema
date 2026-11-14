@@ -2877,55 +2877,73 @@ html {
   pointer-events: auto;
 }
 
+/* Naruto Konoha Leaf Village Icon for Anime */
+.anime-konoha-icon {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  background-color: currentColor;
+  -webkit-mask: url("../assets/anime-konoha-white.png") no-repeat center / contain;
+  mask: url("../assets/anime-konoha-white.png") no-repeat center / contain;
+  vertical-align: -0.15em;
+  flex-shrink: 0;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
 .liquid-mobile-dock {
   display: none;
   position: fixed;
-  left: 12px;
-  right: 12px;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-  height: 62px;
+  height: 52px;
+  width: min(320px, calc(100vw - 32px)) !important;
   z-index: 75;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.22);
-  padding: 0 8px;
-  grid-template-columns: repeat(5, 1fr);
+  padding: 0 6px;
+  display: flex !important;
+  justify-content: space-around;
   align-items: center;
 }
 
 .dock-tab-btn {
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.58);
+  color: rgba(255, 255, 255, 0.6);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  height: 48px;
+  height: 42px;
+  flex: 1;
   border-radius: 999px;
-  font-family: inherit;
-  font-size: 0.66rem;
-  font-weight: 600;
   cursor: pointer;
+  padding: 0;
   transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.dock-tab-btn i {
-  font-size: 1.02rem;
+.dock-tab-btn span {
+  display: none !important;
+}
+
+.dock-tab-btn i,
+.dock-tab-btn .anime-konoha-icon {
+  font-size: 1.15rem;
   color: #ffffff;
   opacity: 0.65;
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
 }
 
 .dock-tab-btn.active {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.22) !important;
   color: #ffffff;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.5), 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.dock-tab-btn.active i {
+.dock-tab-btn.active i,
+.dock-tab-btn.active .anime-konoha-icon {
   opacity: 1;
-  transform: translateY(-1px) scale(1.1);
+  transform: scale(1.15);
 }
 
 /* Smooth Touch Carousels on All Devices */
@@ -4546,6 +4564,39 @@ body {
 .cinema-play-glow-btn i {
   color: #0d0e12 !important;
   margin-left: 3px !important;
+}
+
+.cinema-fav-circle-btn {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  border-radius: 50% !important;
+  background: rgba(24, 27, 36, 0.82) !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 1.15rem !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cinema-fav-circle-btn:hover {
+  transform: scale(1.08) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  background: rgba(40, 44, 58, 0.9) !important;
+}
+
+.cinema-fav-circle-btn.favorited {
+  color: #f59e0b !important;
+  border-color: rgba(245, 158, 11, 0.5) !important;
+  background: rgba(245, 158, 11, 0.15) !important;
 }
 
 .cinema-action-capsule {
@@ -6593,28 +6644,57 @@ body.modal-open .apple-player-bar {
 
   /* THANH ĐIỀU HƯỚNG ĐÁY ĐIỆN THOẠI (Liquid Mobile Dock) */
   .liquid-mobile-dock {
-    display: grid !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
     position: fixed !important;
-    left: 10px !important;
-    right: 10px !important;
-    bottom: calc(8px + env(safe-area-inset-bottom, 0px)) !important;
-    height: 58px !important;
-    max-width: 500px !important;
-    margin: 0 auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    bottom: max(10px, env(safe-area-inset-bottom, 10px)) !important;
+    height: 50px !important;
+    width: min(290px, calc(100vw - 32px)) !important;
+    max-width: 320px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
     z-index: 75 !important;
     border-radius: 999px !important;
-    background: rgba(18, 18, 24, 0.94) !important;
-    backdrop-filter: blur(20px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    background: rgba(18, 20, 28, 0.9) !important;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
   }
   .dock-tab-btn {
+    flex: 1 1 0 !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    border-radius: 999px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
     font-size: 0.68rem !important;
-    min-height: 44px !important;
   }
-  .dock-tab-btn i {
-    font-size: 1.05rem !important;
+  .dock-tab-btn span {
+    display: none !important;
+  }
+  .dock-tab-btn i,
+  .dock-tab-btn .anime-konoha-icon {
+    font-size: 1.15rem !important;
+    color: rgba(255, 255, 255, 0.65) !important;
+  }
+  .dock-tab-btn.active {
+    background: rgba(255, 255, 255, 0.22) !important;
+    box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.5), 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+  }
+  .dock-tab-btn.active i,
+  .dock-tab-btn.active .anime-konoha-icon {
+    color: #ffffff !important;
+    transform: scale(1.12) !important;
   }
 
   /* THANH MINI PLAYER TRÊN ĐIỆN THOẠI — NẰM GỌN GÀNG TRÊN THANH DOCK, TUYỆT ĐỐI KHÔNG CHỒNG ĐÈ */
@@ -11035,31 +11115,38 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .vision-nav-pills {
-    grid-column: 1 / -1;
-    grid-row: 3;
+    grid-column: 1 / -1 !important;
+    grid-row: 3 !important;
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    justify-content: flex-start !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding: 3px 16px 3px 3px !important;
-    gap: 3px !important;
-    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
-    mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    overflow-x: hidden !important;
+    padding: 3px 0 !important;
+    gap: 6px !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
   }
 
   .vision-nav-pills::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
 
   .vision-pill,
   .vision-nav-pill {
-    flex-shrink: 0 !important;
-    padding: 6px 11px !important;
+    flex: 1 1 0 !important;
+    text-align: center !important;
+    padding: 7px 4px !important;
     font-size: 0.78rem !important;
-    min-height: 32px !important;
+    min-height: 33px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    border-radius: 999px !important;
   }
 
   /* Khóa Dropdown Search, Notification, Filter, Auth & Mini Player gọn tuyệt đối trong chiều rộng iPhone */
@@ -11209,69 +11296,44 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     margin-bottom: 6px !important;
   }
 
-  /* Ẩn bớt chữ & nhãn rườm rà trên Hero iPhone */
+  /* Tinh gọn Hero Card trên mobile: chỉ hiển thị tên phim + nút xem + nút lưu theo yêu cầu người dùng */
   .cinema-hero-sub,
   .cinema-genre-pills,
   .cinema-hero-desc,
-  .ps5-hero-saves-strip .ps5-ep-quick-chip,
+  .cinema-meta-badges,
+  .ps5-hero-saves-strip,
+  .cinema-ps5-saves-row,
+  .cinema-hero-thumbnails,
   .badge-tmdb,
   .badge-res {
     display: none !important;
   }
 
-  .cinema-meta-badges {
-    flex-wrap: nowrap !important;
-    gap: 6px !important;
-    margin-bottom: 10px !important;
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .cinema-badge {
-    font-size: 0.7rem !important;
-    padding: 2px 7px !important;
-    white-space: nowrap;
-  }
-
-  .ps5-hero-saves-strip {
-    margin-bottom: 8px !important;
-  }
-
   .cinema-hero-actions {
-    gap: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-top: 8px !important;
   }
 
   .cinema-play-glow-btn {
-    width: 42px !important;
-    height: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
-    font-size: 1rem !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    font-size: 1.05rem !important;
+  }
+
+  .cinema-fav-circle-btn {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    font-size: 1.05rem !important;
   }
 
   .cinema-action-capsule {
-    height: 42px !important;
-    min-height: 42px !important;
-    max-height: 42px !important;
-    padding: 0 14px !important;
-    gap: 12px !important;
-  }
-
-  .cinema-capsule-btn {
-    font-size: 0.98rem !important;
-  }
-
-  .cinema-hero-thumbnails {
-    margin-top: 10px !important;
-    gap: 6px !important;
-    padding-bottom: 0 !important;
-  }
-
-  .cinema-thumb-card {
-    flex: 0 0 64px !important;
-    width: 64px !important;
-    height: 38px !important;
-    border-radius: 8px !important;
+    display: none !important;
   }
 
   /* Thẻ phim & Băng chuyền trên iPhone: Vuốt ngang gọn kiểu Apple TV, giảm chữ thừa */
@@ -11416,14 +11478,19 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .liquid-mobile-dock {
-    bottom: max(8px, env(safe-area-inset-bottom, 8px)) !important;
-    left: 12px !important;
-    right: 12px !important;
-    height: 54px !important;
-    padding: 4px 8px !important;
-    width: auto !important;
-    max-width: 440px !important;
-    margin: 0 auto !important;
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    bottom: max(10px, env(safe-area-inset-bottom, 10px)) !important;
+    height: 50px !important;
+    width: min(290px, calc(100vw - 32px)) !important;
+    max-width: 320px !important;
+    padding: 0 6px !important;
+    margin: 0 !important;
   }
 
   /* Bottom Sheet Modal mượt trên iPhone + Video dính top khi cuộn chọn tập */

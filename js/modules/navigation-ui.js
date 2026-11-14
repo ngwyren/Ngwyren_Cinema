@@ -877,7 +877,7 @@
           <!-- 4. ANIME TUYỂN CHỌN -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
-              <h2 class="vision-shelf-title"><i class="fas fa-dragon" style="margin-right: 8px;"></i>Anime Tuyển Chọn</h2>
+              <h2 class="vision-shelf-title"><i class="anime-konoha-icon" style="margin-right: 8px;"></i>Anime Tuyển Chọn</h2>
               <button class="vision-see-all-pill" onclick="app.setNavigation('anime')">
                 Xem Tất Cả (${this.getMoviesByTag("anime").length})
               </button>
@@ -1618,15 +1618,9 @@
               <button class="cinema-play-glow-btn" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})" title="${primaryPlayLabel}">
                 <i class="fas fa-play"></i>
               </button>
-              <div class="cinema-action-capsule">
-                <button class="cinema-capsule-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu Phim" : "Lưu Phim Yêu Thích"}">
-                  <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
-                </button>
-                <span class="cinema-capsule-divider"></span>
-                <button class="cinema-capsule-btn" onclick="app.openMovieModal('${movie.slug}', false)" title="Chi Tiết Phim & Danh Sách Tập">
-                  <i class="fas fa-circle-info"></i>
-                </button>
-              </div>
+              <button class="cinema-fav-circle-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu Phim" : "Lưu Phim Yêu Thích"}">
+                <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
+              </button>
             </div>
           </div>
 
