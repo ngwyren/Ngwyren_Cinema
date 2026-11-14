@@ -877,7 +877,7 @@
           <!-- 4. ANIME TUYỂN CHỌN -->
           <section class="vision-shelf-section">
             <div class="vision-shelf-header">
-              <h2 class="vision-shelf-title"><i class="anime-konoha-icon" style="margin-right: 8px;"></i>Anime Tuyển Chọn</h2>
+              <h2 class="vision-shelf-title"><i class="fas fa-dragon" style="margin-right: 8px;"></i>Anime Tuyển Chọn</h2>
               <button class="vision-see-all-pill" onclick="app.setNavigation('anime')">
                 Xem Tất Cả (${this.getMoviesByTag("anime").length})
               </button>
