@@ -11169,9 +11169,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: none !important;
   }
 
-  /* Chỉ hiển thị logo Anime Konoha ở định dạng Điện thoại (<= 767px) */
+  /* Tab danh mục Anime trên điện thoại: thuần chữ, không hiển thị logo theo yêu cầu */
   .vision-nav-pill .anime-konoha-icon {
-    display: inline-block !important;
+    display: none !important;
   }
 
   /* Khóa Dropdown Search, Notification, Filter, Auth & Mini Player gọn tuyệt đối trong chiều rộng iPhone */
@@ -11271,54 +11271,86 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     max-width: 100% !important;
   }
 
-  /* Hero Banner tối giản cho iPhone: vừa trọn khung màn hình, giảm chữ thừa */
+  /* Hero Banner tối giản cho iPhone: neo trọn chữ & nút ở góc dưới để không che ảnh diễn viên */
   .vision-hero-banner,
   .cinema-showcase-hero {
-    height: auto !important;
-    min-height: 315px !important;
-    max-height: 385px !important;
+    position: relative !important;
+    height: 380px !important;
+    min-height: 380px !important;
+    max-height: 420px !important;
     border-radius: 20px !important;
     -webkit-clip-path: inset(0 round 20px) !important;
     clip-path: inset(0 round 20px) !important;
     margin-bottom: 16px !important;
+    overflow: hidden !important;
   }
 
   .cinema-showcase-hero .vision-hero-bg {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
     border-radius: 20px !important;
     -webkit-clip-path: inset(0 round 20px) !important;
     clip-path: inset(0 round 20px) !important;
-    object-position: center 20%;
+    object-position: center 20% !important;
   }
 
   .cinema-showcase-hero .vision-hero-overlay {
+    position: absolute !important;
+    inset: 0 !important;
     border-radius: 20px !important;
     background: linear-gradient(
       180deg,
-      rgba(8, 10, 15, 0.08) 0%,
-      rgba(8, 10, 15, 0.42) 45%,
-      rgba(8, 10, 15, 0.96) 100%
+      rgba(8, 10, 15, 0) 0%,
+      rgba(8, 10, 15, 0.15) 35%,
+      rgba(8, 10, 15, 0.75) 70%,
+      rgba(8, 10, 15, 0.98) 100%
     ) !important;
+    pointer-events: none !important;
   }
 
   .cinema-hero-content {
-    padding: 16px 14px 14px !important;
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    padding: 24px 16px 18px !important;
+    display: flex !important;
+    flex-direction: column !important;
     justify-content: flex-end !important;
+    z-index: 2 !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(8, 10, 15, 0.45) 30%,
+      rgba(8, 10, 15, 0.9) 75%,
+      rgba(8, 10, 15, 0.98) 100%
+    ) !important;
   }
 
   .cinema-hero-info {
     width: 100% !important;
     max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
   }
 
   .cinema-hero-title {
-    font-size: clamp(1.18rem, 5.2vw, 1.48rem) !important;
+    font-size: clamp(1.22rem, 5.5vw, 1.55rem) !important;
     line-height: 1.15 !important;
     letter-spacing: 0.01em !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
-    margin-bottom: 6px !important;
+    margin-bottom: 8px !important;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95) !important;
   }
 
   /* Tinh gọn Hero Card trên mobile: chỉ hiển thị tên phim + nút xem + nút lưu theo yêu cầu người dùng */

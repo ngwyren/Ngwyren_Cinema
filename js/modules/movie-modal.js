@@ -869,7 +869,7 @@
 
     if (hasProgress) {
       return `
-        <span class="server-label"><i class="fas fa-clock-rotate-left"></i> Xem tiếp:</span>
+        <span class="server-label"><i class="fas fa-circle-play"></i> Xem tiếp:</span>
         <div class="resume-selector-group">
           <button class="resume-pill-btn active" onclick="app.resumePlaybackAt(${savedProg.currentTime})" title="Tiếp tục xem từ ${this.formatSeconds(savedProg.currentTime)} (${savedProg.percentage}%)">
             <i class="fas fa-play" style="font-size:0.68em; margin-right:4px;"></i>${this.formatSeconds(savedProg.currentTime)} (${savedProg.percentage}%)
@@ -882,7 +882,7 @@
     }
 
     return `
-      <span class="server-label"><i class="fas fa-clock-rotate-left"></i> Xem tiếp:</span>
+      <span class="server-label"><i class="fas fa-circle-play"></i> Xem tiếp:</span>
       <div class="resume-selector-group">
         <button class="resume-pill-btn active" onclick="app.restartPlayback()" title="Đang phát từ đầu (00:00)">
           <i class="fas fa-play" style="font-size:0.68em; margin-right:4px;"></i>Phát từ đầu

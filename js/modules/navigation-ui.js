@@ -316,7 +316,7 @@
     return `
       <section id="continueWatchingShelf" class="vision-shelf-section vision-continue-watching-shelf">
         <div class="vision-shelf-header">
-          <h2 class="vision-shelf-title"><i class="fas fa-clock-rotate-left" style="margin-right: 8px;"></i>Tiếp Tục Xem</h2>
+          <h2 class="vision-shelf-title"><i class="fas fa-circle-play" style="margin-right: 8px;"></i>Tiếp Tục Xem</h2>
           <button class="vision-see-all-pill" onclick="app.setNavigation('lich-su')">Xem Tất Cả (${continueItems.length})</button>
         </div>
         <div class="vision-continue-shelf-grid">
@@ -1331,8 +1331,8 @@
 
     return `
       <div class="ps5-hero-saves-strip">
-        <button class="ps5-save-slot-pill is-saved" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true, ${saveSlot.epIndex})" title="Tiếp tục từ điểm lưu">
-          <span class="ps5-save-slot-icon"><i class="fas fa-floppy-disk"></i></span>
+        <button class="ps5-save-slot-pill is-saved" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true, ${saveSlot.epIndex})" title="Tiếp tục xem phim">
+          <span class="ps5-save-slot-icon"><i class="fas fa-play" style="font-size: 0.72rem; margin-left: 2px;"></i></span>
           <span class="ps5-save-slot-body">
             <span class="ps5-save-slot-title">Tiếp tục • ${saveSlot.epLabel}</span>
             <span class="ps5-save-slot-sub">${saveSlot.timeStr} (${saveSlot.percent}%)</span>
