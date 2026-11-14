@@ -12,6 +12,12 @@ const PHIMMOI_CONFIG = {
   nguoncApiBase: "https://phim.nguonc.com/api/film/",
   nguoncApiSearch: "https://phim.nguonc.com/api/films/search",
   nguoncApiLatest: "https://phim.nguonc.com/api/films/phim-moi-cap-nhat",
+  film4kBase: "https://film4k.net",
+  film4kApiHome: "https://film4k.net/api/home",
+  film4kApiTitle: "https://film4k.net/api/title/",
+  film4kApiWatch: "https://film4k.net/api/watch/",
+  film4kApiSuggest: "https://film4k.net/api/search/suggest?q=",
+  allOriginsGet: "https://api.allorigins.win/get?url=",
   corsProxies: [
     "https://api.allorigins.win/raw?url=",
     "https://corsproxy.io/?"
@@ -3214,10 +3220,15 @@ class PhimmoiService {
     for (let i = 0; i < len; i++) {
       const item = catalog[i];
       if (!item || !item.slug) continue;
+      const rawQ = String(item.quality || item.maxRes || "").toUpperCase();
       const is4k = Boolean(
-        (item.quality && item.quality.toString().toUpperCase() === "4K") &&
-        (Array.isArray(item.sectionTags) && item.sectionTags.includes("4k"))
+        item.hasReal4k === true ||
+        rawQ === "4K" ||
+        rawQ.includes("2160") ||
+        Number(item.maxHeight) >= 2160
       );
+      const baseTags = Array.isArray(item.sectionTags) ? [...item.sectionTags] : ["hot", "vietsub"];
+      if (is4k && !baseTags.includes("4k")) baseTags.push("4k");
       const normalizedItem = {
         ...item,
         id: item.id || item.slug,
@@ -3225,13 +3236,15 @@ class PhimmoiService {
         originTitle: item.originTitle || item.title,
         backdrop: item.backdrop || item.poster,
         quality: is4k ? "4K" : "1080",
+        hasReal4k: is4k,
+        has4k: is4k,
         language: item.language || "Vietsub",
         director: item.director || "Đang cập nhật",
         matchScore: item.matchScore || 96,
         ambientColors: item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"],
         genres: Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"],
         cast: Array.isArray(item.cast) ? item.cast : [item.cast || "Dàn diễn viên chính"],
-        sectionTags: Array.isArray(item.sectionTags) ? item.sectionTags : ["hot", "vietsub"],
+        sectionTags: baseTags,
         episodes: Array.isArray(item.episodes)
           ? item.episodes
           : [item.episodes || { name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", needsEnrich: true }]
@@ -3405,8 +3418,23 @@ class PhimmoiService {
     if (candidate.nguoncEpisodes && candidate.nguoncEpisodes.length > (existing.nguoncEpisodes?.length || 0)) {
       existing.nguoncEpisodes = candidate.nguoncEpisodes;
     }
-    if (candidate.quality === "4K" && Array.isArray(candidate.sectionTags) && candidate.sectionTags.includes("4k")) {
+    if (candidate.film4kEpisodes && candidate.film4kEpisodes.length > (existing.film4kEpisodes?.length || 0)) {
+      existing.film4kEpisodes = candidate.film4kEpisodes;
+    }
+    if (candidate.film4kSlug && !existing.film4kSlug) {
+      existing.film4kSlug = candidate.film4kSlug;
+    }
+    if (candidate.overviewEn && !existing.overviewEn) {
+      existing.overviewEn = candidate.overviewEn;
+    }
+    if (candidate.overviewVi && !existing.overviewVi) {
+      existing.overviewVi = candidate.overviewVi;
+    }
+    if (candidate.hasReal4k === true || (candidate.quality === "4K" && candidate.hasReal4k !== false)) {
       existing.quality = "4K";
+      existing.has4k = true;
+      existing.hasReal4k = true;
+      if (!Array.isArray(existing.sectionTags)) existing.sectionTags = ["hot", "vietsub"];
       if (!existing.sectionTags.includes("4k")) existing.sectionTags.push("4k");
     }
     if (candidate.language && candidate.language.length > (existing.language?.length || 0)) {
@@ -3606,7 +3634,10 @@ class PhimmoiService {
     if (!bypassCache && this._smartCache && this._smartCache.has(url)) {
       return this._smartCache.get(url);
     }
-    const isDirectCorsApi = url.includes("phimapi.com") || url.includes("nguonc.com");
+    const isDirectCorsApi =
+      url.includes("phimapi.com") ||
+      url.includes("nguonc.com") ||
+      url.includes("film4k.net/api/");
     const attempts = isDirectCorsApi
       ? [url]
       : [
@@ -3635,12 +3666,156 @@ class PhimmoiService {
   }
 
   /**
-   * Đồng bộ xu hướng phim thời gian thực (Real-time Trending) từ PhimAPI v3 & NguonC
+   * Fetch văn bản (M3U8 / WebVTT Subtitles) có hỗ trợ tự động vượt CORS cho luồng phụ đề & playlist Film4k
+   */
+  async smartFetchText(url, timeoutMs = 4500) {
+    if (!url) return "";
+    if (!this._textCache) this._textCache = new Map();
+    if (this._textCache.has(url)) return this._textCache.get(url);
+
+    // 1. Thử kết nối trực tiếp trước
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), Math.min(timeoutMs, 2600));
+      const directRes = await fetch(url, { signal: ctrl.signal });
+      clearTimeout(t);
+      if (directRes.ok) {
+        const txt = await directRes.text();
+        if (txt) {
+          if (this._textCache.size > 80) this._textCache.clear();
+          this._textCache.set(url, txt);
+          return txt;
+        }
+      }
+    } catch (_) {}
+
+    // 2. Fallback qua AllOrigins JSON wrapper (Hỗ trợ CORS * ổn định cho .m3u8 và .vtt trên film4k.net)
+    try {
+      const ctrl2 = new AbortController();
+      const t2 = setTimeout(() => ctrl2.abort(), timeoutMs);
+      const wrapUrl = `${PHIMMOI_CONFIG.allOriginsGet || "https://api.allorigins.win/get?url="}${encodeURIComponent(url)}`;
+      const wrapRes = await fetch(wrapUrl, { signal: ctrl2.signal });
+      clearTimeout(t2);
+      if (wrapRes.ok) {
+        const payload = await wrapRes.json();
+        const contents = payload?.contents || "";
+        if (typeof contents === "string" && contents.length > 0) {
+          if (this._textCache.size > 80) this._textCache.clear();
+          this._textCache.set(url, contents);
+          return contents;
+        }
+      }
+    } catch (_) {}
+
+    return "";
+  }
+
+  /**
+   * Chuẩn hóa dữ liệu phim từ Film4K API (https://film4k.net/api/...)
+   * Hỗ trợ định dạng 4K Ultra HD thực tế (2160p), phụ đề Vietsub/Song ngữ và ảnh TMDb sắc nét
+   */
+  normalizeFilm4kItem(fItem) {
+    if (!fItem || !fItem.slug) return null;
+    const titleVi = (fItem.title && (fItem.title.vi || fItem.title.en)) || fItem.name || "";
+    const titleEn = (fItem.title && (fItem.title.en || fItem.title.vi)) || fItem.origin_name || titleVi;
+    if (!titleVi || this.isAdOrSpam({ title: titleVi, slug: fItem.slug })) return null;
+
+    const maxResStr = String(fItem.maxRes || fItem.quality || "").toUpperCase();
+    const is4k = Boolean(
+      fItem.hasReal4k === true ||
+      maxResStr === "4K" ||
+      maxResStr.includes("2160") ||
+      Number(fItem.maxHeight) >= 2160
+    );
+    const isSer = fItem.mediaType === "tv" || fItem.mediaType === "series" || Boolean(fItem.totalSeasons);
+    const posterUrl =
+      (typeof fItem.poster === "object" && fItem.poster !== null
+        ? fItem.poster.vi || fItem.poster.en
+        : fItem.poster) ||
+      fItem.backdrop ||
+      "";
+    const backdropUrl = fItem.backdrop || posterUrl;
+    const countryName =
+      (typeof fItem.country === "object" && fItem.country !== null
+        ? fItem.country.vi || fItem.country.en
+        : fItem.country) || "Âu Mỹ";
+    const countrySlug = fItem.countrySlug || "au-my";
+    const rawGenres =
+      (fItem.genres && (Array.isArray(fItem.genres.vi) ? fItem.genres.vi : Array.isArray(fItem.genres.en) ? fItem.genres.en : fItem.genres)) || [];
+    const genres = Array.isArray(rawGenres) && rawGenres.length > 0
+      ? rawGenres.map((g) => String(g).replace(/^Phim\s+/i, "").trim()).filter(Boolean)
+      : ["Hành Động", "Điện Ảnh"];
+
+    const tags = ["hot", "de-cu", "vietsub", "film4k", isSer ? "phim-bo" : "phim-le"];
+    if (is4k) tags.push("4k");
+    if (countrySlug === "han-quoc" || countrySlug === "au-my") tags.push("netflix");
+    if (genres.some((g) => /hoạt hình|anime/i.test(g))) tags.push("anime");
+
+    const overviewVi = (fItem.overview && fItem.overview.vi) || "";
+    const overviewEn = (fItem.overview && fItem.overview.en) || "";
+    const hasDub = Boolean(fItem.viDub);
+    const hasSub = fItem.viSubs !== false;
+    const langLabel = hasSub && hasDub ? "Vietsub + Thuyết Minh" : hasDub ? "Thuyết Minh" : "Vietsub";
+    const hlsDirect = fItem.hlsUrl
+      ? fItem.hlsUrl.startsWith("http")
+        ? fItem.hlsUrl
+        : `${PHIMMOI_CONFIG.film4kBase}${fItem.hlsUrl}`
+      : "";
+
+    const scoreNum = Number(fItem.score || 0);
+    const ratingVal = scoreNum >= 5 ? Number(scoreNum.toFixed(1)) : 9.1;
+
+    return {
+      id: `f4k-${fItem._id || fItem.slug}`,
+      slug: fItem.slug,
+      crawlSlug: fItem.slug,
+      film4kSlug: fItem.slug,
+      title: titleVi,
+      originTitle: titleEn,
+      poster: posterUrl,
+      backdrop: backdropUrl,
+      type: isSer ? "series" : "single",
+      sectionTags: tags,
+      quality: is4k ? "4K" : "1080",
+      has4k: is4k,
+      language: langLabel,
+      duration: isSer ? "45 phút/tập" : (is4k ? "4K Ultra HD" : "120 phút"),
+      episodeCurrent: isSer ? "Full Vietsub" : (is4k ? "Full 4K" : "Full"),
+      episodeTotal: isSer ? "Trọn Bộ" : "1",
+      year: Number(fItem.year) || 2025,
+      rating: ratingVal,
+      matchScore: is4k ? 99 : 97,
+      country: countryName,
+      countrySlug,
+      genres,
+      director: "Film4K Studio",
+      cast: ["Dàn diễn viên chính"],
+      ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
+      trailerUrl: "",
+      overviewVi,
+      overviewEn,
+      synopsis: overviewVi || overviewEn || `${titleVi} (${titleEn}) chuẩn ${is4k ? "4K Ultra HD" : "Full HD 1080p"} ${langLabel} trên Ngwyren Cinema.`,
+      episodes: [
+        {
+          name: isSer ? "Tập 1" : (is4k ? "Full 4K" : "Full"),
+          slug: isSer ? "tap-1" : "full",
+          source: hlsDirect,
+          isFilm4k: Boolean(hlsDirect),
+          is4k,
+          needsEnrich: !hlsDirect || isSer
+        }
+      ]
+    };
+  }
+
+  /**
+   * Đồng bộ xu hướng phim thời gian thực (Real-time Trending) từ PhimAPI v3, NguonC & Film4K (4K/Vietsub)
    */
   async syncLatestFromPhimmoi(perPage = 24) {
-    const [phimApiV3Page1, nguoncLatestPage1] = await Promise.all([
+    const [phimApiV3Page1, nguoncLatestPage1, film4kHome] = await Promise.all([
       this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiLatest}?page=1`, 2800, true).catch(() => null),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiLatest}?page=1`, 2800, true).catch(() => null)
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiLatest}?page=1`, 2800, true).catch(() => null),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.film4kApiHome}`, 3200, true).catch(() => null)
     ]);
     const wpPage1 = null;
 
@@ -3814,7 +3989,27 @@ class PhimmoiService {
       });
     }
 
-    // 3. Nguồn WP API bổ sung
+    // 3. Nguồn Film4K (4K Ultra HD & Vietsub / Song Ngữ)
+    if (film4kHome && typeof film4kHome === "object") {
+      const f4kPool = [
+        ...(Array.isArray(film4kHome.top) ? film4kHome.top : []),
+        ...(Array.isArray(film4kHome.newMovies) ? film4kHome.newMovies : []),
+        ...(Array.isArray(film4kHome.newSeries) ? film4kHome.newSeries : []),
+        ...(Array.isArray(film4kHome.list) ? film4kHome.list : [])
+      ];
+      const seenF4k = new Set();
+      f4kPool.forEach((fItem, idx) => {
+        if (!fItem || !fItem.slug || seenF4k.has(fItem.slug)) return;
+        seenF4k.add(fItem.slug);
+        const normalizedF4k = this.normalizeFilm4kItem(fItem);
+        if (normalizedF4k) {
+          const updatedAtMs = Number(fItem.updatedAt) || Date.now();
+          upsertLiveCandidate(normalizedF4k, idx + 3, updatedAtMs);
+        }
+      });
+    }
+
+    // 4. Nguồn WP API bổ sung
     if (Array.isArray(wpPage1)) {
       wpPage1.forEach((post, idx) => {
         const normalized = this.normalizeWpPost(post);
@@ -4016,11 +4211,12 @@ class PhimmoiService {
       );
     });
 
-    // 2. Gọi song song API Vietsub & Netflix trực tuyến (Ưu tiên PhimAPI phản hồi siêu tốc ~200ms)
+    // 2. Gọi song song API Vietsub, Film4K & Netflix trực tuyến (Ưu tiên PhimAPI + Film4K phản hồi siêu tốc ~200ms)
     const encodedQ = encodeURIComponent(query.trim());
-    const [phimApiRes, nguoncRes] = await Promise.all([
+    const [phimApiRes, nguoncRes, film4kSugRes] = await Promise.all([
       this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiSearch}?keyword=${encodedQ}&limit=12`, 2500).catch(() => null),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiSearch}?keyword=${encodedQ}`, 2000).catch(() => null)
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiSearch}?keyword=${encodedQ}`, 2000).catch(() => null),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.film4kApiSuggest}${encodedQ}`, 2200).catch(() => null)
     ]);
     const remotePosts = [];
 
@@ -4124,7 +4320,29 @@ class PhimmoiService {
       });
     }
 
-    // Nguồn 3: WP API
+    // Nguồn 3: Film4K Suggest API (4K Ultra HD & Vietsub / Song Ngữ)
+    if (film4kSugRes && Array.isArray(film4kSugRes.list)) {
+      film4kSugRes.list.forEach((fItem) => {
+        const normalizedF4k = this.normalizeFilm4kItem(fItem);
+        if (!normalizedF4k) return;
+        const cKey = this.getCanonicalMovieKey(normalizedF4k);
+        const existingDup =
+          this.slugMap.get(normalizedF4k.slug) ||
+          (cKey && this.canonicalKeyMap.get(cKey));
+        if (existingDup) {
+          this.mergeBestQualityMovie(existingDup, normalizedF4k);
+          this.slugMap.set(normalizedF4k.slug, existingDup);
+          if (!localMatches.includes(existingDup)) localMatches.push(existingDup);
+          return;
+        }
+        this.movies.unshift(normalizedF4k);
+        this.slugMap.set(normalizedF4k.slug, normalizedF4k);
+        if (cKey) this.canonicalKeyMap.set(cKey, normalizedF4k);
+        localMatches.push(normalizedF4k);
+      });
+    }
+
+    // Nguồn 4: WP API
     if (Array.isArray(remotePosts)) {
       remotePosts.forEach((post) => {
         const normalized = this.normalizeWpPost(post);
@@ -4171,11 +4389,63 @@ class PhimmoiService {
     const hasYearSuffix = /-(19\d\d|20\d\d)$/.test(movie.slug);
     const slugToTry = movie.crawlSlug || (hasYearSuffix ? movie.slug : movie.slug.replace(/-(?!(19\d\d|20\d\d)$)\d+$/, ""));
 
-    let [phimApiRes, nguoncRes] = await Promise.all([
+    const f4kSlugCandidate = movie.film4kSlug || slugToTry;
+    let [phimApiRes, nguoncRes, film4kRes] = await Promise.all([
       this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiBase}${encodeURIComponent(slugToTry)}`, 2800),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(slugToTry)}`, 2400)
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(slugToTry)}`, 2400),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.film4kApiWatch}${encodeURIComponent(f4kSlugCandidate)}`, 2400)
     ]);
     const wpPosts = null;
+
+    // Nếu Film4K chưa khớp theo slug trực tiếp, tìm nhanh theo tên tiếng Anh / tiếng Việt trên Film4K Suggest API
+    if ((!film4kRes || !film4kRes.movie) && (movie.originTitle || movie.title)) {
+      const f4kQuery = (movie.originTitle && movie.originTitle.length >= 2) ? movie.originTitle : movie.title;
+      const f4kSug = await this.smartFetchJson(
+        `${PHIMMOI_CONFIG.film4kApiSuggest}${encodeURIComponent(f4kQuery)}`,
+        2200
+      );
+      const f4kList = f4kSug?.list;
+      if (Array.isArray(f4kList) && f4kList.length > 0) {
+        const cleanVi = this.normalizeSearchText(movie.title || "");
+        const cleanEn = this.normalizeSearchText(movie.originTitle || "");
+        const movYear = parseInt(movie.year, 10);
+        let bestF4k = null;
+        let bestF4kScore = -999;
+
+        f4kList.forEach((it) => {
+          if (!it || !it.slug) return;
+          let score = 0;
+          const itVi = this.normalizeSearchText((it.title && it.title.vi) || "");
+          const itEn = this.normalizeSearchText((it.title && it.title.en) || "");
+          const itYr = parseInt(it.year, 10);
+
+          if (it.slug === movie.slug || it.slug === slugToTry) score += 200;
+          if (cleanEn && itEn === cleanEn) score += 100;
+          else if (cleanEn && cleanEn.length >= 3 && itEn.includes(cleanEn)) score += 45;
+          if (cleanVi && itVi === cleanVi) score += 100;
+          else if (cleanVi && cleanVi.length >= 3 && itVi.includes(cleanVi)) score += 45;
+
+          if (score > 0 && !isNaN(movYear) && !isNaN(itYr)) {
+            const diff = Math.abs(movYear - itYr);
+            if (diff === 0) score += 140;
+            else if (diff === 1) score += 70;
+            else score -= 350;
+          }
+          if (score > bestF4kScore) {
+            bestF4kScore = score;
+            bestF4k = it;
+          }
+        });
+
+        if (bestF4k && bestF4kScore >= 80 && bestF4k.slug) {
+          movie.film4kSlug = bestF4k.slug;
+          film4kRes = await this.smartFetchJson(
+            `${PHIMMOI_CONFIG.film4kApiWatch}${encodeURIComponent(bestF4k.slug)}`,
+            3000
+          );
+        }
+      }
+    }
 
     // Nếu slug có hậu tố số hoặc khác chuẩn khiến PhimAPI chưa khớp, tự động tìm theo tên phim để lấy luồng .m3u8 thật
     if ((!phimApiRes || !Array.isArray(phimApiRes.episodes) || phimApiRes.episodes.length === 0) && movie.title) {
@@ -4361,9 +4631,22 @@ class PhimmoiService {
           }
           if (phimApiRes.movie.quality) {
             movie.nativeQuality = phimApiRes.movie.quality;
-            // Chuẩn hóa trung thực: Tất cả luồng phim từ máy chủ API hiện tại đều là Full HD 1080p
-            // Tuyệt đối không gắn nhãn 4K ảo nếu luồng thực tế là 1080p
-            movie.quality = "1080";
+            const rawApiQ = String(phimApiRes.movie.quality || "").toUpperCase();
+            const has4kFromApi =
+              rawApiQ.includes("4K") ||
+              rawApiQ.includes("UHD") ||
+              rawApiQ.includes("2160") ||
+              movie.quality === "4K" ||
+              movie.has4k === true ||
+              (Array.isArray(movie.sectionTags) && movie.sectionTags.includes("4k"));
+            if (has4kFromApi) {
+              movie.quality = "4K";
+              movie.has4k = true;
+              if (!Array.isArray(movie.sectionTags)) movie.sectionTags = ["hot", "vietsub"];
+              if (!movie.sectionTags.includes("4k")) movie.sectionTags.push("4k");
+            } else {
+              movie.quality = "1080";
+            }
           }
           if (phimApiRes.movie.trailer_url && !movie.trailerUrl) {
             movie.trailerUrl = phimApiRes.movie.trailer_url;
@@ -4433,7 +4716,118 @@ class PhimmoiService {
       }
     }
 
-    // 3. Nguồn WP API bổ sung
+    // 3. Nguồn Film4K (https://film4k.net/ - Link Vietsub, API Phụ Đề Song Ngữ WebVTT & Định Dạng 4K UHD Thực Tế)
+    if (film4kRes && film4kRes.movie) {
+      const f4kMov = film4kRes.movie;
+      const f4kYear = parseInt(f4kMov.year, 10);
+      const movYear = parseInt(movie.year, 10);
+      const isF4kYearOk = isNaN(f4kYear) || isNaN(movYear) || Math.abs(f4kYear - movYear) <= 1;
+
+      if (isF4kYearOk) {
+        movie.film4kSlug = f4kMov.slug || movie.film4kSlug;
+        if (f4kMov.overview?.en && !movie.overviewEn) movie.overviewEn = f4kMov.overview.en;
+        if (f4kMov.overview?.vi && !movie.overviewVi) movie.overviewVi = f4kMov.overview.vi;
+
+        const f4kMaxRes = String(f4kMov.maxRes || "").toUpperCase();
+        const isF4k4k = Boolean(
+          f4kMaxRes === "4K" ||
+          f4kMaxRes.includes("2160") ||
+          Number(f4kMov.maxHeight) >= 2160
+        );
+        if (isF4k4k) {
+          movie.quality = "4K";
+          movie.has4k = true;
+          movie.hasReal4k = true;
+          if (!Array.isArray(movie.sectionTags)) movie.sectionTags = ["hot", "vietsub"];
+          if (!movie.sectionTags.includes("4k")) movie.sectionTags.push("4k");
+        }
+        if (Array.isArray(movie.sectionTags) && !movie.sectionTags.includes("film4k")) {
+          movie.sectionTags.push("film4k");
+        }
+
+        const toAbsF4kUrl = (u) => {
+          if (!u || typeof u !== "string") return "";
+          return u.startsWith("http") ? u : `${PHIMMOI_CONFIG.film4kBase}${u.startsWith("/") ? "" : "/"}${u}`;
+        };
+
+        const f4kEps = Array.isArray(film4kRes.episodes) ? film4kRes.episodes : [];
+        if (f4kEps.length > 0) {
+          movie.film4kEpisodes = f4kEps
+            .map((epItem, idx) => {
+              const firstSrc = Array.isArray(epItem.sources) ? epItem.sources[0]?.url : epItem.hlsUrl || "";
+              const absUrl = toAbsF4kUrl(firstSrc);
+              if (!absUrl) return null;
+              const epNum = epItem.episode || idx + 1;
+              return {
+                name: `Tập ${epNum}`,
+                slug: `tap-${epNum}`,
+                source: absUrl,
+                isFilm4k: true,
+                is4k: isF4k4k
+              };
+            })
+            .filter(Boolean);
+        } else {
+          const singleSrc =
+            (Array.isArray(film4kRes.sources) && film4kRes.sources[0]?.url) ||
+            f4kMov.hlsUrl ||
+            "";
+          const absSingle = toAbsF4kUrl(singleSrc);
+          if (absSingle) {
+            movie.film4kEpisodes = [
+              {
+                name: isF4k4k ? "Full 4K" : "Full",
+                slug: "full",
+                source: absSingle,
+                isFilm4k: true,
+                is4k: isF4k4k
+              }
+            ];
+          }
+        }
+
+        if (Array.isArray(movie.film4kEpisodes) && movie.film4kEpisodes.length > 0) {
+          const f4kLabel = isF4k4k ? "Film4K UHD • Vietsub" : "Film4K FHD • Vietsub";
+          movie.film4kEpisodes.forEach((fEp, idx) => {
+            if (fEp.source && movie.episodes?.[idx]) {
+              movie.episodes[idx].altSources = movie.episodes[idx].altSources || [];
+              if (!movie.episodes[idx].altSources.some((a) => a.source === fEp.source)) {
+                movie.episodes[idx].altSources.push({
+                  id: `film4k-${idx}`,
+                  label: f4kLabel,
+                  source: fEp.source,
+                  embed: "",
+                  isFilm4k: true,
+                  is4k: isF4k4k
+                });
+              }
+            }
+          });
+
+          // Nếu tập chính chưa có luồng .m3u8 hợp lệ thì dùng trực tiếp luồng Film4K
+          const hasMainValidSource =
+            Array.isArray(movie.episodes) &&
+            movie.episodes.some((e) => e && e.source && !e.source.includes("opstream"));
+          if (!hasMainValidSource) {
+            movie.episodes = movie.film4kEpisodes.map((fEp, idx) => ({
+              ...fEp,
+              altSources: [
+                {
+                  id: `film4k-${idx}`,
+                  label: f4kLabel,
+                  source: fEp.source,
+                  embed: "",
+                  isFilm4k: true,
+                  is4k: isF4k4k
+                }
+              ]
+            }));
+          }
+        }
+      }
+    }
+
+    // 4. Nguồn WP API bổ sung
     if (Array.isArray(wpPosts) && wpPosts.length > 0) {
       const fresh = this.normalizeWpPost(wpPosts[0]);
       if (fresh && fresh.episodes && fresh.episodes.length > (movie.episodes ? movie.episodes.length : 0)) {

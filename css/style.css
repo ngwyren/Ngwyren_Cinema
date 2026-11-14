@@ -4495,14 +4495,15 @@ body {
 
 .cinema-hero-desc {
   font-size: 0.9rem;
-  line-height: 1.65;
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.78);
-  max-width: 580px;
+  max-width: 540px;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -10560,10 +10561,10 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .vision-filter-flyout {
   position: fixed !important;
-  top: calc(74px + env(safe-area-inset-top, 0px)) !important;
-  left: max(24px, env(safe-area-inset-left, 24px)) !important;
-  width: min(560px, 94vw);
-  max-height: min(720px, calc(100vh - 100px));
+  top: calc(74px + env(safe-area-inset-top, 0px));
+  left: max(24px, env(safe-area-inset-left, 24px));
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(720px, calc(100dvh - 100px));
   background: rgba(18, 18, 26, 0.96) !important;
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
@@ -10578,13 +10579,12 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transform-origin: top left;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
   .vision-filter-flyout {
-    left: 10px !important;
-    right: 10px !important;
-    width: auto !important;
-    top: calc(108px + env(safe-area-inset-top, 0px)) !important;
-    max-height: calc(100dvh - 120px - env(safe-area-inset-bottom, 16px) - 64px) !important;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    max-height: calc(100dvh - 120px - env(safe-area-inset-bottom, 16px) - 64px);
   }
 }
 
@@ -10785,6 +10785,1098 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   background: rgba(239, 68, 68, 0.28);
   color: #ffffff;
 }
+
+/* ==========================================================================
+   11. IPHONE, IPAD & TOUCH GPU HARDWARE-ACCELERATED LAYER (v2.4.0)
+   Tác giả: NgwyrenSystem Responsive Engine
+   - Giải quyết triệt để tràn lề ngang trên iPhone SE / 15 / Pro Max & iPad
+   - Chuẩn hóa Topbar nhiều tầng trực quan, Safe Area Notch / Home Indicator
+   - Khớp đúng Class Name trình phát Apple Glass Player + Touch Scrubber
+   - Giảm tải GPU nested blur trên Safari iOS giúp cuộn 60-120fps mượt mà
+   ========================================================================== */
+
+/* 11.1 Ngăn cuộn ngang toàn trang (cho phép track băng chuyền cuộn độc lập) */
+@media (max-width: 1180px) {
+  html,
+  body,
+  .vision-window,
+  .vision-main-area,
+  .vision-content-scroll,
+  #mainContentWrapper {
+    max-width: 100%;
+    overflow-x: clip !important;
+  }
+
+  .vision-carousel-track {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+  }
+
+  .vision-carousel-track > * {
+    scroll-snap-align: start;
+  }
+}
+
+/* 11.2 Tối ưu GPU WebKit trên iOS / iPadOS (loại bỏ giật khi cuộn qua hàng trăm thẻ kính) */
+@media (hover: none), (pointer: coarse) {
+  html.ios-device .vision-card-glass,
+  html.ios-device .vision-feature-card,
+  html.ios-device .vision-trailer-card,
+  html.ios-device .vision-chart-row,
+  html.ios-device .vision-top10-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(24, 24, 34, 0.86);
+  }
+
+  /* Vô hiệu hóa trạng thái hover dính sau khi chạm trên màn hình cảm ứng */
+  .vision-card-glass:hover,
+  .vision-feature-card:hover,
+  .vision-trailer-card:hover {
+    transform: none !important;
+  }
+
+  .vision-card-glass:active,
+  .vision-feature-card:active,
+  .vision-trailer-card:active {
+    transform: scale(0.975) translate3d(0, 0, 0) !important;
+    transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  /* Touch Video Scrubber: vùng kéo 30px + khóa vuốt dọc + luôn hiện nút chấm tròn */
+  .apple-scrub-container {
+    height: 30px !important;
+    padding: 11px 0 !important;
+    touch-action: none !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .apple-scrub-track {
+    height: 5px !important;
+  }
+
+  .apple-scrub-thumb {
+    width: 15px !important;
+    height: 15px !important;
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+  }
+}
+
+/* 11.3 iPad Landscape & Portrait (768px - 1180px) */
+@media (min-width: 768px) and (max-width: 1180px) {
+  .vision-topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto !important;
+    align-items: center !important;
+    gap: 10px 14px !important;
+    padding: max(12px, env(safe-area-inset-top, 12px)) 20px 12px !important;
+    height: auto !important;
+  }
+
+  .topbar-left-cluster {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .topbar-search-container {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 460px !important;
+    flex: 1 1 auto !important;
+  }
+
+  .vision-topbar-filter-btn {
+    flex-shrink: 0;
+    height: 40px;
+    padding: 0 14px;
+  }
+
+  .vision-topbar-right {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    flex-shrink: 0;
+  }
+
+  .vision-nav-pills {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .vision-nav-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Ghi đè chính xác clamp(560px) của Desktop ở mục 10A cho màn hình iPad */
+  .vision-hero-banner,
+  .cinema-showcase-hero {
+    height: clamp(440px, 54vh, 530px) !important;
+    min-height: 440px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 919px) {
+  .vision-hero-banner,
+  .cinema-showcase-hero {
+    height: 420px !important;
+    min-height: 400px !important;
+  }
+}
+
+/* 11.4 iPhone & Điện thoại màn hình nhỏ (<= 767px) - Tối Giản, 100% Gọn Trong Màn Hình */
+@media (max-width: 767px) {
+  html,
+  body,
+  .vision-stage,
+  .vision-window,
+  .vision-main-area,
+  .vision-content-scroll,
+  #mainContentWrapper,
+  .cinema-home-layout,
+  .cinema-category-layout {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: clip !important;
+    box-sizing: border-box !important;
+  }
+
+  .vision-stage {
+    padding: 0 !important;
+  }
+
+  .vision-window {
+    border-radius: 0 !important;
+    -webkit-clip-path: none !important;
+    clip-path: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: max(8px, env(safe-area-inset-top, 8px)) 12px 0 !important;
+  }
+
+  .vision-topbar {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
+    grid-template-rows: auto auto auto !important;
+    align-items: center !important;
+    gap: 8px 6px !important;
+    padding: 2px 0 8px !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+  }
+
+  .topbar-left-cluster {
+    display: contents !important;
+  }
+
+  .vision-topbar-home-btn {
+    grid-column: 1;
+    grid-row: 1;
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .vision-circle-btn {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+  }
+
+  .vision-topbar-right {
+    grid-column: 2 / 4;
+    grid-row: 1;
+    justify-self: end;
+    display: flex !important;
+    align-items: center;
+    gap: 6px !important;
+    min-width: 0;
+  }
+
+  .topbar-search-container {
+    grid-column: 1 / 3;
+    grid-row: 2;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  .vision-search-pill {
+    height: 36px !important;
+    padding: 0 11px !important;
+    min-width: 0 !important;
+  }
+
+  .vision-topbar-filter-btn {
+    grid-column: 3;
+    grid-row: 2;
+    height: 36px !important;
+    padding: 0 11px !important;
+    font-size: 0.78rem !important;
+    white-space: nowrap;
+    justify-content: center;
+  }
+
+  .vision-nav-pills {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 3px 16px 3px 3px !important;
+    gap: 3px !important;
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
+  }
+
+  .vision-nav-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vision-pill,
+  .vision-nav-pill {
+    flex-shrink: 0 !important;
+    padding: 6px 11px !important;
+    font-size: 0.78rem !important;
+    min-height: 32px !important;
+  }
+
+  /* Khóa Dropdown Search, Notification, Filter, Auth & Mini Player gọn tuyệt đối trong chiều rộng iPhone */
+  .search-dropdown {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 20px) !important;
+    top: calc(92px + env(safe-area-inset-top, 0px)) !important;
+    max-height: 65dvh !important;
+    box-sizing: border-box !important;
+  }
+
+  .vision-notif-flyout,
+  .vision-filter-flyout {
+    left: 10px !important;
+    right: 10px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: calc(100dvh - 140px - env(safe-area-inset-bottom, 0px)) !important;
+    box-sizing: border-box !important;
+  }
+
+  .vision-notif-flyout::before {
+    display: none !important;
+  }
+
+  .apple-player-bar,
+  .apple-player-bar:not(:hover):not(.is-expanded) {
+    left: 10px !important;
+    right: 10px !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    bottom: calc(70px + env(safe-area-inset-bottom, 10px)) !important;
+  }
+
+  .auth-modal-card,
+  .modal-box {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: 88dvh !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Bảng Xếp Hạng, Cài Đặt & Lịch Chiếu: không bao giờ tràn cạnh phải */
+  .charts-grid-3,
+  .vision-settings-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .chart-column-card,
+  .chart-row-item,
+  .chart-info,
+  .vision-settings-card,
+  .vision-setting-row {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .chart-title,
+  .chart-sub {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .chart-column-card {
+    padding: 14px !important;
+  }
+
+  .vision-setting-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .vision-settings-card {
+    padding: 14px !important;
+  }
+
+  .vision-settings-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 14px !important;
+  }
+
+  .vision-theme-pills,
+  .segmented-control,
+  .vision-settings-banner-actions {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+  }
+
+  /* Hero Banner tối giản cho iPhone: vừa trọn khung màn hình, giảm chữ thừa */
+  .vision-hero-banner,
+  .cinema-showcase-hero {
+    height: auto !important;
+    min-height: 315px !important;
+    max-height: 385px !important;
+    border-radius: 20px !important;
+    -webkit-clip-path: inset(0 round 20px) !important;
+    clip-path: inset(0 round 20px) !important;
+    margin-bottom: 16px !important;
+  }
+
+  .cinema-showcase-hero .vision-hero-bg {
+    border-radius: 20px !important;
+    -webkit-clip-path: inset(0 round 20px) !important;
+    clip-path: inset(0 round 20px) !important;
+    object-position: center 20%;
+  }
+
+  .cinema-showcase-hero .vision-hero-overlay {
+    border-radius: 20px !important;
+    background: linear-gradient(
+      180deg,
+      rgba(8, 10, 15, 0.08) 0%,
+      rgba(8, 10, 15, 0.42) 45%,
+      rgba(8, 10, 15, 0.96) 100%
+    ) !important;
+  }
+
+  .cinema-hero-content {
+    padding: 16px 14px 14px !important;
+    justify-content: flex-end !important;
+  }
+
+  .cinema-hero-info {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(1.18rem, 5.2vw, 1.48rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0.01em !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    margin-bottom: 6px !important;
+  }
+
+  /* Ẩn bớt chữ & nhãn rườm rà trên Hero iPhone */
+  .cinema-hero-sub,
+  .cinema-genre-pills,
+  .cinema-hero-desc,
+  .ps5-hero-saves-strip .ps5-ep-quick-chip,
+  .badge-tmdb,
+  .badge-res {
+    display: none !important;
+  }
+
+  .cinema-meta-badges {
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .cinema-badge {
+    font-size: 0.7rem !important;
+    padding: 2px 7px !important;
+    white-space: nowrap;
+  }
+
+  .ps5-hero-saves-strip {
+    margin-bottom: 8px !important;
+  }
+
+  .cinema-hero-actions {
+    gap: 10px !important;
+  }
+
+  .cinema-play-glow-btn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    font-size: 1rem !important;
+  }
+
+  .cinema-action-capsule {
+    height: 42px !important;
+    min-height: 42px !important;
+    max-height: 42px !important;
+    padding: 0 14px !important;
+    gap: 12px !important;
+  }
+
+  .cinema-capsule-btn {
+    font-size: 0.98rem !important;
+  }
+
+  .cinema-hero-thumbnails {
+    margin-top: 10px !important;
+    gap: 6px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .cinema-thumb-card {
+    flex: 0 0 64px !important;
+    width: 64px !important;
+    height: 38px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Thẻ phim & Băng chuyền trên iPhone: Vuốt ngang gọn kiểu Apple TV, giảm chữ thừa */
+  .vision-shelf-section,
+  .movie-section {
+    margin-bottom: 18px !important;
+  }
+
+  .vision-shelf-header,
+  .section-header {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .vision-shelf-title,
+  .section-title {
+    font-size: 0.96rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0;
+  }
+
+  .section-subtitle {
+    display: none !important;
+  }
+
+  .vision-see-all-pill,
+  .btn-see-all {
+    flex-shrink: 0 !important;
+    font-size: 0.74rem !important;
+    padding: 4px 10px !important;
+    white-space: nowrap;
+  }
+
+  /* Băng chuyền Trang Chủ iPhone: Vuốt ngang 16:10 mượt mà thay vì xếp lưới dọc dài lê thê */
+  .cinema-home-layout .vision-cards-grid-4 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x proximity !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 10px !important;
+    padding: 2px 2px 6px !important;
+    scrollbar-width: none !important;
+  }
+
+  .cinema-home-layout .vision-cards-grid-4::-webkit-scrollbar,
+  .vision-continue-shelf-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .vision-continue-shelf-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x proximity !important;
+    -webkit-overflow-scrolling: touch !important;
+    gap: 10px !important;
+    padding: 2px 2px 6px !important;
+    scrollbar-width: none !important;
+  }
+
+  .continue-shelf-card {
+    flex: 0 0 212px !important;
+    width: 212px !important;
+    min-width: 212px !important;
+    scroll-snap-align: start;
+  }
+
+  .cinema-home-layout .vision-cards-grid-4 > .vision-feature-card {
+    flex: 0 0 216px !important;
+    width: 216px !important;
+    height: 126px !important;
+    scroll-snap-align: start;
+    border-radius: 14px !important;
+  }
+
+  .cinema-category-layout .vision-cards-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .cinema-category-layout .vision-feature-card {
+    height: 145px !important;
+    border-radius: 14px !important;
+  }
+
+  .vision-feature-bottom {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+
+  .vision-card-play-white {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    font-size: 0.68rem !important;
+  }
+
+  .vision-feature-card .vision-card-desc,
+  .vision-feature-card .vision-card-genre {
+    display: none !important;
+  }
+
+  .vision-feature-card .vision-card-title {
+    font-size: 0.82rem !important;
+    -webkit-line-clamp: 1 !important;
+    line-clamp: 1 !important;
+  }
+
+  .movie-track {
+    gap: 10px !important;
+    grid-auto-columns: calc((100% - 10px) / 2.35) !important;
+  }
+
+  .movie-card-title {
+    font-size: 0.8rem !important;
+  }
+
+  .movie-card-sub {
+    font-size: 0.7rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .poster-badges-top .ribbon-quality,
+  .poster-badges-top .ribbon-ep {
+    font-size: 0.6rem !important;
+    padding: 2px 5px !important;
+  }
+
+  /* Khoảng đệm an toàn tránh che bởi Bottom Dock */
+  .vision-content-scroll,
+  #mainContentWrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 16px)) !important;
+  }
+
+  .liquid-mobile-dock {
+    bottom: max(8px, env(safe-area-inset-bottom, 8px)) !important;
+    left: 12px !important;
+    right: 12px !important;
+    height: 54px !important;
+    padding: 4px 8px !important;
+    width: auto !important;
+    max-width: 440px !important;
+    margin: 0 auto !important;
+  }
+
+  /* Bottom Sheet Modal mượt trên iPhone + Video dính top khi cuộn chọn tập */
+  .detail-modal-backdrop {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .detail-modal-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 94dvh !important;
+    border-radius: 22px 22px 0 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 16px) !important;
+  }
+
+  .modal-player-stage {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 25 !important;
+    background: #090b10 !important;
+  }
+
+  .modal-body-content {
+    padding: 14px 14px 20px !important;
+  }
+
+  /* Trình phát Apple Player cho iPhone: Khớp chính xác class DOM */
+  .apple-player-topbar {
+    padding: 10px 12px !important;
+  }
+
+  .apple-player-movie-name {
+    font-size: 0.82rem !important;
+    max-width: 62vw !important;
+  }
+
+  .apple-player-bottombar {
+    padding: 8px 12px 10px !important;
+    gap: 6px !important;
+  }
+
+  .apple-controls-row {
+    gap: 4px !important;
+    min-height: 36px !important;
+  }
+
+  .apple-ctrls-left,
+  .apple-ctrls-right {
+    gap: 4px !important;
+  }
+
+  .apple-volume-cluster,
+  .apple-vol-slider-wrap {
+    display: none !important;
+  }
+
+  .apple-ctrl-btn {
+    min-width: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.85rem !important;
+    padding: 0 !important;
+  }
+
+  .apple-ctrl-btn.apple-speed-btn {
+    width: auto !important;
+    min-width: 36px !important;
+    padding: 0 7px !important;
+    font-size: 0.74rem !important;
+  }
+
+  .apple-time-box {
+    font-size: 0.72rem !important;
+    gap: 3px !important;
+    margin-left: 2px !important;
+    white-space: nowrap;
+  }
+
+  .apple-skip-intro-btn {
+    bottom: 72px !important;
+    right: 12px !important;
+    padding: 7px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .ep-pills-grid {
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .ep-pill-btn {
+    min-height: 38px !important;
+  }
+}
+
+/* 11.5 iPhone SE / màn hình siêu nhỏ (<= 390px) */
+@media (max-width: 390px) {
+  .vision-window {
+    padding: max(6px, env(safe-area-inset-top, 6px)) 10px 0 !important;
+  }
+
+  .vision-hero-banner,
+  .cinema-showcase-hero {
+    min-height: 295px !important;
+    max-height: 360px !important;
+    border-radius: 18px !important;
+    -webkit-clip-path: inset(0 round 18px) !important;
+    clip-path: inset(0 round 18px) !important;
+  }
+
+  .vision-topbar {
+    gap: 6px 5px !important;
+  }
+
+  .cinema-thumb-card {
+    flex: 0 0 58px !important;
+    width: 58px !important;
+    height: 35px !important;
+  }
+
+  .apple-ctrl-btn.apple-skip-btn {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   12. OPTIONAL BILINGUAL SUBTITLE OVERLAY & CONTROLS (VIỆT - ANH / VIỆT - TRUNG)
+   ========================================================================== */
+.apple-bilingual-sub-overlay {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 78px;
+  z-index: 26;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  transition: bottom 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+}
+
+.active-video-container.controls-hidden .apple-bilingual-sub-overlay {
+  bottom: 22px;
+}
+
+.apple-bilingual-sub-overlay.active {
+  display: flex;
+}
+
+.apple-bilingual-sub-overlay.cue-idle .bilingual-sub-box {
+  opacity: 0;
+}
+
+.bilingual-sub-box {
+  max-width: min(88%, 820px);
+  padding: 8px 18px 9px;
+  border-radius: 14px;
+  background: rgba(8, 10, 15, 0.76);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+  text-align: center;
+  transition: opacity 0.18s ease;
+}
+
+.bilingual-sub-primary {
+  color: #ffffff;
+  font-size: clamp(0.92rem, 1.45vw, 1.18rem);
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+  margin-bottom: 3px;
+}
+
+.bilingual-sub-secondary {
+  color: #fde047;
+  font-size: clamp(0.82rem, 1.2vw, 1.02rem);
+  font-weight: 600;
+  line-height: 1.32;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.95);
+  letter-spacing: 0.01em;
+}
+
+/* YouTube-style Setting Gear Cluster & Floating Menu */
+.apple-setting-cluster {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.apple-ctrl-btn.apple-setting-btn {
+  position: relative;
+  width: 36px !important;
+  height: 36px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+}
+
+.apple-ctrl-btn.apple-setting-btn:hover {
+  color: #ffffff !important;
+  transform: rotate(35deg) scale(1.12);
+}
+
+.setting-gear-badge {
+  position: absolute;
+  top: 2px;
+  right: -3px;
+  background: #38ef7d;
+  color: #06080c;
+  font-size: 0.58rem;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 999px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.apple-setting-menu {
+  position: absolute;
+  bottom: calc(100% + 14px);
+  right: 0;
+  width: 250px;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(18, 20, 28, 0.96);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75);
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 70;
+  animation: appleMenuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-setting-menu.open {
+  display: flex;
+}
+
+@keyframes appleMenuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.setting-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.55);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.setting-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.18s ease;
+}
+
+.setting-menu-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.setting-menu-item.active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+.setting-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setting-check-icon {
+  font-size: 0.75rem;
+  opacity: 0;
+  color: #38ef7d;
+}
+
+.setting-menu-item.active .setting-check-icon {
+  opacity: 1;
+}
+
+.setting-item-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.setting-item-tag.tag-4k {
+  background: rgba(56, 239, 125, 0.2);
+  color: #38ef7d;
+  font-weight: 800;
+}
+
+.setting-menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 0;
+}
+
+.setting-speed-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+}
+
+.setting-speed-btn {
+  flex: 1;
+  padding: 5px 2px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s ease;
+  font-family: inherit;
+}
+
+.setting-speed-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.setting-speed-btn.active {
+  background: #ffffff;
+  color: #0b0d14;
+  font-weight: 800;
+}
+
+/* Quality Capsule Styling: Đúng chuẩn ảnh người dùng đính kèm */
+.quality-selector-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 999px !important;
+  padding: 3px !important;
+  gap: 3px !important;
+}
+
+.quality-pill-btn {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 5px 14px !important;
+  border-radius: 999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.quality-pill-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.quality-pill-btn.active {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.quality-pill-btn.is-4k-quality {
+  color: #38ef7d !important;
+  font-weight: 800 !important;
+}
+
+.quality-pill-btn.is-4k-quality.active {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border: 1px solid #ffffff !important;
+  color: #38ef7d !important;
+}
+
+/* Top Floating Controls: Chỉ duy nhất 1 nút phóng to theo yêu cầu người dùng */
+.modal-top-controls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-ctrl-btn.icon-only {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: rgba(18, 18, 26, 0.76) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1rem !important;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.modal-ctrl-btn.icon-only:hover {
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: scale(1.08);
+}
+
+
 
 
 
