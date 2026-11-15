@@ -1092,7 +1092,6 @@
         this.renderDynamicQualityButtons();
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
-        this.syncWatermarkShieldPosition();
       }
     };
 
@@ -1764,7 +1763,6 @@
         topExpBtn.title = isFs ? "Thu nhỏ màn hình (Esc)" : "Phóng to toàn màn hình (F)";
       }
       resetControlsTimer();
-      this.syncWatermarkShieldPosition();
       // Nếu vừa thoát fullscreen trên điện thoại/desktop mà video bị ngắt, tự động phát tiếp mượt mà
       if (!isFs) {
         resumeVideoAfterExitFs();
@@ -1772,11 +1770,6 @@
     };
     document.addEventListener("fullscreenchange", this._boundFsChange);
     document.addEventListener("webkitfullscreenchange", this._boundFsChange);
-
-    if (!this._boundVideoShieldResize) {
-      this._boundVideoShieldResize = () => this.syncWatermarkShieldPosition();
-      window.addEventListener("resize", this._boundVideoShieldResize, { passive: true });
-    }
 
     if (!this._boundDocClickForSetting) {
       this._boundDocClickForSetting = (evt) => {
@@ -2278,70 +2271,6 @@
     const isTheater = sheet.classList.toggle("apple-theater-mode");
     modal?.classList.toggle("lights-off", isTheater);
     this.showAppleVideoHud("theater", isTheater ? "Rạp phim: Bật" : "Rạp phim: Tắt");
-  },
-
-  syncWatermarkShieldPosition() {
-    const videoEl = document.getElementById("hlsVideoElement");
-    const container = document.getElementById("activeVideoContainer");
-    const shield = document.getElementById("appleWatermarkShield");
-    if (!videoEl || !container || !shield || shield.classList.contains("disabled")) return;
-
-    const cW = container.clientWidth;
-    const cH = container.clientHeight;
-    if (!cW || !cH) return;
-
-    const vW = videoEl.videoWidth || 1920;
-    const vH = videoEl.videoHeight || 1080;
-    const containerRatio = cW / cH;
-    const videoRatio = vW / vH;
-
-    let renderW, renderH, renderTop, renderLeft;
-    if (videoRatio > containerRatio) {
-      renderW = cW;
-      renderH = cW / videoRatio;
-      renderTop = (cH - renderH) / 2;
-      renderLeft = 0;
-    } else {
-      renderH = cH;
-      renderW = cH * videoRatio;
-      renderTop = 0;
-      renderLeft = (cW - renderW) / 2;
-    }
-
-    const adCoverageInVideo = Math.max(38, Math.round(renderH * 0.088));
-    const totalShieldHeight = (renderTop > 0 ? renderTop : 0) + adCoverageInVideo;
-    const fadeStartPct = Math.max(68, Math.round(((totalShieldHeight - 12) / totalShieldHeight) * 100));
-
-    shield.style.top = "0px";
-    shield.style.left = `${Math.max(0, Math.floor(renderLeft))}px`;
-    shield.style.width = `${Math.ceil(renderW)}px`;
-    shield.style.height = `${Math.ceil(totalShieldHeight)}px`;
-    shield.style.background = `linear-gradient(180deg, #000000 0%, #000000 ${fadeStartPct}%, rgba(0, 0, 0, 0.82) ${Math.min(94, fadeStartPct + 8)}%, transparent 100%)`;
-    shield.style.display = "block";
-  },
-
-  toggleWatermarkShield(e) {
-    if (e) e.stopPropagation();
-    const shield = document.getElementById("appleWatermarkShield");
-    const icon = document.getElementById("appleShieldIcon");
-    const btn = document.getElementById("appleShieldBtn");
-    if (!shield) return;
-    const isHidden = shield.classList.toggle("disabled");
-    if (icon) {
-      icon.className = isHidden ? "fas fa-shield-slash" : "fas fa-shield-halved";
-    }
-    if (btn) {
-      btn.classList.toggle("active", !isHidden);
-      btn.title = isHidden ? "Khử Banner & Logo Quảng Cáo (Đang Tắt - Phím W)" : "Khử Banner & Logo Quảng Cáo (Đang Bật - Phím W)";
-    }
-    if (isHidden) {
-      this.showToast("Đã tắt lớp khử banner quảng cáo");
-      this.showAppleVideoHud("forward", "Khử QC: Tắt");
-    } else {
-      this.syncWatermarkShieldPosition();
-      this.showToast("🛡️ Đã bật khử banner quảng cáo video (Phím W)");
-      this.showAppleVideoHud("forward", "Khử QC: Bật");
-    }
   },
 
   toggleVideoPip(e) {

@@ -425,7 +425,6 @@
           <!-- Video Element (đã bỏ controls mặc định của trình duyệt để triệt tiêu hoàn toàn viền xanh khi bấm phím cách) -->
           <video id="hlsVideoElement" class="${this.getQualityVideoClass(this.currentQuality)}" playsinline poster="${backdropUrl}" tabindex="-1"></video>
           <iframe id="trailerIframeElement" style="display: none;" sandbox="allow-scripts allow-same-origin allow-presentation allow-forms" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen tabindex="-1"></iframe>
-          <div class="apple-watermark-shield" id="appleWatermarkShield"></div>
           <div class="apple-video-buffering-ring" id="appleVideoBufferingRing"></div>
 
           <!-- Apple Center HUD Pulse: Không vòng tròn, chỉ hiển thị icon -->
@@ -554,11 +553,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- Khử Watermark Banner QC i999 -->
-                  <button type="button" class="apple-ctrl-btn active" id="appleShieldBtn" onclick="app.toggleWatermarkShield(event)" title="Khử Watermark & Banner Quảng Cáo (Phím W)">
-                    <i class="fas fa-shield-halved" id="appleShieldIcon"></i>
-                  </button>
 
                   <!-- Picture in Picture -->
                   <button class="apple-ctrl-btn" onclick="app.toggleVideoPip(event)" title="Hình trong hình (PiP)">

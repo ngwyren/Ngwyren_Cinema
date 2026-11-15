@@ -111,7 +111,7 @@ class AppleCinemaApp {
       window.NgwyrenSystem.dispatcher.scheduleIdle("periodicMaintenance", () => {
         this.startPeriodicMaintenanceScheduler();
       }, 600);
-      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.6" });
+      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.7" });
     } else {
       this.startPeriodicMaintenanceScheduler();
     }
@@ -586,13 +586,6 @@ class AppleCinemaApp {
         if (modal?.classList.contains("open") && videoEl && videoEl.style.display !== "none") {
           e.preventDefault();
           this.toggleVideoTheaterMode();
-        }
-      } else if ((e.key === "w" || e.key === "W") && !isInput) {
-        const modal = document.getElementById("movieDetailModal");
-        const videoEl = document.getElementById("hlsVideoElement");
-        if (modal?.classList.contains("open") && videoEl && videoEl.style.display !== "none") {
-          e.preventDefault();
-          this.toggleWatermarkShield();
         }
       } else if ((e.key === "n" || e.key === "N") && !isInput) {
         const modal = document.getElementById("movieDetailModal");
