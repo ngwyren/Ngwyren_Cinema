@@ -1078,10 +1078,6 @@
 
     return `
       <div class="movie-request-box vision-request-panel">
-        <div class="req-panel-badge">
-          <i class="fas fa-wand-magic-sparkles"></i> AI Tự Động Nạp Phim
-        </div>
-
         <h3 class="req-panel-title">
           ${titleHTML}
         </h3>
