@@ -2952,6 +2952,28 @@ html {
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
 }
 
+.vision-shelf-title .anime-konoha-icon {
+  display: inline-block !important;
+  width: 1.15em !important;
+  height: 1.15em !important;
+  margin-right: 8px !important;
+  vertical-align: -0.15em !important;
+  background-color: currentColor !important;
+  -webkit-mask: url("../assets/anime-konoha-white.png") no-repeat center / contain !important;
+  mask: url("../assets/anime-konoha-white.png") no-repeat center / contain !important;
+  flex-shrink: 0;
+}
+
+.vision-dock-icon .anime-konoha-icon {
+  display: inline-block !important;
+  width: 1.2em !important;
+  height: 1.2em !important;
+  background-color: currentColor !important;
+  -webkit-mask: url("../assets/anime-konoha-white.png") no-repeat center / contain !important;
+  mask: url("../assets/anime-konoha-white.png") no-repeat center / contain !important;
+  flex-shrink: 0;
+}
+
 /* Mặc định trên Web (Desktop) và iPad: không hiển thị logo Konoha trong tab danh mục Anime (chỉ hiện chữ) */
 .vision-nav-pill .anime-konoha-icon {
   display: none !important;
@@ -11495,10 +11517,15 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     display: none !important;
   }
 
-  /* Thẻ phim & Băng chuyền trên iPhone: Vuốt ngang gọn kiểu Apple TV, giảm chữ thừa */
+  /* Thẻ phim & Băng chuyền trên iPhone: Hiện đủ 2 thẻ phim, triệt tiêu khoảng trống thừa */
+  .cinema-home-layout {
+    gap: 16px !important;
+  }
+
   .vision-shelf-section,
   .movie-section {
-    margin-bottom: 18px !important;
+    margin-bottom: 0 !important;
+    gap: 6px !important;
   }
 
   .vision-shelf-header,
@@ -11506,7 +11533,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     flex-wrap: nowrap !important;
     align-items: center !important;
     gap: 8px !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 4px !important;
   }
 
   .vision-shelf-title,
@@ -11530,15 +11557,15 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     white-space: nowrap;
   }
 
-  /* Băng chuyền Trang Chủ iPhone: Vuốt ngang 16:10 mượt mà thay vì xếp lưới dọc dài lê thê */
+  /* Băng chuyền Trang Chủ iPhone: Hiện chuẩn 2 thẻ phim 16:10 mỗi màn hình, vuốt mượt mà */
   .cinema-home-layout .vision-cards-grid-4 {
     display: flex !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    scroll-snap-type: x proximity !important;
+    scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
-    gap: 12px !important;
-    padding: 8px 12px 14px 12px !important;
+    gap: 10px !important;
+    padding: 2px 0 4px 0 !important;
     scrollbar-width: none !important;
   }
 
@@ -11551,30 +11578,33 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     display: flex !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
-    scroll-snap-type: x proximity !important;
+    scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
-    gap: 12px !important;
-    padding: 8px 12px 14px 12px !important;
+    gap: 10px !important;
+    padding: 2px 0 4px 0 !important;
     scrollbar-width: none !important;
   }
 
   .continue-shelf-card {
-    flex: 0 0 216px !important;
-    width: 216px !important;
-    min-width: 216px !important;
-    border-radius: 16px !important;
-    padding: 6px !important;
+    flex: 0 0 calc((100% - 10px) / 2) !important;
+    width: calc((100% - 10px) / 2) !important;
+    min-width: calc((100% - 10px) / 2) !important;
+    max-width: calc((100% - 10px) / 2) !important;
+    border-radius: 14px !important;
+    padding: 5px !important;
     scroll-snap-align: start;
   }
 
   .continue-shelf-card .continue-shelf-thumb {
-    border-radius: 11px !important;
+    border-radius: 10px !important;
   }
 
   .cinema-home-layout .vision-cards-grid-4 > .vision-feature-card {
-    flex: 0 0 216px !important;
-    width: 216px !important;
-    height: 135px !important;
+    flex: 0 0 calc((100% - 10px) / 2) !important;
+    width: calc((100% - 10px) / 2) !important;
+    min-width: calc((100% - 10px) / 2) !important;
+    max-width: calc((100% - 10px) / 2) !important;
+    height: auto !important;
     aspect-ratio: 16 / 10 !important;
     scroll-snap-align: start;
     border-radius: 14px !important;
@@ -12492,6 +12522,222 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .req-input-pill {
     width: 100%;
     box-sizing: border-box;
+  }
+}
+
+/* ==========================================================================
+   2K & ULTRA-WIDE CINEMATIC SCALE (MÀN HÌNH 2K / 4K / LARGE MONITORS)
+   Tự động scale thẻ phim lớn (Hero Showcase Banner) to nhất, hùng vĩ chuẩn rạp
+   ========================================================================== */
+@media (min-width: 1536px) {
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: clamp(660px, 76vh, 880px) !important;
+    min-height: 660px !important;
+    max-height: 880px !important;
+    border-radius: 30px !important;
+    -webkit-clip-path: inset(0 round 30px) !important;
+    clip-path: inset(0 round 30px) !important;
+  }
+
+  .cinema-showcase-hero .vision-hero-bg {
+    border-radius: 32px !important;
+    -webkit-clip-path: inset(0 round 32px) !important;
+    clip-path: inset(0 round 32px) !important;
+  }
+
+  .cinema-hero-content {
+    padding: 48px 52px !important;
+  }
+
+  .cinema-hero-info {
+    max-width: 760px !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(2.8rem, 3.8vw, 4.4rem) !important;
+    line-height: 1.12 !important;
+  }
+
+  .cinema-hero-sub {
+    font-size: 1.08rem !important;
+  }
+
+  .cinema-hero-desc {
+    max-width: 680px !important;
+    font-size: 1.05rem !important;
+    line-height: 1.62 !important;
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .cinema-play-glow-btn,
+  .cinema-fav-circle-btn {
+    width: 60px !important;
+    height: 60px !important;
+    min-width: 60px !important;
+    font-size: 1.45rem !important;
+  }
+
+  .cinema-meta-badges .cinema-badge,
+  .cinema-genre-pills .cinema-genre-pill {
+    font-size: 0.84rem !important;
+    padding: 4px 12px !important;
+  }
+
+  .cinema-hero-thumbnails {
+    right: 50px !important;
+    bottom: 44px !important;
+    gap: 12px !important;
+  }
+
+  .cinema-thumb-card {
+    flex: 0 0 102px !important;
+    width: 102px !important;
+    height: 60px !important;
+    min-width: 102px !important;
+    max-width: 102px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    border-radius: 12px !important;
+  }
+}
+
+@media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: clamp(760px, 82vh, 1020px) !important;
+    min-height: 760px !important;
+    max-height: 1020px !important;
+    border-radius: 34px !important;
+    -webkit-clip-path: inset(0 round 34px) !important;
+    clip-path: inset(0 round 34px) !important;
+  }
+
+  .cinema-showcase-hero .vision-hero-bg {
+    border-radius: 36px !important;
+    -webkit-clip-path: inset(0 round 36px) !important;
+    clip-path: inset(0 round 36px) !important;
+  }
+
+  .cinema-hero-content {
+    padding: 60px 64px !important;
+  }
+
+  .cinema-hero-info {
+    max-width: 860px !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(3.2rem, 4.2vw, 5.0rem) !important;
+    line-height: 1.1 !important;
+  }
+
+  .cinema-hero-sub {
+    font-size: 1.15rem !important;
+    margin-bottom: 14px !important;
+  }
+
+  .cinema-hero-desc {
+    max-width: 780px !important;
+    font-size: 1.14rem !important;
+    line-height: 1.68 !important;
+    -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
+    margin-bottom: 24px !important;
+  }
+
+  .cinema-play-glow-btn,
+  .cinema-fav-circle-btn {
+    width: 66px !important;
+    height: 66px !important;
+    min-width: 66px !important;
+    font-size: 1.6rem !important;
+  }
+
+  .cinema-meta-badges .cinema-badge,
+  .cinema-genre-pills .cinema-genre-pill {
+    font-size: 0.88rem !important;
+    padding: 5px 14px !important;
+  }
+
+  .cinema-hero-thumbnails {
+    right: 64px !important;
+    bottom: 52px !important;
+    gap: 14px !important;
+  }
+
+  .cinema-thumb-card {
+    flex: 0 0 116px !important;
+    width: 116px !important;
+    height: 68px !important;
+    min-width: 116px !important;
+    max-width: 116px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+    border-radius: 14px !important;
+  }
+}
+
+@media (min-width: 2400px) {
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: clamp(860px, 85vh, 1150px) !important;
+    min-height: 860px !important;
+    max-height: 1150px !important;
+    border-radius: 40px !important;
+    -webkit-clip-path: inset(0 round 40px) !important;
+    clip-path: inset(0 round 40px) !important;
+  }
+
+  .cinema-showcase-hero .vision-hero-bg {
+    border-radius: 42px !important;
+    -webkit-clip-path: inset(0 round 42px) !important;
+    clip-path: inset(0 round 42px) !important;
+  }
+
+  .cinema-hero-content {
+    padding: 72px 80px !important;
+  }
+
+  .cinema-hero-info {
+    max-width: 980px !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(3.8rem, 4.5vw, 5.8rem) !important;
+  }
+
+  .cinema-hero-desc {
+    max-width: 880px !important;
+    font-size: 1.25rem !important;
+    line-height: 1.72 !important;
+  }
+
+  .cinema-play-glow-btn,
+  .cinema-fav-circle-btn {
+    width: 74px !important;
+    height: 74px !important;
+    min-width: 74px !important;
+    font-size: 1.8rem !important;
+  }
+
+  .cinema-hero-thumbnails {
+    right: 80px !important;
+    bottom: 64px !important;
+    gap: 16px !important;
+  }
+
+  .cinema-thumb-card {
+    flex: 0 0 132px !important;
+    width: 132px !important;
+    height: 78px !important;
+    min-width: 132px !important;
+    max-width: 132px !important;
+    min-height: 78px !important;
+    max-height: 78px !important;
+    border-radius: 16px !important;
   }
 }
 
