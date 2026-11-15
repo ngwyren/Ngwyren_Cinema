@@ -75,7 +75,10 @@
 
     // Sắp xếp ưu tiên độ khớp từ khóa cao nhất lên đầu, tiếp đến năm phát hành
     scored.sort((a, b) => b.score - a.score || (b.movie.year || 0) - (a.movie.year || 0));
-    const quickMatches = scored.slice(0, 8).map((it) => it.movie);
+    const rawMatches = scored.map((it) => it.movie);
+    const quickMatches = (typeof this.dedupeMovieList === "function"
+      ? this.dedupeMovieList(rawMatches)
+      : rawMatches).slice(0, 8);
 
     // Hiển thị kết quả khớp ngay lập tức
     this.renderSearchDropdown(query, quickMatches, false);
@@ -84,11 +87,14 @@
     clearTimeout(this.searchDebounce);
     this.searchDebounce = setTimeout(async () => {
       const fullMatches = await this.service.searchMovies(query);
+      const dedupedFull = typeof this.dedupeMovieList === "function"
+        ? this.dedupeMovieList(fullMatches)
+        : fullMatches;
       const currentInput = (document.getElementById("topSearchInput")?.value || "").trim();
       if (currentInput === query) {
         this.lastSearchQuery = query;
-        this.lastSearchResults = fullMatches;
-        this.renderSearchDropdown(query, fullMatches.slice(0, 8), true);
+        this.lastSearchResults = dedupedFull;
+        this.renderSearchDropdown(query, dedupedFull.slice(0, 8), true);
       }
     }, 120);
   },

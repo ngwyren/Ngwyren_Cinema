@@ -297,6 +297,31 @@
     return t;
   },
 
+  dedupeMovieList(list) {
+    if (!Array.isArray(list) || list.length <= 1) return list || [];
+    const seenSlugs = new Set();
+    const seenKeys = new Set();
+    const result = [];
+    for (let i = 0; i < list.length; i++) {
+      const m = list[i];
+      if (!m || !m.slug) continue;
+      const keys = this.service && typeof this.service.getCanonicalMovieKeys === "function"
+        ? this.service.getCanonicalMovieKeys(m)
+        : [this.getCanonicalMovieKey(m)];
+      if (seenSlugs.has(m.slug) || (m.crawlSlug && seenSlugs.has(m.crawlSlug)) || keys.some((k) => k && seenKeys.has(k))) {
+        continue;
+      }
+      seenSlugs.add(m.slug);
+      if (m.crawlSlug) seenSlugs.add(m.crawlSlug);
+      if (Array.isArray(m.aliasSlugs)) {
+        m.aliasSlugs.forEach((a) => seenSlugs.add(a));
+      }
+      keys.forEach((k) => { if (k) seenKeys.add(k); });
+      result.push(m);
+    }
+    return result;
+  },
+
   renderContinueWatchingShelfHTML() {
     const seenCanonicalKeys = new Set();
     const continueItems = [];
@@ -838,17 +863,17 @@
       this.currentSegment === "all";
 
     if (isDefaultExplore) {
-      const trending10 = this.getRealtimeTrendingMovies(null, 10);
-      const youMightLike = trending10.slice(2, 10).length >= 8 ? trending10.slice(2, 10) : this.service.movies.slice(1, 9);
-      const singlesFeatured = this.service.movies.filter((m) => m.type === "single").slice(0, 8);
-      const seriesFeatured = this.service.movies.filter((m) => m.type === "series").slice(0, 8);
-      const animeFeatured = this.getMoviesByTag("anime").slice(0, 8);
-      const netflixFeatured = this.getMoviesByTag("netflix").slice(0, 8);
-      const koreanFeatured = this.getMoviesByCountry("han-quoc").slice(0, 8);
-      const chineseFeatured = this.getMoviesByCountry("trung-quoc").slice(0, 8);
-      const hollywoodFeatured = (this.countryCache.get("au-my") || this.countryCache.get("my") || []).slice(0, 8);
+      const trending10 = this.dedupeMovieList(this.getRealtimeTrendingMovies(null, 10));
+      const youMightLike = this.dedupeMovieList(trending10.slice(2, 10).length >= 8 ? trending10.slice(2, 10) : this.service.movies.slice(1, 12)).slice(0, 8);
+      const singlesFeatured = this.dedupeMovieList(this.service.movies.filter((m) => m.type === "single")).slice(0, 8);
+      const seriesFeatured = this.dedupeMovieList(this.service.movies.filter((m) => m.type === "series")).slice(0, 8);
+      const animeFeatured = this.dedupeMovieList(this.getMoviesByTag("anime")).slice(0, 8);
+      const netflixFeatured = this.dedupeMovieList(this.getMoviesByTag("netflix")).slice(0, 8);
+      const koreanFeatured = this.dedupeMovieList(this.getMoviesByCountry("han-quoc")).slice(0, 8);
+      const chineseFeatured = this.dedupeMovieList(this.getMoviesByCountry("trung-quoc")).slice(0, 8);
+      const hollywoodFeatured = this.dedupeMovieList(this.countryCache.get("au-my") || this.countryCache.get("my") || []).slice(0, 8);
 
-      const allExploreMovies = this.service.movies;
+      const allExploreMovies = this.dedupeMovieList(this.service.movies);
       const currentExploreLimit = this.exploreGridLimit || 24;
       const exploreGridList = allExploreMovies.slice(0, currentExploreLimit);
       const remainingCount = Math.max(0, allExploreMovies.length - currentExploreLimit);
@@ -1427,7 +1452,7 @@
       title = `${title} (Đã Lọc: ${base.length} Phim)`;
     }
 
-    return { title, subtitle, list: base };
+    return { title, subtitle, list: this.dedupeMovieList(base) };
   },
 
   resetAllFilters() {

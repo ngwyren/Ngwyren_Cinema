@@ -3179,8 +3179,8 @@ class PhimmoiService {
       if (Array.isArray(m.aliasSlugs)) {
         m.aliasSlugs.forEach((a) => this.slugMap.set(a, m));
       }
-      const cKey = this.getCanonicalMovieKey(m);
-      if (cKey) this.canonicalKeyMap.set(cKey, m);
+      const keys = this.getCanonicalMovieKeys(m);
+      keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, m); });
     });
 
     // Đăng ký alias chuẩn cho các slug tương đương phổ biến (Godzilla, Ramayana, Lupin...)
@@ -3291,14 +3291,19 @@ class PhimmoiService {
         }
       }
 
+      const keys = this.getCanonicalMovieKeys(item);
       const existingBySlug =
         this.slugMap.get(item.slug) ||
         (item.crawlSlug && this.slugMap.get(item.crawlSlug));
       let existing = existingBySlug;
-      let cKey = "";
-      if (!existing && seedKeyCount > 0) {
-        cKey = this.getCanonicalMovieKey(item);
-        existing = cKey && this.canonicalKeyMap.get(cKey);
+      if (!existing) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && this.canonicalKeyMap.has(k)) {
+            existing = this.canonicalKeyMap.get(k);
+            break;
+          }
+        }
       }
 
       if (existing) {
@@ -3308,7 +3313,7 @@ class PhimmoiService {
         if (Array.isArray(item.aliasSlugs)) {
           item.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
         }
-        if (cKey) this.canonicalKeyMap.set(cKey, existing);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
       } else {
         this.movies.push(item);
         this.slugMap.set(item.slug, item);
@@ -3316,8 +3321,11 @@ class PhimmoiService {
         if (Array.isArray(item.aliasSlugs)) {
           item.aliasSlugs.forEach((a) => this.slugMap.set(a, item));
         }
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, item); });
       }
     }
+
+    this.deduplicateCatalog();
 
     for (let i = 0; i < this.movies.length; i++) {
       const m = this.movies[i];
@@ -3399,17 +3407,24 @@ class PhimmoiService {
   }
 
   /**
-   * Chuẩn hóa khóa nhận diện phim để phát hiện chính xác các phim trùng lặp (kể cả khác hậu tố tên hoặc slug)
+   * Chuẩn hóa tựa phim cho đối soát trùng lặp: loại bỏ diacritics, liên từ, tiền tố, số mùa
    */
-  getCanonicalMovieKey(movie) {
-    if (!movie) return "";
-    if (movie.tmdbId) return `tmdb-${movie.tmdbId}`;
-    let t = (movie.title || movie.originTitle || movie.slug || "")
+  normalizeTitleForMatch(str) {
+    if (!str) return "";
+    let t = String(str)
       .toLowerCase()
       .replace(/đ/g, "d")
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .trim();
+    // Bỏ tiền tố thông dụng: phim, xem phim, the movie:
+    t = t.replace(/^(?:phim|xem phim|the movie)\s*:?\s*/i, "");
+    // Chuẩn hóa liên từ & / và -> and
+    t = t.replace(/&/g, " and ").replace(/\s+va\s+/g, " and ");
+    // Chuẩn hóa Star Wars & Mandalorian
+    t = t.replace(/^star wars\s*:\s*/i, "star wars ");
+    t = t.replace(/\bthe mandalorian\b/i, "mandalorian");
+    // Chuẩn hóa season / phần / mùa
     t = t.replace(/\s*\((?!phan\s*\d|mua\s*\d|season\s*\d|part\s*\d|ban\s+|19\d\d|20\d\d)[^)]+\)/g, "");
     t = t.replace(/\(phan\s*\d+\)\s*\(([^)]+)\)/g, "$1");
     t = t.replace(/\b(?:phan|mua|season)\s*(\d+)\b/g, "s$1");
@@ -3417,20 +3432,124 @@ class PhimmoiService {
     t = t.replace(/\s+iii\b/g, " s3");
     t = t.replace(/\s+ii\b/g, " s2");
     t = t.replace(/\s+(\d+)$/g, " s$1");
+    // Ký tự đặc biệt -> khoảng trắng
     t = t.replace(/[^a-z0-9]+/g, " ").trim();
-
-    // Đồng bộ các tên gọi tương đương cho các phim lớn (chống trùng lặp tuyệt đối)
-    if (t.includes("godzilla tru mot") || t.includes("godzilla tru khong") || t.includes("godzilla minus one")) {
-      return "godzilla minus one";
-    }
-    if (t.includes("ramayana rise of a legend") || t.includes("ramayana khoi nguon")) {
-      return "ramayana rise of a legend";
-    }
-
-    if (movie.type === "single" && movie.year && Number(movie.year) < 2022) {
-      t = `${t} ${movie.year}`;
-    }
     return t;
+  }
+
+  /**
+   * Sinh danh sách tất cả các khóa nhận diện tương đương của một phim (tựa gốc, tựa dịch, slug, năm)
+   */
+  getCanonicalMovieKeys(movie) {
+    if (!movie) return [];
+    const keys = new Set();
+    if (movie.tmdbId) keys.add(`tmdb-${movie.tmdbId}`);
+    if (movie.imdbId) keys.add(`imdb-${movie.imdbId}`);
+
+    const year = movie.year ? String(movie.year).trim() : "";
+    const titlesToTest = [
+      movie.title,
+      movie.originTitle,
+      movie.crawlSlug ? movie.crawlSlug.replace(/-/g, " ") : "",
+      movie.slug ? movie.slug.replace(/-/g, " ") : ""
+    ];
+
+    titlesToTest.forEach((raw) => {
+      if (!raw) return;
+      const norm = this.normalizeTitleForMatch(raw);
+      if (!norm || norm.length < 3) return;
+
+      let canonNorm = norm;
+      if (norm.includes("godzilla tru mot") || norm.includes("godzilla tru khong") || norm.includes("godzilla minus one")) {
+        canonNorm = "godzilla minus one";
+      } else if (norm.includes("mandalorian") && (norm.includes("grogu") || norm.includes("and grogu"))) {
+        canonNorm = "mandalorian and grogu";
+      } else if (norm.includes("ramayana rise of a legend") || norm.includes("ramayana khoi nguon")) {
+        canonNorm = "ramayana rise of a legend";
+      }
+
+      keys.add(canonNorm);
+      if (year && year !== "0") {
+        keys.add(`${canonNorm}::${year}`);
+      }
+      if (canonNorm.startsWith("star wars ")) {
+        const withoutSw = canonNorm.replace(/^star wars\s+/, "").trim();
+        if (withoutSw.length >= 3) {
+          keys.add(withoutSw);
+          if (year && year !== "0") keys.add(`${withoutSw}::${year}`);
+        }
+      }
+    });
+
+    return Array.from(keys);
+  }
+
+  /**
+   * Chuẩn hóa khóa nhận diện phim chính (Primary Canonical Key)
+   */
+  getCanonicalMovieKey(movie) {
+    if (!movie) return "";
+    const keys = this.getCanonicalMovieKeys(movie);
+    return keys[0] || (movie.slug || "");
+  }
+
+  /**
+   * Hàm lọc trùng lặp tự sửa chữa toàn diện cho toàn bộ kho phim:
+   * Giữ lại phiên bản chất lượng cao nhất (4K, nhiều tập, HLS chuẩn, ảnh nền đẹp) và loại bỏ hoàn toàn các bản sao.
+   */
+  deduplicateCatalog() {
+    const seenSlugs = new Set();
+    const seenKeys = new Set();
+    const unique = [];
+
+    for (let i = 0; i < this.movies.length; i++) {
+      const m = this.movies[i];
+      if (!m || !m.slug) continue;
+      const keys = this.getCanonicalMovieKeys(m);
+      const isSlugSeen = seenSlugs.has(m.slug) || (m.crawlSlug && seenSlugs.has(m.crawlSlug));
+      const isKeySeen = keys.some((k) => k && seenKeys.has(k));
+
+      if (isSlugSeen || isKeySeen) {
+        let existing = this.slugMap.get(m.slug) || (m.crawlSlug && this.slugMap.get(m.crawlSlug));
+        if (!existing) {
+          for (let ki = 0; ki < keys.length; ki++) {
+            const k = keys[ki];
+            if (k && this.canonicalKeyMap.has(k)) {
+              existing = this.canonicalKeyMap.get(k);
+              break;
+            }
+          }
+        }
+        if (existing && existing !== m) {
+          this.mergeBestQualityMovie(existing, m);
+          this.slugMap.set(m.slug, existing);
+          if (m.crawlSlug) this.slugMap.set(m.crawlSlug, existing);
+          if (Array.isArray(m.aliasSlugs)) {
+            m.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
+          }
+          keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
+        }
+        continue;
+      }
+
+      seenSlugs.add(m.slug);
+      if (m.crawlSlug) seenSlugs.add(m.crawlSlug);
+      if (Array.isArray(m.aliasSlugs)) {
+        m.aliasSlugs.forEach((a) => seenSlugs.add(a));
+      }
+      keys.forEach((k) => { if (k) seenKeys.add(k); });
+      unique.push(m);
+      this.slugMap.set(m.slug, m);
+      if (m.crawlSlug) this.slugMap.set(m.crawlSlug, m);
+      if (Array.isArray(m.aliasSlugs)) {
+        m.aliasSlugs.forEach((a) => this.slugMap.set(a, m));
+      }
+      keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, m); });
+    }
+
+    this.movies = unique;
+    this.lastSyncedCount = this.movies.length;
+    return this.movies;
   }
 
   /**
@@ -3932,11 +4051,19 @@ class PhimmoiService {
       const epStr = String(candidate.episodeCurrent || "").toLowerCase();
       if (epStr.includes("trailer") || epStr.includes("sắp chiếu")) return;
 
-      const cKey = this.getCanonicalMovieKey(candidate);
-      const existing =
+      const keys = this.getCanonicalMovieKeys(candidate);
+      let existing =
         this.slugMap.get(candidate.slug) ||
-        (candidate.crawlSlug && this.slugMap.get(candidate.crawlSlug)) ||
-        (cKey && this.canonicalKeyMap.get(cKey));
+        (candidate.crawlSlug && this.slugMap.get(candidate.crawlSlug));
+      if (!existing) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && this.canonicalKeyMap.has(k)) {
+            existing = this.canonicalKeyMap.get(k);
+            break;
+          }
+        }
+      }
 
       if (existing) {
         const prevEpCur = existing.episodeCurrent;
@@ -3955,6 +4082,7 @@ class PhimmoiService {
         }
         this.slugMap.set(candidate.slug, existing);
         if (candidate.crawlSlug) this.slugMap.set(candidate.crawlSlug, existing);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
         registerTrendingMovie(existing, rankIdx, updatedAtMs);
       } else {
         candidate._titleLower = (candidate.title || "").toLowerCase();
@@ -3962,7 +4090,7 @@ class PhimmoiService {
         newlyAdded.push(candidate);
         this.slugMap.set(candidate.slug, candidate);
         if (candidate.crawlSlug) this.slugMap.set(candidate.crawlSlug, candidate);
-        if (cKey) this.canonicalKeyMap.set(cKey, candidate);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, candidate); });
         addedCount++;
         registerTrendingMovie(candidate, rankIdx, updatedAtMs);
       }
@@ -4112,6 +4240,7 @@ class PhimmoiService {
 
     if (newlyAdded.length > 0) {
       this.movies = [...newlyAdded, ...this.movies];
+      this.deduplicateCatalog();
     }
 
     if (liveTrendingBatch.length > 0) {
@@ -4347,17 +4476,25 @@ class PhimmoiService {
           synopsis: `${item.name} (${item.origin_name}) bản Full HD 1080p ${item.lang || "Vietsub"} trên Ngwyren Cinema.`,
           episodes: [{ name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", embed: "", needsEnrich: true }]
         };
-        const cKey = this.getCanonicalMovieKey(newMovie);
-        const existingDup = cKey && this.canonicalKeyMap.get(cKey);
+        const keys = this.getCanonicalMovieKeys(newMovie);
+        let existingDup = null;
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && this.canonicalKeyMap.has(k)) {
+            existingDup = this.canonicalKeyMap.get(k);
+            break;
+          }
+        }
         if (existingDup) {
           this.mergeBestQualityMovie(existingDup, newMovie);
           this.slugMap.set(newMovie.slug, existingDup);
+          keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
           if (!localMatches.includes(existingDup)) localMatches.push(existingDup);
           return;
         }
         this.movies.unshift(newMovie);
         this.slugMap.set(newMovie.slug, newMovie);
-        if (cKey) this.canonicalKeyMap.set(cKey, newMovie);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, newMovie); });
         localMatches.push(newMovie);
       });
     }
@@ -4396,17 +4533,25 @@ class PhimmoiService {
           synopsis: this.cleanAdText(nc.description) || `${nc.name} chất lượng cao Vietsub.`,
           episodes: [{ name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", embed: "", needsEnrich: true }]
         };
-        const cKey = this.getCanonicalMovieKey(newMovie);
-        const existingDup = cKey && this.canonicalKeyMap.get(cKey);
+        const keys = this.getCanonicalMovieKeys(newMovie);
+        let existingDup = null;
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && this.canonicalKeyMap.has(k)) {
+            existingDup = this.canonicalKeyMap.get(k);
+            break;
+          }
+        }
         if (existingDup) {
           this.mergeBestQualityMovie(existingDup, newMovie);
           this.slugMap.set(newMovie.slug, existingDup);
+          keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
           if (!localMatches.includes(existingDup)) localMatches.push(existingDup);
           return;
         }
         this.movies.unshift(newMovie);
         this.slugMap.set(newMovie.slug, newMovie);
-        if (cKey) this.canonicalKeyMap.set(cKey, newMovie);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, newMovie); });
         localMatches.push(newMovie);
       });
     }
@@ -4416,19 +4561,27 @@ class PhimmoiService {
       film4kSugRes.list.forEach((fItem) => {
         const normalizedF4k = this.normalizeFilm4kItem(fItem);
         if (!normalizedF4k) return;
-        const cKey = this.getCanonicalMovieKey(normalizedF4k);
-        const existingDup =
-          this.slugMap.get(normalizedF4k.slug) ||
-          (cKey && this.canonicalKeyMap.get(cKey));
+        const keys = this.getCanonicalMovieKeys(normalizedF4k);
+        let existingDup = this.slugMap.get(normalizedF4k.slug);
+        if (!existingDup) {
+          for (let ki = 0; ki < keys.length; ki++) {
+            const k = keys[ki];
+            if (k && this.canonicalKeyMap.has(k)) {
+              existingDup = this.canonicalKeyMap.get(k);
+              break;
+            }
+          }
+        }
         if (existingDup) {
           this.mergeBestQualityMovie(existingDup, normalizedF4k);
           this.slugMap.set(normalizedF4k.slug, existingDup);
+          keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
           if (!localMatches.includes(existingDup)) localMatches.push(existingDup);
           return;
         }
         this.movies.unshift(normalizedF4k);
         this.slugMap.set(normalizedF4k.slug, normalizedF4k);
-        if (cKey) this.canonicalKeyMap.set(cKey, normalizedF4k);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, normalizedF4k); });
         localMatches.push(normalizedF4k);
       });
     }
@@ -4462,7 +4615,22 @@ class PhimmoiService {
       return { movie: m, score };
     });
     scored.sort((a, b) => b.score - a.score || (b.movie.year || 0) - (a.movie.year || 0));
-    return scored.map((it) => it.movie);
+    const dedupedResults = [];
+    const seenSearchSlugs = new Set();
+    const seenSearchKeys = new Set();
+    for (let si = 0; si < scored.length; si++) {
+      const m = scored[si].movie;
+      if (!m || !m.slug) continue;
+      const keys = this.getCanonicalMovieKeys(m);
+      if (seenSearchSlugs.has(m.slug) || keys.some((k) => k && seenSearchKeys.has(k))) {
+        continue;
+      }
+      seenSearchSlugs.add(m.slug);
+      if (m.crawlSlug) seenSearchSlugs.add(m.crawlSlug);
+      keys.forEach((k) => { if (k) seenSearchKeys.add(k); });
+      dedupedResults.push(m);
+    }
+    return dedupedResults;
   }
 
   /**
@@ -5160,9 +5328,27 @@ class PhimmoiService {
     if (Array.isArray(searchResults) && searchResults.length > 0) {
       const best = searchResults[0];
       await this.enrichMovieStreams(best);
+      const keys = this.getCanonicalMovieKeys(best);
+      let existing = this.slugMap.get(best.slug);
+      if (!existing) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && this.canonicalKeyMap.has(k)) {
+            existing = this.canonicalKeyMap.get(k);
+            break;
+          }
+        }
+      }
+      if (existing) {
+        this.mergeBestQualityMovie(existing, best);
+        this.slugMap.set(best.slug, existing);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
+        return existing;
+      }
       if (!this.movies.includes(best)) {
         this.movies.unshift(best);
         this.slugMap.set(best.slug, best);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, best); });
       }
       return best;
     }

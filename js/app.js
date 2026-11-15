@@ -347,6 +347,9 @@ class AppleCinemaApp {
   ensureFullCatalogLoaded() {
     if (this.service && !this.service._fullCatalogLoaded && typeof window !== "undefined" && Array.isArray(window.NGWYREN_FULL_CATALOG)) {
       this.service.loadFullCatalog(window.NGWYREN_FULL_CATALOG);
+      if (typeof this.service.deduplicateCatalog === "function") {
+        this.service.deduplicateCatalog();
+      }
       this.buildFastIndexes();
       this.updateSidebarCounts();
     }
@@ -361,6 +364,17 @@ class AppleCinemaApp {
       this.service.slugMap.get(idOrSlug) ||
       this.service.movies.find((m) => m.id === cleanSlug || m.slug === cleanSlug || m.id === idOrSlug || m.slug === idOrSlug)
     );
+    if (!found && this.service.canonicalKeyMap && typeof this.service.getCanonicalMovieKeys === "function") {
+      const pseudo = { slug: cleanSlug, title: cleanSlug.replace(/-/g, " ") };
+      const keys = this.service.getCanonicalMovieKeys(pseudo);
+      for (let ki = 0; ki < keys.length; ki++) {
+        const k = keys[ki];
+        if (k && this.service.canonicalKeyMap.has(k)) {
+          found = this.service.canonicalKeyMap.get(k);
+          break;
+        }
+      }
+    }
     if (!found) {
       const ALIASES = {
         "godzilla-tru-khong": "godzilla-tru-mot",
