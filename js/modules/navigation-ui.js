@@ -1021,12 +1021,24 @@
                    </button>
                  </div>
                </section>`
+            : this.currentNav === "search-results"
+            ? `<section class="vision-settings-banner">
+                 <div class="vision-settings-banner-left">
+                   <h1 class="vision-hero-title">Kết quả tìm kiếm: "${(this.lastSearchQuery || "").replace(/"/g, '&quot;')}"</h1>
+                   <p style="color: rgba(255,255,255,0.65); font-size: 0.88rem; margin-top: 4px;">Tìm thấy ${list.length} tác phẩm trong kho phim</p>
+                 </div>
+                 <div class="vision-settings-banner-actions">
+                   <button class="vision-btn-watch" onclick="app.clearSearch(); app.resetAllFilters();">
+                     <i class="fas fa-house"></i> Về Khám Phá
+                   </button>
+                 </div>
+               </section>`
             : this.renderHeroHTML()
         }
 
         <section class="vision-shelf-section">
           ${
-            !isPersonalPage
+            !isPersonalPage && this.currentNav !== "search-results"
               ? `<div class="vision-shelf-header">
                    <h2 class="vision-shelf-title">${title}</h2>
                  </div>`
