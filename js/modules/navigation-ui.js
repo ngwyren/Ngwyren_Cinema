@@ -1062,8 +1062,19 @@
       ? `Chưa có phần phim "${qStr}" bạn tìm?`
       : `Không tìm thấy "${qStr}"?`;
     const subText = hasResults
-      ? `Nhập tên phần phim cụ thể để Admin tự động tìm nạp ngay.`
-      : `Yêu cầu Admin & hệ thống sẽ tự động tìm nạp ngay.`;
+      ? `Nhập tên phần phim cụ thể để hệ thống tự động quét và nạp ngay.`
+      : `Hệ thống sẽ tự động quét đa nguồn, nạp phim và gửi email/thông báo cho bạn.`;
+
+    const savedEmail =
+      this.userProfile?.email ||
+      (this.userProfile?.handle && this.userProfile.handle.includes("@") ? this.userProfile.handle : "") ||
+      (() => {
+        try {
+          return localStorage.getItem("ngwyren_user_email") || "";
+        } catch (_) {
+          return "";
+        }
+      })();
 
     return `
       <div class="movie-request-box vision-request-panel" style="max-width: 580px; margin: 24px auto 36px; padding: 18px 20px; background: rgba(28, 30, 38, 0.78); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.45); text-align: center;">
@@ -1087,9 +1098,11 @@
             </button>
           </div>
 
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-            <input type="text" id="reqMovieNoteInput" class="vision-req-input" placeholder="Ghi chú thêm (ví dụ: Phần 2, Tập 10, Thuyết Minh...)"
-                   style="flex: 1; box-sizing: border-box; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.22); color: rgba(255,255,255,0.85); font-size: 0.8rem; outline: none;" />
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+            <input type="email" id="reqMovieEmailInput" class="vision-req-input" value="${(savedEmail || "").replace(/"/g, '&quot;')}" placeholder="✉️ Email nhận thông báo khi có phim (tùy chọn)..."
+                   style="flex: 1.1; min-width: 190px; box-sizing: border-box; padding: 7px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.9); font-size: 0.8rem; outline: none;" />
+            <input type="text" id="reqMovieNoteInput" class="vision-req-input" placeholder="Ghi chú (bản đẹp, thuyết minh, tập...)"
+                   style="flex: 1; min-width: 150px; box-sizing: border-box; padding: 7px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.85); font-size: 0.8rem; outline: none;" />
             <span id="reqMovieImageFileName" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;"></span>
           </div>
 

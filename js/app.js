@@ -111,9 +111,37 @@ class AppleCinemaApp {
       window.NgwyrenSystem.dispatcher.scheduleIdle("periodicMaintenance", () => {
         this.startPeriodicMaintenanceScheduler();
       }, 600);
-      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.4.0" });
+      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.1" });
     } else {
       this.startPeriodicMaintenanceScheduler();
+    }
+
+    // Khởi chạy bộ quét nền tự động nạp phim theo yêu cầu người dùng
+    this.initAutoIngestWatcher();
+
+    // Hiển thị chấm đỏ thông báo nếu có phim đã nạp sẵn sàng
+    try {
+      const requests = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
+      const hasRecentReady = requests.some((r) => (r.status === "ready" || r.status === "auto_ingested") && !r.viewed);
+      if (hasRecentReady) {
+        const dot = document.querySelector(".vision-notif-dot");
+        if (dot) dot.style.display = "block";
+      }
+    } catch (_) {}
+
+    // Hỗ trợ mở phim trực tiếp từ liên kết Email / thông báo chia sẻ (?movie=slug)
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetMovieSlug = urlParams.get("movie");
+    if (targetMovieSlug) {
+      setTimeout(async () => {
+        let target = this.service.slugMap.get(targetMovieSlug);
+        if (!target) {
+          target = await this.service.searchAndIngestMovie(targetMovieSlug);
+        }
+        if (target) {
+          this.openMovieModal(target.slug, true);
+        }
+      }, 600);
     }
   }
 
@@ -616,6 +644,263 @@ class AppleCinemaApp {
         if (filter && filter.style.display === "flex") this.positionFilterFlyout?.();
       });
     }, { passive: true });
+  }
+
+  // =========================================================================
+  // TỰ ĐỘNG QUÉT NỀN & THÔNG BÁO / EMAIL KHI NẠP PHIM YÊU CẦU
+  // =========================================================================
+
+  initAutoIngestWatcher() {
+    if (this._autoIngestTimer) clearInterval(this._autoIngestTimer);
+
+    // Chạy lượt đầu sau 8 giây khi trang đã ổn định
+    setTimeout(() => {
+      this.checkPendingMovieRequests();
+    }, 8000);
+
+    // Chạy định kỳ mỗi 60 giây trong nền
+    this._autoIngestTimer = setInterval(() => {
+      this.checkPendingMovieRequests();
+    }, 60000);
+  }
+
+  async checkPendingMovieRequests(forceId = null) {
+    let pending = [];
+    try {
+      pending = JSON.parse(localStorage.getItem("ngwyren_pending_movie_requests") || "[]");
+    } catch (_) {
+      pending = [];
+    }
+
+    if (!Array.isArray(pending) || pending.length === 0) return;
+
+    let hasChanges = false;
+    const remaining = [];
+
+    for (const req of pending) {
+      if (forceId && String(req.id) !== String(forceId)) {
+        remaining.push(req);
+        continue;
+      }
+      if (req.status === "ready" || req.status === "auto_ingested") {
+        continue;
+      }
+
+      try {
+        const found = await this.service.searchAndIngestMovie(req.title);
+        if (found && found.slug) {
+          hasChanges = true;
+          req.status = "ready";
+          req.foundSlug = found.slug;
+          req.resolvedAt = new Date().toISOString();
+
+          // Cập nhật trạng thái trong ngwyren_movie_requests
+          this.updateMovieRequestStatus(req.id, "ready", found.slug);
+
+          // Phát cảnh báo & gửi email & bắn web push notification
+          this.dispatchMovieIngestedAlert({
+            movie: found,
+            targetEmail: req.email,
+            note: req.note,
+            isImmediate: false
+          });
+        } else {
+          remaining.push(req);
+        }
+      } catch (err) {
+        console.warn("[AutoIngestWatcher] Kiểm tra thất bại:", req.title, err);
+        remaining.push(req);
+      }
+    }
+
+    if (hasChanges) {
+      try {
+        localStorage.setItem("ngwyren_pending_movie_requests", JSON.stringify(remaining));
+      } catch (_) {}
+      // Nếu tab requests trong notification flyout đang mở, cập nhật giao diện ngay
+      if (this.activeNotifTab === "requests") {
+        this.renderNotificationFlyout("requests");
+      }
+    }
+  }
+
+  updateMovieRequestStatus(id, newStatus, foundSlug = "") {
+    try {
+      const list = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
+      const item = list.find((r) => String(r.id) === String(id));
+      if (item) {
+        item.status = newStatus;
+        if (foundSlug) item.foundSlug = foundSlug;
+        item.resolvedAt = new Date().toISOString();
+        localStorage.setItem("ngwyren_movie_requests", JSON.stringify(list));
+      }
+    } catch (_) {}
+  }
+
+  async sendMovieReadyEmail({ toEmail, movie, note }) {
+    if (!toEmail || typeof toEmail !== "string" || !toEmail.includes("@")) return false;
+    try {
+      const siteOrigin = window.location.origin || "https://ngwyren.github.io";
+      const sitePath = window.location.pathname || "/";
+      const directUrl = `${siteOrigin}${sitePath}?movie=${encodeURIComponent(movie.slug)}`;
+
+      const payload = {
+        _subject: `[Ngwyren Cinema] Phim "${movie.title}" bạn yêu cầu đã được nạp thành công!`,
+        "Tên Phim": `${movie.title} (${movie.originTitle || ""})`,
+        "Trạng Thái": "Đã nạp thành công vào hệ thống Ngwyren Cinema",
+        "Chất Lượng": `${movie.quality || "Full HD 1080p"} • ${movie.lang || "Vietsub/Thuyết Minh"}`,
+        "Đường Dẫn Xem Trực Tiếp": directUrl,
+        "Ghi Chú Yêu Cầu": note || "Yêu cầu từ khán giả",
+        "Thời Gian Nạp": new Date().toLocaleString("vi-VN"),
+        "Thông Điệp": "Hệ thống tự động nạp phim Ngwyren Cinema đã tìm thấy và xử lý nguồn phim theo yêu cầu của bạn. Chúc bạn có những phút giây xem phim tuyệt vời!"
+      };
+
+      const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(toEmail.trim())}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      return res.ok;
+    } catch (err) {
+      console.warn("[EmailDispatch] Không thể gửi email:", err);
+      return false;
+    }
+  }
+
+  dispatchMovieIngestedAlert({ movie, targetEmail, note, isImmediate = false }) {
+    // 1. Lưu thông báo vào localStorage
+    try {
+      const notifs = JSON.parse(localStorage.getItem("ngwyren_user_notifications") || "[]");
+      notifs.unshift({
+        id: `notif-${Date.now()}`,
+        type: "movie_ready",
+        title: `Phim "${movie.title}" đã nạp thành công!`,
+        message: `Phim bạn yêu cầu hiện đã sẵn sàng với chất lượng Full HD. Bấm để thưởng thức ngay.`,
+        slug: movie.slug,
+        poster: movie.poster || movie.backdrop,
+        time: new Date().toISOString(),
+        read: false
+      });
+      localStorage.setItem("ngwyren_user_notifications", JSON.stringify(notifs.slice(0, 30)));
+    } catch (_) {}
+
+    // 2. Kích hoạt chấm đỏ trên chuông thông báo Topbar
+    const dot = document.querySelector(".vision-notif-dot");
+    if (dot) dot.style.display = "block";
+
+    // 3. Web Notification trình duyệt
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification("Ngwyren Cinema: Đã Nạp Phim!", {
+          body: `Phim "${movie.title}" bạn yêu cầu đã được nạp thành công. Xem ngay!`,
+          icon: movie.poster || movie.backdrop || "favicon.ico"
+        });
+      } catch (_) {}
+    }
+
+    // 4. Gửi email thông báo nếu có email
+    if (targetEmail && targetEmail.includes("@")) {
+      this.sendMovieReadyEmail({ toEmail: targetEmail, movie, note });
+    }
+
+    // 5. Hiển thị Toast nổi thông báo trên màn hình
+    this.showMovieIngestedToast(movie);
+  }
+
+  showMovieIngestedToast(movie) {
+    let toast = document.getElementById("visionMovieIngestedToast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "visionMovieIngestedToast";
+      toast.className = "vision-movie-ingested-toast";
+      document.body.appendChild(toast);
+    }
+
+    toast.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 12px; max-width: 440px; padding: 12px 16px; background: rgba(22, 24, 32, 0.94); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(52, 199, 89, 0.4); border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.6); color: #fff; pointer-events: auto;">
+        <img src="${movie.poster || movie.backdrop || ''}" alt="${movie.title}" style="width: 44px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" onerror="this.style.display='none'" />
+        <div style="flex: 1; min-width: 0;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #34c759; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
+            <i class="fas fa-circle-check"></i> Đã Nạp Phim Thành Công
+          </div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ${movie.title}
+          </div>
+          <div style="font-size: 0.76rem; color: rgba(255,255,255,0.7);">
+            Phim đã có sẵn luồng phát HD Vietsub
+          </div>
+        </div>
+        <button onclick="app.openMovieModal('${movie.slug}', true); document.getElementById('visionMovieIngestedToast').style.display='none';"
+                style="padding: 7px 14px; background: linear-gradient(135deg, #34c759, #248a3d); color: #fff; border: none; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; flex-shrink: 0; box-shadow: 0 4px 12px rgba(52,199,89,0.35);">
+          Xem Ngay
+        </button>
+        <button onclick="document.getElementById('visionMovieIngestedToast').style.display='none';"
+                style="background: transparent; border: none; color: rgba(255,255,255,0.5); font-size: 0.9rem; cursor: pointer; padding: 4px; line-height: 1;" title="Đóng">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    `;
+
+    toast.style.position = "fixed";
+    toast.style.top = "20px";
+    toast.style.right = "20px";
+    toast.style.zIndex = "100000";
+    toast.style.display = "block";
+    toast.style.animation = "toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1)";
+
+    if (this._movieToastTimer) clearTimeout(this._movieToastTimer);
+    this._movieToastTimer = setTimeout(() => {
+      if (toast) toast.style.display = "none";
+    }, 9000);
+  }
+
+  async retryMovieRequest(id) {
+    let list = [];
+    try {
+      list = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
+    } catch (_) {
+      list = [];
+    }
+    const item = list.find((r) => String(r.id) === String(id));
+    if (!item) return;
+
+    const btn = document.getElementById(`retryBtn-${id}`);
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Đang quét...';
+      btn.disabled = true;
+    }
+
+    try {
+      const found = await this.service.searchAndIngestMovie(item.title);
+      if (found && found.slug) {
+        this.updateMovieRequestStatus(id, "ready", found.slug);
+        this.dispatchMovieIngestedAlert({
+          movie: found,
+          targetEmail: item.email,
+          note: item.note,
+          isImmediate: false
+        });
+        this.renderNotificationFlyout("requests");
+      } else {
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-hourglass-half"></i> Chưa có link';
+          setTimeout(() => {
+            if (btn) {
+              btn.innerHTML = '<i class="fas fa-bolt"></i> Quét Lại';
+              btn.disabled = false;
+            }
+          }, 2000);
+        }
+      }
+    } catch (_) {
+      if (btn) {
+        btn.innerHTML = '<i class="fas fa-bolt"></i> Quét Lại';
+        btn.disabled = false;
+      }
+    }
   }
 
 }

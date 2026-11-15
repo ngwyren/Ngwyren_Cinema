@@ -833,6 +833,69 @@
           </div>
         `;
       }
+    } else if (activeTab === "requests") {
+      let requests = [];
+      try {
+        requests = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
+      } catch (_) {
+        requests = [];
+      }
+
+      if (requests.length === 0) {
+        bodyHTML = `
+          <div style="text-align: center; padding: 36px 16px; color: rgba(255,255,255,0.6);">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(10,132,255,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: #0a84ff; font-size: 1.3rem;">
+              <i class="fas fa-film"></i>
+            </div>
+            <div style="font-weight: 700; color: #fff; margin-bottom: 6px; font-size: 0.95rem;">Chưa có phim yêu cầu</div>
+            <p style="font-size: 0.82rem; margin: 0; line-height: 1.45; color: rgba(255,255,255,0.6);">
+              Khi tìm kiếm phim hoặc phần phim chưa có trong rạp, bạn có thể gửi yêu cầu để hệ thống tự động quét đa nguồn và nạp phim cho bạn.
+            </p>
+          </div>
+        `;
+      } else {
+        bodyHTML = requests.map((req, idx) => {
+          const isReady = req.status === "auto_ingested" || req.status === "ready";
+          const timeStr = req.timestamp ? new Date(req.timestamp).toLocaleDateString("vi-VN") : "";
+          const foundSlug = req.foundSlug || "";
+
+          return `
+            <div class="notif-movie-item" style="--item-stagger: ${idx}; align-items: flex-start; cursor: default; padding: 10px 12px;">
+              <div style="width: 42px; height: 56px; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; margin-top: 2px; border: 1px solid rgba(255,255,255,0.1);">
+                ${
+                  req.image
+                    ? `<img src="${req.image}" alt="${req.title}" style="width: 100%; height: 100%; object-fit: cover;" />`
+                    : `<i class="fas fa-clapperboard" style="font-size: 1.15rem; color: ${isReady ? '#34c759' : '#0a84ff'};"></i>`
+                }
+              </div>
+              <div class="notif-movie-info" style="flex: 1; min-width: 0; padding-left: 2px;">
+                <div class="notif-movie-title" style="font-weight: 700; color: #ffffff; font-size: 0.88rem;" title="${req.title}">${req.title}</div>
+                <div style="display: flex; gap: 6px; align-items: center; margin: 4px 0; flex-wrap: wrap;">
+                  ${
+                    isReady
+                      ? `<span style="background: rgba(52, 199, 89, 0.2); color: #34c759; border: 1px solid rgba(52, 199, 89, 0.4); padding: 1px 7px; border-radius: 4px; font-size: 0.68rem; font-weight: 700;"><i class="fas fa-check-circle"></i> ĐÃ NẠP THÀNH CÔNG</span>`
+                      : `<span style="background: rgba(255, 159, 10, 0.2); color: #ff9f0a; border: 1px solid rgba(255, 159, 10, 0.4); padding: 1px 7px; border-radius: 4px; font-size: 0.68rem; font-weight: 700;"><i class="fas fa-rotate fa-spin"></i> ĐANG TỰ ĐỘNG QUÉT</span>`
+                  }
+                  ${timeStr ? `<span style="font-size: 0.72rem; color: rgba(255,255,255,0.45);"><i class="far fa-clock"></i> ${timeStr}</span>` : ""}
+                </div>
+                ${req.note ? `<div style="font-size: 0.74rem; color: rgba(255,255,255,0.65); margin-bottom: 2px;">📝 ${req.note}</div>` : ""}
+                ${req.email ? `<div style="font-size: 0.72rem; color: rgba(10,132,255,0.9);"><i class="far fa-envelope"></i> ${req.email}</div>` : ""}
+              </div>
+              <div style="display: flex; align-items: center; align-self: center; margin-left: 8px;">
+                ${
+                  isReady && foundSlug
+                    ? `<button class="vision-btn-watch" onclick="app.openMovieModal('${foundSlug}', true); app.closeNotificationCenter();" style="padding: 6px 12px; font-size: 0.78rem; font-weight: 600; border-radius: 8px; cursor: pointer; white-space: nowrap; background: linear-gradient(135deg, #34c759, #248a3d);" title="Xem phim ngay">
+                         <i class="fas fa-play" style="font-size: 0.68rem; margin-right: 4px;"></i> Xem
+                       </button>`
+                    : `<button id="retryBtn-${req.id}" class="vision-btn-outline" onclick="app.retryMovieRequest('${req.id}')" style="padding: 5px 9px; font-size: 0.74rem; border-radius: 8px; cursor: pointer; white-space: nowrap;" title="Thử quét tìm phim ngay">
+                         <i class="fas fa-bolt"></i> Quét Lại
+                       </button>`
+                }
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
     }
     return bodyHTML;
   },
@@ -849,6 +912,12 @@
     const todayKey = jsDay === 0 ? "chu-nhat" : `thu-${jsDay + 1}`;
     const todayItems = schedule[todayKey] || [];
 
+    let reqItems = [];
+    try {
+      reqItems = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
+    } catch (_) {}
+    const reqCount = reqItems.length;
+
     const bodyHTML = this.getNotifTabBodyHTML(activeTab);
 
     flyout.innerHTML = `
@@ -862,9 +931,12 @@
         </button>
       </div>
 
-      <div class="notif-tabs-bar">
+      <div class="notif-tabs-bar" style="overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
         <button class="notif-tab-btn ${activeTab === "today" ? "active" : ""}" data-tab="today" onclick="app.switchNotifTab('today')">
           <i class="fas fa-play-circle"></i> Hôm Nay (${todayItems.length})
+        </button>
+        <button class="notif-tab-btn ${activeTab === "requests" ? "active" : ""}" data-tab="requests" onclick="app.switchNotifTab('requests')">
+          <i class="fas fa-film"></i> Yêu Cầu (${reqCount})
         </button>
         <button class="notif-tab-btn ${activeTab === "news" ? "active" : ""}" data-tab="news" onclick="app.switchNotifTab('news')">
           <i class="fas fa-newspaper"></i> Tin Tức

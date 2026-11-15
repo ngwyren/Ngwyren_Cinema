@@ -605,13 +605,28 @@
 
   async submitMovieRequest() {
     const titleInput = document.getElementById("reqMovieTitleInput");
+    const emailInput = document.getElementById("reqMovieEmailInput");
     const noteInput = document.getElementById("reqMovieNoteInput");
     const statusEl = document.getElementById("reqMovieStatus");
     const submitBtn = document.getElementById("reqMovieSubmitBtn");
 
     const movieTitle = (titleInput?.value || this.lastSearchQuery || "").trim();
+    const movieEmail = (emailInput?.value || "").trim();
     const movieNote = (noteInput?.value || "").trim();
     const movieImage = this._tempReqImageBase64 || "";
+
+    if (movieEmail) {
+      try {
+        localStorage.setItem("ngwyren_user_email", movieEmail);
+      } catch (_) {}
+    }
+
+    // Xin quyền web notification nếu chưa cấp để có thể nhận thông báo đẩy
+    if ("Notification" in window && Notification.permission === "default") {
+      try {
+        Notification.requestPermission();
+      } catch (_) {}
+    }
 
     if (!movieTitle) {
       if (statusEl) {
@@ -629,7 +644,7 @@
       statusEl.style.background = "rgba(10, 132, 255, 0.18)";
       statusEl.style.border = "1px solid rgba(10, 132, 255, 0.4)";
       statusEl.style.color = "#5ac8fa";
-      statusEl.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Đang tự động quét PhimAPI, NguonC, Film4K và máy chủ đa nguồn để nạp phim <b>"${movieTitle}"</b>...`;
+      statusEl.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Đang tự động quét PhimAPI, NguonC, Film4K và kho dữ liệu để nạp phim <b>"${movieTitle}"</b>...`;
     }
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -637,45 +652,62 @@
     }
 
     try {
-      // 1. Thử tự động nạp phim trực tuyến qua searchAndIngestMovie
+      // 1. Thử tự động nạp phim trực tuyến ngay lập tức qua searchAndIngestMovie
       const ingested = await this.service.searchAndIngestMovie(movieTitle);
       if (ingested && ingested.slug) {
-        if (statusEl) {
-          statusEl.style.background = "rgba(52, 199, 89, 0.2)";
-          statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
-          statusEl.style.color = "#34c759";
-          statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Thành công!</b> Đã tìm thấy và tự động nạp phim "${ingested.title}". Đang mở phim...`;
-        }
+        // Lưu lịch sử yêu cầu
         this._saveMovieRequestRecord({
           id: Date.now(),
           title: movieTitle,
+          email: movieEmail,
           note: movieNote,
           image: movieImage,
           status: "auto_ingested",
           foundSlug: ingested.slug,
           timestamp: new Date().toISOString()
         });
+
+        // Bắn thông báo qua chuông, web push notification, toast và gửi email
+        if (typeof this.dispatchMovieIngestedAlert === "function") {
+          this.dispatchMovieIngestedAlert({
+            movie: ingested,
+            targetEmail: movieEmail,
+            note: movieNote,
+            isImmediate: true
+          });
+        }
+
+        if (statusEl) {
+          statusEl.style.background = "rgba(52, 199, 89, 0.2)";
+          statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
+          statusEl.style.color = "#34c759";
+          statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Thành công!</b> Đã tìm thấy và tự động nạp phim <b>"${ingested.title}"</b>.${movieEmail ? `<br><span style="font-size: 0.78rem; color: #a1e3a1;"><i class="fas fa-envelope"></i> Đã gửi email thông báo tới <b>${movieEmail}</b></span>` : ""}<br>Đang mở phim để bạn thưởng thức ngay...`;
+        }
+
         setTimeout(() => {
           this.openMovieModal(ingested.slug, true);
-        }, 600);
+        }, 700);
         return;
       }
 
-      // 2. Nếu các API đối tác chưa có sẵn luồng, lưu vào hàng đợi yêu cầu phim gửi Admin
-      this._saveMovieRequestRecord({
+      // 2. Nếu các API đối tác chưa có sẵn luồng ngay, lưu vào hàng đợi để background watcher tự động quét nền định kỳ
+      const pendingRecord = {
         id: Date.now(),
         title: movieTitle,
+        email: movieEmail,
         note: movieNote,
         image: movieImage,
-        status: "pending_admin",
+        status: "pending_auto",
         timestamp: new Date().toISOString()
-      });
+      };
+      this._saveMovieRequestRecord(pendingRecord);
+      this._savePendingAutoIngest(pendingRecord);
 
       if (statusEl) {
         statusEl.style.background = "rgba(52, 199, 89, 0.2)";
         statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
         statusEl.style.color = "#34c759";
-        statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Yêu cầu đã được chuyển tới Admin thành công!</b><br>Hệ thống đã ghi nhận tên phim <b>"${movieTitle}"</b>${movieNote ? ` (${movieNote})` : ""}${movieImage ? " và hình ảnh đính kèm" : ""}. Admin sẽ bổ sung phim này sớm nhất có thể.`;
+        statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Đã kích hoạt chế độ tự động nạp phim!</b><br>Hệ thống đã ghi nhận <b>"${movieTitle}"</b> và bắt đầu quét nền liên tục qua các máy chủ đối tác.<br>Ngay khi có luồng phát, phim sẽ được nạp tự động vào rạp và gửi thông báo ${movieEmail ? `tới email <b>${movieEmail}</b>` : "trên chuông thông báo"} cho bạn ngay.`;
       }
     } catch (err) {
       console.error("[MovieRequest] Error:", err);
@@ -698,6 +730,16 @@
       const existing = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
       existing.unshift(record);
       localStorage.setItem("ngwyren_movie_requests", JSON.stringify(existing.slice(0, 50)));
+    } catch (_) {}
+  },
+
+  _savePendingAutoIngest(record) {
+    try {
+      const pending = JSON.parse(localStorage.getItem("ngwyren_pending_movie_requests") || "[]");
+      if (!pending.some((p) => p.title.toLowerCase() === record.title.toLowerCase())) {
+        pending.unshift(record);
+        localStorage.setItem("ngwyren_pending_movie_requests", JSON.stringify(pending.slice(0, 30)));
+      }
     } catch (_) {}
   }
   };
