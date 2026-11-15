@@ -634,6 +634,10 @@
       const langText = document.getElementById("modalLanguageText");
       if (langText) langText.textContent = this.getMovieLanguageLabel(movie);
       this.syncModal4kBadgeState(movie);
+    } else if (serverMode === "server-2" && (!movie.nguoncEpisodes || movie.nguoncEpisodes.length === 0) && (!movie.film4kEpisodes || movie.film4kEpisodes.length === 0)) {
+      // Khi người dùng bấm Server 2 mà chưa có dữ liệu nguồn phụ, nạp ngay dữ liệu NguonC / Film4K thời gian thực
+      await this.service.enrichMovieStreams(movie, true);
+      if (isStaleRequest()) return;
     } else if (!movie._isEnriched) {
       // Nếu đã có sẵn luồng .m3u8 chuẩn, phát ngay lập tức 0ms và nạp ngầm Server 2 / Film4K / Thuyết Minh
       const prevEpCount = Array.isArray(movie.episodes) ? movie.episodes.length : 0;
@@ -696,18 +700,55 @@
       }
     } else if (serverMode === "server-2" || serverMode === "film4k-1" || serverMode === "embed-1") {
       this.currentServerMode = "server-2";
-      const f4kAlt = episode?.altSources?.find((a) => a.isFilm4k);
-      streamUrl = (f4kEp && f4kEp.source) || (f4kAlt && f4kAlt.source) || (ncEp && ncEp.source) || (ncEp && ncEp.embed) || (episode && episode.embed) || (episode && episode.source) || "";
+      const s1Source = this.unwrapM3u8Url(episode?.source || "");
+      const realNcEp = movie.nguoncEpisodes?.[epIndex] || movie.nguoncEpisodes?.[0];
+      const realF4kEp = movie.film4kEpisodes?.[epIndex] || movie.film4kEpisodes?.[0];
+      const distinctAlt = episode?.altSources?.find((a) => {
+        const u = this.unwrapM3u8Url(a.source || a.embed || "");
+        return u && u !== s1Source;
+      });
+
+      let candidateS2 = "";
+      let isEmbedS2 = false;
+
+      if (realNcEp?.source && this.unwrapM3u8Url(realNcEp.source) !== s1Source) {
+        candidateS2 = realNcEp.source;
+      } else if (realF4kEp?.source && this.unwrapM3u8Url(realF4kEp.source) !== s1Source) {
+        candidateS2 = realF4kEp.source;
+      } else if (distinctAlt?.source) {
+        candidateS2 = distinctAlt.source;
+      } else if (realNcEp?.embed) {
+        candidateS2 = realNcEp.embed;
+        isEmbedS2 = true;
+      } else if (distinctAlt?.embed) {
+        candidateS2 = distinctAlt.embed;
+        isEmbedS2 = true;
+      } else if (episode?.embed && this.unwrapM3u8Url(episode.embed) !== s1Source) {
+        candidateS2 = episode.embed;
+        isEmbedS2 = true;
+      } else if (s1Source) {
+        candidateS2 = `https://player.phimapi.com/player/?url=${encodeURIComponent(s1Source)}`;
+        isEmbedS2 = true;
+      }
+
+      if (isEmbedS2 && candidateS2 && !candidateS2.endsWith(".m3u8")) {
+        this.activateIframePlayer(candidateS2);
+        this.showToast("🚀 Đang phát Server 2 (Máy chủ phụ độc lập)", "success");
+        return;
+      }
+      streamUrl = candidateS2 || s1Source;
+      this.showToast("🚀 Đang phát Server 2 (Luồng HLS dự phòng)", "success");
     } else if (serverMode === "vtvgo") {
       this.currentServerMode = "vtvgo";
       streamUrl = episode?.vtvgoUrl || movie.vtvgoUrl || "https://vtvgo.vn/watch/2E4t";
     } else if (serverMode === "youtube" || serverMode === "hls-1") {
+      this.currentServerMode = "hls-1";
       if (movie.vtvgoUrl || episode?.vtvgoUrl) {
         this.currentServerMode = "youtube";
         const ytAlt = episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")));
         streamUrl = ytAlt?.embed || episode?.embed || "";
       } else {
-        streamUrl = (episode && episode.source) || (ncEp && ncEp.source) || (f4kEp && f4kEp.source) || "";
+        streamUrl = (episode && episode.source) || "";
       }
     } else if (serverMode === "dub-1") {
       streamUrl = (dubEp && dubEp.source) || (episode && episode.source) || "";
@@ -1060,8 +1101,44 @@
     this.renderDynamicResumeButtons();
     this.applyVideoQualityVisuals();
 
+    // Thiết lập Watchdog tự động chống loading/treo vô tận (> 6 giây)
+    if (this._streamWatchdogTimer) {
+      clearTimeout(this._streamWatchdogTimer);
+      this._streamWatchdogTimer = null;
+    }
+    this._streamWatchdogTimer = setTimeout(async () => {
+      const container = document.getElementById("activeVideoContainer");
+      const vEl = document.getElementById("hlsVideoElement");
+      if (vEl && !vEl.paused && vEl.currentTime > 0.5) {
+        if (container) container.classList.remove("video-is-waiting", "video-is-seeking");
+        return;
+      }
+      if (container && container.classList.contains("video-is-waiting")) {
+        console.warn("[Watchdog] Phát hiện video loading quá 6s, tự động chuyển luồng dự phòng...");
+        if (this.currentServerMode !== "server-2") {
+          this.showToast("⚠️ Server 1 phản hồi chậm, tự động kết nối Server 2...", "info");
+          this.startVideoPlayback(movie, epIndex, "server-2");
+        } else {
+          const fallbackEmbed = movie.nguoncEpisodes?.[epIndex]?.embed || episode?.embed || (streamUrl ? `https://player.phimapi.com/player/?url=${encodeURIComponent(streamUrl)}` : "");
+          if (fallbackEmbed && !isForbiddenIframe(fallbackEmbed)) {
+            this.showToast("⚡ Đang kết nối luồng Embed dự phòng...", "info");
+            this.activateIframePlayer(fallbackEmbed);
+          } else {
+            container.classList.remove("video-is-waiting");
+            this.showToast("⚠️ Máy chủ phim tạm thời bận. Vui lòng bấm thử lại hoặc chọn tập khác!", "warning");
+          }
+        }
+      }
+    }, 6000);
+
     // Đồng bộ thanh thời gian siêu nhẹ (Throttle 250ms, không chạm DOM nền khi đang mở rạp phim, không rebuild HTML mỗi 3s)
     videoEl.ontimeupdate = () => {
+      if (this._streamWatchdogTimer && videoEl.currentTime > 0.3) {
+        clearTimeout(this._streamWatchdogTimer);
+        this._streamWatchdogTimer = null;
+        const c = document.getElementById("activeVideoContainer");
+        if (c) c.classList.remove("video-is-waiting");
+      }
       if (!videoEl.duration) return;
       const now = performance.now();
       if (videoEl._lastUiTick && now - videoEl._lastUiTick < 240) return;
@@ -1163,8 +1240,8 @@
       this.currentQuality = "1080";
       const modalPill = document.getElementById("modalQualityPill");
       if (modalPill) {
-        modalPill.className = "meta-pill badge-1080";
-        modalPill.textContent = "Full HD 1080p";
+        modalPill.style.display = "none";
+        modalPill.textContent = "";
       }
       const islandPill = document.getElementById("nowPlayingQuality");
       if (islandPill) {
@@ -1416,12 +1493,22 @@
     );
     const modalPill = document.getElementById("modalQualityPill");
     if (modalPill) {
-      modalPill.className = `meta-pill ${is4k ? "badge-4k" : "badge-1080"}`;
-      modalPill.innerHTML = is4k ? "<i class='fas fa-sparkles'></i> 4K Ultra HD" : "Full HD 1080p";
+      if (is4k) {
+        modalPill.style.display = "";
+        modalPill.className = "meta-pill badge-4k";
+        modalPill.innerHTML = "<i class='fas fa-sparkles'></i> 4K Ultra HD";
+      } else {
+        modalPill.style.display = "none";
+        modalPill.innerHTML = "";
+      }
     }
   },
 
   stopModalVideo() {
+    if (this._streamWatchdogTimer) {
+      clearTimeout(this._streamWatchdogTimer);
+      this._streamWatchdogTimer = null;
+    }
     this.isPlaying = false;
     this._introSkippedKey = null;
     const skipBtn = document.getElementById("appleSkipIntroBtn");
@@ -1450,6 +1537,10 @@
   },
 
   destroyHls() {
+    if (this._streamWatchdogTimer) {
+      clearTimeout(this._streamWatchdogTimer);
+      this._streamWatchdogTimer = null;
+    }
     if (this.hlsInstance) {
       try {
         this.hlsInstance.stopLoad();
@@ -1614,12 +1705,37 @@
     document.addEventListener("mousemove", this._boundDocMouseMove);
 
     // Lắng nghe sự kiện toàn màn hình để đồng bộ icon và kích hoạt ẩn chuột ngay lập tức
+    const resumeVideoAfterExitFs = () => {
+      this._exitingFullscreenTime = Date.now();
+      const vEl = document.getElementById("hlsVideoElement");
+      if (vEl && !vEl.ended) {
+        setTimeout(() => {
+          if (vEl && !vEl.ended && (vEl.paused || !this.isPlaying)) {
+            vEl.play().then(() => {
+              this.isPlaying = true;
+              const playIcon = document.getElementById("applePlayIcon");
+              if (playIcon) playIcon.className = "fas fa-pause";
+              const c = document.getElementById("activeVideoContainer");
+              if (c) c.classList.remove("video-is-waiting");
+            }).catch(() => {});
+          }
+        }, 120);
+      }
+    };
+
+    if (!videoEl._boundWebkitEndFs) {
+      videoEl._boundWebkitEndFs = () => {
+        resumeVideoAfterExitFs();
+      };
+      videoEl.addEventListener("webkitendfullscreen", videoEl._boundWebkitEndFs);
+    }
+
     if (this._boundFsChange) {
       document.removeEventListener("fullscreenchange", this._boundFsChange);
       document.removeEventListener("webkitfullscreenchange", this._boundFsChange);
     }
     this._boundFsChange = () => {
-      const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+      const isFs = Boolean(document.fullscreenElement || document.webkitFullscreenElement || videoEl?.webkitDisplayingFullscreen);
       const fsIcon = document.getElementById("appleFsIcon");
       if (fsIcon) {
         fsIcon.className = isFs ? "fas fa-compress" : "fas fa-expand";
@@ -1637,6 +1753,10 @@
         topExpBtn.title = isFs ? "Thu nhỏ màn hình (Esc)" : "Phóng to toàn màn hình (F)";
       }
       resetControlsTimer();
+      // Nếu vừa thoát fullscreen trên điện thoại/desktop mà video bị ngắt, tự động phát tiếp mượt mà
+      if (!isFs) {
+        resumeVideoAfterExitFs();
+      }
     };
     document.addEventListener("fullscreenchange", this._boundFsChange);
     document.addEventListener("webkitfullscreenchange", this._boundFsChange);
@@ -1664,6 +1784,10 @@
     };
 
     videoEl.onplaying = () => {
+      if (this._streamWatchdogTimer) {
+        clearTimeout(this._streamWatchdogTimer);
+        this._streamWatchdogTimer = null;
+      }
       container.classList.remove("video-is-seeking");
       container.classList.remove("video-is-waiting");
       videoEl.removeAttribute("poster");
@@ -1683,6 +1807,19 @@
     };
 
     videoEl.onpause = () => {
+      // Nếu pause do WebKit/hệ thống tự động kích hoạt khi thoát Fullscreen (trong vòng 700ms), tự động resume và không đổi state thành dừng
+      if (this._exitingFullscreenTime && (Date.now() - this._exitingFullscreenTime < 700)) {
+        setTimeout(() => {
+          if (videoEl && !videoEl.ended && videoEl.paused) {
+            videoEl.play().then(() => {
+              this.isPlaying = true;
+              const playIcon = document.getElementById("applePlayIcon");
+              if (playIcon) playIcon.className = "fas fa-pause";
+            }).catch(() => {});
+          }
+        }, 60);
+        return;
+      }
       this.isPlaying = false;
       const playIcon = document.getElementById("applePlayIcon");
       if (playIcon) playIcon.className = "fas fa-play";
@@ -2184,6 +2321,7 @@
     );
 
     if (isDocFullscreen) {
+      this._exitingFullscreenTime = Date.now();
       if (videoEl?.webkitDisplayingFullscreen && typeof videoEl.webkitExitFullscreen === "function") {
         videoEl.webkitExitFullscreen();
       } else if (document.exitFullscreen) {
@@ -2191,6 +2329,11 @@
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
       }
+      setTimeout(() => {
+        if (videoEl && !videoEl.ended) {
+          videoEl.play().catch(() => {});
+        }
+      }, 100);
       return;
     }
 

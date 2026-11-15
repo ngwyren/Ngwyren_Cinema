@@ -592,7 +592,7 @@
               <span class="meta-pill match">${movie.matchScore || 97}% Phù hợp với bạn</span>
               <span class="meta-pill">${movie.year}</span>
               <span class="meta-pill"><i class="fas fa-star"></i> ${movie.rating || 9.2}</span>
-              <span class="meta-pill ${movie.quality === "4K" || movie.has4k ? "badge-4k" : "badge-1080"}" id="modalQualityPill">${movie.quality === "4K" || movie.has4k ? "<i class='fas fa-sparkles'></i> 4K Ultra HD" : "Full HD 1080p"}</span>
+              ${movie.quality === "4K" || movie.has4k ? `<span class="meta-pill badge-4k" id="modalQualityPill"><i class='fas fa-sparkles'></i> 4K Ultra HD</span>` : `<span class="meta-pill badge-1080" id="modalQualityPill" style="display:none;"></span>`}
               <span class="meta-pill" id="modalLanguagePill"><i class="fas fa-volume-up"></i> <span id="modalLanguageText">${this.getMovieLanguageLabel(movie)}</span></span>
             </div>
             ${
@@ -784,7 +784,8 @@
       ep?.isFilm4k ||
       ep?.altSources?.some((a) => a.isFilm4k)
     );
-    const hasServer2 = hasFilm4k || hasEmbed2;
+    // Luôn sẵn sàng Server 2 dự phòng để đảm bảo 2 server luôn hoạt động song song
+    const hasServer2 = true;
     const hasDub = Boolean(movie.dubEpisodes && movie.dubEpisodes.length > 0);
     const isServer2Active = this.currentServerMode === "server-2" || this.currentServerMode === "film4k-1" || this.currentServerMode === "embed-1";
     const isF4k4k = Boolean(
@@ -802,8 +803,8 @@
       ${
         hasServer2
           ? `<button class="server-btn ${isServer2Active ? "active" : ""}" id="srvBtnServer2"
-                    onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'server-2')" title="Phát Server 2 (Film4K / Dự Phòng ${isF4k4k ? "• 4K Ultra HD" : "• Full HD"})">
-              <i class="fas fa-server"></i> Server 2 ${isF4k4k ? '<span class="badge-mini-4k" style="margin-left:4px; font-size:0.68em; background:#38ef7d; color:#000; border-radius:3px; padding:1px 4px; font-weight:800;">4K</span>' : ""}
+                    onclick="app.startVideoPlayback(app.selectedMovie, app.currentEpisodeIndex, 'server-2')" title="Phát Server 2 (Máy chủ dự phòng ổn định)">
+              <i class="fas fa-server"></i> Server 2
             </button>`
           : ""
       }

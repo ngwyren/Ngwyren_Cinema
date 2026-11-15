@@ -1603,7 +1603,7 @@
 
             <div class="cinema-meta-badges">
               <span class="cinema-badge badge-imdb"><i class="fab fa-imdb"></i> ${imdbScore}</span>
-              <span class="cinema-badge badge-res">${movie.quality || "4K"}</span>
+              ${(movie.quality === "4K" || movie.has4k) ? `<span class="cinema-badge badge-res badge-4k">4K</span>` : ""}
               <span class="cinema-badge badge-year">${movie.year || 2026}</span>
               <span class="cinema-badge badge-status">${statusText}</span>
             </div>

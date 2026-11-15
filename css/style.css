@@ -979,10 +979,7 @@ body::-webkit-scrollbar {
 }
 
 .meta-pill.badge-1080 {
-  background: rgba(255, 255, 255, 0.16);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  font-weight: 700;
+  display: none !important;
 }
 
 .hero-desc {
@@ -11999,6 +11996,14 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   border-color: rgba(255, 255, 255, 0.4) !important;
   transform: scale(1.08);
 }
+
+/* Ẩn triệt để nhãn 1080 và Full HD 1080p theo yêu cầu tinh giản giao diện */
+.meta-pill.badge-1080,
+.cinema-badge.badge-res:not(.badge-4k),
+.server-btn .badge-mini-4k {
+  display: none !important;
+}
+
 
 
 
