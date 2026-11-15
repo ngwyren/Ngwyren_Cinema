@@ -2086,12 +2086,14 @@ body.modal-open .ambient-canvas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
+  padding: 6px 6px 14px 6px !important;
+  overflow: visible !important;
 }
 
 .continue-shelf-card {
   position: relative;
   background: rgba(255, 255, 255, 0.035) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 20px;
   padding: 8px;
   box-shadow: none !important;
@@ -2113,9 +2115,9 @@ body.modal-open .ambient-canvas {
 }
 
 .continue-shelf-card:hover {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-5px) !important;
   border-color: rgba(255, 255, 255, 0.85) !important;
-  background: rgba(255, 255, 255, 0.065) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
   box-shadow: none !important;
 }
 
@@ -9718,9 +9720,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
   .continue-shelf-card:hover,
   .continue-shelf-card:focus-visible {
-    transform: translate3d(0, -6px, 0) scale(1.025) !important;
+    transform: translate3d(0, -5px, 0) !important;
     border: 1px solid rgba(255, 255, 255, 0.85) !important;
-    background: rgba(255, 255, 255, 0.065) !important;
+    background: rgba(255, 255, 255, 0.07) !important;
     box-shadow: none !important;
     z-index: 5 !important;
   }
@@ -11515,8 +11517,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     overflow-x: auto !important;
     scroll-snap-type: x proximity !important;
     -webkit-overflow-scrolling: touch !important;
-    gap: 10px !important;
-    padding: 2px 2px 6px !important;
+    gap: 12px !important;
+    padding: 8px 12px 14px 12px !important;
     scrollbar-width: none !important;
   }
 
@@ -11531,8 +11533,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     overflow-x: auto !important;
     scroll-snap-type: x proximity !important;
     -webkit-overflow-scrolling: touch !important;
-    gap: 10px !important;
-    padding: 2px 2px 6px !important;
+    gap: 12px !important;
+    padding: 8px 12px 14px 12px !important;
     scrollbar-width: none !important;
   }
 
