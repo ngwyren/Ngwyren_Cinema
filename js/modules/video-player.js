@@ -82,90 +82,8 @@
   },
 
   cleanHlsAdSegments(playlistText) {
-    if (!playlistText || typeof playlistText !== "string" || !playlistText.includes("#EXTM3U")) {
-      return playlistText;
-    }
-    const lines = playlistText.split(/\r?\n/);
-    const cleanLines = [];
-
-    const isAdSegment = (uri) => {
-      if (!uri || typeof uri !== "string") return false;
-      const u = uri.trim();
-      // Khử chính xác phân đoạn video quảng cáo cờ bạc chèn vào luồng:
-      // Định dạng quảng cáo: /(v7|v8|convertv)/[hash 16-64 hex]/segment_XXXX.ts hoặc domain cờ bạc
-      // TUYỆT ĐỐI KHÔNG chạm vào các phân đoạn phim gốc dạng convertv7/[8-ky-tu].ts hoặc convertv8/[8-ky-tu].ts
-      if (/\/(?:v\d+|convertv\d*)\/[a-f0-9]{16,64}\/segment_\d+\.ts/i.test(u)) return true;
-      if (/https?:\/\/[^\/]+\/(?:v\d+|convertv\d*)\/[a-f0-9]{16,64}\/segment_\d+\.ts/i.test(u)) return true;
-      if (/(?:9922|i999|cwin|nohu|casinopromo|shbet|789bet|jun88|hi88|okvip|f8bet|new88)(?:\.ai|\.com|\.net|\.vip|\.cc|\.top|\.bet|\.xyz)/i.test(u)) return true;
-      if (/i999/i.test(u)) return true;
-      return false;
-    };
-
-    let i = 0;
-    while (i < lines.length) {
-      const line = lines[i];
-
-      // Nếu gặp #EXT-X-DISCONTINUITY mà phân đoạn tiếp theo là quảng cáo -> bỏ qua toàn bộ khối quảng cáo và thẻ đóng
-      if (line.trim() === "#EXT-X-DISCONTINUITY") {
-        let peek = i + 1;
-        while (peek < lines.length && lines[peek].startsWith("#")) {
-          peek++;
-        }
-        if (peek < lines.length && isAdSegment(lines[peek])) {
-          // Bỏ qua toàn bộ các phân đoạn quảng cáo liên tiếp cùng các thẻ #EXT-X-KEY / #EXTINF bên trong khối quảng cáo
-          let cursor = i + 1;
-          while (cursor < lines.length) {
-            const curTrim = lines[cursor].trim();
-            if (curTrim === "#EXT-X-DISCONTINUITY") {
-              cursor++;
-              // Bỏ qua các thẻ #EXT-X-DISCONTINUITY trùng lặp ngay sau khối quảng cáo
-              while (cursor < lines.length && lines[cursor].trim() === "#EXT-X-DISCONTINUITY") {
-                cursor++;
-              }
-              break;
-            }
-            if (!curTrim.startsWith("#") && curTrim !== "" && !isAdSegment(curTrim)) {
-              break;
-            }
-            cursor++;
-          }
-          i = cursor;
-          continue;
-        }
-
-        // Gộp các thẻ #EXT-X-DISCONTINUITY bị lặp kép liên tiếp (ví dụ trong cụm convertv7/ hoặc convertv8/) thành 1 thẻ duy nhất
-        // để HLS.js không tạo ra miền continuity counter (cc) rỗng gây nhảy cóc hoặc cắt mất vài giây phim
-        if (cleanLines.length > 0 && cleanLines[cleanLines.length - 1].trim() === "#EXT-X-DISCONTINUITY") {
-          i++;
-          continue;
-        }
-      }
-
-      // Nếu gặp phân đoạn quảng cáo (#EXTINF) không có #EXT-X-DISCONTINUITY mở đầu
-      if (line.startsWith("#EXTINF:")) {
-        let peek = i + 1;
-        while (peek < lines.length && lines[peek].startsWith("#") && !lines[peek].startsWith("#EXTINF:")) {
-          peek++;
-        }
-        if (peek < lines.length && isAdSegment(lines[peek])) {
-          i = peek + 1;
-          while (i < lines.length && lines[i].trim() === "#EXT-X-DISCONTINUITY") {
-            i++;
-          }
-          continue;
-        }
-      }
-
-      if (isAdSegment(line)) {
-        i++;
-        continue;
-      }
-
-      cleanLines.push(line);
-      i++;
-    }
-
-    return cleanLines.join("\n");
+    // GIỮ NGUYÊN GỐC 100% LUỒNG PHIM - TUYỆT ĐỐI KHÔNG CẮT BỎ BẤT KỲ ĐOẠN HOẶC PHÂN ĐOẠN VIDEO NÀO
+    return playlistText;
   },
 
   async readFirstVideoPtsFromTs(segUrl) {
@@ -247,50 +165,8 @@
   },
 
   calibrateHlsPlaylistTimestampsSync(playlistText, playlistUrl) {
-    // Chỉ hiệu chuẩn tỷ lệ khung hình 23.976fps cho riêng luồng Jumper (2008) bị lệch metadata,
-    // tuyệt đối không biến đổi #EXTINF của các phim khác để tránh lệch PTS gây giật/khựng hình
-    const isJumperStream =
-      (this.selectedMovie && this.selectedMovie.slug && this.selectedMovie.slug.includes("jumper")) ||
-      (playlistUrl && playlistUrl.includes("e24fa24c0056d57c5e142759eb05ba2b"));
-    if (
-      !isJumperStream ||
-      !playlistText ||
-      !playlistText.includes("#EXTINF:3.14") ||
-      !playlistText.includes("#EXT-X-DISCONTINUITY") ||
-      playlistText.includes("#EXT-X-STREAM-INF")
-    ) {
-      return playlistText;
-    }
-    if (playlistUrl && this._calibratedPlaylistsCache && this._calibratedPlaylistsCache.has(playlistUrl)) {
-      return this._calibratedPlaylistsCache.get(playlistUrl);
-    }
-    try {
-      const scale = 1001 / 960;
-      let seenFirstSeg = false;
-      const lines = playlistText.split(/\r?\n/);
-      const calibratedLines = lines.map((line) => {
-        const trimmed = line.trim();
-        if (trimmed.startsWith("#EXTINF:")) {
-          const rawVal = parseFloat(trimmed.slice(8).split(",")[0]);
-          if (rawVal > 0) {
-            if (!seenFirstSeg) {
-              seenFirstSeg = true;
-              const baseVal = Math.abs(rawVal - 3.14) < 0.01 ? 3.0 : rawVal;
-              return `#EXTINF:${(baseVal * scale).toFixed(5)},`;
-            }
-            return `#EXTINF:${(rawVal * scale).toFixed(5)},`;
-          }
-        }
-        return line;
-      });
-      const out = calibratedLines.join("\n");
-      if (playlistUrl && this._calibratedPlaylistsCache) {
-        this._calibratedPlaylistsCache.set(playlistUrl, out);
-      }
-      return out;
-    } catch (_) {
-      return playlistText;
-    }
+    // GIỮ NGUYÊN GỐC 100% LUỒNG VIDEO - TUYỆT ĐỐI KHÔNG BIẾN ĐỔI BẤT KỲ METADATA HAY ĐOẠN PHIM NÀO
+    return playlistText;
   },
 
   rewriteFilm4kPlaylist(playlistText, playlistUrl = "") {

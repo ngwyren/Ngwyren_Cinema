@@ -868,17 +868,16 @@ body::-webkit-scrollbar {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 22%;
+  object-position: center center !important;
   image-rendering: -webkit-optimize-contrast !important;
   image-rendering: high-quality !important;
-  transform: scale(1.04) translateZ(0);
+  transform: none !important;
   backface-visibility: hidden;
-  transition: transform 6s var(--ease-in-out-sine),
-              opacity 0.65s var(--ease-in-out-smooth);
+  transition: opacity 0.65s var(--ease-in-out-smooth);
 }
 
 .hero-showcase:hover .hero-backdrop-img {
-  transform: scale(1.09);
+  transform: none !important;
 }
 
 .hero-gradient-overlay {
@@ -1347,7 +1346,7 @@ body::-webkit-scrollbar {
 }
 
 .movie-card:hover .movie-poster-wrap img {
-  transform: scale(1.035);
+  transform: none !important;
 }
 
 /* Top Ribbons & Badges on Poster (Apple Reality Badges) */
@@ -1774,7 +1773,7 @@ body.modal-open .ambient-canvas {
   align-items: flex-end;
   padding: 36px;
   background-size: cover;
-  background-position: center 25%;
+  background-position: center center;
   background-repeat: no-repeat;
   transition: opacity 0.4s var(--ease-in-out-smooth);
 }
@@ -2143,7 +2142,7 @@ body.modal-open .ambient-canvas {
 }
 
 .continue-shelf-card:hover .continue-shelf-thumb img {
-  transform: scale(1.05);
+  transform: none !important;
 }
 
 .continue-shelf-play {
@@ -2468,7 +2467,7 @@ body.modal-open .ambient-canvas {
 }
 
 .netflix-related-card:hover .netflix-related-thumb img {
-  transform: scale(1.07);
+  transform: none !important;
 }
 
 .netflix-related-duration {
@@ -4447,7 +4446,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center center !important;
   border-radius: 28px;
   -webkit-clip-path: inset(0 round 28px);
   clip-path: inset(0 round 28px);
@@ -4821,7 +4820,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center center !important;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
   transform: translateZ(0);
@@ -5168,7 +5167,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 25%;
+  object-position: center center !important;
   border-radius: inherit;
   transform: translateZ(0);
   z-index: 0;
@@ -8137,7 +8136,7 @@ html.dragging-glass .vision-left-dock {
 }
 
 .schedule-card-glass:hover .schedule-card-media img {
-  transform: scale(1.06);
+  transform: none !important;
 }
 
 .schedule-card-top-badges {
@@ -9680,7 +9679,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   .vision-feature-card:hover .vision-feature-img,
   .vision-feature-card.is-hero-previewing .vision-feature-img {
-    transform: scale(1.06) translateZ(0) !important;
+    transform: none !important;
   }
 
   .vision-feature-card:hover .vision-card-play-white {
@@ -9707,7 +9706,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .movie-card:hover .movie-poster-wrap img {
-    transform: scale(1.06) translateZ(0) !important;
+    transform: none !important;
   }
 
   .movie-card:hover .hover-play-center {
@@ -9730,7 +9729,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .continue-shelf-card:hover .continue-shelf-thumb img {
-    transform: scale(1.06) translateZ(0) !important;
+    transform: none !important;
   }
 
   .continue-shelf-card:hover .continue-shelf-play {
@@ -9755,7 +9754,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .vision-trailer-card:hover img {
-    transform: scale(1.06) translateZ(0) !important;
+    transform: none !important;
   }
 
   /* Chart Column Cards */
@@ -10103,7 +10102,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .schedule-card-glass:hover .schedule-card-media img {
-    transform: scale(1.06) translateZ(0) !important;
+    transform: none !important;
   }
 
   .schedule-card-glass:hover .sch-play-icon {
@@ -11373,7 +11372,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-radius: 20px !important;
     -webkit-clip-path: inset(0 round 20px) !important;
     clip-path: inset(0 round 20px) !important;
-    object-position: center 20% !important;
+    object-position: center center !important;
   }
 
   .cinema-showcase-hero .vision-hero-overlay {
