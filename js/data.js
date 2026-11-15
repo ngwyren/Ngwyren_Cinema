@@ -3183,6 +3183,24 @@ class PhimmoiService {
       if (cKey) this.canonicalKeyMap.set(cKey, m);
     });
 
+    // Đăng ký alias chuẩn cho các slug tương đương phổ biến (Godzilla, Ramayana, Lupin...)
+    const KNOWN_SLUG_ALIASES = {
+      "godzilla-tru-khong": "godzilla-tru-mot",
+      "godzilla-minus-zero": "godzilla-tru-mot",
+      "godzilla-minus-one": "godzilla-tru-mot",
+      "hope-vung-tu-dia": "vung-tu-dia",
+      "ke-tao-mua": "nguoi-tao-mua",
+      "love-class-phan-3": "lop-hoc-tinh-yeu-phan-3",
+      "sieu-trom-lupin-phan-4": "lupin-phan-4",
+      "tham-tu-lung-danh-conan-1-qua-bom-choc-troi": "tham-tu-lung-danh-conan-qua-bom-choc-troi"
+    };
+    Object.entries(KNOWN_SLUG_ALIASES).forEach(([alias, target]) => {
+      const targetMovie = this.slugMap.get(target);
+      if (targetMovie) {
+        this.slugMap.set(alias, targetMovie);
+      }
+    });
+
     // Tự động nạp toàn bộ kho phim đầy đủ từ js/movies-catalog.js nếu đã có sẵn
     if (Array.isArray(window.NGWYREN_FULL_CATALOG)) {
       this.loadFullCatalog(window.NGWYREN_FULL_CATALOG);
@@ -3306,6 +3324,24 @@ class PhimmoiService {
       m._titleLower = (m.title || "").toLowerCase();
       m._originLower = (m.originTitle || "").toLowerCase();
     }
+
+    // Đăng ký alias chuẩn cho các slug tương đương sau khi nạp toàn bộ catalog
+    const KNOWN_SLUG_ALIASES = {
+      "godzilla-tru-khong": "godzilla-tru-mot",
+      "godzilla-minus-zero": "godzilla-tru-mot",
+      "godzilla-minus-one": "godzilla-tru-mot",
+      "hope-vung-tu-dia": "vung-tu-dia",
+      "ke-tao-mua": "nguoi-tao-mua",
+      "love-class-phan-3": "lop-hoc-tinh-yeu-phan-3",
+      "sieu-trom-lupin-phan-4": "lupin-phan-4",
+      "tham-tu-lung-danh-conan-1-qua-bom-choc-troi": "tham-tu-lung-danh-conan-qua-bom-choc-troi"
+    };
+    Object.entries(KNOWN_SLUG_ALIASES).forEach(([alias, target]) => {
+      const targetMovie = this.slugMap.get(target);
+      if (targetMovie) {
+        this.slugMap.set(alias, targetMovie);
+      }
+    });
 
     this.lastSyncedCount = this.movies.length;
 

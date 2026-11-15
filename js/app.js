@@ -111,7 +111,7 @@ class AppleCinemaApp {
       window.NgwyrenSystem.dispatcher.scheduleIdle("periodicMaintenance", () => {
         this.startPeriodicMaintenanceScheduler();
       }, 600);
-      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.8" });
+      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.6.0" });
     } else {
       this.startPeriodicMaintenanceScheduler();
     }
