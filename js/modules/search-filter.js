@@ -592,6 +592,7 @@
     const nameEl = document.getElementById("reqMovieImageFileName");
     const previewWrap = document.getElementById("reqMovieImagePreviewWrap");
     const previewImg = document.getElementById("reqMovieImagePreview");
+    const imageBtn = document.getElementById("reqMovieImageBtn");
 
     if (nameEl) nameEl.textContent = file.name;
     const reader = new FileReader();
@@ -599,6 +600,7 @@
       this._tempReqImageBase64 = e.target.result;
       if (previewImg) previewImg.src = e.target.result;
       if (previewWrap) previewWrap.style.display = "block";
+      if (imageBtn) imageBtn.classList.add("has-image");
     };
     reader.readAsDataURL(file);
   },
@@ -631,20 +633,20 @@
     if (!movieTitle) {
       if (statusEl) {
         statusEl.style.display = "block";
-        statusEl.style.background = "rgba(255, 69, 58, 0.2)";
+        statusEl.style.background = "linear-gradient(135deg, rgba(255, 69, 58, 0.18), rgba(255, 59, 48, 0.1))";
         statusEl.style.border = "1px solid rgba(255, 69, 58, 0.4)";
         statusEl.style.color = "#ff453a";
-        statusEl.innerHTML = '<i class="fas fa-circle-exclamation"></i> Vui lòng nhập tên phim bạn muốn yêu cầu!';
+        statusEl.innerHTML = '<i class="fas fa-circle-exclamation" style="margin-right: 6px;"></i> Vui lòng nhập tên phim bạn muốn yêu cầu!';
       }
       return;
     }
 
     if (statusEl) {
       statusEl.style.display = "block";
-      statusEl.style.background = "rgba(10, 132, 255, 0.18)";
-      statusEl.style.border = "1px solid rgba(10, 132, 255, 0.4)";
+      statusEl.style.background = "linear-gradient(135deg, rgba(10, 132, 255, 0.18), rgba(0, 240, 255, 0.1))";
+      statusEl.style.border = "1px solid rgba(10, 132, 255, 0.35)";
       statusEl.style.color = "#5ac8fa";
-      statusEl.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Đang tự động quét PhimAPI, NguonC, Film4K và kho dữ liệu để nạp phim <b>"${movieTitle}"</b>...`;
+      statusEl.innerHTML = `<i class="fas fa-circle-notch fa-spin" style="margin-right: 6px;"></i> Đang tự động quét PhimAPI, NguonC, Film4K và kho dữ liệu để nạp phim <b>"${movieTitle}"</b>...`;
     }
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -678,10 +680,10 @@
         }
 
         if (statusEl) {
-          statusEl.style.background = "rgba(52, 199, 89, 0.2)";
+          statusEl.style.background = "linear-gradient(135deg, rgba(52, 199, 89, 0.2), rgba(48, 209, 88, 0.12))";
           statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
           statusEl.style.color = "#34c759";
-          statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Thành công!</b> Đã tìm thấy và tự động nạp phim <b>"${ingested.title}"</b>.${movieEmail ? `<br><span style="font-size: 0.78rem; color: #a1e3a1;"><i class="fas fa-envelope"></i> Đã gửi email thông báo tới <b>${movieEmail}</b></span>` : ""}<br>Đang mở phim để bạn thưởng thức ngay...`;
+          statusEl.innerHTML = `<div style="display: flex; gap: 8px; align-items: flex-start;"><i class="fas fa-circle-check" style="font-size: 1.1rem; color: #34c759; margin-top: 2px;"></i><div><b>Nạp phim thành công!</b> Đã tìm thấy và tích hợp phim <b>"${ingested.title}"</b> vào rạp.${movieEmail ? `<br><span style="font-size: 0.78rem; color: #a1e3a1;"><i class="fas fa-envelope"></i> Đã gửi email thông báo tới <b>${movieEmail}</b></span>` : ""}<br><span style="font-size: 0.78rem; color: rgba(255,255,255,0.7);">Đang mở phim để bạn thưởng thức ngay...</span></div></div>`;
         }
 
         setTimeout(() => {
@@ -704,18 +706,18 @@
       this._savePendingAutoIngest(pendingRecord);
 
       if (statusEl) {
-        statusEl.style.background = "rgba(52, 199, 89, 0.2)";
-        statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
-        statusEl.style.color = "#34c759";
-        statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Đã kích hoạt chế độ tự động nạp phim!</b><br>Hệ thống đã ghi nhận <b>"${movieTitle}"</b> và bắt đầu quét nền liên tục qua các máy chủ đối tác.<br>Ngay khi có luồng phát, phim sẽ được nạp tự động vào rạp và gửi thông báo ${movieEmail ? `tới email <b>${movieEmail}</b>` : "trên chuông thông báo"} cho bạn ngay.`;
+        statusEl.style.background = "linear-gradient(135deg, rgba(52, 199, 89, 0.16), rgba(10, 132, 255, 0.14))";
+        statusEl.style.border = "1px solid rgba(52, 199, 89, 0.35)";
+        statusEl.style.color = "#ffffff";
+        statusEl.innerHTML = `<div style="display: flex; gap: 8px; align-items: flex-start;"><i class="fas fa-circle-check" style="font-size: 1.1rem; color: #34c759; margin-top: 2px;"></i><div><b style="color: #34c759;">Đã kích hoạt chế độ tự động nạp phim!</b><br>Hệ thống đã ghi nhận <b>"${movieTitle}"</b> và bắt đầu quét nền liên tục qua các máy chủ đối tác.<br><span style="font-size: 0.78rem; color: rgba(255,255,255,0.75);">Ngay khi có luồng phát, phim sẽ được nạp tự động vào rạp và gửi thông báo ${movieEmail ? `tới email <b>${movieEmail}</b>` : "trên chuông thông báo"} cho bạn ngay.</span></div></div>`;
       }
     } catch (err) {
       console.error("[MovieRequest] Error:", err);
       if (statusEl) {
-        statusEl.style.background = "rgba(255, 69, 58, 0.2)";
+        statusEl.style.background = "linear-gradient(135deg, rgba(255, 69, 58, 0.18), rgba(255, 59, 48, 0.1))";
         statusEl.style.border = "1px solid rgba(255, 69, 58, 0.4)";
         statusEl.style.color = "#ff453a";
-        statusEl.innerHTML = `<i class="fas fa-circle-exclamation"></i> Có lỗi khi gửi yêu cầu. Vui lòng thử lại!`;
+        statusEl.innerHTML = `<i class="fas fa-circle-exclamation" style="margin-right: 6px;"></i> Có lỗi khi gửi yêu cầu. Vui lòng thử lại!`;
       }
     } finally {
       if (submitBtn) {

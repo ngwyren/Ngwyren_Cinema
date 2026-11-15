@@ -1058,16 +1058,16 @@
 
   renderMovieRequestCardHTML(query = "", hasResults = false) {
     const qStr = (query || "").trim();
-    const titleText = hasResults
-      ? `Chưa có phần phim "${qStr}" bạn tìm?`
-      : `Không tìm thấy "${qStr}"?`;
+    const titleHTML = hasResults
+      ? `Chưa có phần phim <span>"${qStr.replace(/"/g, "&quot;")}"</span> bạn tìm?`
+      : `Không tìm thấy <span>"${qStr.replace(/"/g, "&quot;")}"</span>?`;
     const subText = hasResults
-      ? `Nhập tên phần phim cụ thể để hệ thống tự động quét và nạp ngay.`
-      : `Hệ thống sẽ tự động quét đa nguồn, nạp phim và gửi email/thông báo cho bạn.`;
+      ? `Nhập tên phần phim hoặc bản phim cụ thể. Hệ thống sẽ tự động quét đa nguồn, nạp phim và gửi email/thông báo cho bạn ngay.`
+      : `Hệ thống AI sẽ tự động dò tìm nguồn phát chất lượng cao, nạp phim vào rạp và gửi email/thông báo cho bạn ngay.`;
 
     const savedEmail =
       this.userProfile?.email ||
-      (this.userProfile?.handle && this.userProfile.handle.includes("@") ? this.userProfile.handle : "") ||
+      (this.userProfile?.handle && this.userProfile.handle.includes("@") && !this.userProfile.handle.includes("guest") ? this.userProfile.handle : "") ||
       (() => {
         try {
           return localStorage.getItem("ngwyren_user_email") || "";
@@ -1077,43 +1077,91 @@
       })();
 
     return `
-      <div class="movie-request-box vision-request-panel" style="max-width: 580px; margin: 24px auto 36px; padding: 18px 20px; background: rgba(28, 30, 38, 0.78); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.45); text-align: center;">
-        <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin: 0 0 4px;">
-          ${titleText}
+      <div class="movie-request-box vision-request-panel">
+        <div class="req-panel-badge">
+          <i class="fas fa-wand-magic-sparkles"></i> AI Tự Động Nạp Phim
+        </div>
+
+        <h3 class="req-panel-title">
+          ${titleHTML}
         </h3>
-        <p style="font-size: 0.82rem; color: rgba(255, 255, 255, 0.65); margin: 0 0 12px;">
+        <p class="req-panel-subtitle">
           ${subText}
         </p>
 
-        <form id="movieRequestForm" onsubmit="event.preventDefault(); app.submitMovieRequest();" style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <input type="text" id="reqMovieTitleInput" class="vision-req-input" value="${qStr.replace(/"/g, '&quot;')}" placeholder="Tên phim hoặc phần phim cần nạp..." required
-                   style="flex: 1; min-width: 0; box-sizing: border-box; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.88rem; outline: none;" />
+        <form id="movieRequestForm" class="req-panel-form" onsubmit="event.preventDefault(); app.submitMovieRequest();">
+          <!-- Main Action Bar (Unified Capsule) -->
+          <div class="req-main-input-bar">
+            <i class="fas fa-film req-main-input-icon"></i>
+            <input type="text" id="reqMovieTitleInput" class="req-main-input" value="${qStr.replace(/"/g, '&quot;')}" placeholder="Tên phim hoặc phần cụ thể cần nạp..." required autocomplete="off" />
             <input type="file" id="reqMovieImageFileInput" accept="image/*" style="display: none;" onchange="app.handleMovieRequestImageSelect(this)" />
-            <button type="button" class="vision-btn-outline" onclick="document.getElementById('reqMovieImageFileInput').click()" title="Đính kèm ảnh/poster" style="padding: 9px 12px; font-size: 0.85rem; cursor: pointer; border-radius: 10px; flex-shrink: 0;">
-              <i class="fas fa-image"></i>
+            <button type="button" id="reqMovieImageBtn" class="req-action-icon-btn" onclick="document.getElementById('reqMovieImageFileInput').click()" title="Đính kèm ảnh poster hoặc screenshot">
+              <i class="fas fa-camera"></i>
             </button>
-            <button type="submit" id="reqMovieSubmitBtn" class="vision-btn-watch" style="padding: 9px 16px; font-size: 0.88rem; font-weight: 600; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, #0a84ff, #0056b3); cursor: pointer;">
-              <i class="fas fa-bolt" style="margin-right: 4px;"></i> Nạp Phim
+            <button type="submit" id="reqMovieSubmitBtn" class="req-submit-btn">
+              <i class="fas fa-bolt"></i> Nạp Phim
             </button>
           </div>
 
-          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-            <input type="email" id="reqMovieEmailInput" class="vision-req-input" value="${(savedEmail || "").replace(/"/g, '&quot;')}" placeholder="✉️ Email nhận thông báo khi có phim (tùy chọn)..."
-                   style="flex: 1.1; min-width: 190px; box-sizing: border-box; padding: 7px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.9); font-size: 0.8rem; outline: none;" />
-            <input type="text" id="reqMovieNoteInput" class="vision-req-input" placeholder="Ghi chú (bản đẹp, thuyết minh, tập...)"
-                   style="flex: 1; min-width: 150px; box-sizing: border-box; padding: 7px 11px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.25); color: rgba(255,255,255,0.85); font-size: 0.8rem; outline: none;" />
-            <span id="reqMovieImageFileName" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;"></span>
+          <!-- Secondary Grid: Email & Ghi Chú -->
+          <div class="req-secondary-grid">
+            <div class="req-input-pill">
+              <i class="far fa-envelope"></i>
+              <input type="email" id="reqMovieEmailInput" value="${(savedEmail || "").replace(/"/g, '&quot;')}" placeholder="Email nhận thông báo (tùy chọn)..." />
+            </div>
+            <div class="req-input-pill">
+              <i class="far fa-note-sticky"></i>
+              <input type="text" id="reqMovieNoteInput" placeholder="Ghi chú (bản đẹp, thuyết minh, tập...)" />
+            </div>
           </div>
 
-          <div id="reqMovieImagePreviewWrap" style="display: none; margin-top: 4px;">
-            <img id="reqMovieImagePreview" src="" alt="Ảnh phim yêu cầu" style="max-height: 70px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.4);" />
+          <!-- Quick Suggestion Chips -->
+          <div class="req-quick-chips">
+            <span class="req-chips-label"><i class="fas fa-tags" style="font-size: 0.68rem;"></i> Gợi ý:</span>
+            <button type="button" class="req-chip-btn" onclick="app.appendReqNote('Thuyết Minh')">+ Thuyết Minh</button>
+            <button type="button" class="req-chip-btn" onclick="app.appendReqNote('Vietsub Full HD')">+ Vietsub Full HD</button>
+            <button type="button" class="req-chip-btn" onclick="app.appendReqNote('Phần tiếp theo')">+ Phần tiếp theo</button>
+            <button type="button" class="req-chip-btn" onclick="app.appendReqNote('Trọn bộ')">+ Trọn bộ</button>
           </div>
 
-          <div id="reqMovieStatus" style="display: none; padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; line-height: 1.4; text-align: left;"></div>
+          <!-- Image Preview Pill -->
+          <div id="reqMovieImagePreviewWrap" class="req-image-preview-wrap">
+            <div class="req-image-attached-pill">
+              <img id="reqMovieImagePreview" src="" alt="Thumbnail" />
+              <span id="reqMovieImageFileName" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;"></span>
+              <button type="button" class="req-image-remove-btn" onclick="app.removeReqImage()" title="Gỡ ảnh">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Status Message Banner -->
+          <div id="reqMovieStatus" class="req-status-banner"></div>
         </form>
       </div>
     `;
+  },
+
+  appendReqNote(tag) {
+    const input = document.getElementById("reqMovieNoteInput");
+    if (!input) return;
+    const current = (input.value || "").trim();
+    if (!current) {
+      input.value = tag;
+    } else if (!current.includes(tag)) {
+      input.value = `${current}, ${tag}`;
+    }
+    input.focus();
+  },
+
+  removeReqImage() {
+    this._tempReqImageBase64 = null;
+    const fileInput = document.getElementById("reqMovieImageFileInput");
+    if (fileInput) fileInput.value = "";
+    const previewWrap = document.getElementById("reqMovieImagePreviewWrap");
+    if (previewWrap) previewWrap.style.display = "none";
+    const imageBtn = document.getElementById("reqMovieImageBtn");
+    if (imageBtn) imageBtn.classList.remove("has-image");
   },
 
   renderLoadMoreButtonsHTML(totalCount) {
