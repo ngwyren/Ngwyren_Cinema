@@ -124,12 +124,14 @@
               .join("") +
             `<button class="btn-sync-now" style="width: 100%; margin-top: 8px; padding: 9px;" onclick="app.showFullSearchResults('${query.replace(/'/g, "\\'")}')">
               Xem toàn bộ kết quả cho "${query}" (${(this.lastSearchResults || results).length} phim)
-            </button>`
-          : `<div style="padding: 18px 16px; text-align: center; color: var(--text-secondary); font-size: 0.88rem;">
-              <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">Không tìm thấy phim khớp với "${query}"</div>
-              <div style="font-size: 0.82rem; margin-bottom: 12px; color: rgba(255,255,255,0.65);">Bạn muốn xem phim này hoặc phần phim nào?</div>
-              <button class="btn-sync-now" style="width: 100%; padding: 10px; font-weight: 600;" onclick="app.showFullSearchResults('${query.replace(/'/g, "\\'")}')">
-                <i class="fas fa-wand-magic-sparkles"></i> Yêu Cầu Admin & Tự Động Nạp Phim Ngay
+            </button>
+            <div style="text-align: center; margin-top: 6px; font-size: 0.78rem; color: rgba(255,255,255,0.6); cursor: pointer;" onclick="app.showFullSearchResults('${query.replace(/'/g, "\\'")}')">
+              <i class="fas fa-wand-magic-sparkles" style="color: #34c759; margin-right: 4px;"></i> Chưa có phần phim bạn tìm? Bấm để nạp ngay
+            </div>`
+          : `<div style="padding: 14px 12px; text-align: center; color: var(--text-secondary); font-size: 0.85rem;">
+              <div style="font-weight: 600; color: #fff; margin-bottom: 8px;">Không tìm thấy "${query}"</div>
+              <button class="btn-sync-now" style="width: 100%; padding: 8px 12px; font-size: 0.82rem; font-weight: 600;" onclick="app.showFullSearchResults('${query.replace(/'/g, "\\'")}')">
+                <i class="fas fa-bolt" style="margin-right: 5px;"></i> Yêu Cầu & Nạp Phim
               </button>
             </div>`
       }

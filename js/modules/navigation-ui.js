@@ -1038,12 +1038,17 @@
               ? `<div class="vision-cards-grid-4">${visibleList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>
                    ${this.renderLoadMoreButtonsHTML(list.length)}`
               : this.currentNav === "search-results"
-              ? this.renderMovieRequestCardHTML(this.lastSearchQuery || "")
+              ? this.renderMovieRequestCardHTML(this.lastSearchQuery || "", false)
               : `<div style="padding: 60px 20px; text-align: center; background: rgba(255,255,255,0.04); border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);">
                   <i class="fas fa-film" style="font-size: 2.5rem; color: #ffffff; margin-bottom: 14px;"></i>
                   <h3 style="margin-bottom: 18px; font-weight: 600;">Chưa có phim trong mục này</h3>
                   <button class="vision-btn-watch" onclick="app.resetAllFilters()">Khám Phá Kho Phim</button>
                 </div>`
+          }
+          ${
+            this.currentNav === "search-results" && visibleList.length > 0
+              ? this.renderMovieRequestCardHTML(this.lastSearchQuery || "", true)
+              : ""
           }
         </section>
       </div>
@@ -1051,60 +1056,48 @@
     this.attachHeroSwipeHandlers();
   },
 
-  renderMovieRequestCardHTML(query = "") {
+  renderMovieRequestCardHTML(query = "", hasResults = false) {
     const qStr = (query || "").trim();
+    const titleText = hasResults
+      ? `Chưa có phần phim "${qStr}" bạn tìm?`
+      : `Không tìm thấy "${qStr}"?`;
+    const subText = hasResults
+      ? `Nhập tên phần phim cụ thể để Admin tự động tìm nạp ngay.`
+      : `Yêu cầu Admin & hệ thống sẽ tự động tìm nạp ngay.`;
+
     return `
-      <div class="movie-request-box vision-request-panel" style="max-width: 680px; margin: 16px auto 40px; padding: 32px 28px; background: rgba(30, 32, 40, 0.78); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
-        <div style="text-align: center; margin-bottom: 24px;">
-          <div style="width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 50%; background: linear-gradient(135deg, rgba(52, 199, 89, 0.25), rgba(0, 122, 255, 0.25)); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #34c759; border: 1px solid rgba(52, 199, 89, 0.4);">
-            <i class="fas fa-wand-magic-sparkles"></i>
-          </div>
-          <h3 style="font-size: 1.32rem; font-weight: 700; color: #ffffff; margin-bottom: 8px;">
-            Không tìm thấy phim "${qStr}" hoặc phần phim bạn cần?
-          </h3>
-          <p style="font-size: 0.92rem; color: rgba(255, 255, 255, 0.72); line-height: 1.5; margin: 0;">
-            Hãy gửi yêu cầu cho Admin ngay bên dưới! Hệ thống sẽ <b>tự động quét và nạp phim trực tuyến tức thì</b> để bạn xem ngay.
-          </p>
-        </div>
+      <div class="movie-request-box vision-request-panel" style="max-width: 580px; margin: 24px auto 36px; padding: 18px 20px; background: rgba(28, 30, 38, 0.78); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: 0 10px 28px rgba(0,0,0,0.45); text-align: center;">
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin: 0 0 4px;">
+          ${titleText}
+        </h3>
+        <p style="font-size: 0.82rem; color: rgba(255, 255, 255, 0.65); margin: 0 0 12px;">
+          ${subText}
+        </p>
 
-        <form id="movieRequestForm" onsubmit="event.preventDefault(); app.submitMovieRequest();" style="display: flex; flex-direction: column; gap: 16px;">
-          <div>
-            <label style="display: block; font-size: 0.88rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); margin-bottom: 6px;">
-              <i class="fas fa-film" style="margin-right: 6px; color: #0a84ff;"></i> Tên phim bạn muốn Admin thêm vào <span style="color: #ff453a;">*</span>
-            </label>
-            <input type="text" id="reqMovieTitleInput" class="vision-req-input" value="${qStr.replace(/"/g, '&quot;')}" placeholder="Ví dụ: Godzilla Minus One, Conan Movie 27, Lật Mặt 7..." required
-                   style="width: 100%; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.35); color: #fff; font-size: 0.95rem; outline: none;" />
-          </div>
-
-          <div>
-            <label style="display: block; font-size: 0.88rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); margin-bottom: 6px;">
-              <i class="fas fa-pen-to-square" style="margin-right: 6px; color: #ff9f0a;"></i> Ghi chú thêm (Phần nào, tập nào, bản Thuyết Minh hay Vietsub...)
-            </label>
-            <input type="text" id="reqMovieNoteInput" class="vision-req-input" placeholder="Ví dụ: Phần 2, Tập 10, Bản Thuyết Minh chiếu rạp..."
-                   style="width: 100%; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.35); color: #fff; font-size: 0.95rem; outline: none;" />
+        <form id="movieRequestForm" onsubmit="event.preventDefault(); app.submitMovieRequest();" style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" id="reqMovieTitleInput" class="vision-req-input" value="${qStr.replace(/"/g, '&quot;')}" placeholder="Tên phim hoặc phần phim cần nạp..." required
+                   style="flex: 1; min-width: 0; box-sizing: border-box; padding: 9px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.3); color: #fff; font-size: 0.88rem; outline: none;" />
+            <input type="file" id="reqMovieImageFileInput" accept="image/*" style="display: none;" onchange="app.handleMovieRequestImageSelect(this)" />
+            <button type="button" class="vision-btn-outline" onclick="document.getElementById('reqMovieImageFileInput').click()" title="Đính kèm ảnh/poster" style="padding: 9px 12px; font-size: 0.85rem; cursor: pointer; border-radius: 10px; flex-shrink: 0;">
+              <i class="fas fa-image"></i>
+            </button>
+            <button type="submit" id="reqMovieSubmitBtn" class="vision-btn-watch" style="padding: 9px 16px; font-size: 0.88rem; font-weight: 600; border-radius: 10px; flex-shrink: 0; background: linear-gradient(135deg, #0a84ff, #0056b3); cursor: pointer;">
+              <i class="fas fa-bolt" style="margin-right: 4px;"></i> Nạp Phim
+            </button>
           </div>
 
-          <div>
-            <label style="display: block; font-size: 0.88rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); margin-bottom: 6px;">
-              <i class="fas fa-image" style="margin-right: 6px; color: #30d158;"></i> Đính kèm hình ảnh phim hoặc poster (Nếu có)
-            </label>
-            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-              <input type="file" id="reqMovieImageFileInput" accept="image/*" style="display: none;" onchange="app.handleMovieRequestImageSelect(this)" />
-              <button type="button" class="vision-btn-outline" onclick="document.getElementById('reqMovieImageFileInput').click()" style="padding: 9px 16px; font-size: 0.88rem; cursor: pointer;">
-                <i class="fas fa-arrow-up-from-bracket"></i> Chọn ảnh phim
-              </button>
-              <span id="reqMovieImageFileName" style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Chưa chọn hình ảnh</span>
-            </div>
-            <div id="reqMovieImagePreviewWrap" style="display: none; margin-top: 10px;">
-              <img id="reqMovieImagePreview" src="" alt="Ảnh phim yêu cầu" style="max-height: 120px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.4);" />
-            </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+            <input type="text" id="reqMovieNoteInput" class="vision-req-input" placeholder="Ghi chú thêm (ví dụ: Phần 2, Tập 10, Thuyết Minh...)"
+                   style="flex: 1; box-sizing: border-box; padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.22); color: rgba(255,255,255,0.85); font-size: 0.8rem; outline: none;" />
+            <span id="reqMovieImageFileName" style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px;"></span>
           </div>
 
-          <div id="reqMovieStatus" style="display: none; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4;"></div>
+          <div id="reqMovieImagePreviewWrap" style="display: none; margin-top: 4px;">
+            <img id="reqMovieImagePreview" src="" alt="Ảnh phim yêu cầu" style="max-height: 70px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.4);" />
+          </div>
 
-          <button type="submit" id="reqMovieSubmitBtn" class="vision-btn-watch" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; font-weight: 600; border-radius: 14px; margin-top: 6px; background: linear-gradient(135deg, #0a84ff, #0056b3); cursor: pointer;">
-            <i class="fas fa-bolt" style="margin-right: 8px;"></i> Gửi Yêu Cầu & Tự Động Nạp Phim Ngay
-          </button>
+          <div id="reqMovieStatus" style="display: none; padding: 8px 12px; border-radius: 8px; font-size: 0.82rem; line-height: 1.4; text-align: left;"></div>
         </form>
       </div>
     `;
