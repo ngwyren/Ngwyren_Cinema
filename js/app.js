@@ -111,7 +111,7 @@ class AppleCinemaApp {
       window.NgwyrenSystem.dispatcher.scheduleIdle("periodicMaintenance", () => {
         this.startPeriodicMaintenanceScheduler();
       }, 600);
-      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.5" });
+      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.6" });
     } else {
       this.startPeriodicMaintenanceScheduler();
     }
@@ -352,6 +352,8 @@ class AppleCinemaApp {
   ensureFullCatalogLoaded() {
     if (this.service && !this.service._fullCatalogLoaded && typeof window !== "undefined" && Array.isArray(window.NGWYREN_FULL_CATALOG)) {
       this.service.loadFullCatalog(window.NGWYREN_FULL_CATALOG);
+      this.buildFastIndexes();
+      this.updateSidebarCounts();
     }
   }
 
@@ -410,6 +412,11 @@ class AppleCinemaApp {
   }
 
   bindGlobalEvents() {
+    // Tự động đồng bộ kho phim đầy đủ khi file catalog tải xong ngầm trong background
+    window.addEventListener("ngwyren:catalog-ready", () => {
+      this.ensureFullCatalogLoaded();
+    });
+
     // Apple Haptic Feedback on touch & click
     document.addEventListener(
       "pointerdown",

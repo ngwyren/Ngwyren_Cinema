@@ -555,6 +555,11 @@
                     </div>
                   </div>
 
+                  <!-- Khử Watermark Banner QC i999 -->
+                  <button type="button" class="apple-ctrl-btn active" id="appleShieldBtn" onclick="app.toggleWatermarkShield(event)" title="Khử Watermark & Banner Quảng Cáo (Phím W)">
+                    <i class="fas fa-shield-halved" id="appleShieldIcon"></i>
+                  </button>
+
                   <!-- Picture in Picture -->
                   <button class="apple-ctrl-btn" onclick="app.toggleVideoPip(event)" title="Hình trong hình (PiP)">
                     <i class="fas fa-clone"></i>

@@ -37,6 +37,14 @@ FORBIDDEN_STREAM_PATTERNS = [
 
 # Known stream repairs for classic movies where upstream had a mismatched stream
 STREAM_REPAIRS = {
+    "godzilla-tru-mot": {
+        "crawlSlug": "godzilla-tru-mot",
+        "source": "https://a.kvp726.com/20261113/yhhW9zyY/index.m3u8"
+    },
+    "godzilla-minus-one": {
+        "crawlSlug": "godzilla-tru-mot",
+        "source": "https://a.kvp726.com/20261113/yhhW9zyY/index.m3u8"
+    },
     "avengers-1-biet-doi-sieu-anh-hung": {
         "crawlSlug": "biet-doi-sieu-anh-hung",
         "source": "https://s6.kkphimplayer6.com/20250914/qJv6Vjrb/index.m3u8"

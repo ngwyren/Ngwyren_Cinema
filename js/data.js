@@ -3195,16 +3195,29 @@ class PhimmoiService {
       m._originLower = (m.originTitle || "").toLowerCase();
     }
     const warmSearchIndex = () => {
-      for (let i = 0; i < this.movies.length; i++) {
-        const m = this.movies[i];
-        if (!m._titleNorm) m._titleNorm = this.normalizeSearchText(m.title);
-        if (!m._originNorm) m._originNorm = this.normalizeSearchText(m.originTitle);
-      }
+      let idx = 0;
+      const total = this.movies.length;
+      const step = () => {
+        const limit = Math.min(idx + 600, total);
+        for (; idx < limit; idx++) {
+          const m = this.movies[idx];
+          if (!m._titleNorm) m._titleNorm = this.normalizeSearchText(m.title);
+          if (!m._originNorm) m._originNorm = this.normalizeSearchText(m.originTitle);
+        }
+        if (idx < total) {
+          if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+            window.requestIdleCallback(step, { timeout: 1000 });
+          } else {
+            setTimeout(step, 40);
+          }
+        }
+      };
+      step();
     };
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       window.requestIdleCallback(warmSearchIndex, { timeout: 1500 });
     } else {
-      setTimeout(warmSearchIndex, 400);
+      setTimeout(warmSearchIndex, 300);
     }
 
     this.isLiveConnected = true;
@@ -3227,68 +3240,63 @@ class PhimmoiService {
         rawQ.includes("2160") ||
         Number(item.maxHeight) >= 2160
       );
-      const baseTags = Array.isArray(item.sectionTags) ? [...item.sectionTags] : ["hot", "vietsub"];
+      const baseTags = Array.isArray(item.sectionTags) ? item.sectionTags : ["hot", "vietsub"];
       if (is4k && !baseTags.includes("4k")) baseTags.push("4k");
       const epsArr = Array.isArray(item.episodes) ? item.episodes : [];
       const isActualSingle = epsArr.length <= 1 && (!epsArr[0]?.name || /full|bản\s*full/i.test(epsArr[0].name) || Number(item.episodeTotal) <= 1);
       const computedType = isActualSingle ? "single" : (item.type || "single");
 
-      const normalizedItem = {
-        ...item,
-        type: computedType,
-        id: item.id || item.slug,
-        crawlSlug: item.crawlSlug || item.slug,
-        originTitle: item.originTitle || item.title,
-        backdrop: item.backdrop || item.poster,
-        quality: is4k ? "4K" : "1080",
-        hasReal4k: is4k,
-        has4k: is4k,
-        language: item.language || "Vietsub",
-        director: item.director || "Đang cập nhật",
-        matchScore: item.matchScore || 96,
-        ambientColors: item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"],
-        genres: Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"],
-        cast: Array.isArray(item.cast) ? item.cast : [item.cast || "Dàn diễn viên chính"],
-        sectionTags: baseTags,
-        episodes: Array.isArray(item.episodes)
-          ? item.episodes
-          : [item.episodes || { name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", needsEnrich: true }]
-      };
+      item.type = computedType;
+      item.id = item.id || item.slug;
+      item.crawlSlug = item.crawlSlug || item.slug;
+      item.originTitle = item.originTitle || item.title;
+      item.backdrop = item.backdrop || item.poster;
+      item.quality = is4k ? "4K" : "1080";
+      item.hasReal4k = is4k;
+      item.has4k = is4k;
+      item.language = item.language || "Vietsub";
+      item.director = item.director || "Đang cập nhật";
+      item.matchScore = item.matchScore || 96;
+      item.ambientColors = item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"];
+      item.genres = Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"];
+      item.cast = Array.isArray(item.cast) ? item.cast : [item.cast || "Dàn diễn viên chính"];
+      item.sectionTags = baseTags;
+      if (!Array.isArray(item.episodes) || item.episodes.length === 0) {
+        item.episodes = [{ name: "Tập 1 (Vietsub)", slug: "tap-1", source: "", needsEnrich: true }];
+      }
 
-      if (Array.isArray(normalizedItem.episodes)) {
-        for (let ei = 0; ei < normalizedItem.episodes.length; ei++) {
-          const ep = normalizedItem.episodes[ei];
-          if (!ep.slug) ep.slug = `tap-${ei + 1}`;
-          if ((!ep.source && !ep.embed) || (ep.source && (ep.source.includes("opstream") || ep.source.includes("vip.opstream")))) {
-            ep.needsEnrich = true;
-          }
+      for (let ei = 0; ei < item.episodes.length; ei++) {
+        const ep = item.episodes[ei];
+        if (!ep.slug) ep.slug = `tap-${ei + 1}`;
+        if ((!ep.source && !ep.embed) || (ep.source && (ep.source.includes("opstream") || ep.source.includes("vip.opstream")))) {
+          ep.needsEnrich = true;
         }
       }
 
       const existingBySlug =
-        this.slugMap.get(normalizedItem.slug) ||
-        (normalizedItem.crawlSlug && this.slugMap.get(normalizedItem.crawlSlug));
+        this.slugMap.get(item.slug) ||
+        (item.crawlSlug && this.slugMap.get(item.crawlSlug));
       let existing = existingBySlug;
       let cKey = "";
       if (!existing && seedKeyCount > 0) {
-        cKey = this.getCanonicalMovieKey(normalizedItem);
+        cKey = this.getCanonicalMovieKey(item);
         existing = cKey && this.canonicalKeyMap.get(cKey);
       }
 
       if (existing) {
-        this.mergeBestQualityMovie(existing, normalizedItem);
-        this.slugMap.set(normalizedItem.slug, existing);
-        if (normalizedItem.crawlSlug) this.slugMap.set(normalizedItem.crawlSlug, existing);
-        if (Array.isArray(normalizedItem.aliasSlugs)) {
-          normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
+        this.mergeBestQualityMovie(existing, item);
+        this.slugMap.set(item.slug, existing);
+        if (item.crawlSlug) this.slugMap.set(item.crawlSlug, existing);
+        if (Array.isArray(item.aliasSlugs)) {
+          item.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
         }
         if (cKey) this.canonicalKeyMap.set(cKey, existing);
       } else {
-        this.movies.push(normalizedItem);
-        this.slugMap.set(normalizedItem.slug, normalizedItem);
-        if (normalizedItem.crawlSlug) this.slugMap.set(normalizedItem.crawlSlug, normalizedItem);
-        if (Array.isArray(normalizedItem.aliasSlugs)) {
-          normalizedItem.aliasSlugs.forEach((a) => this.slugMap.set(a, normalizedItem));
+        this.movies.push(item);
+        this.slugMap.set(item.slug, item);
+        if (item.crawlSlug) this.slugMap.set(item.crawlSlug, item);
+        if (Array.isArray(item.aliasSlugs)) {
+          item.aliasSlugs.forEach((a) => this.slugMap.set(a, item));
         }
       }
     }
@@ -3302,16 +3310,29 @@ class PhimmoiService {
     this.lastSyncedCount = this.movies.length;
 
     const warmSearchIndex = () => {
-      for (let i = 0; i < this.movies.length; i++) {
-        const m = this.movies[i];
-        if (!m._titleNorm) m._titleNorm = this.normalizeSearchText(m.title);
-        if (!m._originNorm) m._originNorm = this.normalizeSearchText(m.originTitle);
-      }
+      let idx = 0;
+      const total = this.movies.length;
+      const step = () => {
+        const limit = Math.min(idx + 600, total);
+        for (; idx < limit; idx++) {
+          const m = this.movies[idx];
+          if (!m._titleNorm) m._titleNorm = this.normalizeSearchText(m.title);
+          if (!m._originNorm) m._originNorm = this.normalizeSearchText(m.originTitle);
+        }
+        if (idx < total) {
+          if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+            window.requestIdleCallback(step, { timeout: 1000 });
+          } else {
+            setTimeout(step, 40);
+          }
+        }
+      };
+      step();
     };
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       window.requestIdleCallback(warmSearchIndex, { timeout: 1500 });
     } else {
-      setTimeout(warmSearchIndex, 400);
+      setTimeout(warmSearchIndex, 300);
     }
 
     if (typeof window !== "undefined" && window.app) {
