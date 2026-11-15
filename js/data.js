@@ -3506,11 +3506,13 @@ class PhimmoiService {
   cleanAdText(text) {
     if (!text) return "";
     return text
-      .replace(/bộ\s+phim\s+này\s+do[^\n.]*/gi, "")
-      .replace(/sản\s+phẩm:\s*(nổ\s*hũ|bắn\s*cá|sòng\s*bài|thể\s*thao|tài\s*xỉu)[^\n.]*/gi, "")
-      .replace(/rút\s+tiền\s+24\/7[^\n.]*/gi, "")
-      .replace(/nhận\s+tiền\s+trong\s+tích\s+tắc[^\n.]*/gi, "")
-      .replace(/tài\s+trợ\s+và\s+công\s+bố[^\n.]*/gi, "")
+      .replace(/bộ\s+phim\s+này\s+do\s*:?\s*i999(?:\.ai)?[^\n]*/gi, "")
+      .replace(/i999(?:\.ai)?[^\n]*/gi, "")
+      .replace(/bộ\s+phim\s+này\s+do[^\n]*/gi, "")
+      .replace(/sản\s+phẩm\s*:\s*(?:nổ\s*hũ|game\s*bài|bắn\s*cá|sòng\s*bài|thể\s*thao|tài\s*xỉu)[^\n]*/gi, "")
+      .replace(/rút\s+tiền\s+24\/7[^\n]*/gi, "")
+      .replace(/nhận\s+tiền\s+trong\s+tích\s+tắc[^\n]*/gi, "")
+      .replace(/tài\s+trợ\s+và\s+công\s+bố[^\n]*/gi, "")
       .replace(/cùng\s+(phimmoi|phimmoiz|nguonc|ophim|kkphim)[^.]*\./gi, "")
       .replace(/xem\s+phim\s+tại\s+[^\s,.]+/gi, "")
       .replace(/chúc\s+bạn\s+xem\s+phim\s+vui\s+vẻ[^.]*\./gi, "")

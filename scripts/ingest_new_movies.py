@@ -30,11 +30,13 @@ def is_ad(title, slug):
 def clean_ad_text(text):
     if not text:
         return ""
-    text = re.sub(r"bộ\s+phim\s+này\s+do[^\n.]*", "", text, flags=re.I)
-    text = re.sub(r"sản\s+phẩm:\s*(nổ\s*hũ|bắn\s*cá|sòng\s*bài|thể\s*thao)[^\n.]*", "", text, flags=re.I)
-    text = re.sub(r"rút\s+tiền\s+24\/7[^\n.]*", "", text, flags=re.I)
-    text = re.sub(r"nhận\s+tiền\s+trong\s+tích\s+tắc[^\n.]*", "", text, flags=re.I)
-    text = re.sub(r"tài\s+trợ\s+và\s+công\s+bố[^\n.]*", "", text, flags=re.I)
+    text = re.sub(r"bộ\s+phim\s+này\s+do\s*:?\s*i999(?:\.ai)?[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"i999(?:\.ai)?[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"bộ\s+phim\s+này\s+do[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"sản\s+phẩm\s*:\s*(?:nổ\s*hũ|game\s*bài|bắn\s*cá|sòng\s*bài|thể\s*thao|tài\s*xỉu)[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"rút\s+tiền\s+24\/7[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"nhận\s+tiền\s+trong\s+tích\s+tắc[^\n]*", "", text, flags=re.I)
+    text = re.sub(r"tài\s+trợ\s+và\s+công\s+bố[^\n]*", "", text, flags=re.I)
     text = re.sub(r"cùng\s+(phimmoi|phimmoiz|nguonc|ophim|kkphim)[^.]*\.", "", text, flags=re.I)
     text = re.sub(r"xem\s+phim\s+tại\s+[^\s,.]+", "", text, flags=re.I)
     text = re.sub(r"chúc\s+bạn\s+xem\s+phim\s+vui\s+vẻ[^.]*\.", "", text, flags=re.I)

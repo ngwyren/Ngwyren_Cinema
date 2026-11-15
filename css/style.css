@@ -8936,14 +8936,27 @@ body.video-cursor-hidden *,
 }
 
 /* ==========================================================================
-   APPLE CINEMA ANTI-WATERMARK / LOGO SHIELD
-   Đảm bảo toàn bộ khung hình trong suốt, nét tuyệt đối 100%, không bị vệt đen hay ám mờ
+   APPLE CINEMA ANTI-WATERMARK / BANNER SHIELD
    ========================================================================== */
 .apple-watermark-shield {
-  display: none !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  pointer-events: none;
+  z-index: 2;
+  display: none;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(8, 9, 13, 0.98) 0%, rgba(8, 9, 13, 0.82) 65%, transparent 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: opacity 0.3s ease;
+}
+
+.apple-watermark-shield.active {
+  display: block !important;
+  opacity: 1 !important;
 }
 
 /* ==========================================================================

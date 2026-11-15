@@ -96,7 +96,8 @@
       // TUYỆT ĐỐI KHÔNG chạm vào các phân đoạn phim gốc dạng convertv7/[8-ky-tu].ts hoặc convertv8/[8-ky-tu].ts
       if (/\/(?:v\d+|convertv\d*)\/[a-f0-9]{16,64}\/segment_\d+\.ts/i.test(u)) return true;
       if (/https?:\/\/[^\/]+\/(?:v\d+|convertv\d*)\/[a-f0-9]{16,64}\/segment_\d+\.ts/i.test(u)) return true;
-      if (/(?:9922|i999|cwin|nohu|casinopromo|shbet|789bet|jun88|hi88|okvip|f8bet|new88)\.com/i.test(u)) return true;
+      if (/(?:9922|i999|cwin|nohu|casinopromo|shbet|789bet|jun88|hi88|okvip|f8bet|new88)(?:\.ai|\.com|\.net|\.vip|\.cc|\.top|\.bet|\.xyz)/i.test(u)) return true;
+      if (/i999/i.test(u)) return true;
       return false;
     };
 
@@ -1161,6 +1162,9 @@
       // Hiển thị hoặc ẩn nút Bỏ qua Intro theo khung thời gian mở đầu phim
       this.updateSkipIntroButtonState(videoEl, movie, epIndex);
 
+      // Quét sạch bất kỳ cue quảng cáo nào mới phát sinh trong textTracks
+      this._sanitizeAllTracks?.();
+
       // Đồng bộ lớp phủ Phụ đề Song Ngữ (Việt - Anh / Việt - Trung) theo thời gian thực
       if (this.bilingualSubMode && this.bilingualSubMode !== "off") {
         this.updateBilingualSubtitleOverlay(cur, dur);
@@ -1632,7 +1636,8 @@
       const cleanCues = () => {
         if (!track.cues) return;
         const badKeywords = [
-          "i999", "cwin", "nohu", "nổ hũ", "bắn cá", "sòng bài", "rút tiền",
+          "i999", "i999.ai", "bộ phim này do", "tài trợ và công bố", "nhận tiền trong tích tắc", "rút tiền 24/7",
+          "cwin", "nohu", "nổ hũ", "bắn cá", "sòng bài", "rút tiền",
           "tài trợ", "nhà cái", "kubet", "thabet", "cá cược", "đặt cược",
           "shbet", "789bet", "jun88", "hi88", "f8bet", "new88", "okvip", "123b", "mb66",
           "tài xỉu", "game bài", "hoàn trả"
@@ -1651,6 +1656,13 @@
         track.addEventListener("cuechange", cleanCues);
         cleanCues();
       } catch (_) {}
+    };
+
+    this._sanitizeAllTracks = () => {
+      if (!videoEl || !videoEl.textTracks) return;
+      for (let i = 0; i < videoEl.textTracks.length; i++) {
+        sanitizeTrackCues(videoEl.textTracks[i]);
+      }
     };
 
     if (videoEl.textTracks) {
@@ -2657,7 +2669,17 @@
           i++;
         }
         const fullText = textLines.join(" ").trim();
-        if (fullText && end > start) {
+        const isAdCue = (txt) => {
+          if (!txt) return false;
+          const lower = txt.toLowerCase();
+          return [
+            "i999", "i999.ai", "bộ phim này do", "tài trợ và công bố", "tài trợ",
+            "nổ hũ", "game bài", "bắn cá", "sòng bài", "rút tiền 24/7", "nhận tiền trong tích tắc",
+            "nhà cái", "cwin", "nohu", "kubet", "thabet", "cá cược", "đặt cược",
+            "shbet", "789bet", "jun88", "hi88", "f8bet", "new88", "okvip", "123b", "mb66"
+          ].some((kw) => lower.includes(kw));
+        };
+        if (fullText && end > start && !isAdCue(fullText)) {
           cues.push({ start, end, text: fullText });
         }
       } else {
