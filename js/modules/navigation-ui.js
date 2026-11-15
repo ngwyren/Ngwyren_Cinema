@@ -1107,11 +1107,11 @@
           <div class="req-secondary-grid">
             <div class="req-input-pill">
               <i class="far fa-envelope"></i>
-              <input type="email" id="reqMovieEmailInput" value="${(savedEmail || "").replace(/"/g, '&quot;')}" placeholder="Email nhận thông báo (tùy chọn)..." />
+              <input type="email" id="reqMovieEmailInput" value="${(savedEmail || "").replace(/"/g, '&quot;')}" placeholder="Email nhận thông báo..." />
             </div>
             <div class="req-input-pill">
               <i class="far fa-note-sticky"></i>
-              <input type="text" id="reqMovieNoteInput" placeholder="Ghi chú (bản đẹp, thuyết minh, tập...)" />
+              <input type="text" id="reqMovieNoteInput" placeholder="Ghi chú thêm (bản đẹp, tập...)" />
             </div>
           </div>
 
