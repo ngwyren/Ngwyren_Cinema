@@ -1066,7 +1066,7 @@ body::-webkit-scrollbar {
   aspect-ratio: 2 / 3;
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75);
+  box-shadow: none !important;
   border: 1px solid rgba(255, 255, 255, 0.22);
   transform: rotate(2deg);
   transition: transform 0.5s var(--ease-spring);
@@ -1308,13 +1308,13 @@ body::-webkit-scrollbar {
   overflow: hidden;
   background: var(--bg-elevated);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-  transition: border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: none !important;
+  transition: border-color 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .movie-card:hover .movie-poster-wrap {
-  border-color: rgba(255, 255, 255, 0.48);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: none !important;
 }
 
 .movie-poster-wrap img {
@@ -2072,10 +2072,10 @@ body.modal-open .ambient-canvas {
 
 .continue-shelf-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.035);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  box-shadow: none !important;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
@@ -2085,8 +2085,8 @@ body.modal-open .ambient-canvas {
 
 .continue-shelf-card:hover {
   transform: translateY(-4px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  box-shadow: none !important;
 }
 
 .continue-shelf-thumb {
@@ -2094,7 +2094,7 @@ body.modal-open .ambient-canvas {
   aspect-ratio: 16 / 9;
   width: 100%;
   overflow: hidden;
-  background: #111;
+  background: transparent !important;
 }
 
 .continue-shelf-thumb img {
@@ -2161,12 +2161,13 @@ body.modal-open .ambient-canvas {
 
 .continue-shelf-fill {
   height: 100%;
-  background: #38ef7d;
-  box-shadow: 0 0 8px rgba(56, 239, 125, 0.7);
+  background: #34c759;
+  box-shadow: none !important;
 }
 
 .continue-shelf-info {
-  padding: 10px 12px;
+  padding: 10px 12px 12px;
+  background: transparent !important;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -2786,12 +2787,17 @@ html {
 }
 
 .detail-modal-sheet,
-.chart-column-card,
 .search-dropdown {
   background: rgba(16, 16, 20, 0.96) !important;
   box-shadow:
     inset 0 1px 0.5px rgba(255, 255, 255, 0.28),
     0 20px 50px rgba(0, 0, 0, 0.8) !important;
+}
+
+.chart-column-card {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: none !important;
 }
 
 /* Clean Specular Rim on Buttons & Chips (No heavy blur or hover lag) */
@@ -8031,13 +8037,13 @@ html.dragging-glass .vision-left-dock {
   position: relative;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  box-shadow: none !important;
   contain: layout style paint;
   content-visibility: auto;
   contain-intrinsic-size: 0 320px;
@@ -8045,9 +8051,9 @@ html.dragging-glass .vision-left-dock {
 
 .schedule-card-glass:hover {
   transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.45);
-  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: none !important;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .schedule-card-media {
@@ -9592,7 +9598,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   will-change: transform;
 }
 
-/* 2. Hiệu ứng Nâng 3D Lơ Lửng & Viền Phát Sáng PS5 Gaming Khi Rê Chuột / Focus */
+/* 2. Hiệu ứng Nâng 3D Lơ Lửng & Viền Phát Sáng Minimal Khi Rê Chuột / Focus */
 @media (hover: hover) {
   /* Feature Cards (Khám Phá, Phim Lẻ, Phim Bộ, Anime, Netflix, Đã Lưu, Lịch Sử) */
   .vision-feature-card:hover,
@@ -9600,10 +9606,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card.is-hero-previewing {
     transform: translate3d(0, -6px, 0) !important;
     border-color: rgba(255, 255, 255, 0.9) !important;
-    box-shadow:
-      inset 0 0 0 1.5px rgba(255, 255, 255, 0.75),
-      inset 0 1px 1.5px rgba(255, 255, 255, 0.5),
-      0 18px 40px rgba(0, 0, 0, 0.65) !important;
+    box-shadow: none !important;
     z-index: 10 !important;
   }
 
@@ -9611,7 +9614,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:focus-visible::after,
   .vision-feature-card.is-hero-previewing::after {
     border-color: #ffffff !important;
-    box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.75) !important;
+    box-shadow: none !important;
   }
 
   .vision-feature-card:hover .vision-feature-img,
@@ -9623,7 +9626,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: scale(1.12) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
@@ -9635,9 +9638,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   .movie-card:hover .movie-poster-wrap {
     border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow:
-      inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 18px 40px rgba(0, 0, 0, 0.65) !important;
+    box-shadow: none !important;
   }
 
   .movie-card:hover .movie-poster-wrap img {
@@ -9646,7 +9647,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   .movie-card:hover .hover-play-center {
     transform: scale(1.12) !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 
   /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
@@ -9654,9 +9655,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .continue-shelf-card:focus-visible {
     transform: translate3d(0, -6px, 0) scale(1.025) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow:
-      inset 0 1px 1px rgba(255, 255, 255, 0.45),
-      0 18px 38px rgba(0, 0, 0, 0.62) !important;
+    box-shadow: none !important;
     z-index: 5 !important;
   }
 
@@ -9668,7 +9667,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: translate(-50%, -50%) scale(1.12) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 
   /* Side Trailer Cards */
@@ -9676,10 +9675,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-trailer-card.is-hero-previewing {
     transform: translate3d(0, -5px, 0) scale(1.02) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow:
-      inset 0 1px 1px rgba(255, 255, 255, 0.4),
-      0 16px 34px rgba(0, 0, 0, 0.55),
-      0 0 18px rgba(255, 255, 255, 0.14) !important;
+    box-shadow: none !important;
     z-index: 5 !important;
   }
 
@@ -9690,7 +9686,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Chart Column Cards */
   .chart-column-card:hover {
     border-color: rgba(255, 255, 255, 0.35) !important;
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: none !important;
   }
 }
 
@@ -10027,9 +10023,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .schedule-card-glass:focus-visible {
     transform: translate3d(0, -6px, 0) scale(1.025) !important;
     border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow:
-      inset 0 1px 1.5px rgba(255, 255, 255, 0.48),
-      0 18px 40px rgba(0, 0, 0, 0.65) !important;
+    box-shadow: none !important;
     z-index: 5 !important;
   }
 

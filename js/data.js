@@ -4448,7 +4448,13 @@ class PhimmoiService {
     const SLUG_ALIASES = {
       "godzilla-minus-one": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
       "godzilla-tru-mot": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
+      "godzilla-tru-khong": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
       "godzilla-minus-zero": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
+      "hope-vung-tu-dia": { phimApi: "vung-tu-dia", nguonc: "vung-tu-dia", film4k: "hope" },
+      "ke-tao-mua": { phimApi: "nguoi-tao-mua", nguonc: "nguoi-tao-mua", film4k: "the-rainmaker" },
+      "love-class-phan-3": { phimApi: "lop-hoc-tinh-yeu-phan-3", nguonc: "lop-hoc-tinh-yeu-phan-3", film4k: "love-class-s3" },
+      "sieu-trom-lupin-phan-4": { phimApi: "lupin-phan-4", nguonc: "lupin-phan-4", film4k: "lupin-s4" },
+      "tham-tu-lung-danh-conan-1-qua-bom-choc-troi": { phimApi: "tham-tu-lung-danh-conan-qua-bom-choc-troi", nguonc: "tham-tu-lung-danh-conan-qua-bom-choc-troi", film4k: "detective-conan-the-time-bombed-skyscraper" },
       "ramayana": { phimApi: "ramayana", nguonc: "ramayana-rise-of-a-legend", film4k: "ramayana-rise-of-a-legend" },
       "ramayana-rise-of-a-legend": { phimApi: "ramayana", nguonc: "ramayana-rise-of-a-legend", film4k: "ramayana-rise-of-a-legend" },
       "ramayana-khoi-nguon-mot-huyen-thoai": { phimApi: "ramayana", nguonc: "ramayana-rise-of-a-legend", film4k: "ramayana-rise-of-a-legend" }

@@ -111,7 +111,7 @@ class AppleCinemaApp {
       window.NgwyrenSystem.dispatcher.scheduleIdle("periodicMaintenance", () => {
         this.startPeriodicMaintenanceScheduler();
       }, 600);
-      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.7" });
+      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.5.8" });
     } else {
       this.startPeriodicMaintenanceScheduler();
     }
@@ -264,16 +264,11 @@ class AppleCinemaApp {
   }
 
   cleanPersonalListsOnBoot() {
-    const prevHistLen = Array.isArray(this.watchHistory) ? this.watchHistory.length : 0;
-    const prevListLen = Array.isArray(this.myList) ? this.myList.length : 0;
     this.watchHistory = this.sanitizeAndDedupeHistory(this.watchHistory);
     this.myList = this.sanitizeAndDedupeMyList(this.myList);
-    if (this.watchHistory.length !== prevHistLen) {
-      this.saveStorage("apple_cinema_history", this.watchHistory);
-    }
-    if (this.myList.length !== prevListLen) {
-      this.saveStorage("apple_cinema_mylist", this.myList);
-    }
+    this.saveStorage("apple_cinema_history", this.watchHistory);
+    this.saveStorage("ngwyren_cinema_history_v1", this.watchHistory);
+    this.saveStorage("apple_cinema_mylist", this.myList);
   }
 
   loadStorage(key, fallback) {
@@ -368,8 +363,14 @@ class AppleCinemaApp {
     );
     if (!found) {
       const ALIASES = {
+        "godzilla-tru-khong": "godzilla-tru-mot",
         "godzilla-minus-one": "godzilla-tru-mot",
         "godzilla-minus-zero": "godzilla-tru-mot",
+        "hope-vung-tu-dia": "vung-tu-dia",
+        "ke-tao-mua": "nguoi-tao-mua",
+        "love-class-phan-3": "lop-hoc-tinh-yeu-phan-3",
+        "sieu-trom-lupin-phan-4": "lupin-phan-4",
+        "tham-tu-lung-danh-conan-1-qua-bom-choc-troi": "tham-tu-lung-danh-conan-qua-bom-choc-troi",
         "ramayana": "ramayana-rise-of-a-legend",
         "ramayana-khoi-nguon-mot-huyen-thoai": "ramayana-rise-of-a-legend"
       };

@@ -838,6 +838,12 @@
       }
     }
 
+    if (!streamUrl) {
+      if (videoContainer) videoContainer.classList.remove("video-is-waiting");
+      this.showToast(`⚠️ Phim "${movie.title}" đang cập nhật bản đẹp. Vui lòng chọn phim khác!`, "warning");
+      return;
+    }
+
     // Chế độ phát HLS (.m3u8) trực tiếp của đúng bộ phim đang chọn (Tuyệt đối không dùng stream của phim khác)
     if (iframeEl) {
       iframeEl.src = "";
