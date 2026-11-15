@@ -2090,55 +2090,56 @@ body.modal-open .ambient-canvas {
 
 .continue-shelf-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.02) !important;
-  border: none !important;
-  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 20px;
+  padding: 8px;
   box-shadow: none !important;
   overflow: hidden;
   isolation: isolate;
   cursor: pointer;
-  transition: all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+  box-sizing: border-box;
+  transition:
+    transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1),
+    border-color 0.26s ease,
+    background-color 0.26s ease;
   display: flex;
   flex-direction: column;
 }
 
-/* Lớp viền bảo vệ 4 cạnh sắc nét 100% chống khuyết viền (Top, Right, Bottom, Left) */
+/* Ẩn hoàn toàn pseudo-element để tránh subpixel lệch trục */
 .continue-shelf-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
-  box-shadow: none !important;
-  pointer-events: none;
-  z-index: 10;
-  box-sizing: border-box;
-  transition: border-color 0.26s ease;
+  display: none !important;
 }
 
 .continue-shelf-card:hover {
   transform: translateY(-4px) scale(1.02);
-  border: none !important;
+  border-color: rgba(255, 255, 255, 0.85) !important;
+  background: rgba(255, 255, 255, 0.065) !important;
   box-shadow: none !important;
 }
 
 .continue-shelf-card:hover::after {
-  border-color: rgba(255, 255, 255, 0.85) !important;
+  display: none !important;
 }
 
 .continue-shelf-thumb {
   position: relative;
   aspect-ratio: 16 / 9;
   width: 100%;
+  border-radius: 13px;
   overflow: hidden;
-  background: transparent !important;
+  background: #000000 !important;
+  box-sizing: border-box;
 }
 
 .continue-shelf-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center !important;
   transition: transform 0.35s ease;
+  transform: none !important;
 }
 
 .continue-shelf-card:hover .continue-shelf-thumb img {
@@ -2203,7 +2204,7 @@ body.modal-open .ambient-canvas {
 }
 
 .continue-shelf-info {
-  padding: 10px 12px 12px;
+  padding: 10px 6px 4px 6px;
   background: transparent !important;
   display: flex;
   flex-direction: column;
@@ -9718,14 +9719,15 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .continue-shelf-card:hover,
   .continue-shelf-card:focus-visible {
     transform: translate3d(0, -6px, 0) scale(1.025) !important;
-    border: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.85) !important;
+    background: rgba(255, 255, 255, 0.065) !important;
     box-shadow: none !important;
     z-index: 5 !important;
   }
 
   .continue-shelf-card:hover::after,
   .continue-shelf-card:focus-visible::after {
-    border-color: rgba(255, 255, 255, 0.85) !important;
+    display: none !important;
   }
 
   .continue-shelf-card:hover .continue-shelf-thumb img {
@@ -11535,10 +11537,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .continue-shelf-card {
-    flex: 0 0 212px !important;
-    width: 212px !important;
-    min-width: 212px !important;
+    flex: 0 0 216px !important;
+    width: 216px !important;
+    min-width: 216px !important;
+    border-radius: 16px !important;
+    padding: 6px !important;
     scroll-snap-align: start;
+  }
+
+  .continue-shelf-card .continue-shelf-thumb {
+    border-radius: 11px !important;
   }
 
   .cinema-home-layout .vision-cards-grid-4 > .vision-feature-card {
