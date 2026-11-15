@@ -279,8 +279,26 @@
     `;
   },
 
+  getCanonicalMovieKey(movie) {
+    if (!movie) return "";
+    if (this.service?.getCanonicalMovieKey) return this.service.getCanonicalMovieKey(movie);
+    let t = (movie.title || movie.originTitle || movie.slug || "")
+      .toLowerCase()
+      .replace(/đ/g, "d")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+    if (t.includes("godzilla tru mot") || t.includes("godzilla tru khong") || t.includes("godzilla minus one")) {
+      return "godzilla minus one";
+    }
+    if (t.includes("ramayana")) {
+      return "ramayana rise of a legend";
+    }
+    return t;
+  },
+
   renderContinueWatchingShelfHTML() {
-    const seenContinueSlugs = new Set();
+    const seenCanonicalKeys = new Set();
     const continueItems = [];
     for (const h of (this.watchHistory || [])) {
       if (!h || !h.slug) continue;
@@ -295,11 +313,15 @@
         title: h.title || h.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
         poster: h.poster || fallbackImg,
         backdrop: h.backdrop || h.poster || fallbackImg,
-        type: "series"
+        type: "single"
       };
+
+      const cKey = this.getCanonicalMovieKey(movie);
+      if (seenCanonicalKeys.has(cKey)) continue;
+
       const progress = Number(h.progress) || 15;
-      if (progress > 0 && progress < 95 && !seenContinueSlugs.has(movie.slug)) {
-        seenContinueSlugs.add(movie.slug);
+      if (progress > 0 && progress < 95) {
+        seenCanonicalKeys.add(cKey);
         continueItems.push({
           movie,
           epIndex: Number(h.epIndex) || 0,
@@ -321,8 +343,9 @@
         </div>
         <div class="vision-continue-shelf-grid">
           ${continueItems.slice(0, 4).map(({ movie, epIndex, progress, currentTime }, idx) => {
+            const isGenuineSeries = Boolean(Array.isArray(movie.episodes) && movie.episodes.length > 1);
             const ep = movie.episodes?.[epIndex] || movie.episodes?.[0];
-            const epLabel = ep?.name ? this.formatEpisodeLabel(ep.name, `Tập ${epIndex + 1}`) : (movie.type === "series" ? `Tập ${epIndex + 1}` : "Bản Full");
+            const epLabel = isGenuineSeries ? (ep?.name ? this.formatEpisodeLabel(ep.name, `Tập ${epIndex + 1}`) : `Tập ${epIndex + 1}`) : "";
             const timeStr = currentTime > 0 ? this.formatSeconds(currentTime) : "";
             const thumbImg = movie.backdrop || movie.poster || "https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg";
             return `
@@ -330,7 +353,7 @@
                 <div class="continue-shelf-thumb">
                   <img src="${thumbImg}" alt="${movie.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
                   <div class="continue-shelf-play"><i class="fas fa-play"></i></div>
-                  <div class="continue-shelf-badge">${epLabel}</div>
+                  ${isGenuineSeries && epLabel ? `<div class="continue-shelf-badge">${epLabel}</div>` : ""}
                   <div class="continue-shelf-bar">
                     <div class="continue-shelf-fill" style="width: ${progress}%;"></div>
                   </div>
@@ -338,7 +361,7 @@
                 <div class="continue-shelf-info">
                   <div class="continue-shelf-title">${movie.title}</div>
                   <div class="continue-shelf-meta">
-                    <span>${timeStr ? `Đã xem ${timeStr}` : epLabel}</span>
+                    <span>${timeStr ? `Đã xem ${timeStr}` : (isGenuineSeries && epLabel ? epLabel : "Đang xem")}</span>
                     <span>${progress}%</span>
                   </div>
                 </div>
@@ -1014,6 +1037,8 @@
             visibleList.length > 0
               ? `<div class="vision-cards-grid-4">${visibleList.map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>
                    ${this.renderLoadMoreButtonsHTML(list.length)}`
+              : this.currentNav === "search-results"
+              ? this.renderMovieRequestCardHTML(this.lastSearchQuery || "")
               : `<div style="padding: 60px 20px; text-align: center; background: rgba(255,255,255,0.04); border-radius: 26px; border: 1px solid rgba(255,255,255,0.12);">
                   <i class="fas fa-film" style="font-size: 2.5rem; color: #ffffff; margin-bottom: 14px;"></i>
                   <h3 style="margin-bottom: 18px; font-weight: 600;">Chưa có phim trong mục này</h3>
@@ -1024,6 +1049,65 @@
       </div>
     `;
     this.attachHeroSwipeHandlers();
+  },
+
+  renderMovieRequestCardHTML(query = "") {
+    const qStr = (query || "").trim();
+    return `
+      <div class="movie-request-box vision-request-panel" style="max-width: 680px; margin: 16px auto 40px; padding: 32px 28px; background: rgba(30, 32, 40, 0.78); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.16); box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="width: 58px; height: 58px; margin: 0 auto 14px; border-radius: 50%; background: linear-gradient(135deg, rgba(52, 199, 89, 0.25), rgba(0, 122, 255, 0.25)); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #34c759; border: 1px solid rgba(52, 199, 89, 0.4);">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </div>
+          <h3 style="font-size: 1.32rem; font-weight: 700; color: #ffffff; margin-bottom: 8px;">
+            Không tìm thấy phim "${qStr}" hoặc phần phim bạn cần?
+          </h3>
+          <p style="font-size: 0.92rem; color: rgba(255, 255, 255, 0.72); line-height: 1.5; margin: 0;">
+            Hãy gửi yêu cầu cho Admin ngay bên dưới! Hệ thống sẽ <b>tự động quét và nạp phim trực tuyến tức thì</b> để bạn xem ngay.
+          </p>
+        </div>
+
+        <form id="movieRequestForm" onsubmit="event.preventDefault(); app.submitMovieRequest();" style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.88rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); margin-bottom: 6px;">
+              <i class="fas fa-film" style="margin-right: 6px; color: #0a84ff;"></i> Tên phim bạn muốn Admin thêm vào <span style="color: #ff453a;">*</span>
+            </label>
+            <input type="text" id="reqMovieTitleInput" class="vision-req-input" value="${qStr.replace(/"/g, '&quot;')}" placeholder="Ví dụ: Godzilla Minus One, Conan Movie 27, Lật Mặt 7..." required
+                   style="width: 100%; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.35); color: #fff; font-size: 0.95rem; outline: none;" />
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.88rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); margin-bottom: 6px;">
+              <i class="fas fa-pen-to-square" style="margin-right: 6px; color: #ff9f0a;"></i> Ghi chú thêm (Phần nào, tập nào, bản Thuyết Minh hay Vietsub...)
+            </label>
+            <input type="text" id="reqMovieNoteInput" class="vision-req-input" placeholder="Ví dụ: Phần 2, Tập 10, Bản Thuyết Minh chiếu rạp..."
+                   style="width: 100%; box-sizing: border-box; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.18); background: rgba(0,0,0,0.35); color: #fff; font-size: 0.95rem; outline: none;" />
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.88rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); margin-bottom: 6px;">
+              <i class="fas fa-image" style="margin-right: 6px; color: #30d158;"></i> Đính kèm hình ảnh phim hoặc poster (Nếu có)
+            </label>
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <input type="file" id="reqMovieImageFileInput" accept="image/*" style="display: none;" onchange="app.handleMovieRequestImageSelect(this)" />
+              <button type="button" class="vision-btn-outline" onclick="document.getElementById('reqMovieImageFileInput').click()" style="padding: 9px 16px; font-size: 0.88rem; cursor: pointer;">
+                <i class="fas fa-arrow-up-from-bracket"></i> Chọn ảnh phim
+              </button>
+              <span id="reqMovieImageFileName" style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.6);">Chưa chọn hình ảnh</span>
+            </div>
+            <div id="reqMovieImagePreviewWrap" style="display: none; margin-top: 10px;">
+              <img id="reqMovieImagePreview" src="" alt="Ảnh phim yêu cầu" style="max-height: 120px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.4);" />
+            </div>
+          </div>
+
+          <div id="reqMovieStatus" style="display: none; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4;"></div>
+
+          <button type="submit" id="reqMovieSubmitBtn" class="vision-btn-watch" style="width: 100%; justify-content: center; padding: 14px; font-size: 1rem; font-weight: 600; border-radius: 14px; margin-top: 6px; background: linear-gradient(135deg, #0a84ff, #0056b3); cursor: pointer;">
+            <i class="fas fa-bolt" style="margin-right: 8px;"></i> Gửi Yêu Cầu & Tự Động Nạp Phim Ngay
+          </button>
+        </form>
+      </div>
+    `;
   },
 
   renderLoadMoreButtonsHTML(totalCount) {
@@ -1309,11 +1393,9 @@
     const currentTime = prog?.currentTime || histItem?.currentTime || 0;
     if (percent <= 0 && !histItem) return null;
 
+    const isGenuineSeries = Boolean(Array.isArray(movie.episodes) && movie.episodes.length > 1);
     const epObj = movie.episodes?.[epIndex];
-    const epLabel =
-      movie.type === "series"
-        ? this.formatEpisodeLabel(epObj?.name, `Tập ${epIndex + 1}`)
-        : "Bản Full";
+    const epLabel = isGenuineSeries ? this.formatEpisodeLabel(epObj?.name, `Tập ${epIndex + 1}`) : "";
     const timeStr = currentTime > 5 ? this.formatSeconds(currentTime) : "Đang xem";
     return {
       epIndex,
@@ -1334,7 +1416,7 @@
         <button class="ps5-save-slot-pill is-saved" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true, ${saveSlot.epIndex})" title="Tiếp tục xem phim">
           <span class="ps5-save-slot-icon"><i class="fas fa-play" style="font-size: 0.72rem; margin-left: 2px;"></i></span>
           <span class="ps5-save-slot-body">
-            <span class="ps5-save-slot-title">Tiếp tục • ${saveSlot.epLabel}</span>
+            <span class="ps5-save-slot-title">Tiếp tục${saveSlot.epLabel ? ` • ${saveSlot.epLabel}` : ""}</span>
             <span class="ps5-save-slot-sub">${saveSlot.timeStr} (${saveSlot.percent}%)</span>
           </span>
           <span class="ps5-save-slot-bar"><span style="width: ${saveSlot.percent}%;"></span></span>
@@ -1856,9 +1938,13 @@
     const qualityBadge = is4k
       ? `<span class="ribbon-quality ribbon-4k"><i class="fas fa-sparkles"></i> 4K</span>`
       : `<span class="ribbon-quality ribbon-1080">Full HD</span>`;
-    const epText = movie.type === "series"
-      ? (movie.episodeCurrent || "Tập mới")
-      : (this.getMovieLanguageLabel(movie).split("+")[0].trim() || "Full");
+    const isSeries = Boolean(
+      movie.type === "series" ||
+      (Array.isArray(movie.episodes) && movie.episodes.length > 1) ||
+      (Array.isArray(movie.sectionTags) && movie.sectionTags.includes("phim-bo")) ||
+      (movie.episodeTotal && parseInt(movie.episodeTotal, 10) > 1)
+    );
+    const epText = isSeries ? (movie.episodeCurrent || "Tập mới") : "";
     const staggerIdx = Math.min(typeof index === "number" ? index : 0, 11);
     const posterImg = this.getMoviePoster(movie) || this.getMovieBackdrop(movie);
     const posterFallback = this.getMovieBackdrop(movie) || posterImg;
@@ -1872,7 +1958,7 @@
                onerror="if(this.src!=='${posterFallback}'){this.src='${posterFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
           <div class="poster-badges-top">
             ${qualityBadge}
-            <span class="ribbon-ep">${epText}</span>
+            ${isSeries && epText ? `<span class="ribbon-ep">${epText}</span>` : ""}
           </div>
           ${rankNum ? `<span class="rank-number-badge">${rankNum}</span>` : ""}
 

@@ -125,8 +125,12 @@
             `<button class="btn-sync-now" style="width: 100%; margin-top: 8px; padding: 9px;" onclick="app.showFullSearchResults('${query.replace(/'/g, "\\'")}')">
               Xem toàn bộ kết quả cho "${query}" (${(this.lastSearchResults || results).length} phim)
             </button>`
-          : `<div style="padding: 20px; text-align: center; color: var(--text-secondary); font-size: 0.86rem;">
-              Không tìm thấy phim khớp với "${query}". Hãy thử từ khóa khác!
+          : `<div style="padding: 18px 16px; text-align: center; color: var(--text-secondary); font-size: 0.88rem;">
+              <div style="font-weight: 600; color: #fff; margin-bottom: 6px;">Không tìm thấy phim khớp với "${query}"</div>
+              <div style="font-size: 0.82rem; margin-bottom: 12px; color: rgba(255,255,255,0.65);">Bạn muốn xem phim này hoặc phần phim nào?</div>
+              <button class="btn-sync-now" style="width: 100%; padding: 10px; font-weight: 600;" onclick="app.showFullSearchResults('${query.replace(/'/g, "\\'")}')">
+                <i class="fas fa-wand-magic-sparkles"></i> Yêu Cầu Admin & Tự Động Nạp Phim Ngay
+              </button>
             </div>`
       }
     `;
@@ -578,6 +582,121 @@
     flyout.style.left = `${Math.round(left)}px`;
     flyout.style.top = `${top}px`;
     flyout.style.maxHeight = `${Math.max(320, Math.round(vh - top - 28))}px`;
+  },
+
+  handleMovieRequestImageSelect(input) {
+    if (!input || !input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const nameEl = document.getElementById("reqMovieImageFileName");
+    const previewWrap = document.getElementById("reqMovieImagePreviewWrap");
+    const previewImg = document.getElementById("reqMovieImagePreview");
+
+    if (nameEl) nameEl.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this._tempReqImageBase64 = e.target.result;
+      if (previewImg) previewImg.src = e.target.result;
+      if (previewWrap) previewWrap.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  },
+
+  async submitMovieRequest() {
+    const titleInput = document.getElementById("reqMovieTitleInput");
+    const noteInput = document.getElementById("reqMovieNoteInput");
+    const statusEl = document.getElementById("reqMovieStatus");
+    const submitBtn = document.getElementById("reqMovieSubmitBtn");
+
+    const movieTitle = (titleInput?.value || this.lastSearchQuery || "").trim();
+    const movieNote = (noteInput?.value || "").trim();
+    const movieImage = this._tempReqImageBase64 || "";
+
+    if (!movieTitle) {
+      if (statusEl) {
+        statusEl.style.display = "block";
+        statusEl.style.background = "rgba(255, 69, 58, 0.2)";
+        statusEl.style.border = "1px solid rgba(255, 69, 58, 0.4)";
+        statusEl.style.color = "#ff453a";
+        statusEl.innerHTML = '<i class="fas fa-circle-exclamation"></i> Vui lòng nhập tên phim bạn muốn yêu cầu!';
+      }
+      return;
+    }
+
+    if (statusEl) {
+      statusEl.style.display = "block";
+      statusEl.style.background = "rgba(10, 132, 255, 0.18)";
+      statusEl.style.border = "1px solid rgba(10, 132, 255, 0.4)";
+      statusEl.style.color = "#5ac8fa";
+      statusEl.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Đang tự động quét PhimAPI, NguonC, Film4K và máy chủ đa nguồn để nạp phim <b>"${movieTitle}"</b>...`;
+    }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = "0.7";
+    }
+
+    try {
+      // 1. Thử tự động nạp phim trực tuyến qua searchAndIngestMovie
+      const ingested = await this.service.searchAndIngestMovie(movieTitle);
+      if (ingested && ingested.slug) {
+        if (statusEl) {
+          statusEl.style.background = "rgba(52, 199, 89, 0.2)";
+          statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
+          statusEl.style.color = "#34c759";
+          statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Thành công!</b> Đã tìm thấy và tự động nạp phim "${ingested.title}". Đang mở phim...`;
+        }
+        this._saveMovieRequestRecord({
+          id: Date.now(),
+          title: movieTitle,
+          note: movieNote,
+          image: movieImage,
+          status: "auto_ingested",
+          foundSlug: ingested.slug,
+          timestamp: new Date().toISOString()
+        });
+        setTimeout(() => {
+          this.openMovieModal(ingested.slug, true);
+        }, 600);
+        return;
+      }
+
+      // 2. Nếu các API đối tác chưa có sẵn luồng, lưu vào hàng đợi yêu cầu phim gửi Admin
+      this._saveMovieRequestRecord({
+        id: Date.now(),
+        title: movieTitle,
+        note: movieNote,
+        image: movieImage,
+        status: "pending_admin",
+        timestamp: new Date().toISOString()
+      });
+
+      if (statusEl) {
+        statusEl.style.background = "rgba(52, 199, 89, 0.2)";
+        statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
+        statusEl.style.color = "#34c759";
+        statusEl.innerHTML = `<i class="fas fa-circle-check"></i> <b>Yêu cầu đã được chuyển tới Admin thành công!</b><br>Hệ thống đã ghi nhận tên phim <b>"${movieTitle}"</b>${movieNote ? ` (${movieNote})` : ""}${movieImage ? " và hình ảnh đính kèm" : ""}. Admin sẽ bổ sung phim này sớm nhất có thể.`;
+      }
+    } catch (err) {
+      console.error("[MovieRequest] Error:", err);
+      if (statusEl) {
+        statusEl.style.background = "rgba(255, 69, 58, 0.2)";
+        statusEl.style.border = "1px solid rgba(255, 69, 58, 0.4)";
+        statusEl.style.color = "#ff453a";
+        statusEl.innerHTML = `<i class="fas fa-circle-exclamation"></i> Có lỗi khi gửi yêu cầu. Vui lòng thử lại!`;
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = "1";
+      }
+    }
+  },
+
+  _saveMovieRequestRecord(record) {
+    try {
+      const existing = JSON.parse(localStorage.getItem("ngwyren_movie_requests") || "[]");
+      existing.unshift(record);
+      localStorage.setItem("ngwyren_movie_requests", JSON.stringify(existing.slice(0, 50)));
+    } catch (_) {}
   }
   };
 

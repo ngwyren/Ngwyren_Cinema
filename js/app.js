@@ -173,14 +173,33 @@ class AppleCinemaApp {
     };
   }
 
+  getCanonicalMovieKey(movie) {
+    if (!movie) return "";
+    if (this.service?.getCanonicalMovieKey) return this.service.getCanonicalMovieKey(movie);
+    let t = (movie.title || movie.originTitle || movie.slug || "")
+      .toLowerCase()
+      .replace(/đ/g, "d")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+    if (t.includes("godzilla tru mot") || t.includes("godzilla tru khong") || t.includes("godzilla minus one")) {
+      return "godzilla minus one";
+    }
+    if (t.includes("ramayana")) {
+      return "ramayana rise of a legend";
+    }
+    return t;
+  }
+
   sanitizeAndDedupeHistory(rawHistory) {
     if (!Array.isArray(rawHistory)) return [];
-    const bySlug = new Map();
+    const byKey = new Map();
     for (const item of rawHistory) {
       if (!item || typeof item !== "object" || !item.slug) continue;
       const movie = this.findMovie(item.slug);
       const canonicalSlug = movie ? movie.slug : String(item.slug).trim();
       if (!canonicalSlug) continue;
+      const cKey = this.getCanonicalMovieKey(movie || { slug: canonicalSlug, title: item.title }) || canonicalSlug;
       const normalized = {
         ...item,
         slug: canonicalSlug,
@@ -192,12 +211,12 @@ class AppleCinemaApp {
         currentTime: Number(item.currentTime) || 0,
         timestamp: Number(item.timestamp) || Date.now()
       };
-      const existing = bySlug.get(canonicalSlug);
+      const existing = byKey.get(cKey);
       if (!existing || normalized.timestamp > existing.timestamp || (normalized.timestamp === existing.timestamp && normalized.epIndex > existing.epIndex)) {
-        bySlug.set(canonicalSlug, normalized);
+        byKey.set(cKey, normalized);
       }
     }
-    return Array.from(bySlug.values()).slice(0, 24);
+    return Array.from(byKey.values()).slice(0, 24);
   }
 
   sanitizeAndDedupeMyList(rawMyList) {
@@ -312,11 +331,24 @@ class AppleCinemaApp {
     if (!idOrSlug) return null;
     this.ensureFullCatalogLoaded();
     const cleanSlug = idOrSlug === "ly-hung-mieu" ? "ly-hung-mieu-gau-truc-ly" : idOrSlug;
-    return (
+    let found = (
       this.service.slugMap.get(cleanSlug) ||
       this.service.slugMap.get(idOrSlug) ||
       this.service.movies.find((m) => m.id === cleanSlug || m.slug === cleanSlug || m.id === idOrSlug || m.slug === idOrSlug)
     );
+    if (!found) {
+      const ALIASES = {
+        "godzilla-minus-one": "godzilla-tru-mot",
+        "godzilla-minus-zero": "godzilla-tru-mot",
+        "ramayana": "ramayana-rise-of-a-legend",
+        "ramayana-khoi-nguon-mot-huyen-thoai": "ramayana-rise-of-a-legend"
+      };
+      const aliased = ALIASES[cleanSlug] || ALIASES[idOrSlug];
+      if (aliased) {
+        found = this.service.slugMap.get(aliased) || this.service.movies.find((m) => m.slug === aliased || m.id === aliased);
+      }
+    }
+    return found;
   }
 
   getMoviesByTag(tag) {

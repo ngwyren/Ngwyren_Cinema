@@ -3229,8 +3229,13 @@ class PhimmoiService {
       );
       const baseTags = Array.isArray(item.sectionTags) ? [...item.sectionTags] : ["hot", "vietsub"];
       if (is4k && !baseTags.includes("4k")) baseTags.push("4k");
+      const epsArr = Array.isArray(item.episodes) ? item.episodes : [];
+      const isActualSingle = epsArr.length <= 1 && (!epsArr[0]?.name || /full|bản\s*full/i.test(epsArr[0].name) || Number(item.episodeTotal) <= 1);
+      const computedType = isActualSingle ? "single" : (item.type || "single");
+
       const normalizedItem = {
         ...item,
+        type: computedType,
         id: item.id || item.slug,
         crawlSlug: item.crawlSlug || item.slug,
         originTitle: item.originTitle || item.title,
@@ -3340,8 +3345,9 @@ class PhimmoiService {
    * Chuẩn hóa khóa nhận diện phim để phát hiện chính xác các phim trùng lặp (kể cả khác hậu tố tên hoặc slug)
    */
   getCanonicalMovieKey(movie) {
-    if (!movie || !movie.title) return "";
-    let t = (movie.title || "")
+    if (!movie) return "";
+    if (movie.tmdbId) return `tmdb-${movie.tmdbId}`;
+    let t = (movie.title || movie.originTitle || movie.slug || "")
       .toLowerCase()
       .replace(/đ/g, "d")
       .normalize("NFD")
@@ -3355,6 +3361,15 @@ class PhimmoiService {
     t = t.replace(/\s+ii\b/g, " s2");
     t = t.replace(/\s+(\d+)$/g, " s$1");
     t = t.replace(/[^a-z0-9]+/g, " ").trim();
+
+    // Đồng bộ các tên gọi tương đương cho các phim lớn (chống trùng lặp tuyệt đối)
+    if (t.includes("godzilla tru mot") || t.includes("godzilla tru khong") || t.includes("godzilla minus one")) {
+      return "godzilla minus one";
+    }
+    if (t.includes("ramayana rise of a legend") || t.includes("ramayana khoi nguon")) {
+      return "ramayana rise of a legend";
+    }
+
     if (movie.type === "single" && movie.year && Number(movie.year) < 2022) {
       t = `${t} ${movie.year}`;
     }
@@ -3707,6 +3722,23 @@ class PhimmoiService {
       }
     } catch (_) {}
 
+    // 3. Fallback qua corsproxy.io
+    try {
+      const ctrl3 = new AbortController();
+      const t3 = setTimeout(() => ctrl3.abort(), timeoutMs);
+      const cpUrl = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+      const cpRes = await fetch(cpUrl, { signal: ctrl3.signal });
+      clearTimeout(t3);
+      if (cpRes.ok) {
+        const txt = await cpRes.text();
+        if (txt && txt.includes("#EXTM3U")) {
+          if (this._textCache.size > 80) this._textCache.clear();
+          this._textCache.set(url, txt);
+          return txt;
+        }
+      }
+    } catch (_) {}
+
     return "";
   }
 
@@ -3753,9 +3785,9 @@ class PhimmoiService {
 
     const overviewVi = (fItem.overview && fItem.overview.vi) || "";
     const overviewEn = (fItem.overview && fItem.overview.en) || "";
-    const hasDub = Boolean(fItem.viDub);
-    const hasSub = fItem.viSubs !== false;
-    const langLabel = hasSub && hasDub ? "Vietsub + Thuyết Minh" : hasDub ? "Thuyết Minh" : "Vietsub";
+    // Chỉ kích hoạt Thuyết Minh nếu có track âm thanh tiếng Việt thực tế, không dựa vào cờ viDub mặc định của Film4K
+    const hasDub = Boolean(fItem.hasRealDub || fItem.viDubActual === true || (Array.isArray(fItem.audio) && fItem.audio.some((a) => a.lang === "vie")));
+    const langLabel = hasDub ? "Vietsub + Thuyết Minh" : "Vietsub";
     const hlsDirect = fItem.hlsUrl
       ? fItem.hlsUrl.startsWith("http")
         ? fItem.hlsUrl
@@ -4389,10 +4421,24 @@ class PhimmoiService {
     const hasYearSuffix = /-(19\d\d|20\d\d)$/.test(movie.slug);
     const slugToTry = movie.crawlSlug || (hasYearSuffix ? movie.slug : movie.slug.replace(/-(?!(19\d\d|20\d\d)$)\d+$/, ""));
 
-    const f4kSlugCandidate = movie.film4kSlug || slugToTry;
+    // Slug Aliases Map để tự động liên kết đa nguồn chuẩn xác cho các phim điện ảnh lớn (Godzilla, Ramayana...)
+    const SLUG_ALIASES = {
+      "godzilla-minus-one": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
+      "godzilla-tru-mot": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
+      "godzilla-minus-zero": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
+      "ramayana": { phimApi: "ramayana", nguonc: "ramayana-rise-of-a-legend", film4k: "ramayana-rise-of-a-legend" },
+      "ramayana-rise-of-a-legend": { phimApi: "ramayana", nguonc: "ramayana-rise-of-a-legend", film4k: "ramayana-rise-of-a-legend" },
+      "ramayana-khoi-nguon-mot-huyen-thoai": { phimApi: "ramayana", nguonc: "ramayana-rise-of-a-legend", film4k: "ramayana-rise-of-a-legend" }
+    };
+
+    const alias = SLUG_ALIASES[movie.slug] || SLUG_ALIASES[slugToTry];
+    const phimApiSlug = alias?.phimApi || slugToTry;
+    const nguoncSlug = alias?.nguonc || slugToTry;
+    const f4kSlugCandidate = alias?.film4k || movie.film4kSlug || slugToTry;
+
     let [phimApiRes, nguoncRes, film4kRes] = await Promise.all([
-      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiBase}${encodeURIComponent(slugToTry)}`, 2800),
-      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(slugToTry)}`, 2400),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiBase}${encodeURIComponent(phimApiSlug)}`, 2800),
+      this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(nguoncSlug)}`, 2400),
       this.smartFetchJson(`${PHIMMOI_CONFIG.film4kApiWatch}${encodeURIComponent(f4kSlugCandidate)}`, 2400)
     ]);
     const wpPosts = null;
@@ -4846,7 +4892,7 @@ class PhimmoiService {
         const realSource = ep.source || movie.episodes[0]?.source || "";
         if (realSource && (realSource.includes(".m3u8") || realSource.includes("/hls/"))) {
           ep.source = realSource;
-          ep.embed = `https://player.phimapi.com/player/?url=${encodeURIComponent(realSource)}`;
+          ep.embed = "";
         }
         if (ep.altSources) {
           delete ep.altSources;
@@ -4957,6 +5003,40 @@ class PhimmoiService {
     scored.sort((a, b) => b.matchPercent - a.matchPercent);
     targetMovie._cachedRelated = scored.slice(0, Math.max(limit, 12));
     return targetMovie._cachedRelated.slice(0, limit);
+  }
+
+  /**
+   * Tự động dò tìm trực tuyến đa nguồn (PhimAPI, NguonC, Film4K) và nạp tức thì phim mới vào catalog
+   */
+  async searchAndIngestMovie(query) {
+    if (!query || typeof query !== "string") return null;
+    const cleanQ = query.trim();
+    if (cleanQ.length < 2) return null;
+
+    // 1. Kiểm tra xem phim đã có sẵn trong catalog chưa
+    const existing = this.movies.find((m) => {
+      const t = (m.title || "").toLowerCase();
+      const ot = (m.originTitle || "").toLowerCase();
+      const q = cleanQ.toLowerCase();
+      return t === q || ot === q || m.slug === q || t.includes(q) || ot.includes(q);
+    });
+    if (existing) {
+      await this.enrichMovieStreams(existing);
+      return existing;
+    }
+
+    // 2. Chạy tìm kiếm sâu trên tất cả các API trực tuyến
+    const searchResults = await this.searchMovies(cleanQ);
+    if (Array.isArray(searchResults) && searchResults.length > 0) {
+      const best = searchResults[0];
+      await this.enrichMovieStreams(best);
+      if (!this.movies.includes(best)) {
+        this.movies.unshift(best);
+        this.slugMap.set(best.slug, best);
+      }
+      return best;
+    }
+    return null;
   }
 
   stripHtml(html) {

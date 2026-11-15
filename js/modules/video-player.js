@@ -328,7 +328,7 @@
     // Chuyển mọi đường dẫn tương đối /api/hls/... và /api/subs/... sang tuyệt đối https://film4k.net/api/...
     return playlistText
       .replace(/URI="\/api\//g, 'URI="https://film4k.net/api/')
-      .replace(/^(\/api\/[^\r\n]+)$/gm, "https://film4k.net$1");
+      .replace(/(^|[\r\n])(\/api\/[^\r\n]+)/g, "$1https://film4k.net$2");
   },
 
   createAdFreePlaylistLoader() {
@@ -717,21 +717,18 @@
         candidateS2 = realF4kEp.source;
       } else if (distinctAlt?.source) {
         candidateS2 = distinctAlt.source;
-      } else if (realNcEp?.embed) {
+      } else if (realNcEp?.embed && !realNcEp.embed.includes("player.phimapi.com")) {
         candidateS2 = realNcEp.embed;
         isEmbedS2 = true;
-      } else if (distinctAlt?.embed) {
+      } else if (distinctAlt?.embed && !distinctAlt.embed.includes("player.phimapi.com")) {
         candidateS2 = distinctAlt.embed;
         isEmbedS2 = true;
-      } else if (episode?.embed && this.unwrapM3u8Url(episode.embed) !== s1Source) {
+      } else if (episode?.embed && !episode.embed.includes("player.phimapi.com") && this.unwrapM3u8Url(episode.embed) !== s1Source) {
         candidateS2 = episode.embed;
-        isEmbedS2 = true;
-      } else if (s1Source) {
-        candidateS2 = `https://player.phimapi.com/player/?url=${encodeURIComponent(s1Source)}`;
         isEmbedS2 = true;
       }
 
-      if (isEmbedS2 && candidateS2 && !candidateS2.endsWith(".m3u8")) {
+      if (isEmbedS2 && candidateS2 && !candidateS2.includes(".m3u8") && !candidateS2.includes("/hls/")) {
         this.activateIframePlayer(candidateS2);
         this.showToast("🚀 Đang phát Server 2 (Máy chủ phụ độc lập)", "success");
         return;
@@ -1119,7 +1116,8 @@
           this.showToast("⚠️ Server 1 phản hồi chậm, tự động kết nối Server 2...", "info");
           this.startVideoPlayback(movie, epIndex, "server-2");
         } else {
-          const fallbackEmbed = movie.nguoncEpisodes?.[epIndex]?.embed || episode?.embed || (streamUrl ? `https://player.phimapi.com/player/?url=${encodeURIComponent(streamUrl)}` : "");
+          const rawEmbed = movie.nguoncEpisodes?.[epIndex]?.embed || episode?.embed || "";
+          const fallbackEmbed = rawEmbed && !rawEmbed.includes("player.phimapi.com") ? rawEmbed : "";
           if (fallbackEmbed && !isForbiddenIframe(fallbackEmbed)) {
             this.showToast("⚡ Đang kết nối luồng Embed dự phòng...", "info");
             this.activateIframePlayer(fallbackEmbed);

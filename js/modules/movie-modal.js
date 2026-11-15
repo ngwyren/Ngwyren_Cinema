@@ -593,7 +593,6 @@
               <span class="meta-pill">${movie.year}</span>
               <span class="meta-pill"><i class="fas fa-star"></i> ${movie.rating || 9.2}</span>
               ${movie.quality === "4K" || movie.has4k ? `<span class="meta-pill badge-4k" id="modalQualityPill"><i class='fas fa-sparkles'></i> 4K Ultra HD</span>` : `<span class="meta-pill badge-1080" id="modalQualityPill" style="display:none;"></span>`}
-              <span class="meta-pill" id="modalLanguagePill"><i class="fas fa-volume-up"></i> <span id="modalLanguageText">${this.getMovieLanguageLabel(movie)}</span></span>
             </div>
             ${
               (() => {
@@ -786,7 +785,15 @@
     );
     // Luôn sẵn sàng Server 2 dự phòng để đảm bảo 2 server luôn hoạt động song song
     const hasServer2 = true;
-    const hasDub = Boolean(movie.dubEpisodes && movie.dubEpisodes.length > 0);
+    const s1Src = (ep?.source || "").trim();
+    const dubEp = movie.dubEpisodes?.[this.currentEpisodeIndex || 0] || movie.dubEpisodes?.[0];
+    const dubSrc = (dubEp?.source || dubEp?.embed || "").trim();
+    const hasDub = Boolean(
+      Array.isArray(movie.dubEpisodes) &&
+      movie.dubEpisodes.length > 0 &&
+      dubSrc &&
+      dubSrc !== s1Src
+    );
     const isServer2Active = this.currentServerMode === "server-2" || this.currentServerMode === "film4k-1" || this.currentServerMode === "embed-1";
     const isF4k4k = Boolean(
       (this.detectedHlsLevels && this.detectedHlsLevels.some((l) => l.height >= 2160 || l.width >= 3800)) ||
