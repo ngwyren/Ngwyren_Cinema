@@ -12526,15 +12526,25 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 /* ==========================================================================
-   2K & ULTRA-WIDE CINEMATIC SCALE (MÀN HÌNH 2K / 4K / LARGE MONITORS)
-   Tự động scale thẻ phim lớn (Hero Showcase Banner) to nhất, hùng vĩ chuẩn rạp
+   2K & FULL-VIEWPORT CINEMATIC SCALE (FIRST FOLD 100% CHỈ CÓ THẺ PHIM LỚN)
+   Tự động scale thẻ phim lớn phủ trọn vẹn màn hình đầu tiên, triệt tiêu hoàn toàn
+   khoảng hở và không cho hàng phim bên dưới bị lọt vào tầm nhìn trước khi cuộn
    ========================================================================== */
+@media (min-width: 920px) {
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: calc(100vh - 120px) !important;
+    min-height: 560px !important;
+    max-height: none !important;
+  }
+}
+
 @media (min-width: 1536px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: clamp(660px, 76vh, 880px) !important;
-    min-height: 660px !important;
-    max-height: 880px !important;
+    height: calc(100vh - 120px) !important;
+    min-height: 640px !important;
+    max-height: none !important;
     border-radius: 30px !important;
     -webkit-clip-path: inset(0 round 30px) !important;
     clip-path: inset(0 round 30px) !important;
@@ -12607,9 +12617,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: clamp(760px, 82vh, 1020px) !important;
-    min-height: 760px !important;
-    max-height: 1020px !important;
+    height: calc(100vh - 120px) !important;
+    min-height: 720px !important;
+    max-height: none !important;
     border-radius: 34px !important;
     -webkit-clip-path: inset(0 round 34px) !important;
     clip-path: inset(0 round 34px) !important;
@@ -12683,9 +12693,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 2400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: clamp(860px, 85vh, 1150px) !important;
-    min-height: 860px !important;
-    max-height: 1150px !important;
+    height: calc(100vh - 120px) !important;
+    min-height: 800px !important;
+    max-height: none !important;
     border-radius: 40px !important;
     -webkit-clip-path: inset(0 round 40px) !important;
     clip-path: inset(0 round 40px) !important;
