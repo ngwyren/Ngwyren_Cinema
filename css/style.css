@@ -1318,12 +1318,12 @@ body::-webkit-scrollbar {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: none !important;
   pointer-events: none;
   z-index: 5;
   box-sizing: border-box;
-  transition: border-color 0.26s ease;
+  transition: border-color 0.24s ease;
 }
 
 .movie-card:hover .movie-poster-wrap {
@@ -1332,7 +1332,7 @@ body::-webkit-scrollbar {
 }
 
 .movie-card:hover .movie-poster-wrap::after {
-  border-color: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .movie-poster-wrap img {
@@ -2086,14 +2086,14 @@ body.modal-open .ambient-canvas {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
-  padding: 6px 6px 14px 6px !important;
+  padding: 8px 10px 16px 8px !important;
   overflow: visible !important;
 }
 
 .continue-shelf-card {
   position: relative;
   background: rgba(255, 255, 255, 0.035) !important;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 20px;
   padding: 8px;
   box-shadow: none !important;
@@ -2101,10 +2101,11 @@ body.modal-open .ambient-canvas {
   isolation: isolate;
   cursor: pointer;
   box-sizing: border-box;
+  will-change: transform;
   transition:
-    transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1),
-    border-color 0.26s ease,
-    background-color 0.26s ease;
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.24s ease,
+    background-color 0.24s ease !important;
   display: flex;
   flex-direction: column;
 }
@@ -2115,8 +2116,8 @@ body.modal-open .ambient-canvas {
 }
 
 .continue-shelf-card:hover {
-  transform: translateY(-5px) !important;
-  border-color: rgba(255, 255, 255, 0.85) !important;
+  transform: translate3d(0, -5px, 0) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
   background: rgba(255, 255, 255, 0.07) !important;
   box-shadow: none !important;
 }
@@ -4276,12 +4277,12 @@ body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: none !important;
   pointer-events: none;
   z-index: 5;
   box-sizing: border-box;
-  transition: border-color 0.26s ease;
+  transition: border-color 0.24s ease;
 }
 
 .vision-trailer-card:hover {
@@ -5145,22 +5146,22 @@ body {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: none !important;
   pointer-events: none;
   z-index: 5;
   box-sizing: border-box;
-  transition: border-color 0.26s ease;
+  transition: border-color 0.24s ease;
 }
 
 .vision-feature-card:hover {
   border: none !important;
-  transform: translate3d(0, -6px, 0);
+  transform: translate3d(0, -5px, 0) !important;
   box-shadow: none !important;
 }
 
 .vision-feature-card:hover::after {
-  border-color: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
   box-shadow: none !important;
 }
 
@@ -8101,11 +8102,12 @@ html.dragging-glass .vision-left-dock {
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease, background-color 0.24s ease !important;
   box-shadow: none !important;
   contain: layout style paint;
   content-visibility: auto;
@@ -8113,10 +8115,10 @@ html.dragging-glass .vision-left-dock {
 }
 
 .schedule-card-glass:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.75);
+  transform: translate3d(0, -5px, 0) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
   box-shadow: none !important;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.07) !important;
 }
 
 .schedule-card-media {
@@ -9648,16 +9650,17 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition:
-    transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1),
-    border-color 0.26s ease,
-    box-shadow 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.24s ease,
+    background-color 0.24s ease,
+    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .vision-feature-card .vision-feature-img,
 .movie-card .movie-poster-wrap img,
 .continue-shelf-card .continue-shelf-thumb img,
 .vision-trailer-card img {
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
   will-change: transform;
 }
 
@@ -9667,7 +9670,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:hover,
   .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -6px, 0) !important;
+    transform: translate3d(0, -5px, 0) !important;
     border: none !important;
     box-shadow: none !important;
     z-index: 10 !important;
@@ -9686,7 +9689,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .vision-feature-card:hover .vision-card-play-white {
-    transform: scale(1.12) !important;
+    transform: scale(1.08) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
@@ -9695,7 +9698,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
   .movie-card:hover,
   .movie-card:focus-visible {
-    transform: translate3d(0, -6px, 0) scale(1.025) !important;
+    transform: translate3d(0, -5px, 0) !important;
     z-index: 5 !important;
   }
 
@@ -9705,7 +9708,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .movie-card:hover .movie-poster-wrap::after {
-    border-color: rgba(255, 255, 255, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.95) !important;
   }
 
   .movie-card:hover .movie-poster-wrap img {
@@ -9713,7 +9716,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .movie-card:hover .hover-play-center {
-    transform: scale(1.12) !important;
+    transform: scale(1.08) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
   }
 
@@ -9721,7 +9724,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .continue-shelf-card:hover,
   .continue-shelf-card:focus-visible {
     transform: translate3d(0, -5px, 0) !important;
-    border: 1px solid rgba(255, 255, 255, 0.85) !important;
+    border: 2px solid rgba(255, 255, 255, 0.95) !important;
     background: rgba(255, 255, 255, 0.07) !important;
     box-shadow: none !important;
     z-index: 5 !important;
@@ -9737,7 +9740,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .continue-shelf-card:hover .continue-shelf-play {
-    transform: translate(-50%, -50%) scale(1.12) !important;
+    transform: translate(-50%, -50%) scale(1.08) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
@@ -9746,7 +9749,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Side Trailer Cards */
   .vision-trailer-card:hover,
   .vision-trailer-card.is-hero-previewing {
-    transform: translate3d(0, -5px, 0) scale(1.02) !important;
+    transform: translate3d(0, -5px, 0) !important;
     border: none !important;
     box-shadow: none !important;
     z-index: 5 !important;
@@ -9754,7 +9757,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   .vision-trailer-card:hover::after,
   .vision-trailer-card.is-hero-previewing::after {
-    border-color: rgba(255, 255, 255, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.95) !important;
   }
 
   .vision-trailer-card:hover img {
@@ -9763,7 +9766,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   /* Chart Column Cards */
   .chart-column-card:hover {
-    border-color: rgba(255, 255, 255, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.45) !important;
     box-shadow: none !important;
   }
 }

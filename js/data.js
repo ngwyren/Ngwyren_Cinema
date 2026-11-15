@@ -4486,6 +4486,18 @@ class PhimmoiService {
       "godzilla-tru-mot": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
       "godzilla-tru-khong": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
       "godzilla-minus-zero": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
+      "nguoi-nhen-khoi-dau-moi": { phimApi: "nguoi-nhen-khoi-dau-moi", nguonc: "nguoi-nhen-khoi-dau-moi", film4k: "spider-man-brand-new-day" },
+      "spider-man-brand-new-day": { phimApi: "nguoi-nhen-khoi-dau-moi", nguonc: "nguoi-nhen-khoi-dau-moi", film4k: "spider-man-brand-new-day" },
+      "godzilla-dai-chien-kong": { phimApi: "godzilla-dai-chien-kong", nguonc: "godzilla-dai-chien-kong", film4k: "godzilla-vs-kong" },
+      "godzilla-vs-kong": { phimApi: "godzilla-dai-chien-kong", nguonc: "godzilla-dai-chien-kong", film4k: "godzilla-vs-kong" },
+      "godzilla-x-kong-de-che-moi": { phimApi: "godzilla-x-kong-de-che-moi", nguonc: "godzilla-x-kong-de-che-moi", film4k: "godzilla-x-kong-the-new-empire" },
+      "godzilla-x-kong-the-new-empire": { phimApi: "godzilla-x-kong-de-che-moi", nguonc: "godzilla-x-kong-de-che-moi", film4k: "godzilla-x-kong-the-new-empire" },
+      "nguoi-nhen-khong-con-nha": { phimApi: "nguoi-nhen-khong-con-nha", nguonc: "nguoi-nhen-khong-con-nha", film4k: "spider-man-no-way-home" },
+      "spider-man-no-way-home": { phimApi: "nguoi-nhen-khong-con-nha", nguonc: "nguoi-nhen-khong-con-nha", film4k: "spider-man-no-way-home" },
+      "nguoi-nhen-tro-ve-nha": { phimApi: "nguoi-nhen-tro-ve-nha", nguonc: "nguoi-nhen-tro-ve-nha", film4k: "spider-man-homecoming" },
+      "spider-man-homecoming": { phimApi: "nguoi-nhen-tro-ve-nha", nguonc: "nguoi-nhen-tro-ve-nha", film4k: "spider-man-homecoming" },
+      "nguoi-nhen-xa-nha": { phimApi: "nguoi-nhen-xa-nha", nguonc: "nguoi-nhen-xa-nha", film4k: "spider-man-far-from-home" },
+      "spider-man-far-from-home": { phimApi: "nguoi-nhen-xa-nha", nguonc: "nguoi-nhen-xa-nha", film4k: "spider-man-far-from-home" },
       "hope-vung-tu-dia": { phimApi: "vung-tu-dia", nguonc: "vung-tu-dia", film4k: "hope" },
       "ke-tao-mua": { phimApi: "nguoi-tao-mua", nguonc: "nguoi-tao-mua", film4k: "the-rainmaker" },
       "love-class-phan-3": { phimApi: "lop-hoc-tinh-yeu-phan-3", nguonc: "lop-hoc-tinh-yeu-phan-3", film4k: "love-class-s3" },
@@ -4899,40 +4911,93 @@ class PhimmoiService {
 
         if (Array.isArray(movie.film4kEpisodes) && movie.film4kEpisodes.length > 0) {
           const f4kLabel = isF4k4k ? "Film4K UHD • Vietsub" : "Film4K FHD • Vietsub";
-          movie.film4kEpisodes.forEach((fEp, idx) => {
-            if (fEp.source && movie.episodes?.[idx]) {
-              movie.episodes[idx].altSources = movie.episodes[idx].altSources || [];
-              if (!movie.episodes[idx].altSources.some((a) => a.source === fEp.source)) {
-                movie.episodes[idx].altSources.push({
-                  id: `film4k-${idx}`,
-                  label: f4kLabel,
-                  source: fEp.source,
-                  embed: "",
-                  isFilm4k: true,
-                  is4k: isF4k4k
+
+          // Khi phim có nguồn 4K thật (2160p / UHD): So sánh, thay thế và update luồng 4K làm nguồn chính mặc định
+          if (isF4k4k) {
+            movie.quality = "4K";
+            movie.has4k = true;
+            movie.hasReal4k = true;
+            if (!Array.isArray(movie.sectionTags)) movie.sectionTags = ["hot", "vietsub"];
+            if (!movie.sectionTags.includes("4k")) movie.sectionTags.push("4k");
+            if (!movie.sectionTags.includes("film4k")) movie.sectionTags.push("film4k");
+
+            const oldEps = Array.isArray(movie.episodes) ? movie.episodes : [];
+            movie.episodes = movie.film4kEpisodes.map((fEp, idx) => {
+              const oldEp = oldEps[idx];
+              const oldSource = oldEp?.source;
+              const mergedAlts = Array.isArray(oldEp?.altSources) ? [...oldEp.altSources] : [];
+
+              // Lưu nguồn FHD 1080p cũ vào Server dự phòng để người dùng có thể đổi nếu muốn
+              if (oldSource && oldSource !== fEp.source && !mergedAlts.some((a) => a.source === oldSource)) {
+                mergedAlts.push({
+                  id: `backup-fhd-${idx}`,
+                  label: "Server Dự Phòng (FHD 1080p)",
+                  source: oldSource,
+                  embed: oldEp?.embed || "",
+                  isFilm4k: false,
+                  is4k: false
                 });
               }
-            }
-          });
 
-          // Nếu tập chính chưa có luồng .m3u8 hợp lệ thì dùng trực tiếp luồng Film4K
-          const hasMainValidSource =
-            Array.isArray(movie.episodes) &&
-            movie.episodes.some((e) => e && e.source && !e.source.includes("opstream"));
-          if (!hasMainValidSource) {
-            movie.episodes = movie.film4kEpisodes.map((fEp, idx) => ({
-              ...fEp,
-              altSources: [
-                {
+              // Đảm bảo luồng 4K đứng đầu danh sách server
+              if (!mergedAlts.some((a) => a.source === fEp.source)) {
+                mergedAlts.unshift({
                   id: `film4k-${idx}`,
                   label: f4kLabel,
                   source: fEp.source,
                   embed: "",
                   isFilm4k: true,
-                  is4k: isF4k4k
+                  is4k: true
+                });
+              }
+
+              return {
+                name: fEp.name || oldEp?.name || `Tập ${idx + 1}`,
+                slug: fEp.slug || oldEp?.slug || `tap-${idx + 1}`,
+                source: fEp.source, // Khóa nguồn 4K UHD siêu nét làm luồng phát chính
+                embed: oldEp?.embed || "",
+                altSources: mergedAlts,
+                isFilm4k: true,
+                is4k: true
+              };
+            });
+          } else {
+            // Không có 4K ("nếu không có thì thôi"): Giữ nguyên nguồn FHD 1080p cao nhất, thêm Film4K vào altSources
+            movie.film4kEpisodes.forEach((fEp, idx) => {
+              if (fEp.source && movie.episodes?.[idx]) {
+                movie.episodes[idx].altSources = movie.episodes[idx].altSources || [];
+                if (!movie.episodes[idx].altSources.some((a) => a.source === fEp.source)) {
+                  movie.episodes[idx].altSources.push({
+                    id: `film4k-${idx}`,
+                    label: f4kLabel,
+                    source: fEp.source,
+                    embed: "",
+                    isFilm4k: true,
+                    is4k: false
+                  });
                 }
-              ]
-            }));
+              }
+            });
+
+            // Nếu tập chính chưa có luồng .m3u8 hợp lệ thì dùng trực tiếp luồng Film4K
+            const hasMainValidSource =
+              Array.isArray(movie.episodes) &&
+              movie.episodes.some((e) => e && e.source && !e.source.includes("opstream"));
+            if (!hasMainValidSource) {
+              movie.episodes = movie.film4kEpisodes.map((fEp, idx) => ({
+                ...fEp,
+                altSources: [
+                  {
+                    id: `film4k-${idx}`,
+                    label: f4kLabel,
+                    source: fEp.source,
+                    embed: "",
+                    isFilm4k: true,
+                    is4k: false
+                  }
+                ]
+              }));
+            }
           }
         }
       }

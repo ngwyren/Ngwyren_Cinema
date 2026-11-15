@@ -765,7 +765,7 @@
         backBufferLength: 60,
         maxBufferLength: 60,
         maxMaxBufferLength: 120,
-        maxBufferSize: 60 * 1000 * 1000,
+        maxBufferSize: 120 * 1000 * 1000,
         maxBufferHole: 0.8,
         highBufferWatchdogPeriod: 2,
         nudgeOffset: 0.2,
@@ -775,7 +775,7 @@
         maxFragLookUpTolerance: 0.25,
         startLevel: -1,
         capLevelToPlayerSize: false,
-        abrEwmaDefaultEstimate: 5000000
+        abrEwmaDefaultEstimate: 30000000
       });
 
       let hasAppliedResume = false;
@@ -802,6 +802,12 @@
       this.hlsInstance.on(window.Hls.Events.MANIFEST_PARSED, () => {
         const levels = this.hlsInstance?.levels || [];
         this.inspectHlsLevels(levels);
+        // Tự động khóa độ phân giải 4K cao nhất khi manifest có 4K (height >= 2100 || width >= 3800)
+        const k4Idx = levels.findIndex((l) => (l.height && l.height >= 2100) || (l.width && l.width >= 3800));
+        if (k4Idx !== -1 && this.hlsInstance) {
+          this.hlsInstance.currentLevel = k4Idx;
+          this.selectedQualityLevel = k4Idx;
+        }
         this.renderDynamicQualityButtons();
         this.renderDynamicResumeButtons();
         this.applyVideoQualityVisuals();
