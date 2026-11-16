@@ -12529,6 +12529,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     min-height: 520px !important;
     max-height: none !important;
   }
+
+  /* Kéo sát hàng phim/thẻ phim bên dưới lại gần thẻ phim lớn, loại bỏ hoàn toàn cảm giác bị xa */
+  .cinema-home-layout > .cinema-showcase-hero {
+    margin-bottom: -28px !important;
+  }
 }
 
 @media (min-width: 1536px) {
