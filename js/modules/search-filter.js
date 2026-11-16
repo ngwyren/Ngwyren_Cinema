@@ -41,7 +41,7 @@
 
     // 1. TÌM KIẾM TỨC THÌ VỚI CHỈ MỤC ĐÃ ĐƯỢC TIỀN TÍNH TOÁN (Micro-debounce 25ms chống nghẽn phím khi gõ nhanh)
     this._localSearchDebounce = setTimeout(() => {
-      if (this._searchSubmitted || this.currentNav === "search-results") return;
+      if (this._searchSubmitted) return;
       this._executeLocalSearch(query, dropdown);
     }, 25);
   },
@@ -54,6 +54,7 @@
     const movies = this.service.movies;
     for (let i = 0; i < movies.length; i++) {
       const m = movies[i];
+      if (!m) continue;
       const t = m._titleLower || (m._titleLower = (m.title || "").toLowerCase());
       const o = m._originLower || (m._originLower = (m.originTitle || "").toLowerCase());
       const tNorm = m._titleNorm || (m._titleNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(m.title) : t);
@@ -92,7 +93,7 @@
       : rawMatches).slice(0, 8);
 
     // Hiển thị kết quả khớp ngay lập tức nếu chưa submit
-    if (!this._searchSubmitted && this.currentNav !== "search-results") {
+    if (!this._searchSubmitted) {
       this.renderSearchDropdown(query, quickMatches, false);
     }
 
@@ -102,17 +103,21 @@
       this.searchDebounce = null;
     }
     this.searchDebounce = setTimeout(async () => {
-      if (this._searchSubmitted || this.currentNav === "search-results") return;
-      const fullMatches = await this.service.searchMovies(query);
-      if (this._searchSubmitted || this.currentNav === "search-results") return;
-      const dedupedFull = typeof this.dedupeMovieList === "function"
-        ? this.dedupeMovieList(fullMatches)
-        : fullMatches;
-      const currentInput = (document.getElementById("topSearchInput")?.value || "").trim();
-      if (!this._searchSubmitted && this.currentNav !== "search-results" && currentInput === query) {
-        this.lastSearchQuery = query;
-        this.lastSearchResults = dedupedFull;
-        this.renderSearchDropdown(query, dedupedFull.slice(0, 8), true);
+      if (this._searchSubmitted) return;
+      try {
+        const fullMatches = await this.service.searchMovies(query);
+        if (this._searchSubmitted) return;
+        const dedupedFull = typeof this.dedupeMovieList === "function"
+          ? this.dedupeMovieList(fullMatches)
+          : fullMatches;
+        const currentInput = (document.getElementById("topSearchInput")?.value || "").trim();
+        if (!this._searchSubmitted && currentInput === query) {
+          this.lastSearchQuery = query;
+          this.lastSearchResults = dedupedFull;
+          this.renderSearchDropdown(query, dedupedFull.slice(0, 8), true);
+        }
+      } catch (e) {
+        console.warn("[SearchFilter] live search error:", e);
       }
     }, 120);
   },
@@ -121,8 +126,8 @@
     const dropdown = document.getElementById("searchDropdown");
     if (!dropdown) return;
 
-    // Ngăn chặn tuyệt đối dropdown mở đè lên kết quả tìm kiếm toàn trang
-    if (this._searchSubmitted || this.currentNav === "search-results") {
+    // Ngăn chặn tuyệt đối dropdown mở đè lên kết quả tìm kiếm toàn trang khi đã submit
+    if (this._searchSubmitted) {
       dropdown.classList.remove("open");
       dropdown.innerHTML = "";
       return;
@@ -190,7 +195,21 @@
     this.openMovieModal(slug, false);
   },
 
+  focusSearch() {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const topInput = document.getElementById("topSearchInput");
+    if (topInput) {
+      topInput.focus();
+      topInput.select();
+      const val = (topInput.value || "").trim();
+      if (val) {
+        this.handleSearchInput(val);
+      }
+    }
+  },
+
   async showFullSearchResults(query) {
+    this.ensureFullCatalogLoaded();
     this._searchSubmitted = true;
     this.currentNav = "search-results";
     if (this._localSearchDebounce) {
@@ -210,17 +229,39 @@
     document.getElementById("topSearchInput")?.blur();
     document.getElementById("sidebarSearchInput")?.blur();
 
-    this.lastSearchQuery = query;
-    this.lastSearchResults = await this.service.searchMovies(query);
+    const cleanQ = (query || "").trim();
+    this.lastSearchQuery = cleanQ;
+
+    // 1. Phản hồi tức thì 0ms: lấy kết quả có sẵn trong kho local hiển thị ngay, không bắt người dùng chờ
+    const immediateMatches = typeof this.service.searchLocalOnly === "function"
+      ? this.service.searchLocalOnly(cleanQ)
+      : (this.lastSearchResults || []);
+    this.lastSearchResults = immediateMatches;
+
     this.transitionView(() => {
       this.renderMainView();
-      // Bảo đảm dropdown không bị bật lại sau khi view cập nhật
       const dd = document.getElementById("searchDropdown");
       if (dd) {
         dd.classList.remove("open");
         dd.innerHTML = "";
       }
     });
+
+    // 2. Chạy tìm kiếm mở rộng trực tuyến trên nền và cập nhật kết quả tự động
+    try {
+      const fullMatches = await this.service.searchMovies(cleanQ);
+      if (this.currentNav === "search-results" && this.lastSearchQuery === cleanQ) {
+        this.lastSearchResults = fullMatches;
+        this.renderMainView();
+        const dd = document.getElementById("searchDropdown");
+        if (dd) {
+          dd.classList.remove("open");
+          dd.innerHTML = "";
+        }
+      }
+    } catch (err) {
+      console.warn("[SearchFilter] Online search background sync error:", err);
+    }
   },
 
   clearSearch() {

@@ -3574,6 +3574,8 @@ class PhimmoiService {
       item.has4k = is4k;
       item.language = item.language || "Vietsub";
       item.director = item.director || "Đang cập nhật";
+      item.country = item.country || "Quốc Tế";
+      item.countrySlug = item.countrySlug || "quoc-te";
       item.matchScore = item.matchScore || 96;
       item.ambientColors = item.ambientColors || ["#ffffff", "#d4d4d4", "#a3a3a3"];
       item.genres = Array.isArray(item.genres) ? item.genres : [item.genres || "Chính Kịch"];
@@ -4708,6 +4710,62 @@ class PhimmoiService {
   }
 
   /**
+   * Tìm kiếm tức thì trong kho dữ liệu cục bộ đã nạp (0ms phản hồi ngay cho UI)
+   */
+  searchLocalOnly(query) {
+    const q = (query || "").trim().toLowerCase();
+    if (!q) return this.movies;
+    const qNorm = this.normalizeSearchText ? this.normalizeSearchText(q) : q;
+    const qTokens = qNorm ? qNorm.split(" ").filter(Boolean) : [];
+
+    const localMatches = this.movies.filter((m) => {
+      if (!m) return false;
+      const t = (m.title || "").toLowerCase();
+      const o = (m.originTitle || "").toLowerCase();
+      const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
+      const oNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
+      const combinedNorm = `${tNorm} ${oNorm}`;
+      return (
+        t.includes(q) ||
+        o.includes(q) ||
+        (qNorm && (tNorm.includes(qNorm) || oNorm.includes(qNorm))) ||
+        (qTokens.length > 1 && qTokens.every((tk) => combinedNorm.includes(tk))) ||
+        (Array.isArray(m.genres) && m.genres.some((g) => (g || "").toLowerCase().includes(q))) ||
+        (m.country && String(m.country).toLowerCase().includes(q)) ||
+        (Array.isArray(m.cast) && m.cast.some((c) => (c || "").toLowerCase().includes(q))) ||
+        (m.director && String(m.director).toLowerCase().includes(q))
+      );
+    });
+
+    const scored = localMatches.map((m) => {
+      const t = (m.title || "").toLowerCase();
+      const o = (m.originTitle || "").toLowerCase();
+      const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
+      const oNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
+      let score = 0;
+      if (t === q || o === q || (qNorm && (tNorm === qNorm || oNorm === qNorm))) score = 250;
+      else if (t.startsWith(q) || (qNorm && tNorm.startsWith(qNorm))) score = 180;
+      else if (o.startsWith(q) || (qNorm && oNorm.startsWith(qNorm))) score = 150;
+      else if (t.includes(q) || (qNorm && tNorm.includes(qNorm))) score = 110;
+      else if (o.includes(q) || (qNorm && oNorm.includes(qNorm))) score = 90;
+      else if (qTokens.length > 1 && qTokens.every((tk) => `${tNorm} ${oNorm}`.includes(tk))) score = 80;
+      else score = 30;
+      return { movie: m, score };
+    });
+    scored.sort((a, b) => b.score - a.score || (b.movie.year || 0) - (a.movie.year || 0));
+
+    const dedupedResults = [];
+    const seenSearchSlugs = new Set();
+    for (let si = 0; si < scored.length; si++) {
+      const movie = scored[si].movie;
+      if (!movie || seenSearchSlugs.has(movie.slug)) continue;
+      seenSearchSlugs.add(movie.slug);
+      dedupedResults.push(movie);
+    }
+    return dedupedResults;
+  }
+
+  /**
    * Tìm kiếm phim đa nguồn: Kho 1470+ phim + Netflix/PhimAPI Vietsub + NguonC Vietsub + WP API
    */
   async searchMovies(query) {
@@ -4718,18 +4776,21 @@ class PhimmoiService {
 
     // 1. Tìm tức thì trong kho dữ liệu đã nạp (hỗ trợ cả có dấu, không dấu, và bỏ qua dấu hai chấm / gạch ngang)
     const localMatches = this.movies.filter((m) => {
+      if (!m) return false;
+      const t = (m.title || "").toLowerCase();
+      const o = (m.originTitle || "").toLowerCase();
       const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
       const oNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
       const combinedNorm = `${tNorm} ${oNorm}`;
       return (
-        m.title.toLowerCase().includes(q) ||
-        m.originTitle.toLowerCase().includes(q) ||
+        t.includes(q) ||
+        o.includes(q) ||
         (qNorm && (tNorm.includes(qNorm) || oNorm.includes(qNorm))) ||
         (qTokens.length > 1 && qTokens.every((tk) => combinedNorm.includes(tk))) ||
-        m.genres.some((g) => g.toLowerCase().includes(q)) ||
-        m.country.toLowerCase().includes(q) ||
-        m.cast.some((c) => c.toLowerCase().includes(q)) ||
-        m.director.toLowerCase().includes(q)
+        (Array.isArray(m.genres) && m.genres.some((g) => (g || "").toLowerCase().includes(q))) ||
+        (m.country && String(m.country).toLowerCase().includes(q)) ||
+        (Array.isArray(m.cast) && m.cast.some((c) => (c || "").toLowerCase().includes(q))) ||
+        (m.director && String(m.director).toLowerCase().includes(q))
       );
     });
 

@@ -137,6 +137,14 @@
   },
 
   setNavigation(navKey, customTitle = null, force = false) {
+    if (navKey === "tim-kiem" || navKey === "search") {
+      if (typeof this.focusSearch === "function") {
+        this.focusSearch();
+      } else {
+        document.getElementById("topSearchInput")?.focus();
+      }
+      return;
+    }
     this.ensureFullCatalogLoaded();
     if (!force && this.currentNav === navKey && !customTitle && !this.customFilterTitle && this.activeGenreFilter === "Tất cả") {
       window.scrollTo({ top: 0, behavior: "smooth" });
