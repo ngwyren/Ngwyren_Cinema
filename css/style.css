@@ -2414,14 +2414,17 @@ body.modal-open .ambient-canvas {
   gap: 10px;
   max-height: 320px;
   overflow-y: auto;
-  padding-right: 4px;
+  padding: 6px 6px 10px 4px !important;
+  scroll-padding-top: 6px;
+  scroll-padding-bottom: 10px;
+  box-sizing: border-box !important;
 }
 
 .ep-pill-btn {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-subtle);
   color: var(--text-primary);
-  padding: 11px 12px;
+  padding: 10px 12px;
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
   font-weight: 600;
@@ -2431,18 +2434,21 @@ body.modal-open .ambient-canvas {
   justify-content: space-between;
   transition: all 0.25s var(--ease-in-out-smooth);
   font-family: inherit;
+  box-sizing: border-box !important;
+  outline: none !important;
 }
 
 .ep-pill-btn:hover {
   background: rgba(255, 255, 255, 0.14);
-  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 .ep-pill-btn.active {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #ffffff;
-  color: #ffffff;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.22) !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3), inset 0 1px 0.5px rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Netflix "More Like This" (Nội Dung Tương Tự) Cards */
@@ -3510,8 +3516,6 @@ body {
   -webkit-background-clip: padding-box !important;
   overflow: clip !important;
   isolation: isolate;
-  -webkit-clip-path: inset(0 round var(--window-radius, 30px));
-  clip-path: inset(0 round var(--window-radius, 30px));
   background: #0d0f14;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -4471,10 +4475,6 @@ body {
   border-radius: 26px;
   overflow: hidden;
   isolation: isolate;
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-  mask-image: -webkit-radial-gradient(white, black);
-  -webkit-clip-path: inset(0 round 26px);
-  clip-path: inset(0 round 26px);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.35),
@@ -6334,8 +6334,6 @@ body.modal-open .apple-player-bar {
   }
   .vision-window {
     border-radius: var(--window-radius, 26px) !important;
-    -webkit-clip-path: inset(0 round var(--window-radius, 26px)) !important;
-    clip-path: inset(0 round var(--window-radius, 26px)) !important;
     padding: 18px 20px 24px !important;
   }
   .vision-topbar {
@@ -6399,8 +6397,6 @@ body.modal-open .apple-player-bar {
   }
   .vision-window {
     border-radius: var(--window-radius, 24px) !important;
-    -webkit-clip-path: inset(0 round var(--window-radius, 24px)) !important;
-    clip-path: inset(0 round var(--window-radius, 24px)) !important;
     padding: 16px 16px 22px !important;
   }
   .cinema-showcase-hero {
@@ -6479,8 +6475,6 @@ body.modal-open .apple-player-bar {
   }
   .vision-window {
     border-radius: var(--window-radius, 20px) !important;
-    -webkit-clip-path: inset(0 round var(--window-radius, 20px)) !important;
-    clip-path: inset(0 round var(--window-radius, 20px)) !important;
     padding: 12px 10px 18px !important;
   }
 
@@ -7443,8 +7437,6 @@ html.dragging-glass .vision-left-dock {
   -webkit-background-clip: padding-box !important;
   overflow: clip !important;
   isolation: isolate;
-  -webkit-clip-path: inset(0 round var(--window-radius, 30px));
-  clip-path: inset(0 round var(--window-radius, 30px));
   backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
   border-color: rgba(255, 255, 255, var(--glass-border-alpha, 0.28)) !important;
@@ -12533,8 +12525,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 920px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 120px) !important;
-    min-height: 560px !important;
+    height: calc(100vh - 160px) !important;
+    min-height: 520px !important;
     max-height: none !important;
   }
 }
@@ -12542,18 +12534,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1536px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 120px) !important;
-    min-height: 640px !important;
+    height: calc(100vh - 160px) !important;
+    min-height: 600px !important;
     max-height: none !important;
     border-radius: 30px !important;
-    -webkit-clip-path: inset(0 round 30px) !important;
-    clip-path: inset(0 round 30px) !important;
   }
 
   .cinema-showcase-hero .vision-hero-bg {
-    border-radius: 32px !important;
-    -webkit-clip-path: inset(0 round 32px) !important;
-    clip-path: inset(0 round 32px) !important;
+    border-radius: 30px !important;
+    -webkit-clip-path: inset(0 round 30px) !important;
+    clip-path: inset(0 round 30px) !important;
   }
 
   .cinema-hero-content {
@@ -12617,18 +12607,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 120px) !important;
-    min-height: 720px !important;
+    height: calc(100vh - 160px) !important;
+    min-height: 680px !important;
     max-height: none !important;
     border-radius: 34px !important;
-    -webkit-clip-path: inset(0 round 34px) !important;
-    clip-path: inset(0 round 34px) !important;
   }
 
   .cinema-showcase-hero .vision-hero-bg {
-    border-radius: 36px !important;
-    -webkit-clip-path: inset(0 round 36px) !important;
-    clip-path: inset(0 round 36px) !important;
+    border-radius: 34px !important;
+    -webkit-clip-path: inset(0 round 34px) !important;
+    clip-path: inset(0 round 34px) !important;
   }
 
   .cinema-hero-content {
@@ -12693,18 +12681,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 2400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 120px) !important;
-    min-height: 800px !important;
+    height: calc(100vh - 160px) !important;
+    min-height: 760px !important;
     max-height: none !important;
     border-radius: 40px !important;
-    -webkit-clip-path: inset(0 round 40px) !important;
-    clip-path: inset(0 round 40px) !important;
   }
 
   .cinema-showcase-hero .vision-hero-bg {
-    border-radius: 42px !important;
-    -webkit-clip-path: inset(0 round 42px) !important;
-    clip-path: inset(0 round 42px) !important;
+    border-radius: 40px !important;
+    -webkit-clip-path: inset(0 round 40px) !important;
+    clip-path: inset(0 round 40px) !important;
   }
 
   .cinema-hero-content {

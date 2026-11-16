@@ -111,7 +111,7 @@ class AppleCinemaApp {
       window.NgwyrenSystem.dispatcher.scheduleIdle("periodicMaintenance", () => {
         this.startPeriodicMaintenanceScheduler();
       }, 600);
-      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.6.7" });
+      window.NgwyrenSystem.bus?.emit("app:ready", { version: this.APP_VERSION || "2.6.8" });
     } else {
       this.startPeriodicMaintenanceScheduler();
     }
@@ -463,8 +463,16 @@ class AppleCinemaApp {
     if (topInput) {
       topInput.addEventListener("input", (e) => this.handleSearchInput(e.target.value));
       topInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && topInput.value.trim()) {
-          this.showFullSearchResults(topInput.value.trim());
+        if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
+          const q = (topInput.value || "").trim();
+          if (q) {
+            this.showFullSearchResults(q);
+          } else {
+            document.getElementById("searchDropdown")?.classList.remove("open");
+            topInput.blur();
+          }
         }
       });
     }
@@ -475,8 +483,16 @@ class AppleCinemaApp {
         this.handleSearchInput(e.target.value);
       });
       sideInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && sideInput.value.trim()) {
-          this.showFullSearchResults(sideInput.value.trim());
+        if (e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
+          const q = (sideInput.value || "").trim();
+          if (q) {
+            this.showFullSearchResults(q);
+          } else {
+            document.getElementById("searchDropdown")?.classList.remove("open");
+            sideInput.blur();
+          }
         }
       });
     }

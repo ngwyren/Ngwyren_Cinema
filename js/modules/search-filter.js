@@ -22,15 +22,26 @@
       clearTimeout(this._localSearchDebounce);
       this._localSearchDebounce = null;
     }
-    clearTimeout(this.searchDebounce);
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+      this.searchDebounce = null;
+    }
 
     if (!query) {
-      if (dropdown) dropdown.classList.remove("open");
+      this._searchSubmitted = false;
+      if (dropdown) {
+        dropdown.classList.remove("open");
+        dropdown.innerHTML = "";
+      }
       return;
     }
 
+    // Reset cờ submitted để cho phép gợi ý lại khi người dùng gõ từ khóa mới
+    this._searchSubmitted = false;
+
     // 1. TÌM KIẾM TỨC THÌ VỚI CHỈ MỤC ĐÃ ĐƯỢC TIỀN TÍNH TOÁN (Micro-debounce 25ms chống nghẽn phím khi gõ nhanh)
     this._localSearchDebounce = setTimeout(() => {
+      if (this._searchSubmitted || this.currentNav === "search-results") return;
       this._executeLocalSearch(query, dropdown);
     }, 25);
   },
@@ -80,18 +91,25 @@
       ? this.dedupeMovieList(rawMatches)
       : rawMatches).slice(0, 8);
 
-    // Hiển thị kết quả khớp ngay lập tức
-    this.renderSearchDropdown(query, quickMatches, false);
+    // Hiển thị kết quả khớp ngay lập tức nếu chưa submit
+    if (!this._searchSubmitted && this.currentNav !== "search-results") {
+      this.renderSearchDropdown(query, quickMatches, false);
+    }
 
     // 2. TÌM NÂNG CAO TRỰC TUYẾN PHIMAPI (Debounce 120ms để mở rộng kết quả)
-    clearTimeout(this.searchDebounce);
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+      this.searchDebounce = null;
+    }
     this.searchDebounce = setTimeout(async () => {
+      if (this._searchSubmitted || this.currentNav === "search-results") return;
       const fullMatches = await this.service.searchMovies(query);
+      if (this._searchSubmitted || this.currentNav === "search-results") return;
       const dedupedFull = typeof this.dedupeMovieList === "function"
         ? this.dedupeMovieList(fullMatches)
         : fullMatches;
       const currentInput = (document.getElementById("topSearchInput")?.value || "").trim();
-      if (currentInput === query) {
+      if (!this._searchSubmitted && this.currentNav !== "search-results" && currentInput === query) {
         this.lastSearchQuery = query;
         this.lastSearchResults = dedupedFull;
         this.renderSearchDropdown(query, dedupedFull.slice(0, 8), true);
@@ -102,6 +120,13 @@
   renderSearchDropdown(query, results, isLiveDone) {
     const dropdown = document.getElementById("searchDropdown");
     if (!dropdown) return;
+
+    // Ngăn chặn tuyệt đối dropdown mở đè lên kết quả tìm kiếm toàn trang
+    if (this._searchSubmitted || this.currentNav === "search-results") {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+      return;
+    }
 
     dropdown.innerHTML = `
       <div class="search-dropdown-header">
@@ -146,27 +171,78 @@
   },
 
   selectSearchResult(slug) {
-    document.getElementById("searchDropdown")?.classList.remove("open");
+    this._searchSubmitted = true;
+    if (this._localSearchDebounce) {
+      clearTimeout(this._localSearchDebounce);
+      this._localSearchDebounce = null;
+    }
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+      this.searchDebounce = null;
+    }
+    const dropdown = document.getElementById("searchDropdown");
+    if (dropdown) {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+    }
+    document.getElementById("topSearchInput")?.blur();
+    document.getElementById("sidebarSearchInput")?.blur();
     this.openMovieModal(slug, false);
   },
 
   async showFullSearchResults(query) {
-    document.getElementById("searchDropdown")?.classList.remove("open");
+    this._searchSubmitted = true;
+    this.currentNav = "search-results";
+    if (this._localSearchDebounce) {
+      clearTimeout(this._localSearchDebounce);
+      this._localSearchDebounce = null;
+    }
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+      this.searchDebounce = null;
+    }
+    const dropdown = document.getElementById("searchDropdown");
+    if (dropdown) {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+    }
+    // Thu gọn bàn phím và nhả focus trên cả thiết bị di động & máy tính
+    document.getElementById("topSearchInput")?.blur();
+    document.getElementById("sidebarSearchInput")?.blur();
+
     this.lastSearchQuery = query;
     this.lastSearchResults = await this.service.searchMovies(query);
-    this.currentNav = "search-results";
     this.transitionView(() => {
       this.renderMainView();
+      // Bảo đảm dropdown không bị bật lại sau khi view cập nhật
+      const dd = document.getElementById("searchDropdown");
+      if (dd) {
+        dd.classList.remove("open");
+        dd.innerHTML = "";
+      }
     });
   },
 
   clearSearch() {
+    this._searchSubmitted = false;
+    if (this._localSearchDebounce) {
+      clearTimeout(this._localSearchDebounce);
+      this._localSearchDebounce = null;
+    }
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+      this.searchDebounce = null;
+    }
     const input = document.getElementById("topSearchInput");
     const sideInput = document.getElementById("sidebarSearchInput");
     if (input) input.value = "";
     if (sideInput) sideInput.value = "";
     document.getElementById("searchClearBtn")?.classList.remove("visible");
-    document.getElementById("searchDropdown")?.classList.remove("open");
+    const dropdown = document.getElementById("searchDropdown");
+    if (dropdown) {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+    }
     if (this.currentNav === "search-results") {
       this.resetAllFilters();
     }
