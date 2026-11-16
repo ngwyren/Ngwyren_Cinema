@@ -251,7 +251,7 @@
     try {
       const fullMatches = await this.service.searchMovies(cleanQ);
       if (this.currentNav === "search-results" && this.lastSearchQuery === cleanQ) {
-        this.lastSearchResults = fullMatches;
+        this.lastSearchResults = typeof this.dedupeMovieList === "function" ? this.dedupeMovieList(fullMatches) : fullMatches;
         this.renderMainView();
         const dd = document.getElementById("searchDropdown");
         if (dd) {

@@ -3396,6 +3396,20 @@ class PhimmoiService {
       }
       return "Nguyễn Minh Chung, Đỗ Phú Hải";
     }
+    if (s.includes("naruto")) {
+      if (s.includes("cai-chet-tien-doan") || s.includes("shippuden-the-movie-2007")) return "Hajime Kamegaki";
+      if (s.includes("nhiem-vu-bi-mat") || s.includes("bonds")) return "Masahiko Murata";
+      if (s.includes("nguoi-ke-thua-hoa-chi") || s.includes("will-of-fire")) return "Masahiko Murata";
+      if (s.includes("toa-thap-bi-mat") || s.includes("lost-tower")) return "Masahiko Murata";
+      if (s.includes("huyet-nguc") || s.includes("blood-prison")) return "Masahiko Murata";
+      if (s.includes("duong-toi-ninja") || s.includes("road-to-ninja")) return "Hayato Date";
+      if (s.includes("tran-chien-cuoi-cung") || s.includes("the-last")) return "Tsuneo Kobayashi";
+      if (s.includes("boruto") || s.includes("nguoi-ke-nhiem")) return "Hiroyuki Yamashita";
+      if (s.includes("cuoc-chien-o-tuyet-quoc") || s.includes("land-of-snow")) return "Tensai Okamura";
+      if (s.includes("huyen-thoai-da-gelel") || s.includes("legend-of-the-stone-of-gelel")) return "Hirotsugu Kawasaki";
+      if (s.includes("nhung-linh-gac-cua-nguyet-quoc") || s.includes("crescent-moon")) return "Toshiyuki Tsuru";
+      return "Hayato Date";
+    }
     if (s.includes("tro-choi-tri-menh") || s.includes("spirealm")) {
       return "Bành Bác Luân";
     }
@@ -3450,6 +3464,20 @@ class PhimmoiService {
     if (s.includes("nguoi-me-robot") || s.includes("i-am-mother")) return "Grant Sputore";
 
     return "";
+  }
+
+  cleanDirector(director, slug = "", title = "") {
+    let d = String(director || "").trim();
+    const isFake = !d || /^(?:film4k(?:\s*studio)?|phimapi|nguonc|admin|studio|netflix|vietsub|uploader|none|null|dang cap nhat|đang cập nhật)$/i.test(d) || /film4k|phimapi/i.test(d);
+    if (isFake) {
+      const known = this.getKnownDirector(slug, title);
+      return known || "Đang cập nhật";
+    }
+    const known = this.getKnownDirector(slug, title);
+    if (known && (d === "Đang cập nhật" || d === "N/A" || d.length < 3)) {
+      return known;
+    }
+    return d;
   }
 
   constructor() {
@@ -3719,8 +3747,9 @@ class PhimmoiService {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .trim();
-    // Chuẩn hóa biến thể chuyển tự tiếng Nhật & tiếng Anh thông dụng (shippuuden -> shippuden)
-    t = t.replace(/shippu+den/g, "shippuden");
+    // Chuẩn hóa biến thể chuyển tự tiếng Nhật & tiếng Anh thông dụng (shippden, shippuden, shippuuden -> shippuden)
+    t = t.replace(/shippu*den/g, "shippuden");
+    t = t.replace(/\b(?:naruto\s+)?hurricane\s+chronicles\b/g, "");
     // Bỏ tiền tố thông dụng: phim, xem phim, the movie:
     t = t.replace(/^(?:phim|xem phim|the movie)\s*:?\s*/i, "");
     // Chuẩn hóa liên từ & / và -> and
@@ -4353,9 +4382,7 @@ class PhimmoiService {
       country: countryName,
       countrySlug,
       genres,
-      director: (typeof fItem.director === "string" && fItem.director.trim() && !/film4k|studio|admin|netflix|vietsub|uploader/i.test(fItem.director))
-        ? fItem.director.trim()
-        : (this.getKnownDirector(fItem.slug, titleVi) || "Đang cập nhật"),
+      director: this.cleanDirector(fItem.director, fItem.slug, titleVi),
       cast: ["Dàn diễn viên chính"],
       ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
       trailerUrl: "",
@@ -4554,7 +4581,7 @@ class PhimmoiService {
           country: "Quốc Tế",
           countrySlug: "quoc-te",
           genres: ["Chính Kịch", "Thịnh Hành"],
-          director: nc.director || "Đang cập nhật",
+          director: this.cleanDirector(nc.director, nc.slug, nc.name),
           cast: nc.casts ? nc.casts.split(/,\s*/).slice(0, 6) : ["Dàn diễn viên chính"],
           ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
           trailerUrl: "",
@@ -4843,6 +4870,13 @@ class PhimmoiService {
   async searchMovies(query) {
     const q = (query || "").trim().toLowerCase();
     if (!q) return this.movies;
+    const cacheKey = `search:${q}`;
+    if (this._smartCache && this._smartCache.has(cacheKey)) {
+      const cached = this._smartCache.get(cacheKey);
+      if (cached && Date.now() - cached.timestamp < 120000 && Array.isArray(cached.results)) {
+        return cached.results;
+      }
+    }
     const qNorm = this.normalizeSearchText(q);
     const qTokens = qNorm ? qNorm.split(" ").filter(Boolean) : [];
 
@@ -4903,9 +4937,7 @@ class PhimmoiService {
           country: item.country?.[0]?.name || "Quốc Tế",
           countrySlug: item.country?.[0]?.slug || "au-my",
           genres: item.category ? item.category.map((c) => c.name) : ["Chính Kịch"],
-          director: (item.director && !/netflix|vietsub|film4k|studio|admin/i.test(item.director))
-          ? item.director
-          : (this.getKnownDirector(item.slug, item.name || item.origin_name) || "Đang cập nhật"),
+          director: this.cleanDirector(item.director, item.slug, item.name || item.origin_name),
           cast: ["Dàn diễn viên chính"],
           ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
           trailerUrl: "",
@@ -4962,7 +4994,7 @@ class PhimmoiService {
           country: "Quốc Tế",
           countrySlug: "quoc-te",
           genres: ["Chính Kịch", "Hành Động"],
-          director: nc.director || "Đang cập nhật",
+          director: this.cleanDirector(nc.director, nc.slug, nc.name),
           cast: nc.casts ? nc.casts.split(/,\s*/) : ["Dàn diễn viên chính"],
           ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
           trailerUrl: "",
@@ -5078,6 +5110,9 @@ class PhimmoiService {
         }
       });
       dedupedResults.push(m);
+    }
+    if (this._smartCache) {
+      this._smartCache.set(cacheKey, { timestamp: Date.now(), results: dedupedResults });
     }
     return dedupedResults;
   }

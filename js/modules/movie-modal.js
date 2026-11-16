@@ -22,6 +22,9 @@
 
   getMovieDirectorLabel(movie) {
     if (!movie) return "Đang cập nhật";
+    if (this.service && typeof this.service.cleanDirector === "function") {
+      return this.service.cleanDirector(movie.director, movie.slug, movie.title);
+    }
     let d = String(movie.director || "").trim();
     if (!d || /film4k|studio|netflix|vietsub|uploader|admin|none|null/i.test(d)) {
       const known = this.service?.getKnownDirector?.(movie.slug, movie.title);

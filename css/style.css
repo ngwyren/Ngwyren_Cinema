@@ -1296,7 +1296,7 @@ body::-webkit-scrollbar {
 }
 
 .movie-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
 }
 
 .movie-poster-wrap {
@@ -1306,33 +1306,25 @@ body::-webkit-scrollbar {
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--bg-elevated);
-  border: none !important;
-  box-shadow: none !important;
-  isolation: isolate;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Lớp viền bảo vệ 4 cạnh sắc nét 100% chống khuyết viền (Top, Right, Bottom, Left) */
-.movie-poster-wrap::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
   border: 2px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: none !important;
-  pointer-events: none;
-  z-index: 5;
+  isolation: isolate;
   box-sizing: border-box;
-  transition: border-color 0.24s ease;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease !important;
+}
+
+/* Ẩn hoàn toàn pseudo-element để tránh subpixel lệch trục */
+.movie-poster-wrap::after {
+  display: none !important;
 }
 
 .movie-card:hover .movie-poster-wrap {
-  border: none !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
   box-shadow: none !important;
 }
 
 .movie-card:hover .movie-poster-wrap::after {
-  border-color: rgba(255, 255, 255, 0.95) !important;
+  display: none !important;
 }
 
 .movie-poster-wrap img {
@@ -2116,7 +2108,7 @@ body.modal-open .ambient-canvas {
 }
 
 .continue-shelf-card:hover {
-  transform: translate3d(0, -5px, 0) !important;
+  transform: translate3d(0, -4px, 0) !important;
   border-color: rgba(255, 255, 255, 0.95) !important;
   background: rgba(255, 255, 255, 0.07) !important;
   box-shadow: none !important;
@@ -2907,7 +2899,7 @@ html {
 .chart-row-item,
 .netflix-related-card,
 .schedule-card-glass {
-  contain: layout style paint;
+  contain: layout style;
 }
 
 .vision-feature-card {
@@ -4275,7 +4267,7 @@ body {
   max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-right: 0 !important;
+  padding: 6px 4px 6px 4px !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
   -webkit-overflow-scrolling: touch;
@@ -4459,7 +4451,7 @@ body {
 .cinema-schedule-layout {
   display: flex;
   flex-direction: column;
-  gap: 44px;
+  gap: 22px;
   width: 100%;
   min-width: 0;
 }
@@ -4468,9 +4460,9 @@ body {
 .vision-hero-banner {
   position: relative !important;
   width: 100% !important;
-  height: clamp(480px, 60vh, 600px) !important;
-  min-height: 480px !important;
-  max-height: 600px !important;
+  height: clamp(440px, 52vh, 520px) !important;
+  min-height: 440px !important;
+  max-height: 520px !important;
   box-sizing: border-box !important;
   border-radius: 26px;
   overflow: hidden;
@@ -4481,6 +4473,12 @@ body {
     0 24px 60px rgba(0, 0, 0, 0.65);
   background: #0d0f14;
   padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.vision-continue-watching-shelf {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .cinema-showcase-hero .vision-hero-bg {
@@ -5153,6 +5151,8 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
   gap: 20px;
+  overflow: visible !important;
+  padding: 10px 4px 18px 4px;
 }
 
 /* Thẻ Phim Chuẩn Tỷ Lệ Vàng Toán Học (Golden Ratio 1.6 : 1) */
@@ -5165,7 +5165,7 @@ body {
   border-radius: 20px;
   overflow: hidden;
   isolation: isolate;
-  border: none !important;
+  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: none !important;
   background: transparent;
   cursor: pointer;
@@ -5176,32 +5176,23 @@ body {
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease !important;
 }
 
-/* Lớp viền bảo vệ 4 cạnh sắc nét 100% chống khuyết viền (Top, Right, Bottom, Left) */
+/* Ẩn hoàn toàn pseudo-element để tránh subpixel lệch trục */
 .vision-feature-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 2px solid rgba(255, 255, 255, 0.16) !important;
-  box-shadow: none !important;
-  pointer-events: none;
-  z-index: 5;
-  box-sizing: border-box;
-  transition: border-color 0.24s ease;
+  display: none !important;
 }
 
 .vision-feature-card:hover {
-  border: none !important;
   transform: translate3d(0, -4px, 0) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
   box-shadow: none !important;
 }
 
 .vision-feature-card:hover::after {
-  border-color: rgba(255, 255, 255, 0.95) !important;
-  box-shadow: none !important;
+  display: none !important;
 }
 
 .vision-feature-img {
@@ -9397,10 +9388,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 .cinema-showcase-hero {
   position: relative !important;
   width: 100% !important;
-  height: clamp(560px, 72vh, 680px) !important;
-  min-height: 560px !important;
-  max-height: 680px !important;
+  height: clamp(440px, 52vh, 520px) !important;
+  min-height: 440px !important;
+  max-height: 520px !important;
   box-sizing: border-box !important;
+  margin-bottom: 0 !important;
   transition:
     border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -9729,7 +9721,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
   .movie-card:hover,
   .movie-card:focus-visible {
-    transform: translate3d(0, -5px, 0) !important;
+    transform: translate3d(0, -4px, 0) !important;
     z-index: 5 !important;
   }
 
@@ -9754,7 +9746,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
   .continue-shelf-card:hover,
   .continue-shelf-card:focus-visible {
-    transform: translate3d(0, -5px, 0) !important;
+    transform: translate3d(0, -4px, 0) !important;
     border: 2px solid rgba(255, 255, 255, 0.95) !important;
     background: rgba(255, 255, 255, 0.07) !important;
     box-shadow: none !important;
@@ -9780,7 +9772,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Side Trailer Cards */
   .vision-trailer-card:hover,
   .vision-trailer-card.is-hero-previewing {
-    transform: translate3d(0, -5px, 0) !important;
+    transform: translate3d(0, -3px, 0) !important;
     border: none !important;
     box-shadow: none !important;
     z-index: 5 !important;
@@ -11039,7 +11031,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   /* Vô hiệu hóa trạng thái hover dính sau khi chạm trên màn hình cảm ứng */
   .vision-card-glass:hover,
   .vision-feature-card:hover,
-  .vision-trailer-card:hover {
+  .vision-trailer-card:hover,
+  .movie-card:hover,
+  .continue-shelf-card:hover {
     transform: none !important;
   }
 
@@ -11557,7 +11551,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
     gap: 10px !important;
-    padding: 2px 0 4px 0 !important;
+    padding: 8px 4px 12px 4px !important;
+    overflow-y: visible !important;
     scrollbar-width: none !important;
   }
 
@@ -11573,7 +11568,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     scroll-snap-type: x mandatory !important;
     -webkit-overflow-scrolling: touch !important;
     gap: 10px !important;
-    padding: 2px 0 4px 0 !important;
+    padding: 8px 4px 12px 4px !important;
+    overflow-y: visible !important;
     scrollbar-width: none !important;
   }
 
@@ -11605,6 +11601,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .cinema-category-layout .vision-cards-grid-4 {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 12px !important;
+    padding: 8px 4px 14px 4px !important;
+    overflow: visible !important;
   }
 
   .cinema-category-layout .vision-feature-card {
@@ -12525,23 +12523,23 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 920px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 160px) !important;
-    min-height: 520px !important;
-    max-height: none !important;
+    height: clamp(440px, 52vh, 520px) !important;
+    min-height: 440px !important;
+    max-height: 520px !important;
   }
 
   /* Khoảng cách vàng thanh thoát giữa thẻ phim lớn và hàng phim/thẻ phim bên dưới */
   .cinema-home-layout > .cinema-showcase-hero {
-    margin-bottom: 32px !important;
+    margin-bottom: 0 !important;
   }
 }
 
 @media (min-width: 1536px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 160px) !important;
-    min-height: 600px !important;
-    max-height: none !important;
+    height: clamp(480px, 55vh, 580px) !important;
+    min-height: 480px !important;
+    max-height: 580px !important;
     border-radius: 30px !important;
   }
 
@@ -12612,9 +12610,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 160px) !important;
-    min-height: 680px !important;
-    max-height: none !important;
+    height: clamp(520px, 58vh, 640px) !important;
+    min-height: 520px !important;
+    max-height: 640px !important;
     border-radius: 34px !important;
   }
 
@@ -12686,9 +12684,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 2400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 160px) !important;
-    min-height: 760px !important;
-    max-height: none !important;
+    height: clamp(580px, 62vh, 720px) !important;
+    min-height: 580px !important;
+    max-height: 720px !important;
     border-radius: 40px !important;
   }
 
