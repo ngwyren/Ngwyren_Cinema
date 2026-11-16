@@ -12525,21 +12525,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 920px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 180px) !important;
+    height: calc(100vh - 150px) !important;
     min-height: 520px !important;
     max-height: none !important;
-  }
-
-  /* Đảm bảo hàng phim/thẻ phim bên dưới luôn bắt đầu dưới nếp gấp màn hình đầu tiên, triệt tiêu 100% lòi mép */
-  .cinema-home-layout > .cinema-showcase-hero {
-    margin-bottom: 120px !important;
   }
 }
 
 @media (min-width: 1536px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 180px) !important;
+    height: calc(100vh - 150px) !important;
     min-height: 600px !important;
     max-height: none !important;
     border-radius: 30px !important;
@@ -12612,7 +12607,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 180px) !important;
+    height: calc(100vh - 150px) !important;
     min-height: 680px !important;
     max-height: none !important;
     border-radius: 34px !important;
@@ -12686,7 +12681,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 2400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 180px) !important;
+    height: calc(100vh - 150px) !important;
     min-height: 760px !important;
     max-height: none !important;
     border-radius: 40px !important;
