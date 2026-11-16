@@ -3148,18 +3148,6 @@ class PhimmoiService {
     ];
 
     this.movies = PHIMMOI_SEED_MOVIES.map((m) => {
-      const isStreamOwner =
-        m.slug === "thanh-guom-diet-quy-vo-han-thanh-465645" ||
-        m.slug === "matchbox-phim-dien-anh" ||
-        m.slug === "9-1-1-phan-9";
-      if (!isStreamOwner && Array.isArray(m.episodes)) {
-        m.episodes = m.episodes.map((ep) => {
-          if (streamPool.includes(ep.source)) {
-            return { ...ep, source: "", needsEnrich: true };
-          }
-          return ep;
-        });
-      }
       m.ambientColors = ["#ffffff", "#d4d4d4", "#a3a3a3"];
       if (!m.sectionTags.includes("vietsub")) m.sectionTags.push("vietsub");
       if (["pm-1", "pm-2", "pm-4", "pm-5", "pm-9", "pm-14", "pm-16", "pm-17", "pm-18", "pm-20", "pm-21", "pm-26"].includes(m.id)) {
