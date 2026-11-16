@@ -274,6 +274,10 @@
   },
 
   filterByPerson(personName) {
+    if (!personName || personName === "Đang cập nhật" || personName.includes("Dàn diễn viên")) {
+      this.showToast("ℹ️ Thông tin nhân sự đang được cập nhật", "info");
+      return;
+    }
     this.closeMovieModal();
     this.customFilterValue = personName;
     this.currentNav = "person-filter";

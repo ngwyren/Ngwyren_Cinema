@@ -30,6 +30,251 @@ const PHIMMOI_CONFIG = {
  */
 const PHIMMOI_SEED_MOVIES = [
   {
+  "id": "pa-kinh-van-hoa",
+  "slug": "kinh-van-hoa",
+  "crawlSlug": "kinh-van-hoa",
+  "title": "Kính Vạn Hoa",
+  "originTitle": "Kính Vạn Hoa (Trọn Bộ 28 Tập Bản Đẹp)",
+  "poster": "https://image.tmdb.org/t/p/w500/uVGD2n70KQGS4VMpUK67rw5b5ob.jpg",
+  "backdrop": "https://image.tmdb.org/t/p/w500/uVGD2n70KQGS4VMpUK67rw5b5ob.jpg",
+  "type": "series",
+  "sectionTags": [
+    "hot",
+    "vietnam",
+    "phim-bo",
+    "de-cu"
+  ],
+  "quality": "1080",
+  "has4k": false,
+  "language": "Tiếng Việt (Gốc TFS)",
+  "duration": "45 phút/tập",
+  "episodeCurrent": "Trọn Bộ 28/28 Tập",
+  "episodeTotal": "28",
+  "year": 2005,
+  "rating": 9.9,
+  "matchScore": 99,
+  "country": "Việt Nam",
+  "countrySlug": "viet-nam",
+  "genres": [
+    "Tuổi Học Trò",
+    "Phiêu Lưu",
+    "Hài Hước",
+    "Kinh Điển Việt Nam"
+  ],
+  "director": "Nguyễn Minh Chung, Đỗ Phú Hải",
+  "cast": [
+    "Ngọc Trai (Quý ròm)",
+    "Vũ Long (Tiểu Long)",
+    "Anh Đào (Nhỏ Hạnh)"
+  ],
+  "ambientColors": [
+    "#3b82f6",
+    "#1e3a8a",
+    "#0f172a"
+  ],
+  "trailerUrl": "https://www.youtube.com/watch?v=cG5ZZ2FB720",
+  "synopsis": "Kính Vạn Hoa là bộ phim truyền hình thiếu nhi kinh điển của Việt Nam do Hãng phim Truyền hình TP.HCM (TFS) sản xuất, chuyển thể từ bộ truyện nổi tiếng cùng tên của nhà văn Nguyễn Nhật Ánh. Bộ phim xoay quanh bộ ba học trò tinh nghịch: Quý ròm thông minh lém lỉnh, Tiểu Long giỏi võ tốt bụng và Nhỏ Hạnh dịu dàng kiên nhẫn cùng những chuyến phiêu lưu kỳ thú tuổi học trò.",
+  "episodes": [
+    {
+      "name": "Tập 1",
+      "slug": "tap-1",
+      "embed": "https://www.youtube.com/embed/cG5ZZ2FB720",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 2",
+      "slug": "tap-2",
+      "embed": "https://www.youtube.com/embed/KMj9cuiuzEs",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 3",
+      "slug": "tap-3",
+      "embed": "https://www.youtube.com/embed/oyG6NNfa-PA",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 4",
+      "slug": "tap-4",
+      "embed": "https://www.youtube.com/embed/n4mduwatyZ4",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 5",
+      "slug": "tap-5",
+      "embed": "https://www.youtube.com/embed/9XsZgVsVjNY",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 6",
+      "slug": "tap-6",
+      "embed": "https://www.youtube.com/embed/E8SLhtoYX2M",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 7",
+      "slug": "tap-7",
+      "embed": "https://www.youtube.com/embed/7meIxJszTRA",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 8",
+      "slug": "tap-8",
+      "embed": "https://www.youtube.com/embed/ZONqaPNki3E",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 9",
+      "slug": "tap-9",
+      "embed": "https://www.youtube.com/embed/_ytTmJs5TFM",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 10",
+      "slug": "tap-10",
+      "embed": "https://www.youtube.com/embed/T1Yw5t0cFug",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 11",
+      "slug": "tap-11",
+      "embed": "https://www.youtube.com/embed/ON0FXA0ecFU",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 12",
+      "slug": "tap-12",
+      "embed": "https://www.youtube.com/embed/PxFRFMPqPPU",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 13",
+      "slug": "tap-13",
+      "embed": "https://www.youtube.com/embed/LqelP6SejAE",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 14",
+      "slug": "tap-14",
+      "embed": "https://www.youtube.com/embed/K657qZK0FMQ",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 15",
+      "slug": "tap-15",
+      "embed": "https://www.youtube.com/embed/fiGgniFZhFA",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 16",
+      "slug": "tap-16",
+      "embed": "https://www.youtube.com/embed/Kl_Q4me3XD0",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 17",
+      "slug": "tap-17",
+      "embed": "https://www.youtube.com/embed/tadWhDjoK60",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 18",
+      "slug": "tap-18",
+      "embed": "https://www.youtube.com/embed/isfSgkeCgHc",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 19",
+      "slug": "tap-19",
+      "embed": "https://www.youtube.com/embed/UmyCjSY07TU",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 20",
+      "slug": "tap-20",
+      "embed": "https://www.youtube.com/embed/scCyZSqDmWI",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 21",
+      "slug": "tap-21",
+      "embed": "https://www.youtube.com/embed/0w3GcLE7wYQ",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 22",
+      "slug": "tap-22",
+      "embed": "https://www.youtube.com/embed/1att-rQ2hVU",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 23",
+      "slug": "tap-23",
+      "embed": "https://www.youtube.com/embed/VAT86B0FfJg",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 24",
+      "slug": "tap-24",
+      "embed": "https://www.youtube.com/embed/8OMuSI2uNMg",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 25",
+      "slug": "tap-25",
+      "embed": "https://www.youtube.com/embed/-cQMRAmXw3s",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 26",
+      "slug": "tap-26",
+      "embed": "https://www.youtube.com/embed/biGwsCAS8nI",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 27",
+      "slug": "tap-27",
+      "embed": "https://www.youtube.com/embed/ZryVrKywqeQ",
+      "source": "",
+      "is4k": false
+    },
+    {
+      "name": "Tập 28",
+      "slug": "tap-28",
+      "embed": "https://www.youtube.com/embed/FY9RCVQt3x4",
+      "source": "",
+      "is4k": false
+    }
+  ]
+},
+
+  {
     "id": "pa-ke-kien-tao",
     "slug": "ke-kien-tao",
     "crawlSlug": "ke-kien-tao",
@@ -3140,6 +3385,73 @@ const PHIMMOI_SEED_MOVIES = [
  * và https://phimapi.com/phim/<slug> (nguồn HLS thực tế của phimmoiz.one)
  */
 class PhimmoiService {
+  getKnownDirector(slug, title = "") {
+    if (!slug && !title) return "";
+    const s = String(slug || "").toLowerCase().trim();
+    const t = String(title || "").toLowerCase().trim();
+
+    if (s.includes("kinh-van-hoa") || t.includes("kính vạn hoa")) {
+      if (s.includes("2024") || t.includes("bắt đền con dế ma")) {
+        return "Võ Thanh Hòa";
+      }
+      return "Nguyễn Minh Chung, Đỗ Phú Hải";
+    }
+    if (s.includes("tro-choi-tri-menh") || s.includes("spirealm")) {
+      return "Bành Bác Luân";
+    }
+    if (s === "mai" || t === "mai") return "Trấn Thành";
+    if (s.includes("nha-ba-nu") || t.includes("nhà bà nữ")) return "Trấn Thành";
+    if (s.includes("bo-gia") || t.includes("bố già")) return "Trấn Thành, Vũ Ngọc Đãng";
+    if (s.includes("lat-mat-6") || t.includes("lật mặt 6")) return "Lý Hải";
+    if (s.includes("lat-mat-7") || t.includes("lật mặt 7")) return "Lý Hải";
+    if (s.includes("lat-mat") || t.includes("lật mặt")) return "Lý Hải";
+    if (s.includes("dat-rung-phuong-nam") || t.includes("đất rừng phương nam")) return "Nguyễn Quang Dũng";
+    if (s.includes("mat-biec") || t.includes("mắt biếc")) return "Victor Vũ";
+    if (s.includes("toi-thay-hoa-vang") || t.includes("tôi thấy hoa vàng")) return "Victor Vũ";
+    if (s.includes("nguoi-vo-cuoi-cung") || t.includes("người vợ cuối cùng")) return "Victor Vũ";
+    if (s.includes("hai-phuong") || t.includes("hai phượng")) return "Lê Văn Kiệt";
+    if (s.includes("em-chua-18") || t.includes("em chưa 18")) return "Lê Thanh Sơn";
+    if (s.includes("tiec-trang-mau") || t.includes("tiệc trăng máu")) return "Nguyễn Quang Dũng";
+    if (s.includes("mua-do") || t.includes("mưa đỏ")) return "Đặng Thái Huyền";
+    if (s.includes("cam") || t.includes("cám")) return "Trần Hữu Tấn";
+    if (s.includes("quy-cau") || t.includes("quỷ cẩu")) return "Lưu Thành Luân";
+    if (s.includes("ma-da") || t.includes("ma da")) return "Nguyễn Hữu Hoàng";
+    if (s.includes("cong-tu-bac-lieu") || t.includes("công tử bạc liêu")) return "Lý Minh Thắng";
+    if (s.includes("gap-lai-chi-bau") || t.includes("gặp lại chị bầu")) return "Nhất Trung";
+    if (s.includes("lam-giau-voi-ma") || t.includes("làm giàu với ma")) return "Trung Lùn";
+    if (s.includes("sieu-lua-gap-sieu-lay") || t.includes("siêu lừa gặp siêu lầy")) return "Võ Thanh Hòa";
+    if (s.includes("ngay-xua-co-mot-chuyen-tinh")) return "Trịnh Đình Lê Minh";
+    if (s.includes("cu-roi-tu-than-2")) return "Peter Dukes";
+    if (s.includes("tro-choi-con-muc") || s.includes("squid-game")) return "Hwang Dong-hyuk";
+    if (s.includes("tai-xe-an-danh") || s.includes("taxi-driver")) return "Kang Dong-chul";
+    if (s.includes("pha-dam-sinh-nhat-me")) return "Tạ Nguyên Bằng";
+    if (s.includes("my-nhan-du")) return "Chu Dục Thần";
+    if (s.includes("luat-su-cong-ich")) return "Lý Đình Khắc";
+    if (s.includes("pham-nhan-tu-tien")) return "Dương Chấn Vũ";
+    if (s.includes("ke-kien-tao") || s.includes("the-creator")) return "Gareth Edwards";
+    if (s.includes("chappie")) return "Neill Blomkamp";
+    if (s.includes("blade-runner-2049") || s.includes("toi-pham-nhan-ban-2049")) return "Denis Villeneuve";
+    if (s.includes("blade-runner") || s.includes("toi-pham-nhan-ban")) return "Ridley Scott";
+    if (s.includes("nguoi-may-troi-day") || s.includes("ex-machina")) return "Alex Garland";
+    if (s.includes("until-dawn")) return "David F. Sandberg";
+    if (s.includes("the-monkey")) return "Osgood Perkins";
+    if (s.includes("drop")) return "Christopher Landon";
+    if (s.includes("five-nights-at-freddy")) return "Emma Tammi";
+    if (s.includes("hidden-tides")) return "Lưu Hạo Long";
+    if (s.includes("painted-bone-woman")) return "Lý Trạch Lộ";
+    if (s.includes("mysterious-case-in-river")) return "Trương Địch Tài";
+    if (s.includes("last-shift")) return "Anthony DiBlasi";
+    if (s.includes("premium-rush")) return "David Koepp";
+    if (s.includes("alita-thien-than-chien-binh") || s.includes("alita")) return "Robert Rodriguez";
+    if (s.includes("ai-tri-tue-nhan-tao")) return "Steven Spielberg";
+    if (s.includes("canh-sat-nguoi-may-1987") || s.includes("robocop")) return "Paul Verhoeven";
+    if (s.includes("tri-tue-sieu-viet") || s.includes("transcendence")) return "Wally Pfister";
+    if (s.includes("finch")) return "Miguel Sapochnik";
+    if (s.includes("nguoi-me-robot") || s.includes("i-am-mother")) return "Grant Sputore";
+
+    return "";
+  }
+
   constructor() {
     const streamPool = [
       "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8",
@@ -3986,7 +4298,9 @@ class PhimmoiService {
       country: countryName,
       countrySlug,
       genres,
-      director: "Film4K Studio",
+      director: (typeof fItem.director === "string" && fItem.director.trim() && !/film4k|studio|admin|netflix|vietsub|uploader/i.test(fItem.director))
+        ? fItem.director.trim()
+        : (this.getKnownDirector(fItem.slug, titleVi) || "Đang cập nhật"),
       cast: ["Dàn diễn viên chính"],
       ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
       trailerUrl: "",
@@ -4456,7 +4770,9 @@ class PhimmoiService {
           country: item.country?.[0]?.name || "Quốc Tế",
           countrySlug: item.country?.[0]?.slug || "au-my",
           genres: item.category ? item.category.map((c) => c.name) : ["Chính Kịch"],
-          director: "Netflix / Vietsub",
+          director: (item.director && !/netflix|vietsub|film4k|studio|admin/i.test(item.director))
+          ? item.director
+          : (this.getKnownDirector(item.slug, item.name || item.origin_name) || "Đang cập nhật"),
           cast: ["Dàn diễn viên chính"],
           ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
           trailerUrl: "",
@@ -5135,19 +5451,21 @@ class PhimmoiService {
               }
             });
 
-            // Nếu tập chính chưa có luồng .m3u8 hợp lệ thì dùng trực tiếp luồng Film4K
+            // Nếu tập chính chưa có luồng .m3u8 hoặc embed hợp lệ thì mới dùng trực tiếp luồng Film4K
             const hasMainValidSource =
               Array.isArray(movie.episodes) &&
-              movie.episodes.some((e) => e && e.source && !e.source.includes("opstream"));
+              movie.episodes.some((e) => e && ((e.source && !e.source.includes("opstream") && !e.source.includes("film4k.net")) || (e.embed && (e.embed.includes("youtube") || e.embed.includes("streamc")))));
             if (!hasMainValidSource) {
+              const oldEps = Array.isArray(movie.episodes) ? movie.episodes : [];
               movie.episodes = movie.film4kEpisodes.map((fEp, idx) => ({
                 ...fEp,
+                embed: oldEps[idx]?.embed || fEp.embed || "",
                 altSources: [
                   {
                     id: `film4k-${idx}`,
                     label: f4kLabel,
                     source: fEp.source,
-                    embed: "",
+                    embed: oldEps[idx]?.embed || fEp.embed || "",
                     isFilm4k: true,
                     is4k: false
                   }

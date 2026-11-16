@@ -621,6 +621,9 @@
         this.currentServerMode = "youtube";
         const ytAlt = episode?.altSources?.find((a) => a.embed && (a.embed.includes("youtube") || a.embed.includes("youtu.be")));
         streamUrl = ytAlt?.embed || episode?.embed || "";
+      } else if (episode?.embed && (!episode.source || !episode.source.startsWith("http"))) {
+        this.currentServerMode = "youtube";
+        streamUrl = episode.embed;
       } else {
         streamUrl = (episode && episode.source) || "";
       }

@@ -20,6 +20,16 @@
     return null;
   },
 
+  getMovieDirectorLabel(movie) {
+    if (!movie) return "Đang cập nhật";
+    let d = String(movie.director || "").trim();
+    if (!d || /film4k|studio|netflix|vietsub|uploader|admin|none|null/i.test(d)) {
+      const known = this.service?.getKnownDirector?.(movie.slug, movie.title);
+      return known || "Đang cập nhật";
+    }
+    return d;
+  },
+
   async openMovieModal(slug, autoPlay = true, epIndex = 0) {
     const movie = this.findMovie(slug);
     if (!movie) {
@@ -608,7 +618,7 @@
           <div class="modal-cast-meta">
             <div class="meta-line">
               <strong>Đạo diễn:</strong>
-              <span class="clickable-tag" onclick="app.filterByPerson('${movie.director.replace(/'/g, "\\'")}')">${movie.director}</span>
+              <span class="clickable-tag" onclick="app.filterByPerson('${this.getMovieDirectorLabel(movie).replace(/'/g, "\\'")}')">${this.getMovieDirectorLabel(movie)}</span>
             </div>
             <div class="meta-line">
               <strong>Diễn viên:</strong>

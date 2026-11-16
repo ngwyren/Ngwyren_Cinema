@@ -3523,7 +3523,7 @@ body {
   box-shadow:
     inset 0 1px 1px rgba(255, 255, 255, 0.16),
     0 32px 80px rgba(0, 0, 0, 0.65);
-  padding: 20px 24px 28px;
+  padding: 20px 24px 96px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -5147,6 +5147,7 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   overflow: visible !important;
+  padding: 4px 2px 14px 2px;
 }
 
 .vision-catalog-grid {
@@ -12530,9 +12531,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     max-height: none !important;
   }
 
-  /* Kéo sát hàng phim/thẻ phim bên dưới lại gần thẻ phim lớn, loại bỏ hoàn toàn cảm giác bị xa */
+  /* Khoảng cách vàng thanh thoát giữa thẻ phim lớn và hàng phim/thẻ phim bên dưới */
   .cinema-home-layout > .cinema-showcase-hero {
-    margin-bottom: -28px !important;
+    margin-bottom: 24px !important;
   }
 }
 
