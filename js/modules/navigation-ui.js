@@ -309,6 +309,7 @@
     if (!Array.isArray(list) || list.length <= 1) return list || [];
     const seenSlugs = new Set();
     const seenKeys = new Set();
+    const keyToMovieMap = new Map();
     const result = [];
     for (let i = 0; i < list.length; i++) {
       const m = list[i];
@@ -316,7 +317,15 @@
       const keys = this.service && typeof this.service.getCanonicalMovieKeys === "function"
         ? this.service.getCanonicalMovieKeys(m)
         : [this.getCanonicalMovieKey(m)];
-      if (seenSlugs.has(m.slug) || (m.crawlSlug && seenSlugs.has(m.crawlSlug)) || keys.some((k) => k && seenKeys.has(k))) {
+      const isSlugSeen = seenSlugs.has(m.slug) || (m.crawlSlug && seenSlugs.has(m.crawlSlug));
+      const matchedKey = keys.find((k) => k && seenKeys.has(k));
+      if (isSlugSeen || matchedKey) {
+        if (this.service && typeof this.service.mergeBestQualityMovie === "function") {
+          const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || (this.service.slugMap && this.service.slugMap.get(m.slug));
+          if (existing && existing !== m) {
+            this.service.mergeBestQualityMovie(existing, m);
+          }
+        }
         continue;
       }
       seenSlugs.add(m.slug);
@@ -324,7 +333,12 @@
       if (Array.isArray(m.aliasSlugs)) {
         m.aliasSlugs.forEach((a) => seenSlugs.add(a));
       }
-      keys.forEach((k) => { if (k) seenKeys.add(k); });
+      keys.forEach((k) => {
+        if (k) {
+          seenKeys.add(k);
+          keyToMovieMap.set(k, m);
+        }
+      });
       result.push(m);
     }
     return result;

@@ -3719,6 +3719,8 @@ class PhimmoiService {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .trim();
+    // Chuẩn hóa biến thể chuyển tự tiếng Nhật & tiếng Anh thông dụng (shippuuden -> shippuden)
+    t = t.replace(/shippu+den/g, "shippuden");
     // Bỏ tiền tố thông dụng: phim, xem phim, the movie:
     t = t.replace(/^(?:phim|xem phim|the movie)\s*:?\s*/i, "");
     // Chuẩn hóa liên từ & / và -> and
@@ -3740,13 +3742,26 @@ class PhimmoiService {
   }
 
   /**
-   * Sinh danh sách tất cả các khóa nhận diện tương đương của một phim (tựa gốc, tựa dịch, slug, năm)
+   * Sinh danh sách tất cả các khóa nhận diện tương đương của một phim (tựa gốc, tựa dịch, slug, năm, ảnh asset)
    */
   getCanonicalMovieKeys(movie) {
     if (!movie) return [];
     const keys = new Set();
     if (movie.tmdbId) keys.add(`tmdb-${movie.tmdbId}`);
     if (movie.imdbId) keys.add(`imdb-${movie.imdbId}`);
+
+    // 1. Nhận diện trùng lặp tuyệt đối theo filename ảnh đại diện/ảnh nền nếu có (CDN KKPhim, PhimAPI, Film4K)
+    const imgFields = ["poster", "backdrop"];
+    for (let ii = 0; ii < imgFields.length; ii++) {
+      const url = movie[imgFields[ii]];
+      if (url && typeof url === "string") {
+        const clean = url.split("?")[0].split("#")[0];
+        const fname = clean.split("/").pop().toLowerCase();
+        if (fname.length > 6 && fname.includes(".") && !fname.startsWith("default") && !fname.startsWith("no-poster")) {
+          keys.add(`img:${fname}`);
+        }
+      }
+    }
 
     const year = movie.year ? String(movie.year).trim() : "";
     const titlesToTest = [
@@ -3755,6 +3770,13 @@ class PhimmoiService {
       movie.crawlSlug ? movie.crawlSlug.replace(/-/g, " ") : "",
       movie.slug ? movie.slug.replace(/-/g, " ") : ""
     ];
+
+    const genericFranchises = new Set([
+      "naruto", "naruto shippuden", "conan", "tham tu lung danh conan",
+      "one piece", "doraemon", "dragon ball", "dragon ball z",
+      "dragon ball super", "pokemon", "shin cau be but chi", "crayon shin chan",
+      "bleach", "fairy tail"
+    ]);
 
     titlesToTest.forEach((raw) => {
       if (!raw) return;
@@ -3774,6 +3796,37 @@ class PhimmoiService {
       if (year && year !== "0") {
         keys.add(`${canonNorm}::${year}`);
       }
+
+      // 2. Khóa loại bỏ từ phụ 'movie', 'the movie', 'movie \d+'
+      // Ví dụ: 'naruto shippuden movie 4 toa thap bi mat' -> 'naruto shippuden toa thap bi mat'
+      const strippedMovie = canonNorm.replace(/\b(?:the\s+)?movie\s*\d*\b/g, "").replace(/\s+/g, " ").trim();
+      if (strippedMovie && strippedMovie !== canonNorm && strippedMovie.length >= 3) {
+        if (!genericFranchises.has(strippedMovie)) {
+          keys.add(strippedMovie);
+          if (year && year !== "0") keys.add(`${strippedMovie}::${year}`);
+        }
+      }
+
+      // 3. Trích xuất phụ đề sau dấu hai chấm hoặc gạch ngang (Tòa Tháp Bị Mất, The Lost Tower, Người Kế Thừa Hỏa Chí...)
+      const rawStr = String(raw);
+      if (rawStr.includes(":") || rawStr.includes(" - ")) {
+        const parts = rawStr.split(/[:\-]/);
+        const subRaw = parts[parts.length - 1].trim();
+        const normSub = this.normalizeTitleForMatch(subRaw);
+        if (normSub && normSub.length >= 4 && normSub !== canonNorm) {
+          if (year && year !== "0") {
+            keys.add(`sub:${normSub}::${year}`);
+          }
+          const prefix = this.normalizeTitleForMatch(parts[0]);
+          if (prefix && prefix.length >= 3) {
+            keys.add(`${prefix}:${normSub}`);
+            if (year && year !== "0") {
+              keys.add(`${prefix}:${normSub}::${year}`);
+            }
+          }
+        }
+      }
+
       if (canonNorm.startsWith("star wars ")) {
         const withoutSw = canonNorm.replace(/^star wars\s+/, "").trim();
         if (withoutSw.length >= 3) {
@@ -4756,10 +4809,29 @@ class PhimmoiService {
 
     const dedupedResults = [];
     const seenSearchSlugs = new Set();
+    const seenSearchKeys = new Set();
+    const keyToMovieMap = new Map();
     for (let si = 0; si < scored.length; si++) {
       const movie = scored[si].movie;
-      if (!movie || seenSearchSlugs.has(movie.slug)) continue;
+      if (!movie || !movie.slug) continue;
+      const keys = this.getCanonicalMovieKeys(movie);
+      const isSlugSeen = seenSearchSlugs.has(movie.slug) || (movie.crawlSlug && seenSearchSlugs.has(movie.crawlSlug));
+      const matchedKey = keys.find((k) => k && seenSearchKeys.has(k));
+      if (isSlugSeen || matchedKey) {
+        const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || this.slugMap.get(movie.slug);
+        if (existing && existing !== movie) {
+          this.mergeBestQualityMovie(existing, movie);
+        }
+        continue;
+      }
       seenSearchSlugs.add(movie.slug);
+      if (movie.crawlSlug) seenSearchSlugs.add(movie.crawlSlug);
+      keys.forEach((k) => {
+        if (k) {
+          seenSearchKeys.add(k);
+          keyToMovieMap.set(k, movie);
+        }
+      });
       dedupedResults.push(movie);
     }
     return dedupedResults;
@@ -4983,16 +5055,28 @@ class PhimmoiService {
     const dedupedResults = [];
     const seenSearchSlugs = new Set();
     const seenSearchKeys = new Set();
+    const keyToMovieMap = new Map();
     for (let si = 0; si < scored.length; si++) {
       const m = scored[si].movie;
       if (!m || !m.slug) continue;
       const keys = this.getCanonicalMovieKeys(m);
-      if (seenSearchSlugs.has(m.slug) || keys.some((k) => k && seenSearchKeys.has(k))) {
+      const isSlugSeen = seenSearchSlugs.has(m.slug) || (m.crawlSlug && seenSearchSlugs.has(m.crawlSlug));
+      const matchedKey = keys.find((k) => k && seenSearchKeys.has(k));
+      if (isSlugSeen || matchedKey) {
+        const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || this.slugMap.get(m.slug);
+        if (existing && existing !== m) {
+          this.mergeBestQualityMovie(existing, m);
+        }
         continue;
       }
       seenSearchSlugs.add(m.slug);
       if (m.crawlSlug) seenSearchSlugs.add(m.crawlSlug);
-      keys.forEach((k) => { if (k) seenSearchKeys.add(k); });
+      keys.forEach((k) => {
+        if (k) {
+          seenSearchKeys.add(k);
+          keyToMovieMap.set(k, m);
+        }
+      });
       dedupedResults.push(m);
     }
     return dedupedResults;

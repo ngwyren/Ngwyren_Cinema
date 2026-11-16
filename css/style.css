@@ -5078,8 +5078,7 @@ body {
    "YOU MIGHT LIKE" & SHELF FEATURE CARDS (VISION OS ROUNDED CARDS)
    ========================================================================== */
 .vision-shelf-section {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 420px;
+  content-visibility: visible;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -5147,7 +5146,7 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   overflow: visible !important;
-  padding: 4px 2px 14px 2px;
+  padding: 10px 4px 18px 4px;
 }
 
 .vision-catalog-grid {
@@ -5196,7 +5195,7 @@ body {
 
 .vision-feature-card:hover {
   border: none !important;
-  transform: translate3d(0, -5px, 0) !important;
+  transform: translate3d(0, -4px, 0) !important;
   box-shadow: none !important;
 }
 
@@ -9702,7 +9701,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:hover,
   .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -5px, 0) !important;
+    transform: translate3d(0, -4px, 0) !important;
     border: none !important;
     box-shadow: none !important;
     z-index: 10 !important;
@@ -12526,21 +12525,21 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 920px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 150px) !important;
+    height: calc(100vh - 160px) !important;
     min-height: 520px !important;
     max-height: none !important;
   }
 
   /* Khoảng cách vàng thanh thoát giữa thẻ phim lớn và hàng phim/thẻ phim bên dưới */
   .cinema-home-layout > .cinema-showcase-hero {
-    margin-bottom: 24px !important;
+    margin-bottom: 32px !important;
   }
 }
 
 @media (min-width: 1536px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 150px) !important;
+    height: calc(100vh - 160px) !important;
     min-height: 600px !important;
     max-height: none !important;
     border-radius: 30px !important;
@@ -12613,7 +12612,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 150px) !important;
+    height: calc(100vh - 160px) !important;
     min-height: 680px !important;
     max-height: none !important;
     border-radius: 34px !important;
@@ -12687,7 +12686,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 2400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: calc(100vh - 150px) !important;
+    height: calc(100vh - 160px) !important;
     min-height: 760px !important;
     max-height: none !important;
     border-radius: 40px !important;
