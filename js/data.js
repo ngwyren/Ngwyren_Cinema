@@ -3878,6 +3878,26 @@ class PhimmoiService {
   }
 
   /**
+   * Tách lấy tên gốc của chuỗi series/franchise (loại bỏ các hậu tố Phần X, Season X, Movie X)
+   */
+  getSeriesRootKey(title, slug = "") {
+    let t = (title || "").toLowerCase();
+    t = t.replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+    t = t.replace(/[\(\[]?\s*(?:phần|phan|season|part|ss|mua|hoi)\s*\d+[\)\]]?/gi, "");
+    t = t.replace(/[\(\[]?\s*(?:movie|tập|tap)\s*\d+[\)\]]?/gi, "");
+    t = t.replace(/\s*:\s*(?:phần|phan|season|part)\s*\d+/gi, "");
+    t = t.replace(/\s*-\s*(?:phần|phan|season|part)\s*\d+/gi, "");
+    t = t.replace(/\s+\d+$/g, "");
+    const cleanStr = t.replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim();
+    if (cleanStr.length >= 3) return cleanStr;
+    if (slug) {
+      let s = slug.toLowerCase().replace(/-(?:phan|season|part|ss|movie)-\d+/gi, "").replace(/-\d+$/g, "");
+      return s.replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim();
+    }
+    return cleanStr;
+  }
+
+  /**
    * Hàm lọc trùng lặp tự sửa chữa toàn diện cho toàn bộ kho phim:
    * Giữ lại phiên bản chất lượng cao nhất (4K, nhiều tập, HLS chuẩn, ảnh nền đẹp) và loại bỏ hoàn toàn các bản sao.
    */
@@ -4911,10 +4931,31 @@ class PhimmoiService {
 
     // Nguồn 1: PhimAPI (Netflix & KKPhim Vietsub)
     if (phimApiRes && phimApiRes.data && Array.isArray(phimApiRes.data.items)) {
+      // Phân tích series trong tập kết quả để ngăn chặn nhà cung cấp gán trùng ảnh thumbnail cho các phần
+      const seriesGroup = new Map();
+      phimApiRes.data.items.forEach((it) => {
+        if (!it) return;
+        const root = this.getSeriesRootKey(it.name || it.origin_name, it.slug);
+        if (root) {
+          if (!seriesGroup.has(root)) seriesGroup.set(root, []);
+          seriesGroup.get(root).push(it);
+        }
+      });
+
       phimApiRes.data.items.forEach((item) => {
         if (!item || !item.slug || this.slugMap.has(item.slug) || this.isAdOrSpam(item)) return;
         const posterUrl = item.poster_url?.startsWith("http") ? item.poster_url : `https://phimimg.com/${item.poster_url}`;
-        const thumbUrl = item.thumb_url?.startsWith("http") ? item.thumb_url : `https://phimimg.com/${item.thumb_url}`;
+        let thumbUrl = item.thumb_url?.startsWith("http") ? item.thumb_url : `https://phimimg.com/${item.thumb_url}`;
+
+        // Nếu trong cùng series có nhiều phần/mùa: Đảm bảo mỗi phần là 1 bức ảnh riêng biệt
+        const root = this.getSeriesRootKey(item.name || item.origin_name, item.slug);
+        const siblings = root ? seriesGroup.get(root) : null;
+        if (siblings && siblings.length > 1) {
+          const distinctPosters = new Set(siblings.map((s) => s.poster_url).filter(Boolean));
+          if (distinctPosters.size > 1 && posterUrl) {
+            thumbUrl = posterUrl;
+          }
+        }
         const isSer = item.type === "series" || (item.episode_current && item.episode_current.includes("/"));
         const newMovie = {
           id: `pa-${item._id || item.slug}`,
@@ -4970,17 +5011,40 @@ class PhimmoiService {
 
     // Nguồn 2: NguonC Vietsub CDN
     if (nguoncRes && Array.isArray(nguoncRes.items)) {
+      const ncSeriesGroup = new Map();
+      nguoncRes.items.forEach((it) => {
+        if (!it) return;
+        const root = this.getSeriesRootKey(it.name || it.original_name, it.slug);
+        if (root) {
+          if (!ncSeriesGroup.has(root)) ncSeriesGroup.set(root, []);
+          ncSeriesGroup.get(root).push(it);
+        }
+      });
+
       nguoncRes.items.forEach((nc) => {
         if (!nc || !nc.slug || this.slugMap.has(nc.slug) || this.isAdOrSpam(nc)) return;
         const isSer = parseInt(nc.total_episodes, 10) > 1;
+        let posterUrl = nc.thumb_url || nc.poster_url;
+        let backdropUrl = nc.poster_url || nc.thumb_url;
+
+        const root = this.getSeriesRootKey(nc.name || nc.original_name, nc.slug);
+        const siblings = root ? ncSeriesGroup.get(root) : null;
+        if (siblings && siblings.length > 1) {
+          const distinctPosters = new Set(siblings.map((s) => s.thumb_url).filter(Boolean));
+          if (distinctPosters.size > 1 && nc.thumb_url) {
+            backdropUrl = nc.thumb_url;
+            posterUrl = nc.thumb_url;
+          }
+        }
+
         const newMovie = {
           id: `nc-${nc.slug}`,
           slug: nc.slug,
           crawlSlug: nc.slug,
           title: nc.name,
           originTitle: nc.original_name || nc.name,
-          poster: nc.thumb_url || nc.poster_url,
-          backdrop: nc.poster_url || nc.thumb_url,
+          poster: posterUrl,
+          backdrop: backdropUrl,
           type: isSer ? "series" : "single",
           sectionTags: ["vietsub", "hot", isSer ? "phim-bo" : "phim-le"],
           quality: "1080",

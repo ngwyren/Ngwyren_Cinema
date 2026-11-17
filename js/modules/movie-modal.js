@@ -208,6 +208,56 @@
   getMovieBackdrop(movie) {
     if (!movie) return "";
     let b = movie.backdrop || "";
+
+    // Phân tách ảnh độc bản theo từng mùa/phần cho các series phim bộ kinh điển
+    // 1. Bản Lĩnh Kỷ Hiểu Lam (The Bronze Teeth) - 4 Phần riêng biệt
+    if (movie.slug === "ban-linh-ky-hieu-lam-phan-1" || movie.slug === "ban-linh-ky-hieu-lam-1") {
+      b = "https://phimimg.com/upload/vod/20250311-1/c5e9e0d78536846b2a15addedbaf79a9.jpg";
+      movie.poster = "https://phimimg.com/upload/vod/20250311-1/4bc43d62b7f0eafb88b59dbb6ba1e4d1.jpg";
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-2" || movie.slug === "ban-linh-ky-hieu-lam-2") {
+      b = "https://phimimg.com/upload/vod/20250311-1/abca3ebad102a064788cd8b0894e5d2c.jpg";
+      movie.poster = b;
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-3" || movie.slug === "ban-linh-ky-hieu-lam-3") {
+      b = "https://phimimg.com/upload/vod/20250311-1/47444042be4980d55e8ff9dadee336f8.jpg";
+      movie.poster = b;
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-4" || movie.slug === "ban-linh-ky-hieu-lam-4") {
+      b = "https://img.nguonc.com/images/img-95db5bbf863899390eff71301736a73ef281b64c8403f2362d71952f711ad1dc.jpg";
+      movie.poster = "https://phimimg.com/upload/vod/20250311-1/daa6987fd387aa8c17f0814322016b7a.jpg";
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    }
+
+    // 2. Hoàn Châu Cách Cách (My Fair Princess)
+    if (movie.slug === "hoan-chau-cach-cach-phan-1" || movie.slug === "hoan-chau-cach-cach-1") {
+      b = "https://phimimg.com/upload/vod/20260224-1/e2c9e235da98fdb31ffb07388ad27e40.jpg";
+      movie.poster = "https://phimimg.com/upload/vod/20260224-1/186685387d9f81e3ceeb10e30487c156.jpg";
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    } else if (movie.slug === "hoan-chau-cach-cach-phan-2" || movie.slug === "hoan-chau-cach-cach-2") {
+      b = "https://phimimg.com/upload/vod/20260224-1/47c65a307062f7e0ab328a8de154e73e.jpg";
+      movie.poster = b;
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    } else if (movie.slug === "hoan-chau-cach-cach-phan-3" || movie.slug === "hoan-chau-cach-cach-3") {
+      b = "https://phimimg.com/upload/vod/20260224-1/b346e936023f9229470ba7d3417d1f03.jpg";
+      movie.poster = b;
+      movie.backdrop = b;
+      movie._cachedBackdrop = b;
+      return b;
+    }
+
     if (movie.slug === "ky-niem-20-nam-harry-potter-tro-lai-hogwarts" || (b && (b.includes("582cfc3e5dfd9d5926c8df377cfdae8e.jpg") || b.includes("c9fa0002166699dae85f43924f0c4bb2.jpg")))) {
       b = "https://phimimg.com/upload/vod/20231020-1/51606bf1d40a501b93ecdc3cdcfd90e9.jpg";
       movie.backdrop = b;
@@ -224,6 +274,18 @@
       b = "https://phimimg.com/upload/vod/20231016-1/6a45585d457b3d77e91cbe7757f28c94.jpg";
       movie.backdrop = b;
     }
+
+    // Tự động kiểm tra: nếu phim này có backdrop trùng lặp với một phim khác trong danh sách, ưu tiên poster riêng biệt
+    if (this.service?.movies && movie.poster && b) {
+      const isDupBackdrop = this.service.movies.some(
+        (other) => other && other.slug !== movie.slug && (other.backdrop === b || other._cachedBackdrop === b)
+      );
+      if (isDupBackdrop && movie.poster !== b) {
+        b = movie.poster;
+        movie.backdrop = b;
+      }
+    }
+
     if (movie._cachedBackdrop) return movie._cachedBackdrop;
     const isSuspicious = !b ||
       (movie.poster && b === movie.poster) ||
@@ -254,6 +316,48 @@
   getMoviePoster(movie) {
     if (!movie) return "";
     let p = movie.poster || "";
+
+    // Phân tách poster độc bản theo từng mùa/phần
+    // 1. Bản Lĩnh Kỷ Hiểu Lam (The Bronze Teeth)
+    if (movie.slug === "ban-linh-ky-hieu-lam-phan-1" || movie.slug === "ban-linh-ky-hieu-lam-1") {
+      p = "https://phimimg.com/upload/vod/20250311-1/4bc43d62b7f0eafb88b59dbb6ba1e4d1.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-2" || movie.slug === "ban-linh-ky-hieu-lam-2") {
+      p = "https://phimimg.com/upload/vod/20250311-1/abca3ebad102a064788cd8b0894e5d2c.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-3" || movie.slug === "ban-linh-ky-hieu-lam-3") {
+      p = "https://phimimg.com/upload/vod/20250311-1/47444042be4980d55e8ff9dadee336f8.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-4" || movie.slug === "ban-linh-ky-hieu-lam-4") {
+      p = "https://phimimg.com/upload/vod/20250311-1/daa6987fd387aa8c17f0814322016b7a.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    }
+
+    // 2. Hoàn Châu Cách Cách (My Fair Princess)
+    if (movie.slug === "hoan-chau-cach-cach-phan-1" || movie.slug === "hoan-chau-cach-cach-1") {
+      p = "https://phimimg.com/upload/vod/20260224-1/186685387d9f81e3ceeb10e30487c156.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    } else if (movie.slug === "hoan-chau-cach-cach-phan-2" || movie.slug === "hoan-chau-cach-cach-2") {
+      p = "https://phimimg.com/upload/vod/20260224-1/47c65a307062f7e0ab328a8de154e73e.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    } else if (movie.slug === "hoan-chau-cach-cach-phan-3" || movie.slug === "hoan-chau-cach-cach-3") {
+      p = "https://phimimg.com/upload/vod/20260224-1/b346e936023f9229470ba7d3417d1f03.jpg";
+      movie.poster = p;
+      movie._cachedPoster = p;
+      return p;
+    }
     if (movie.slug === "ky-niem-20-nam-harry-potter-tro-lai-hogwarts" || (p && (p.includes("c9fa0002166699dae85f43924f0c4bb2.jpg") || p.includes("582cfc3e5dfd9d5926c8df377cfdae8e.jpg")))) {
       p = "https://phimimg.com/upload/vod/20231020-1/dbb3bcb8568615af4f47ff62b055be5c.jpg";
       movie.poster = p;
