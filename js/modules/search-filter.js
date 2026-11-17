@@ -796,6 +796,15 @@
           timestamp: new Date().toISOString()
         });
 
+        // Đồng bộ phim vừa nạp vào kết quả tìm kiếm tức thì
+        if (Array.isArray(this.lastSearchResults)) {
+          if (!this.lastSearchResults.some((m) => m && m.slug === ingested.slug)) {
+            this.lastSearchResults.unshift(ingested);
+          }
+        } else {
+          this.lastSearchResults = [ingested];
+        }
+
         // Bắn thông báo qua chuông, web push notification, toast và gửi email
         if (typeof this.dispatchMovieIngestedAlert === "function") {
           this.dispatchMovieIngestedAlert({
@@ -811,6 +820,19 @@
           statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
           statusEl.style.color = "#34c759";
           statusEl.innerHTML = `<div style="display: flex; gap: 8px; align-items: flex-start;"><i class="fas fa-circle-check" style="font-size: 1.1rem; color: #34c759; margin-top: 2px;"></i><div><b>Nạp phim thành công!</b> Đã tìm thấy và tích hợp phim <b>"${ingested.title}"</b> vào rạp.${movieEmail ? `<br><span style="font-size: 0.78rem; color: #a1e3a1;"><i class="fas fa-envelope"></i> Đã gửi email thông báo tới <b>${movieEmail}</b></span>` : ""}<br><span style="font-size: 0.78rem; color: rgba(255,255,255,0.7);">Đang mở phim để bạn thưởng thức ngay...</span></div></div>`;
+        }
+
+        // Cập nhật giao diện kết quả tìm kiếm nếu đang ở chế độ xem tìm kiếm
+        if (this.currentNav === "search-results" && typeof this.renderSearchResultsView === "function") {
+          this.renderSearchResultsView(this.lastSearchResults, movieTitle);
+        }
+
+        // Dọn dẹp form nạp phim sẵn sàng cho lượt tiếp theo
+        if (titleInput) titleInput.value = "";
+        if (noteInput) noteInput.value = "";
+        this._tempReqImageBase64 = null;
+        if (typeof this.removeReqImage === "function") {
+          this.removeReqImage();
         }
 
         setTimeout(() => {

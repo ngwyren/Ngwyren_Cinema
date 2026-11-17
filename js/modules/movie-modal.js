@@ -403,6 +403,11 @@
     const is4k = (this.currentQuality === "4K" || this.currentQuality === "4k") && hasReal4kStream;
 
     sheet.innerHTML = `
+      <!-- Modal Floating Close Button -->
+      <button class="modal-ctrl-btn icon-only modal-close-floating" id="modalCloseBtn" onclick="app.closeMovieModal()" title="Đóng phim (Esc)" aria-label="Đóng">
+        <i class="fas fa-xmark"></i>
+      </button>
+
       <!-- 16:9 Cinema Stage (Cover Preview + Active HLS/YouTube Player) -->
       <div class="modal-player-stage">
         <div class="player-cover-preview" id="modalCoverPreview"

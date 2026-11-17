@@ -5797,12 +5797,21 @@ class PhimmoiService {
     const cleanQ = query.trim();
     if (cleanQ.length < 2) return null;
 
-    // 1. Kiểm tra xem phim đã có sẵn trong catalog chưa
+    const qLower = cleanQ.toLowerCase();
+    const cleanQNorm = this.normalizeSearchText(cleanQ);
+
+    // 1. Kiểm tra xem phim đã có sẵn chính xác trong catalog chưa (chuẩn hóa so khớp tuyệt đối, không dùng includes)
     const existing = this.movies.find((m) => {
+      if (!m) return false;
       const t = (m.title || "").toLowerCase();
       const ot = (m.originTitle || "").toLowerCase();
-      const q = cleanQ.toLowerCase();
-      return t === q || ot === q || m.slug === q || t.includes(q) || ot.includes(q);
+      if (t === qLower || ot === qLower || m.slug === qLower) return true;
+      if (cleanQNorm) {
+        const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
+        const otNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
+        if (tNorm === cleanQNorm || otNorm === cleanQNorm) return true;
+      }
+      return false;
     });
     if (existing) {
       await this.enrichMovieStreams(existing);
@@ -5812,24 +5821,36 @@ class PhimmoiService {
     // 2. Chạy tìm kiếm sâu trên tất cả các API trực tuyến
     const searchResults = await this.searchMovies(cleanQ);
     if (Array.isArray(searchResults) && searchResults.length > 0) {
-      const best = searchResults[0];
+      // Ưu tiên kết quả khớp nhất với từ khóa yêu cầu
+      let best = searchResults.find((m) => {
+        if (!m) return false;
+        const t = (m.title || "").toLowerCase();
+        const ot = (m.originTitle || "").toLowerCase();
+        if (t === qLower || ot === qLower || m.slug === qLower) return true;
+        const tNorm = m._titleNorm || (m._titleNorm = this.normalizeSearchText(m.title));
+        const otNorm = m._originNorm || (m._originNorm = this.normalizeSearchText(m.originTitle));
+        return (cleanQNorm && (tNorm === cleanQNorm || otNorm === cleanQNorm));
+      }) || searchResults[0];
+
+      if (!best) return null;
+
       await this.enrichMovieStreams(best);
       const keys = this.getCanonicalMovieKeys(best);
-      let existing = this.slugMap.get(best.slug);
-      if (!existing) {
+      let existingDup = this.slugMap.get(best.slug);
+      if (!existingDup) {
         for (let ki = 0; ki < keys.length; ki++) {
           const k = keys[ki];
           if (k && this.canonicalKeyMap.has(k)) {
-            existing = this.canonicalKeyMap.get(k);
+            existingDup = this.canonicalKeyMap.get(k);
             break;
           }
         }
       }
-      if (existing) {
-        this.mergeBestQualityMovie(existing, best);
-        this.slugMap.set(best.slug, existing);
-        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
-        return existing;
+      if (existingDup) {
+        this.mergeBestQualityMovie(existingDup, best);
+        this.slugMap.set(best.slug, existingDup);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
+        return existingDup;
       }
       if (!this.movies.includes(best)) {
         this.movies.unshift(best);

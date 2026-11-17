@@ -1749,6 +1749,33 @@ body.modal-open .ambient-canvas {
   box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
 }
 
+.modal-close-floating {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(18, 18, 22, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 60;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.modal-close-floating:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.85);
+  transform: scale(1.08);
+}
+
 /* Video Player / Hero Stage inside Modal */
 .modal-player-stage {
   position: relative;
@@ -2898,10 +2925,7 @@ html {
 .movie-poster-wrap,
 .chart-row-item,
 .netflix-related-card,
-.schedule-card-glass {
-  contain: layout style;
-}
-
+.schedule-card-glass,
 .vision-feature-card {
   contain: layout style;
 }
@@ -3568,13 +3592,13 @@ body {
 }
 
 .topbar-search-container {
-  width: clamp(230px, 20vw, 320px);
+  width: clamp(200px, 17vw, 270px);
   position: relative;
   transition: width 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .topbar-search-container:focus-within {
-  width: clamp(270px, 24vw, 360px);
+  width: clamp(220px, 19vw, 295px);
 }
 
 .vision-topbar-filter-btn {
@@ -9694,7 +9718,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
     transform: translate3d(0, -4px, 0) !important;
-    border: none !important;
+    border-color: rgba(255, 255, 255, 0.95) !important;
     box-shadow: none !important;
     z-index: 10 !important;
   }
@@ -9702,8 +9726,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:hover::after,
   .vision-feature-card:focus-visible::after,
   .vision-feature-card.is-hero-previewing::after {
-    border-color: rgba(255, 255, 255, 0.95) !important;
-    box-shadow: none !important;
+    display: none !important;
   }
 
   .vision-feature-card:hover .vision-feature-img,
@@ -9726,12 +9749,12 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .movie-card:hover .movie-poster-wrap {
-    border: none !important;
+    border-color: rgba(255, 255, 255, 0.95) !important;
     box-shadow: none !important;
   }
 
   .movie-card:hover .movie-poster-wrap::after {
-    border-color: rgba(255, 255, 255, 0.95) !important;
+    display: none !important;
   }
 
   .movie-card:hover .movie-poster-wrap img {
@@ -10517,7 +10540,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 5. TÌM KIẾM (SEARCH DROPDOWN & LIVE SUGGESTIONS) --- */
 .vision-search-pill:focus-within {
-  transform: scale(1.02) !important;
+  transform: none !important;
   border-color: rgba(255, 255, 255, 0.75) !important;
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.35),
@@ -12739,14 +12762,5 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-radius: 16px !important;
   }
 }
-
-
-
-
-
-
-
-
-
 
 
