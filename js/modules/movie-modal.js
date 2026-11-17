@@ -26,7 +26,7 @@
       return this.service.cleanDirector(movie.director, movie.slug, movie.title);
     }
     let d = String(movie.director || "").trim();
-    if (!d || /film4k|studio|netflix|vietsub|uploader|admin|none|null/i.test(d)) {
+    if (!d || /film4k|phimapi|nguonc|ophim|kkphim|admin|studio|netflix|vietsub|uploader|none|null|n\/a|unknown/i.test(d)) {
       const known = this.service?.getKnownDirector?.(movie.slug, movie.title);
       return known || "Đang cập nhật";
     }
@@ -258,6 +258,60 @@
       return b;
     }
 
+    // 3. Siêu Trộm Lupin (Lupin)
+    if (movie.slug?.includes("lupin")) {
+      if (movie.slug === "sieu-trom-lupin-phan-1" || movie.slug === "lupin-phan-1" || movie.slug === "lupin-season-1") {
+        b = "https://phimimg.com/uploads/movies/20261024/lupin-phan-1-poster.webp";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug === "sieu-trom-lupin-phan-2" || movie.slug === "lupin-phan-2" || movie.slug === "lupin-season-2") {
+        b = "https://phimimg.com/uploads/movies/20261024/lupin-phan-2-poster.webp";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug === "sieu-trom-lupin-phan-3" || movie.slug === "lupin-phan-3" || movie.slug === "lupin-season-3") {
+        b = "https://phimimg.com/uploads/movies/20261024/lupin-phan-3-poster.webp";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug === "sieu-trom-lupin-phan-4" || movie.slug === "lupin-phan-4" || movie.slug === "lupin-season-4") {
+        b = "https://phimimg.com/uploads/movies/20261024/lupin-phan-4-poster.webp";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      }
+    }
+
+    // 4. Cậu Bé Mất Tích (Stranger Things)
+    if (movie.slug?.includes("cau-be-mat-tich") || movie.slug?.includes("stranger-things")) {
+      if (movie.slug.includes("phan-1") || movie.slug.includes("season-1")) {
+        b = "https://phimimg.com/upload/vod/20251127-1/4e76c982472d25b28d2b8b0a177f79d7.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-2") || movie.slug.includes("season-2")) {
+        b = "https://phimimg.com/upload/vod/20251127-1/651a724f2f0be88d32a782a334ab71f0.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-3") || movie.slug.includes("season-3")) {
+        b = "https://phimimg.com/upload/vod/20251127-1/946f14dafd4f322bcdd96efcd06c4f44.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-4") || movie.slug.includes("season-4")) {
+        b = "https://phimimg.com/upload/vod/20251127-1/2e24206ec84089247e0c94bbb30d8565.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      }
+    }
+
+    // 5. Phi Vụ Triệu Đô (Money Heist)
+    if (movie.slug?.includes("phi-vu-trieu-do") || movie.slug?.includes("money-heist")) {
+      if (movie.slug.includes("phan-1") || movie.slug.includes("season-1")) {
+        b = "https://phimimg.com/upload/vod/20250827-1/173640951dd6401f2e522e213df6c97d.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-2") || movie.slug.includes("season-2")) {
+        b = "https://phimimg.com/upload/vod/20250827-1/4c48741e0db576c2ade92df634aeac22.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-3") || movie.slug.includes("season-3")) {
+        b = "https://phimimg.com/upload/vod/20250827-1/38daaf4a623b6ed02b2eaac0083e3e5b.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-4") || movie.slug.includes("season-4")) {
+        b = "https://phimimg.com/upload/vod/20250827-1/e105276b906744eea2f5a23df24d51df.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      } else if (movie.slug.includes("phan-5") || movie.slug.includes("season-5")) {
+        b = "https://phimimg.com/upload/vod/20250827-1/3f12bca34ddc39496772483e3927afc0.jpg";
+        movie.poster = b; movie.backdrop = b; movie._cachedBackdrop = b; return b;
+      }
+    }
+
     if (movie.slug === "ky-niem-20-nam-harry-potter-tro-lai-hogwarts" || (b && (b.includes("582cfc3e5dfd9d5926c8df377cfdae8e.jpg") || b.includes("c9fa0002166699dae85f43924f0c4bb2.jpg")))) {
       b = "https://phimimg.com/upload/vod/20231020-1/51606bf1d40a501b93ecdc3cdcfd90e9.jpg";
       movie.backdrop = b;
@@ -275,10 +329,14 @@
       movie.backdrop = b;
     }
 
-    // Tự động kiểm tra: nếu phim này có backdrop trùng lặp với một phim khác trong danh sách, ưu tiên poster riêng biệt
+    // Tự động kiểm tra: nếu phim này có backdrop trùng lặp với một phim khác trong danh sách hoặc thuộc series đa phần, ưu tiên poster riêng biệt
     if (this.service?.movies && movie.poster && b) {
+      const rootKey = this.service.getSeriesRootKey ? this.service.getSeriesRootKey(movie.title || movie.originTitle, movie.slug) : "";
       const isDupBackdrop = this.service.movies.some(
-        (other) => other && other.slug !== movie.slug && (other.backdrop === b || other._cachedBackdrop === b)
+        (other) => other && other.slug !== movie.slug && (
+          (other.backdrop === b || other._cachedBackdrop === b) ||
+          (rootKey && this.service.getSeriesRootKey && this.service.getSeriesRootKey(other.title || other.originTitle, other.slug) === rootKey && other.poster !== movie.poster)
+        )
       );
       if (isDupBackdrop && movie.poster !== b) {
         b = movie.poster;
@@ -357,6 +415,60 @@
       movie.poster = p;
       movie._cachedPoster = p;
       return p;
+    }
+
+    // 3. Siêu Trộm Lupin (Lupin)
+    if (movie.slug?.includes("lupin")) {
+      if (movie.slug === "sieu-trom-lupin-phan-1" || movie.slug === "lupin-phan-1" || movie.slug === "lupin-season-1") {
+        p = "https://phimimg.com/uploads/movies/20261024/lupin-phan-1-poster.webp";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug === "sieu-trom-lupin-phan-2" || movie.slug === "lupin-phan-2" || movie.slug === "lupin-season-2") {
+        p = "https://phimimg.com/uploads/movies/20261024/lupin-phan-2-poster.webp";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug === "sieu-trom-lupin-phan-3" || movie.slug === "lupin-phan-3" || movie.slug === "lupin-season-3") {
+        p = "https://phimimg.com/uploads/movies/20261024/lupin-phan-3-poster.webp";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug === "sieu-trom-lupin-phan-4" || movie.slug === "lupin-phan-4" || movie.slug === "lupin-season-4") {
+        p = "https://phimimg.com/uploads/movies/20261024/lupin-phan-4-poster.webp";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      }
+    }
+
+    // 4. Cậu Bé Mất Tích (Stranger Things)
+    if (movie.slug?.includes("cau-be-mat-tich") || movie.slug?.includes("stranger-things")) {
+      if (movie.slug.includes("phan-1") || movie.slug.includes("season-1")) {
+        p = "https://phimimg.com/upload/vod/20251127-1/4e76c982472d25b28d2b8b0a177f79d7.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-2") || movie.slug.includes("season-2")) {
+        p = "https://phimimg.com/upload/vod/20251127-1/651a724f2f0be88d32a782a334ab71f0.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-3") || movie.slug.includes("season-3")) {
+        p = "https://phimimg.com/upload/vod/20251127-1/946f14dafd4f322bcdd96efcd06c4f44.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-4") || movie.slug.includes("season-4")) {
+        p = "https://phimimg.com/upload/vod/20251127-1/2e24206ec84089247e0c94bbb30d8565.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      }
+    }
+
+    // 5. Phi Vụ Triệu Đô (Money Heist)
+    if (movie.slug?.includes("phi-vu-trieu-do") || movie.slug?.includes("money-heist")) {
+      if (movie.slug.includes("phan-1") || movie.slug.includes("season-1")) {
+        p = "https://phimimg.com/upload/vod/20250827-1/173640951dd6401f2e522e213df6c97d.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-2") || movie.slug.includes("season-2")) {
+        p = "https://phimimg.com/upload/vod/20250827-1/4c48741e0db576c2ade92df634aeac22.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-3") || movie.slug.includes("season-3")) {
+        p = "https://phimimg.com/upload/vod/20250827-1/38daaf4a623b6ed02b2eaac0083e3e5b.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-4") || movie.slug.includes("season-4")) {
+        p = "https://phimimg.com/upload/vod/20250827-1/e105276b906744eea2f5a23df24d51df.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      } else if (movie.slug.includes("phan-5") || movie.slug.includes("season-5")) {
+        p = "https://phimimg.com/upload/vod/20250827-1/3f12bca34ddc39496772483e3927afc0.jpg";
+        movie.poster = p; movie._cachedPoster = p; return p;
+      }
     }
     if (movie.slug === "ky-niem-20-nam-harry-potter-tro-lai-hogwarts" || (p && (p.includes("c9fa0002166699dae85f43924f0c4bb2.jpg") || p.includes("582cfc3e5dfd9d5926c8df377cfdae8e.jpg")))) {
       p = "https://phimimg.com/upload/vod/20231020-1/dbb3bcb8568615af4f47ff62b055be5c.jpg";

@@ -3396,6 +3396,33 @@ class PhimmoiService {
       }
       return "Nguyễn Minh Chung, Đỗ Phú Hải";
     }
+    if (s.includes("ban-linh-ky-hieu-lam") || t.includes("bản lĩnh kỷ hiểu lam") || s.includes("bronze-teeth")) {
+      return "Trương Quốc Lập, Lưu Gia Thành";
+    }
+    if (s.includes("hoan-chau-cach-cach") || t.includes("hoàn châu cách cách") || s.includes("my-fair-princess")) {
+      return "Tôn Thụ B培, Lý Bình";
+    }
+    if (s.includes("lupin") || t.includes("lupin") || s.includes("sieu-trom-lupin")) {
+      if (s.includes("de-iii") || s.includes("the-first") || s.includes("conan")) return "Takashi Yamazaki";
+      return "Louis Leterrier, Marcela Said";
+    }
+    if (s.includes("cau-be-mat-tich") || s.includes("stranger-things") || t.includes("stranger things")) {
+      return "The Duffer Brothers";
+    }
+    if (s.includes("phi-vu-trieu-do") || s.includes("money-heist") || t.includes("phi vụ triệu đô")) {
+      if (s.includes("berlin")) return "Albert Pintó, David Barrocal";
+      if (s.includes("han-quoc") || s.includes("korea")) return "Kim Hong-sun";
+      return "Álex Pina, Jesús Colmenar";
+    }
+    if (s.includes("tho-san-quai-vat") || s.includes("the-witcher") || t.includes("thợ săn quái vật")) {
+      return "Lauren Schmidt Hissrich, Alik Sakharov";
+    }
+    if (s.includes("the-gioi-ma-quai") || s.includes("sweet-home") || t.includes("thế giới ma quái")) {
+      return "Lee Eung-bok";
+    }
+    if (s.includes("the-gioi-khong-loi-thoat") || s.includes("alice-in-borderland") || t.includes("alice in borderland")) {
+      return "Shinsuke Sato";
+    }
     if (s.includes("naruto")) {
       if (s.includes("cai-chet-tien-doan") || s.includes("shippuden-the-movie-2007")) return "Hajime Kamegaki";
       if (s.includes("nhiem-vu-bi-mat") || s.includes("bonds")) return "Masahiko Murata";
@@ -3467,8 +3494,14 @@ class PhimmoiService {
   }
 
   cleanDirector(director, slug = "", title = "") {
+    if (Array.isArray(director)) {
+      director = director.filter(Boolean).join(", ");
+    }
     let d = String(director || "").trim();
-    const isFake = !d || /^(?:film4k(?:\s*studio)?|phimapi|nguonc|admin|studio|netflix|vietsub|uploader|none|null|dang cap nhat|đang cập nhật)$/i.test(d) || /film4k|phimapi/i.test(d);
+    const isFake =
+      !d ||
+      /^(?:film4k(?:\s*studio)?|phimapi|nguonc|ophim|kkphim|admin|studio|netflix|vietsub|thuyet minh|thuyết minh|long tieng|lồng tiếng|full|tap \d+|tập \d+|uploader|none|null|n\/a|unknown|dang cap nhat|đang cập nhật)$/i.test(d) ||
+      /film4k|phimapi|nguonc|ophim|kkphim|\bstudio\b/i.test(d);
     if (isFake) {
       const known = this.getKnownDirector(slug, title);
       return known || "Đang cập nhật";
@@ -3601,7 +3634,7 @@ class PhimmoiService {
       item.hasReal4k = is4k;
       item.has4k = is4k;
       item.language = item.language || "Vietsub";
-      item.director = item.director || "Đang cập nhật";
+      item.director = this.cleanDirector(item.director, item.slug, item.title || item.originTitle);
       item.country = item.country || "Quốc Tế";
       item.countrySlug = item.countrySlug || "quoc-te";
       item.matchScore = item.matchScore || 96;
@@ -3883,10 +3916,10 @@ class PhimmoiService {
   getSeriesRootKey(title, slug = "") {
     let t = (title || "").toLowerCase();
     t = t.replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-    t = t.replace(/[\(\[]?\s*(?:phần|phan|season|part|ss|mua|hoi)\s*\d+[\)\]]?/gi, "");
+    t = t.replace(/[\(\[]?\s*(?:phần|phan|season|part|ss|mua|hoi|chuong)\s*\d+[\)\]]?/gi, "");
     t = t.replace(/[\(\[]?\s*(?:movie|tập|tap)\s*\d+[\)\]]?/gi, "");
-    t = t.replace(/\s*:\s*(?:phần|phan|season|part)\s*\d+/gi, "");
-    t = t.replace(/\s*-\s*(?:phần|phan|season|part)\s*\d+/gi, "");
+    t = t.replace(/\s*[:\-]\s*(?:phần|phan|season|part|ss|mua)\s*\d+/gi, "");
+    t = t.replace(/\s+\b(?:viii|vii|vi|iv|v|iii|ii|i)\b$/gi, "");
     t = t.replace(/\s+\d+$/g, "");
     const cleanStr = t.replace(/[^a-z0-9]/g, " ").replace(/\s+/g, " ").trim();
     if (cleanStr.length >= 3) return cleanStr;
@@ -4211,7 +4244,7 @@ class PhimmoiService {
       country,
       countrySlug,
       genres: genres.length ? genres : ["Hành Động", "Chính Kịch"],
-      director,
+      director: this.cleanDirector(director, post.slug, post.title && post.title.rendered ? post.title.rendered : post.slug),
       cast: actors.length ? actors.slice(0, 8) : ["Dàn diễn viên chính"],
       ambientColors: ["#ffffff", "#d4d4d4", "#a3a3a3"],
       trailerUrl: mb.trailer_url || "",
@@ -4933,13 +4966,18 @@ class PhimmoiService {
     if (phimApiRes && phimApiRes.data && Array.isArray(phimApiRes.data.items)) {
       // Phân tích series trong tập kết quả để ngăn chặn nhà cung cấp gán trùng ảnh thumbnail cho các phần
       const seriesGroup = new Map();
+      const addToGroup = (k, it) => {
+        if (!k) return;
+        if (!seriesGroup.has(k)) seriesGroup.set(k, []);
+        const arr = seriesGroup.get(k);
+        if (!arr.includes(it)) arr.push(it);
+      };
       phimApiRes.data.items.forEach((it) => {
         if (!it) return;
-        const root = this.getSeriesRootKey(it.name || it.origin_name, it.slug);
-        if (root) {
-          if (!seriesGroup.has(root)) seriesGroup.set(root, []);
-          seriesGroup.get(root).push(it);
-        }
+        const rootVi = this.getSeriesRootKey(it.name, it.slug);
+        const rootEn = this.getSeriesRootKey(it.origin_name, it.slug);
+        addToGroup(rootVi, it);
+        addToGroup(rootEn, it);
       });
 
       phimApiRes.data.items.forEach((item) => {
@@ -4948,8 +4986,9 @@ class PhimmoiService {
         let thumbUrl = item.thumb_url?.startsWith("http") ? item.thumb_url : `https://phimimg.com/${item.thumb_url}`;
 
         // Nếu trong cùng series có nhiều phần/mùa: Đảm bảo mỗi phần là 1 bức ảnh riêng biệt
-        const root = this.getSeriesRootKey(item.name || item.origin_name, item.slug);
-        const siblings = root ? seriesGroup.get(root) : null;
+        const rootVi = this.getSeriesRootKey(item.name, item.slug);
+        const rootEn = this.getSeriesRootKey(item.origin_name, item.slug);
+        const siblings = (rootVi && seriesGroup.get(rootVi)) || (rootEn && seriesGroup.get(rootEn));
         if (siblings && siblings.length > 1) {
           const distinctPosters = new Set(siblings.map((s) => s.poster_url).filter(Boolean));
           if (distinctPosters.size > 1 && posterUrl) {
@@ -5012,13 +5051,18 @@ class PhimmoiService {
     // Nguồn 2: NguonC Vietsub CDN
     if (nguoncRes && Array.isArray(nguoncRes.items)) {
       const ncSeriesGroup = new Map();
+      const addToNcGroup = (k, it) => {
+        if (!k) return;
+        if (!ncSeriesGroup.has(k)) ncSeriesGroup.set(k, []);
+        const arr = ncSeriesGroup.get(k);
+        if (!arr.includes(it)) arr.push(it);
+      };
       nguoncRes.items.forEach((it) => {
         if (!it) return;
-        const root = this.getSeriesRootKey(it.name || it.original_name, it.slug);
-        if (root) {
-          if (!ncSeriesGroup.has(root)) ncSeriesGroup.set(root, []);
-          ncSeriesGroup.get(root).push(it);
-        }
+        const rootVi = this.getSeriesRootKey(it.name, it.slug);
+        const rootEn = this.getSeriesRootKey(it.original_name, it.slug);
+        addToNcGroup(rootVi, it);
+        addToNcGroup(rootEn, it);
       });
 
       nguoncRes.items.forEach((nc) => {
@@ -5027,8 +5071,9 @@ class PhimmoiService {
         let posterUrl = nc.thumb_url || nc.poster_url;
         let backdropUrl = nc.poster_url || nc.thumb_url;
 
-        const root = this.getSeriesRootKey(nc.name || nc.original_name, nc.slug);
-        const siblings = root ? ncSeriesGroup.get(root) : null;
+        const rootVi = this.getSeriesRootKey(nc.name, nc.slug);
+        const rootEn = this.getSeriesRootKey(nc.original_name, nc.slug);
+        const siblings = (rootVi && ncSeriesGroup.get(rootVi)) || (rootEn && ncSeriesGroup.get(rootEn));
         if (siblings && siblings.length > 1) {
           const distinctPosters = new Set(siblings.map((s) => s.thumb_url).filter(Boolean));
           if (distinctPosters.size > 1 && nc.thumb_url) {
