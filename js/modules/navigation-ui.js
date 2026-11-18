@@ -188,7 +188,7 @@
       this._navTransitionTimer = null;
     }
 
-    // Chuyển trang tức thì 0ms độ trễ kết hợp hiệu ứng Fade-Scale GPU 120fps siêu nhanh (140ms)
+    // Chuyển trang tức thì, không chớp khung hình (zero 1-frame flash) và không cắt ngang animation
     const htmlEl = document.documentElement;
     const prevBehavior = htmlEl.style.scrollBehavior;
     htmlEl.style.scrollBehavior = "auto";
@@ -198,18 +198,23 @@
     container.classList.remove("vision-view-exit", "vision-view-enter");
     if (updateCallback) updateCallback();
 
-    const runEnter = () => {
-      container.classList.add("vision-view-enter");
-      this._navTransitionTimer = setTimeout(() => {
-        container.classList.remove("vision-view-enter");
+    // Kích hoạt animation ngay trước frame vẽ đầu tiên để không bị nháy opacity 1 -> 0 -> 1
+    void container.offsetWidth;
+    container.classList.add("vision-view-enter");
+
+    const cleanupEnter = () => {
+      container.classList.remove("vision-view-enter");
+      container.removeEventListener("animationend", onAnimEnd);
+      if (this._navTransitionTimer) {
+        clearTimeout(this._navTransitionTimer);
         this._navTransitionTimer = null;
-      }, 150);
+      }
     };
-    if (window.NgwyrenSystem?.dispatcher) {
-      window.NgwyrenSystem.dispatcher.scheduleFrame("viewTransitionEnter", runEnter);
-    } else {
-      requestAnimationFrame(runEnter);
-    }
+    const onAnimEnd = (e) => {
+      if (e.target === container) cleanupEnter();
+    };
+    container.addEventListener("animationend", onAnimEnd);
+    this._navTransitionTimer = setTimeout(cleanupEnter, 300);
   },
 
   syncLeftDockIndicator(navKey) {
@@ -1891,7 +1896,7 @@
       ? `loading="eager" fetchpriority="high" decoding="async"`
       : `loading="lazy" fetchpriority="low" decoding="async"`;
     const primaryGenre = (movie.genres && movie.genres[0]) || (movie.type === "series" ? "Phim Bộ" : "Điện Ảnh");
-    const staggerIdx = Math.min(index, 7);
+    const staggerIdx = Math.min(index, 5);
     const cardImg = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
     const cardFallback = this.getMoviePoster(movie) || cardImg;
     return `
@@ -2134,15 +2139,9 @@
     document.querySelectorAll(".is-hero-previewing").forEach((el) => el.classList.remove("is-hero-previewing"));
     const heroEl = document.getElementById("heroShowcase");
     if (heroEl) {
+      // renderHeroHTML đã gắn sẵn class ps5-hero-morph-anim trên phần tử mới -> không xóa/gắn lại sau 1 frame để tránh chớp màn hình
       heroEl.outerHTML = this.renderHeroHTML();
       this.attachHeroSwipeHandlers();
-      const newHero = document.getElementById("heroShowcase");
-      if (newHero) {
-        newHero.classList.remove("vision-hero-slide-anim", "ps5-hero-morph-anim");
-        requestAnimationFrame(() => {
-          newHero.classList.add("ps5-hero-morph-anim");
-        });
-      }
     }
   },
 

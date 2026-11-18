@@ -79,21 +79,22 @@
     this.prepareMovieEpisodeSlots(movie);
 
     this.renderModalContent(movie, shouldAutoPlay);
-    modalBackdrop.classList.add("open");
-    modalBackdrop.classList.toggle("lights-off", this.lightsOff);
-    document.body.style.overflow = "hidden";
-    document.body.classList.add("modal-open");
-
-    // Kéo lên đầu Modal tức thì không trễ
     modalBackdrop.scrollTop = 0;
     const sheet = document.getElementById("movieDetailSheet");
     if (sheet) {
       sheet.scrollTop = 0;
       sheet.classList.remove("modal-movie-switch", "ps5-modal-anim");
-      requestAnimationFrame(() => {
-        sheet.classList.add("modal-movie-switch", "ps5-modal-anim");
-      });
     }
+
+    modalBackdrop.classList.toggle("lights-off", this.lightsOff);
+    document.body.style.overflow = "hidden";
+    document.body.classList.add("modal-open");
+
+    // Một nhịp rAF sạch duy nhất để kích hoạt GPU transition mở rạp mượt mà, không đè animation kép
+    requestAnimationFrame(() => {
+      modalBackdrop.classList.add("open");
+      if (sheet) sheet.classList.add("ps5-modal-anim");
+    });
 
     const prevEpSource = this.unwrapM3u8Url(movie.episodes?.[epIndex]?.source || "");
 

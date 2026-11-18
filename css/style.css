@@ -1666,7 +1666,11 @@ body::-webkit-scrollbar {
               visibility 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body.modal-open .vision-stage,
+body.modal-open .vision-stage {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 body.modal-open .spatial-room-bg,
 body.modal-open .ambient-canvas {
   display: none !important;
@@ -3472,7 +3476,7 @@ body {
 }
 
 .vision-view-enter {
-  animation: appleSpatialScaleIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  animation: appleSpatialScaleIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) both !important;
   will-change: opacity, transform;
 }
 
@@ -3481,34 +3485,32 @@ body {
 }
 
 .vision-hero-slide-anim {
-  animation: visionHeroSlideFade 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
+  animation: visionHeroSlideFade 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .modal-movie-switch {
-  animation: appleSpatialScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity;
+  animation: appleSpatialScaleIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes appleSpatialScaleIn {
   0% {
-    opacity: 0.35;
-    transform: scale(0.992);
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes visionHeroSlideFade {
   from {
-    opacity: 0.45;
-    transform: scale(0.992);
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -6264,16 +6266,12 @@ button, a, input, select,
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Tăng tốc phần cứng GPU Compositing mà không gây tràn VRAM */
-.vision-window,
+/* Tăng tốc phần cứng GPU Compositing chọn lọc — tránh tạo texture khổng lồ gây nghẽn VRAM */
 .apple-player-bar,
 .liquid-mobile-dock,
 .detail-modal-sheet,
 .vision-hero-banner,
-.spatial-room-bg,
-#mainContentWrapper,
-.vision-dashboard-grid,
-.vision-left-dock {
+.spatial-room-bg {
   transform: translateZ(0);
   backface-visibility: hidden;
 }
@@ -7443,7 +7441,7 @@ html.dragging-glass .vision-left-dock {
 }
 
 /* --------------------------------------------------------------------------
-   APPLE visionOS UNIFIED FLUID GLASS ENGINE (FRAMELESS EDGE-TO-EDGE)
+   APPLE visionOS UNIFIED FLUID GLASS ENGINE (FRAMELESS EDGE-TO-EDGE — ZERO FULL-PAGE BLUR JANK)
    -------------------------------------------------------------------------- */
 .vision-window {
   border-radius: 0 !important;
@@ -7451,15 +7449,15 @@ html.dragging-glass .vision-left-dock {
   -webkit-background-clip: padding-box !important;
   overflow: clip !important;
   isolation: isolate;
-  backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border: none !important;
   box-shadow: none !important;
   background: linear-gradient(
     145deg,
-    rgba(82, 86, 96, var(--glass-dyn-alpha, 0.55)) 0%,
-    rgba(42, 45, 52, calc(var(--glass-dyn-alpha, 0.55) * 1.08)) 48%,
-    rgba(22, 24, 30, calc(var(--glass-dyn-alpha, 0.55) * 1.15)) 100%
+    rgba(30, 33, 40, 0.94) 0%,
+    rgba(20, 22, 28, 0.97) 48%,
+    rgba(13, 15, 20, 1) 100%
   ) !important;
 }
 
@@ -9590,45 +9588,45 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   opacity: 1;
 }
 
-/* --- 10C. PS5 Context-Driven Hero Morphing & Staggered Cascade Keyframes --- */
+/* --- 10C. CLEAN SILKY HERO TRANSITION & SUBTLE STAGGERED TEXT GLIDE --- */
 .ps5-hero-morph-anim .vision-hero-bg {
-  animation: ps5HeroBackdropZoom 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: ps5HeroBackdropZoom 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .ps5-hero-morph-anim .vision-hero-genres,
 .ps5-hero-morph-anim .cinema-genre-pills {
-  animation: ps5HeroTextSlideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
+  animation: ps5HeroTextSlideUp 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-title,
 .ps5-hero-morph-anim .cinema-hero-title {
-  animation: ps5HeroTextSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+  animation: ps5HeroTextSlideUp 0.36s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
 }
 
 .ps5-hero-morph-anim .ps5-hero-meta-row,
 .ps5-hero-morph-anim .cinema-hero-sub,
 .ps5-hero-morph-anim .cinema-meta-badges {
-  animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.09s both;
+  animation: ps5HeroTextSlideUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-desc,
 .ps5-hero-morph-anim .cinema-hero-desc {
-  animation: ps5HeroTextSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+  animation: ps5HeroTextSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 }
 
 .ps5-hero-morph-anim .ps5-hero-saves-strip {
-  animation: ps5HeroTextSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+  animation: ps5HeroTextSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-actions,
 .ps5-hero-morph-anim .cinema-hero-actions {
-  animation: ps5HeroTextSlideUp 0.54s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+  animation: ps5HeroTextSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
 }
 
 @keyframes ps5HeroBackdropZoom {
   0% {
-    opacity: 0.38;
-    transform: scale(1.075) translate3d(0, 0, 0);
+    opacity: 0.45;
+    transform: scale(1.035) translate3d(0, 0, 0);
   }
   100% {
     opacity: 1;
@@ -9639,7 +9637,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @keyframes ps5HeroTextSlideUp {
   0% {
     opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    transform: translate3d(0, 10px, 0);
   }
   100% {
     opacity: 1;
@@ -9677,29 +9675,27 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   color: #ffffff;
 }
 
-/* 1. Hiệu ứng Cascade Lướt Vào Đẳng Cấp PlayStation 5 cho Mọi Thẻ Phim */
+/* 1. Hiệu ứng Cascade Lướt Vào Siêu Mượt & Nhẹ (Không tràn VRAM will-change) */
 .vision-feature-card,
 .movie-card,
 .continue-shelf-card,
 .vision-trailer-card,
 .chart-column-card {
-  animation: ps5CardCascadeIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 16ms) both;
-  will-change: transform, opacity;
+  animation: ps5CardCascadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--card-stagger, 0) * 10ms) both;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition:
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.24s ease,
-    background-color 0.24s ease,
-    box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.2s ease,
+    background-color 0.2s ease !important;
 }
 
 .vision-feature-card .vision-feature-img,
 .movie-card .movie-poster-wrap img,
 .continue-shelf-card .continue-shelf-thumb img,
 .vision-trailer-card img {
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  will-change: transform;
+  transition: none !important;
+  will-change: auto;
 }
 
 /* 2. Hiệu ứng Nâng 3D Lơ Lửng & Viền Phát Sáng Minimal Khi Rê Chuột / Focus */
@@ -9818,17 +9814,17 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-card-play-white {
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.28s ease !important;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.18s ease !important;
 }
 
 @keyframes ps5CardCascadeIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, 16px, 0) scale(0.97);
+    transform: translate3d(0, 10px, 0);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -9847,88 +9843,46 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 /* ==========================================================================
-   10E. PS5 "GAME SCREEN & SAVES" MOVIE MODAL / TAB XEM PHIM MOTION
+   10E. UNIFIED SILKY MOVIE MODAL MOTION (PURE GPU TRANSFORM + OPACITY — 0 JANK)
    ========================================================================== */
 
-/* 1. Backdrop làm mờ & tối chuẩn không gian PS5 Cinema */
+/* 1. Backdrop làm mờ & tối mượt mà không khựng */
 .detail-modal-backdrop {
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.24s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
-/* 2. Cửa sổ Rạp Chiếu Modal Nảy Lên Với Đường Cong Vật Lý PS5 Spring */
+/* 2. Cửa sổ Rạp Chiếu Modal lướt lên 1 nhịp mượt 120fps (chỉ transform + opacity, bỏ max-width gây layout thrash) */
 .detail-modal-sheet {
-  transform: translate3d(0, 32px, 0) scale(0.96) !important;
+  transform: translate3d(0, 18px, 0) scale(0.985) !important;
+  opacity: 0 !important;
   transition:
-    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    max-width 0.35s ease !important;
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1) !important;
   will-change: transform, opacity;
 }
 
 .detail-modal-backdrop.open .detail-modal-sheet,
 .detail-modal-sheet.ps5-modal-anim {
   transform: translate3d(0, 0, 0) scale(1) !important;
+  opacity: 1 !important;
 }
 
-/* 3. Phóng To & Hiển Thị Mượt Mà Ảnh Bìa Hero Backdrop Trong Modal (Cinematic Reveal) */
+/* 3. Hiển thị ảnh bìa trong modal dịu mắt, bỏ 12+ animation con lồng nhau và bỏ animation cho 300 nút tập gây khựng */
 .detail-modal-sheet.ps5-modal-anim .player-cover-preview,
 .detail-modal-backdrop.open .player-cover-preview {
-  animation: ps5ModalCoverZoom 0.68s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-  will-change: transform, opacity;
-}
-
-/* 4. Hiệu Ứng Trượt So Le Tuần Tự (Cascade Elements) Khi Mở Tab Xem Phim */
-.detail-modal-sheet.ps5-modal-anim .modal-top-controls {
-  animation: ps5ModalControlPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .player-cover-content h2 {
-  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .player-cover-content p {
-  animation: ps5ModalItemSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .hero-actions {
-  animation: ps5ModalItemSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim #playerToolbarContainer {
-  animation: ps5ModalItemSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .hero-meta-pills {
-  animation: ps5ModalItemSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .modal-synopsis,
-.detail-modal-sheet.ps5-modal-anim .modal-cast-meta {
-  animation: ps5ModalItemSlideUp 0.54s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .episodes-header-bar {
-  animation: ps5ModalItemSlideUp 0.56s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both !important;
+  animation: none !important;
+  will-change: auto;
 }
 
 .detail-modal-sheet.ps5-modal-anim .episodes-grid .ep-pill-btn {
-  animation: ps5CardCascadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--ep-stagger, 0) * 20ms) both !important;
+  animation: none !important;
 }
 
-.detail-modal-sheet.ps5-modal-anim .modal-tabs-nav {
-  animation: ps5ModalItemSlideUp 0.58s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both !important;
-}
-
-.detail-modal-sheet.ps5-modal-anim .movie-grid {
-  animation: ps5ModalItemSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both !important;
-}
-
-/* 5. Tương Tác Xúc Giác PS5 Cho Nút Phát & Nút Điều Khiển Trong Modal */
+/* 4. Tương Tác Nhẹ Nhàng Cho Nút Phát & Nút Điều Khiển Trong Modal */
 .btn-primary-play {
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s ease,
-    background 0.2s ease !important;
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.18s ease !important;
 }
 
 @media (hover: hover) {
@@ -12772,9 +12726,92 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   box-shadow: none !important;
   outline: none !important;
   min-height: 100vh !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   -webkit-clip-path: none !important;
   clip-path: none !important;
 }
+
+/* ==========================================================================
+   SILKY 120FPS CLEAN MOTION SYSTEM (ZERO JANK, PURE GPU COMPOSITING)
+   ========================================================================== */
+:root {
+  --ease-clean: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Chuyển động mượt mà chỉ trên các thuộc tính GPU rẻ (loại bỏ transition: all gây repaint) */
+.vision-nav-pill,
+.vision-circle-btn,
+.vision-topbar-home-btn,
+.vision-topbar-filter-btn,
+.vision-profile-pill,
+.vision-see-all-pill,
+.cinema-play-glow-btn,
+.cinema-fav-circle-btn,
+.cinema-thumb-card,
+.ep-pill-btn,
+.server-btn,
+.quality-pill-btn,
+.modal-ctrl-btn,
+.explore-load-more-btn {
+  transition:
+    transform 0.2s var(--ease-clean),
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease !important;
+}
+
+.vision-nav-pill:active,
+.vision-circle-btn:active,
+.vision-topbar-home-btn:active,
+.vision-topbar-filter-btn:active,
+.vision-profile-pill:active,
+.cinema-play-glow-btn:active,
+.cinema-fav-circle-btn:active,
+.cinema-thumb-card:active,
+.ep-pill-btn:active,
+.server-btn:active {
+  transform: scale(0.96) translate3d(0, 0, 0) !important;
+  transition-duration: 0.08s !important;
+}
+
+/* Dropdown tìm kiếm & Flyout thông báo xuất hiện siêu sạch, không nhảy khung */
+.search-dropdown {
+  transform-origin: top center;
+  transition:
+    opacity 0.18s var(--ease-clean),
+    transform 0.18s var(--ease-clean),
+    visibility 0.18s ease !important;
+}
+
+.search-dropdown.open {
+  animation: cleanDropdownPop 0.18s var(--ease-clean) both;
+}
+
+@keyframes cleanDropdownPop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Tôn trọng cài đặt giảm chuyển động của hệ điều hành */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 
 
 
