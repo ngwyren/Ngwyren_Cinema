@@ -796,7 +796,13 @@
           timestamp: new Date().toISOString()
         });
 
+        // Cập nhật chỉ mục kho phim toàn cục & đồng bộ đám mây để tồn tại bền vững sau mọi lần reload/refresh
+        if (typeof this.buildFastIndexes === "function") this.buildFastIndexes();
+        if (typeof this.updateSidebarCounts === "function") this.updateSidebarCounts();
+        if (typeof this.triggerCloudSync === "function") this.triggerCloudSync(600);
+
         // Đồng bộ phim vừa nạp vào kết quả tìm kiếm tức thì
+        this.lastSearchQuery = ingested.title || movieTitle;
         if (Array.isArray(this.lastSearchResults)) {
           if (!this.lastSearchResults.some((m) => m && m.slug === ingested.slug)) {
             this.lastSearchResults.unshift(ingested);
@@ -819,12 +825,7 @@
           statusEl.style.background = "linear-gradient(135deg, rgba(52, 199, 89, 0.2), rgba(48, 209, 88, 0.12))";
           statusEl.style.border = "1px solid rgba(52, 199, 89, 0.4)";
           statusEl.style.color = "#34c759";
-          statusEl.innerHTML = `<div style="display: flex; gap: 8px; align-items: flex-start;"><i class="fas fa-circle-check" style="font-size: 1.1rem; color: #34c759; margin-top: 2px;"></i><div><b>Nạp phim thành công!</b> Đã tìm thấy và tích hợp phim <b>"${ingested.title}"</b> vào rạp.${movieEmail ? `<br><span style="font-size: 0.78rem; color: #a1e3a1;"><i class="fas fa-envelope"></i> Đã gửi email thông báo tới <b>${movieEmail}</b></span>` : ""}<br><span style="font-size: 0.78rem; color: rgba(255,255,255,0.7);">Đang mở phim để bạn thưởng thức ngay...</span></div></div>`;
-        }
-
-        // Cập nhật giao diện kết quả tìm kiếm nếu đang ở chế độ xem tìm kiếm
-        if (this.currentNav === "search-results" && typeof this.renderSearchResultsView === "function") {
-          this.renderSearchResultsView(this.lastSearchResults, movieTitle);
+          statusEl.innerHTML = `<div style="display: flex; gap: 8px; align-items: flex-start;"><i class="fas fa-circle-check" style="font-size: 1.1rem; color: #34c759; margin-top: 2px;"></i><div><b>Nạp phim thành công & đã lưu vào kho web!</b> Đã tích hợp <b>"${ingested.title}"</b> (giữ nguyên sau khi tải lại trang).${movieEmail ? `<br><span style="font-size: 0.78rem; color: #a1e3a1;"><i class="fas fa-envelope"></i> Đã gửi email thông báo tới <b>${movieEmail}</b></span>` : ""}<br><span style="font-size: 0.78rem; color: rgba(255,255,255,0.7);">Đang mở phim để bạn thưởng thức ngay...</span></div></div>`;
         }
 
         // Dọn dẹp form nạp phim sẵn sàng cho lượt tiếp theo
@@ -836,6 +837,9 @@
         }
 
         setTimeout(() => {
+          if (this.currentNav === "search-results" && typeof this.renderMainView === "function") {
+            this.renderMainView();
+          }
           this.openMovieModal(ingested.slug, true);
         }, 700);
         return;

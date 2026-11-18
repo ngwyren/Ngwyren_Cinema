@@ -3562,6 +3562,9 @@ class PhimmoiService {
       }
     });
 
+    // Khôi phục toàn bộ phim người dùng đã nạp trước đó từ localStorage (bền vững sau mỗi lần Reload/F5)
+    this.loadPersistedIngestedMovies();
+
     // Tự động nạp toàn bộ kho phim đầy đủ từ js/movies-catalog.js nếu đã có sẵn
     if (Array.isArray(window.NGWYREN_FULL_CATALOG)) {
       this.loadFullCatalog(window.NGWYREN_FULL_CATALOG);
@@ -4676,7 +4679,9 @@ class PhimmoiService {
     }
 
     if (newlyAdded.length > 0) {
-      this.movies = [...newlyAdded, ...this.movies];
+      const userIngested = this.movies.filter((m) => m && m._userIngested);
+      const restMovies = this.movies.filter((m) => !m || !m._userIngested);
+      this.movies = [...userIngested, ...newlyAdded, ...restMovies];
       this.deduplicateCatalog();
     }
 
@@ -5899,12 +5904,219 @@ class PhimmoiService {
   }
 
   /**
-   * Tự động dò tìm trực tuyến đa nguồn (PhimAPI, NguonC, Film4K) và nạp tức thì phim mới vào catalog
+   * Đọc danh sách phim đã được người dùng nạp và lưu bền vững trong localStorage
+   */
+  getPersistedIngestedMovies() {
+    try {
+      if (typeof localStorage === "undefined") return [];
+      const raw = localStorage.getItem("ngwyren_ingested_movies_v1");
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((m) => m && m.slug && m.title) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /**
+   * Tạo bản sao gọn sạch của đối tượng phim để lưu bền vững vào localStorage (giữ nguyên toàn bộ luồng phát .m3u8 & metadata)
+   */
+  serializeMovieForPersistence(movie) {
+    if (!movie || !movie.slug) return null;
+    const cleanEp = (ep) => {
+      if (!ep) return null;
+      const out = {
+        name: ep.name || "Full",
+        slug: ep.slug || "full",
+        source: ep.source || "",
+        embed: ep.embed || ""
+      };
+      if (ep.is4k) out.is4k = true;
+      if (ep.isFilm4k) out.isFilm4k = true;
+      if (ep.needsEnrich && !out.source && !out.embed) out.needsEnrich = true;
+      if (Array.isArray(ep.altSources) && ep.altSources.length > 0) {
+        out.altSources = ep.altSources.slice(0, 4).map((a) => ({
+          label: a.label || "Server phụ",
+          source: a.source || "",
+          embed: a.embed || "",
+          is4k: Boolean(a.is4k)
+        }));
+      }
+      return out;
+    };
+
+    const eps = Array.isArray(movie.episodes) ? movie.episodes.map(cleanEp).filter(Boolean) : [];
+    const dubEps = Array.isArray(movie.dubEpisodes) ? movie.dubEpisodes.map(cleanEp).filter(Boolean) : [];
+    const tags = Array.isArray(movie.sectionTags) ? [...new Set(movie.sectionTags)] : ["hot", "de-cu", "vietsub"];
+    if (!tags.includes("moi-cap-nhat")) tags.push("moi-cap-nhat");
+    if (!tags.includes("vietsub")) tags.push("vietsub");
+    const typeTag = movie.type === "series" ? "phim-bo" : "phim-le";
+    if (!tags.includes(typeTag)) tags.push(typeTag);
+
+    return {
+      id: movie.id || `ing-${movie.slug}`,
+      slug: movie.slug,
+      crawlSlug: movie.crawlSlug || movie.slug,
+      film4kSlug: movie.film4kSlug || "",
+      title: movie.title || movie.originTitle || movie.slug,
+      originTitle: movie.originTitle || movie.title || movie.slug,
+      poster: movie.poster || movie.backdrop || "",
+      backdrop: movie.backdrop || movie.poster || "",
+      type: movie.type === "series" ? "series" : "single",
+      sectionTags: tags,
+      quality: movie.quality || "1080",
+      has4k: Boolean(movie.has4k),
+      hasReal4k: Boolean(movie.hasReal4k),
+      language: movie.language || "Vietsub",
+      duration: movie.duration || (movie.type === "series" ? "45 phút/tập" : "115 phút"),
+      episodeCurrent: movie.episodeCurrent || (movie.type === "series" ? `Tập ${eps.length || 1}` : "Full"),
+      episodeTotal: String(movie.episodeTotal || eps.length || 1),
+      year: Number(movie.year) || new Date().getFullYear(),
+      rating: Number(movie.rating) || 9.0,
+      matchScore: Number(movie.matchScore) || 96,
+      country: movie.country || "Quốc Tế",
+      countrySlug: movie.countrySlug || "quoc-te",
+      genres: Array.isArray(movie.genres) && movie.genres.length ? movie.genres.slice(0, 6) : ["Điện Ảnh"],
+      director: this.cleanDirector(movie.director, movie.slug, movie.title || movie.originTitle),
+      cast: Array.isArray(movie.cast) && movie.cast.length ? movie.cast.slice(0, 10) : ["Dàn diễn viên chính"],
+      ambientColors: Array.isArray(movie.ambientColors) ? movie.ambientColors : ["#ffffff", "#d4d4d4", "#a3a3a3"],
+      trailerUrl: movie.trailerUrl || "",
+      overviewVi: movie.overviewVi || "",
+      overviewEn: movie.overviewEn || "",
+      synopsis: movie.synopsis || "",
+      episodes: eps,
+      dubEpisodes: dubEps,
+      _userIngested: true,
+      _ingestedAt: movie._ingestedAt || Date.now()
+    };
+  }
+
+  /**
+   * Lưu phim mới nạp vào localStorage để tồn tại vĩnh viễn sau mọi lần tải lại trang (F5 / Reload)
+   */
+  saveIngestedMovie(movie) {
+    if (!movie || !movie.slug) return false;
+    try {
+      if (typeof localStorage === "undefined") return false;
+      const serialized = this.serializeMovieForPersistence(movie);
+      if (!serialized) return false;
+
+      const list = this.getPersistedIngestedMovies().filter((m) => m && m.slug !== serialized.slug);
+      list.unshift(serialized);
+
+      // Giới hạn tối đa 150 phim nạp gần nhất & tự động cắt gọn nếu gần chạm hạn mức bộ nhớ trình duyệt
+      let trimmed = list.slice(0, 150);
+      while (trimmed.length > 0) {
+        try {
+          localStorage.setItem("ngwyren_ingested_movies_v1", JSON.stringify(trimmed));
+          return true;
+        } catch (_) {
+          trimmed = trimmed.slice(0, Math.max(1, Math.floor(trimmed.length * 0.75)));
+          if (trimmed.length === 1) {
+            try {
+              localStorage.setItem("ngwyren_ingested_movies_v1", JSON.stringify(trimmed));
+              return true;
+            } catch (__) {
+              return false;
+            }
+          }
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  /**
+   * Khôi phục toàn bộ phim đã nạp từ localStorage vào kho chính ngay khi khởi chạy web (0ms)
+   */
+  loadPersistedIngestedMovies() {
+    const persisted = this.getPersistedIngestedMovies();
+    if (!persisted.length) return 0;
+
+    let restoredCount = 0;
+    // Duyệt ngược để phim nạp gần nhất luôn đứng đầu danh sách
+    for (let i = persisted.length - 1; i >= 0; i--) {
+      const item = persisted[i];
+      if (!item || !item.slug) continue;
+
+      item.director = this.cleanDirector(item.director, item.slug, item.title || item.originTitle);
+      item._userIngested = true;
+      item._titleLower = (item.title || "").toLowerCase();
+      item._originLower = (item.originTitle || "").toLowerCase();
+      item._titleNorm = this.normalizeSearchText(item.title);
+      item._originNorm = this.normalizeSearchText(item.originTitle);
+
+      const keys = this.getCanonicalMovieKeys(item);
+      let existing = this.slugMap.get(item.slug) || (item.crawlSlug && this.slugMap.get(item.crawlSlug));
+      if (!existing) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && this.canonicalKeyMap.has(k)) {
+            existing = this.canonicalKeyMap.get(k);
+            break;
+          }
+        }
+      }
+
+      if (existing) {
+        this.mergeBestQualityMovie(existing, item);
+        existing._userIngested = true;
+        this.slugMap.set(item.slug, existing);
+        if (item.crawlSlug) this.slugMap.set(item.crawlSlug, existing);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
+      } else {
+        this.movies.unshift(item);
+        this.slugMap.set(item.slug, item);
+        if (item.crawlSlug) this.slugMap.set(item.crawlSlug, item);
+        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, item); });
+        restoredCount++;
+      }
+    }
+    this.lastSyncedCount = this.movies.length;
+    return restoredCount;
+  }
+
+  /**
+   * Tự động dò tìm trực tuyến đa nguồn (PhimAPI, NguonC, Film4K) và nạp tức thì + lưu bền vững phim mới vào catalog
    */
   async searchAndIngestMovie(query) {
     if (!query || typeof query !== "string") return null;
     const cleanQ = query.trim();
     if (cleanQ.length < 2) return null;
+
+    const finalizeIngested = (movie) => {
+      if (!movie || !movie.slug) return movie;
+      movie._userIngested = true;
+      movie._ingestedAt = Date.now();
+      movie.director = this.cleanDirector(movie.director, movie.slug, movie.title || movie.originTitle);
+      if (!Array.isArray(movie.sectionTags)) movie.sectionTags = ["hot", "de-cu", "vietsub"];
+      if (!movie.sectionTags.includes("moi-cap-nhat")) movie.sectionTags.push("moi-cap-nhat");
+      if (!movie.sectionTags.includes("vietsub")) movie.sectionTags.push("vietsub");
+      const typeTag = movie.type === "series" ? "phim-bo" : "phim-le";
+      if (!movie.sectionTags.includes(typeTag)) movie.sectionTags.push(typeTag);
+
+      movie._titleLower = (movie.title || "").toLowerCase();
+      movie._originLower = (movie.originTitle || "").toLowerCase();
+      movie._titleNorm = this.normalizeSearchText(movie.title);
+      movie._originNorm = this.normalizeSearchText(movie.originTitle);
+
+      const keys = this.getCanonicalMovieKeys(movie);
+      const existingIdx = this.movies.indexOf(movie);
+      if (existingIdx < 0) {
+        this.movies.unshift(movie);
+      } else if (existingIdx > 0) {
+        this.movies.splice(existingIdx, 1);
+        this.movies.unshift(movie);
+      }
+      this.slugMap.set(movie.slug, movie);
+      if (movie.crawlSlug) this.slugMap.set(movie.crawlSlug, movie);
+      keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, movie); });
+
+      if (this._smartCache) this._smartCache.clear();
+      this.lastSyncedCount = this.movies.length;
+      this.saveIngestedMovie(movie);
+      return movie;
+    };
 
     const qLower = cleanQ.toLowerCase();
     const cleanQNorm = this.normalizeSearchText(cleanQ);
@@ -5924,7 +6136,7 @@ class PhimmoiService {
     });
     if (existing) {
       await this.enrichMovieStreams(existing);
-      return existing;
+      return finalizeIngested(existing);
     }
 
     // 2. Chạy tìm kiếm sâu trên tất cả các API trực tuyến
@@ -5955,18 +6167,13 @@ class PhimmoiService {
           }
         }
       }
-      if (existingDup) {
+      if (existingDup && existingDup !== best) {
         this.mergeBestQualityMovie(existingDup, best);
         this.slugMap.set(best.slug, existingDup);
         keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
-        return existingDup;
+        return finalizeIngested(existingDup);
       }
-      if (!this.movies.includes(best)) {
-        this.movies.unshift(best);
-        this.slugMap.set(best.slug, best);
-        keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, best); });
-      }
-      return best;
+      return finalizeIngested(best);
     }
     return null;
   }

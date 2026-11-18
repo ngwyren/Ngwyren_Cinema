@@ -21,6 +21,9 @@
       this.showToast(`Đã xóa "${movie.title}" khỏi Danh sách yêu thích`);
     } else {
       this.myList.unshift(movie.slug);
+      if (this.service && typeof this.service.saveIngestedMovie === "function" && (movie._userIngested || /^(?:pa-|nc-|f4k-)/.test(String(movie.id || "")))) {
+        this.service.saveIngestedMovie(movie);
+      }
       this.showToast(`Đã thêm "${movie.title}" vào Danh sách yêu thích`);
     }
 
@@ -85,6 +88,9 @@
       },
       ...(this.watchHistory || [])
     ]);
+    if (movie && this.service && typeof this.service.saveIngestedMovie === "function" && (movie._userIngested || /^(?:pa-|nc-|f4k-)/.test(String(movie.id || "")))) {
+      this.service.saveIngestedMovie(movie);
+    }
     this.saveStorage("apple_cinema_history", this.watchHistory);
     this.updateSidebarCounts();
     const contShelf = document.getElementById("continueWatchingShelf");
@@ -224,6 +230,14 @@
     this.renderCloudSyncBadge(true);
 
     const topic = this.getCloudSyncTopic();
+    const persistedIngested =
+      this.service && typeof this.service.getPersistedIngestedMovies === "function"
+        ? this.service.getPersistedIngestedMovies().slice(0, 12).map((m) => ({
+            slug: m.slug,
+            title: m.title || m.originTitle || m.slug
+          }))
+        : [];
+
     const payload = {
       app: "ngwyren-cinema",
       cloudKey: this.cloudSyncKey,
@@ -232,7 +246,8 @@
       profile: this.userProfile,
       myList: this.myList || [],
       history: this.watchHistory || [],
-      progress: this.playbackProgress || {}
+      progress: this.playbackProgress || {},
+      ingestedSlugs: persistedIngested
     };
 
     try {
@@ -363,6 +378,23 @@
       if (cloudData.progress && typeof cloudData.progress === "object") {
         this.playbackProgress = { ...(cloudData.progress || {}), ...(this.playbackProgress || {}) };
         this.saveStorage("ngwyren_playback_progress", this.playbackProgress, true);
+      }
+
+      // 3b. Hợp nhất & tự nạp ngầm phim đã được nạp từ thiết bị khác
+      if (Array.isArray(cloudData.ingestedSlugs) && cloudData.ingestedSlugs.length > 0 && this.service && typeof this.service.searchAndIngestMovie === "function") {
+        const missing = cloudData.ingestedSlugs.filter((item) => item && item.slug && !this.service.slugMap?.has(item.slug));
+        if (missing.length > 0) {
+          Promise.all(
+            missing.slice(0, 6).map((item) =>
+              this.service.searchAndIngestMovie(item.title || item.slug).catch(() => null)
+            )
+          ).then((results) => {
+            if (results.some(Boolean)) {
+              if (typeof this.buildFastIndexes === "function") this.buildFastIndexes();
+              if (typeof this.updateSidebarCounts === "function") this.updateSidebarCounts();
+            }
+          });
+        }
       }
     }
 
