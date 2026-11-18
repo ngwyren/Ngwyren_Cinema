@@ -81,6 +81,7 @@
     this.renderModalContent(movie, shouldAutoPlay);
     modalBackdrop.scrollTop = 0;
     const sheet = document.getElementById("movieDetailSheet");
+    const wasAlreadyOpen = modalBackdrop.classList.contains("open");
     if (sheet) {
       sheet.scrollTop = 0;
       sheet.classList.remove("modal-movie-switch", "ps5-modal-anim");
@@ -90,17 +91,25 @@
     document.body.style.overflow = "hidden";
     document.body.classList.add("modal-open");
 
-    // Một nhịp rAF sạch duy nhất để kích hoạt GPU transition mở rạp mượt mà, không đè animation kép
-    requestAnimationFrame(() => {
+    // Mở rạp ngay lập tức ở Frame 0 (0ms delay khi bấm), đồng thời kích hoạt hiệu ứng PS5 Game Hub rõ nét
+    if (wasAlreadyOpen && sheet) {
+      void sheet.offsetWidth;
+      sheet.classList.add("ps5-modal-anim");
+    } else {
+      if (sheet) void sheet.offsetWidth;
       modalBackdrop.classList.add("open");
       if (sheet) sheet.classList.add("ps5-modal-anim");
-    });
+    }
 
     const prevEpSource = this.unwrapM3u8Url(movie.episodes?.[epIndex]?.source || "");
 
     if (shouldAutoPlay) {
-      // Khi tự động phát, startVideoPlayback đã tự đảm nhiệm việc phát 0ms và làm giàu ngầm, tránh gọi trùng lặp gây khởi động lại luồng video
-      this.startVideoPlayback(movie, epIndex, defaultSrv);
+      // Đẩy khởi tạo Hls.js/video sang nhịp frame kế tiếp (16ms) để Frame 1 mở rạp bật ra NGAY TỨC THÌ 0ms không khựng
+      requestAnimationFrame(() => {
+        if (this.selectedMovie && this.selectedMovie.slug === movie.slug) {
+          this.startVideoPlayback(movie, epIndex, defaultSrv);
+        }
+      });
       return;
     }
 
@@ -208,6 +217,7 @@
 
   getMovieBackdrop(movie) {
     if (!movie) return "";
+    if (movie._cachedBackdrop) return movie._cachedBackdrop;
     let b = movie.backdrop || "";
 
     // Phân tách ảnh độc bản theo từng mùa/phần cho các series phim bộ kinh điển
@@ -330,22 +340,44 @@
       movie.backdrop = b;
     }
 
-    // Tự động kiểm tra: nếu phim này có backdrop trùng lặp với một phim khác trong danh sách hoặc thuộc series đa phần, ưu tiên poster riêng biệt
+    // Chỉ mục O(1) kiểm tra trùng lặp ảnh nền & series đa phần (xây 1 lần duy nhất thay vì quét O(N²) 2500 phim mỗi thẻ)
     if (this.service?.movies && movie.poster && b) {
-      const rootKey = this.service.getSeriesRootKey ? this.service.getSeriesRootKey(movie.title || movie.originTitle, movie.slug) : "";
-      const isDupBackdrop = this.service.movies.some(
-        (other) => other && other.slug !== movie.slug && (
-          (other.backdrop === b || other._cachedBackdrop === b) ||
-          (rootKey && this.service.getSeriesRootKey && this.service.getSeriesRootKey(other.title || other.originTitle, other.slug) === rootKey && other.poster !== movie.poster)
-        )
-      );
+      const moviesArr = this.service.movies;
+      if (!this._backdropIndex || this._backdropIndexLen !== moviesArr.length) {
+        const bdCounts = new Map();
+        const rootPosters = new Map();
+        const getRoot = this.service.getSeriesRootKey ? this.service.getSeriesRootKey.bind(this.service) : null;
+        for (let i = 0; i < moviesArr.length; i++) {
+          const item = moviesArr[i];
+          if (!item) continue;
+          const ib = item.backdrop || item._cachedBackdrop;
+          if (ib) bdCounts.set(ib, (bdCounts.get(ib) || 0) + 1);
+          if (getRoot && item.poster) {
+            const rk = item._seriesRootKey || (item._seriesRootKey = getRoot(item.title || item.originTitle, item.slug));
+            if (rk) {
+              let set = rootPosters.get(rk);
+              if (!set) {
+                set = new Set();
+                rootPosters.set(rk, set);
+              }
+              if (set.size < 2) set.add(item.poster);
+            }
+          }
+        }
+        this._backdropIndex = { bdCounts, rootPosters };
+        this._backdropIndexLen = moviesArr.length;
+      }
+
+      const rk = movie._seriesRootKey || (this.service.getSeriesRootKey ? (movie._seriesRootKey = this.service.getSeriesRootKey(movie.title || movie.originTitle, movie.slug)) : "");
+      const isDupBackdrop =
+        (this._backdropIndex.bdCounts.get(b) || 0) > 1 ||
+        Boolean(rk && (this._backdropIndex.rootPosters.get(rk)?.size || 0) > 1);
       if (isDupBackdrop && movie.poster !== b) {
         b = movie.poster;
         movie.backdrop = b;
       }
     }
 
-    if (movie._cachedBackdrop) return movie._cachedBackdrop;
     const isSuspicious = !b ||
       (movie.poster && b === movie.poster) ||
       b.includes("animevietsub") ||
@@ -361,13 +393,10 @@
       return b;
     }
 
-    const match = this.service?.movies?.find(
-      (m) => m && m.backdrop && m.backdrop !== m.poster &&
-             !m.backdrop.includes("data/poster") && !m.backdrop.includes("-poster.") &&
-             (m.slug === movie.slug || m.title === movie.title || m.originTitle === movie.originTitle ||
-              (m.crawlSlug && movie.crawlSlug && m.crawlSlug === movie.crawlSlug))
-    );
-    const resolved = (match && match.backdrop) ? match.backdrop : (b || movie.poster || "");
+    const slugMatch = this.service?.slugMap?.get(movie.slug) || (movie.crawlSlug && this.service?.slugMap?.get(movie.crawlSlug));
+    const hasBetterBackdrop = slugMatch && slugMatch.backdrop && slugMatch.backdrop !== slugMatch.poster &&
+      !slugMatch.backdrop.includes("data/poster") && !slugMatch.backdrop.includes("-poster.");
+    const resolved = hasBetterBackdrop ? slugMatch.backdrop : (b || movie.poster || "");
     movie._cachedBackdrop = resolved;
     return resolved;
   },

@@ -214,7 +214,7 @@
       if (e.target === container) cleanupEnter();
     };
     container.addEventListener("animationend", onAnimEnd);
-    this._navTransitionTimer = setTimeout(cleanupEnter, 300);
+    this._navTransitionTimer = setTimeout(cleanupEnter, 420);
   },
 
   syncLeftDockIndicator(navKey) {
@@ -312,18 +312,28 @@
 
   dedupeMovieList(list) {
     if (!Array.isArray(list) || list.length <= 1) return list || [];
+    // Fast-path 0ms: this.service.movies đã được deduplicateCatalog() làm sạch hoàn toàn
+    if (this.service && list === this.service.movies) return list;
     const seenSlugs = new Set();
     const seenKeys = new Set();
     const keyToMovieMap = new Map();
     const result = [];
+    const getKeys = this.service && typeof this.service.getCanonicalMovieKeys === "function"
+      ? (m) => m._canonKeys || (m._canonKeys = this.service.getCanonicalMovieKeys(m))
+      : (m) => m._canonKeys || (m._canonKeys = [this.getCanonicalMovieKey(m)]);
     for (let i = 0; i < list.length; i++) {
       const m = list[i];
       if (!m || !m.slug) continue;
-      const keys = this.service && typeof this.service.getCanonicalMovieKeys === "function"
-        ? this.service.getCanonicalMovieKeys(m)
-        : [this.getCanonicalMovieKey(m)];
+      const keys = getKeys(m);
       const isSlugSeen = seenSlugs.has(m.slug) || (m.crawlSlug && seenSlugs.has(m.crawlSlug));
-      const matchedKey = keys.find((k) => k && seenKeys.has(k));
+      let matchedKey = null;
+      for (let ki = 0; ki < keys.length; ki++) {
+        const k = keys[ki];
+        if (k && seenKeys.has(k)) {
+          matchedKey = k;
+          break;
+        }
+      }
       if (isSlugSeen || matchedKey) {
         if (this.service && typeof this.service.mergeBestQualityMovie === "function") {
           const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || (this.service.slugMap && this.service.slugMap.get(m.slug));
@@ -336,14 +346,15 @@
       seenSlugs.add(m.slug);
       if (m.crawlSlug) seenSlugs.add(m.crawlSlug);
       if (Array.isArray(m.aliasSlugs)) {
-        m.aliasSlugs.forEach((a) => seenSlugs.add(a));
+        for (let ai = 0; ai < m.aliasSlugs.length; ai++) seenSlugs.add(m.aliasSlugs[ai]);
       }
-      keys.forEach((k) => {
+      for (let ki = 0; ki < keys.length; ki++) {
+        const k = keys[ki];
         if (k) {
           seenKeys.add(k);
           keyToMovieMap.set(k, m);
         }
-      });
+      }
       result.push(m);
     }
     return result;
@@ -1896,11 +1907,12 @@
       ? `loading="eager" fetchpriority="high" decoding="async"`
       : `loading="lazy" fetchpriority="low" decoding="async"`;
     const primaryGenre = (movie.genres && movie.genres[0]) || (movie.type === "series" ? "Phim Bộ" : "Điện Ảnh");
-    const staggerIdx = Math.min(index, 5);
+    const isWaveCard = index < 8;
+    const staggerIdx = Math.min(index, 7);
     const cardImg = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
     const cardFallback = this.getMoviePoster(movie) || cardImg;
     return `
-      <article class="vision-feature-card"
+      <article class="vision-feature-card${isWaveCard ? " ps5-wave-card" : ""}"
                style="--card-stagger: ${staggerIdx};"
                onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
                onpointerleave="app.handleCardPointerLeave(this)"

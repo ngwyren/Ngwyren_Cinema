@@ -3476,7 +3476,7 @@ body {
 }
 
 .vision-view-enter {
-  animation: appleSpatialScaleIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+  animation: appleSpatialScaleIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   will-change: opacity, transform;
 }
 
@@ -3485,32 +3485,32 @@ body {
 }
 
 .vision-hero-slide-anim {
-  animation: visionHeroSlideFade 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: visionHeroSlideFade 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .modal-movie-switch {
-  animation: appleSpatialScaleIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: appleSpatialScaleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes appleSpatialScaleIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
+    transform: translate3d(0, 26px, 0) scale(0.965);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
 @keyframes visionHeroSlideFade {
   from {
     opacity: 0;
-    transform: translate3d(0, 6px, 0);
+    transform: translate3d(0, 16px, 0) scale(0.975);
   }
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -9588,45 +9588,45 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   opacity: 1;
 }
 
-/* --- 10C. CLEAN SILKY HERO TRANSITION & SUBTLE STAGGERED TEXT GLIDE --- */
+/* --- 10C. ICONIC PS5 HERO BACKDROP PULL-BACK & STAGGERED WAVE --- */
 .ps5-hero-morph-anim .vision-hero-bg {
-  animation: ps5HeroBackdropZoom 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: ps5HeroBackdropZoom 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .ps5-hero-morph-anim .vision-hero-genres,
 .ps5-hero-morph-anim .cinema-genre-pills {
-  animation: ps5HeroTextSlideUp 0.34s cubic-bezier(0.22, 1, 0.36, 1) 0.02s both;
+  animation: ps5HeroTextSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-title,
 .ps5-hero-morph-anim .cinema-hero-title {
-  animation: ps5HeroTextSlideUp 0.36s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both;
+  animation: ps5HeroTextSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
 }
 
 .ps5-hero-morph-anim .ps5-hero-meta-row,
 .ps5-hero-morph-anim .cinema-hero-sub,
 .ps5-hero-morph-anim .cinema-meta-badges {
-  animation: ps5HeroTextSlideUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+  animation: ps5HeroTextSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-desc,
 .ps5-hero-morph-anim .cinema-hero-desc {
-  animation: ps5HeroTextSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+  animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.11s both;
 }
 
 .ps5-hero-morph-anim .ps5-hero-saves-strip {
-  animation: ps5HeroTextSlideUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.13s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-actions,
 .ps5-hero-morph-anim .cinema-hero-actions {
-  animation: ps5HeroTextSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+  animation: ps5HeroTextSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
 }
 
 @keyframes ps5HeroBackdropZoom {
   0% {
-    opacity: 0.45;
-    transform: scale(1.035) translate3d(0, 0, 0);
+    opacity: 0.32;
+    transform: scale(1.075) translate3d(0, 0, 0);
   }
   100% {
     opacity: 1;
@@ -9637,7 +9637,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @keyframes ps5HeroTextSlideUp {
   0% {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 20px, 0);
   }
   100% {
     opacity: 1;
@@ -9645,7 +9645,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
-/* --- 10D. PS5 SPATIAL MOTION TOÀN DIỆN CHO TẤT CẢ THẺ PHIM & LƯỚI TRÊN TOÀN WEB --- */
+/* --- 10D. PS5 SPATIAL MOTION RÕ NÉT CHO THẺ PHIM (WAVE CASCADE + FOCUS HALO + SPECULAR SWEEP) --- */
 .vision-card-genre {
   display: inline-flex !important;
   align-items: center;
@@ -9675,19 +9675,43 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   color: #ffffff;
 }
 
-/* 1. Hiệu ứng Cascade Lướt Vào Siêu Mượt & Nhẹ (Không tràn VRAM will-change) */
+/* 1. Hiệu ứng Sóng Cascade PS5 rõ nét chỉ trên 8 thẻ đầu (nhẹ GPU 120fps, rõ từng nhịp sóng) */
 .vision-feature-card,
 .movie-card,
 .continue-shelf-card,
 .vision-trailer-card,
 .chart-column-card {
-  animation: ps5CardCascadeIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--card-stagger, 0) * 10ms) both;
+  animation: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transition:
-    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.24s cubic-bezier(0.2, 0.9, 0.25, 1.08),
     border-color 0.2s ease,
+    box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.2s ease !important;
+}
+
+.vision-feature-card.ps5-wave-card,
+.continue-shelf-card {
+  animation: ps5CardCascadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 28ms) both;
+}
+
+/* Dải ánh sáng Specular Sheen đặc trưng PS5 quét chéo mặt thẻ khi hover (pure GPU transform) */
+.vision-feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.22) 48%,
+    rgba(255, 255, 255, 0.05) 58%,
+    transparent 80%
+  );
+  transform: translate3d(-135%, 0, 0) skewX(-20deg);
+  transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vision-feature-card .vision-feature-img,
@@ -9698,16 +9722,22 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   will-change: auto;
 }
 
-/* 2. Hiệu ứng Nâng 3D Lơ Lửng & Viền Phát Sáng Minimal Khi Rê Chuột / Focus */
+/* 2. Hiệu ứng Nâng 3D Lơ Lửng PS5 Focus Halo & Quét Sáng Khi Rê Chuột / Focus */
 @media (hover: hover) {
-  /* Feature Cards (Khám Phá, Phim Lẻ, Phim Bộ, Anime, Netflix, Đã Lưu, Lịch Sử) */
   .vision-feature-card:hover,
   .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -4px, 0) !important;
-    border-color: rgba(255, 255, 255, 0.95) !important;
-    box-shadow: none !important;
-    z-index: 10 !important;
+    transform: translate3d(0, -7px, 0) scale(1.032) !important;
+    border-color: rgba(255, 255, 255, 0.98) !important;
+    box-shadow:
+      0 14px 34px rgba(0, 0, 0, 0.58),
+      0 0 22px rgba(255, 255, 255, 0.26) !important;
+    z-index: 12 !important;
+  }
+
+  .vision-feature-card:hover::before,
+  .vision-feature-card:focus-visible::before {
+    transform: translate3d(135%, 0, 0) skewX(-20deg);
   }
 
   .vision-feature-card:hover::after,
@@ -9722,22 +9752,24 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .vision-feature-card:hover .vision-card-play-white {
-    transform: scale(1.08) !important;
+    transform: scale(1.14) !important;
     background: #ffffff !important;
     color: #0b0c10 !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.35) !important;
   }
 
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
   .movie-card:hover,
   .movie-card:focus-visible {
-    transform: translate3d(0, -4px, 0) !important;
-    z-index: 5 !important;
+    transform: translate3d(0, -7px, 0) scale(1.03) !important;
+    z-index: 6 !important;
   }
 
   .movie-card:hover .movie-poster-wrap {
-    border-color: rgba(255, 255, 255, 0.95) !important;
-    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.98) !important;
+    box-shadow:
+      0 12px 28px rgba(0, 0, 0, 0.55),
+      0 0 18px rgba(255, 255, 255, 0.24) !important;
   }
 
   .movie-card:hover .movie-poster-wrap::after {
@@ -9749,8 +9781,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .movie-card:hover .hover-play-center {
-    transform: scale(1.08) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    transform: scale(1.12) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35) !important;
   }
 
   /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
@@ -9804,27 +9836,27 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
-/* Micro-spring feedback khi chạm / nhấn vào bất kỳ thẻ hoặc nút bấm nào */
+/* Phản hồi bấm 0ms tức thì chuẩn PS5 (Tactile Press) */
 .vision-feature-card:active,
 .movie-card:active,
 .continue-shelf-card:active,
 .vision-trailer-card:active {
-  transform: scale(0.98) !important;
-  transition: transform 0.08s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+  transform: scale(0.955) translate3d(0, 0, 0) !important;
+  transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
 }
 
 .vision-card-play-white {
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.18s ease !important;
+  transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.25, 1.08), background-color 0.18s ease !important;
 }
 
 @keyframes ps5CardCascadeIn {
   0% {
     opacity: 0;
-    transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 28px, 0) scale(0.92);
   }
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -9843,21 +9875,21 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 /* ==========================================================================
-   10E. UNIFIED SILKY MOVIE MODAL MOTION (PURE GPU TRANSFORM + OPACITY — 0 JANK)
+   10E. PS5 "GAME HUB" MODAL DEPTH REVEAL (0ms INSTANT OPEN, PURE GPU 120FPS)
    ========================================================================== */
 
-/* 1. Backdrop làm mờ & tối mượt mà không khựng */
+/* 1. Backdrop tối không gian rạp nhanh & mượt */
 .detail-modal-backdrop {
-  transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.24s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* 2. Cửa sổ Rạp Chiếu Modal lướt lên 1 nhịp mượt 120fps (chỉ transform + opacity, bỏ max-width gây layout thrash) */
+/* 2. Cửa sổ Rạp Chiếu phóng vút từ chiều sâu chuẩn PS5 Game Hub (0ms delay khi bấm) */
 .detail-modal-sheet {
-  transform: translate3d(0, 18px, 0) scale(0.985) !important;
+  transform: translate3d(0, 48px, 0) scale(0.91) !important;
   opacity: 0 !important;
   transition:
-    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1) !important;
   will-change: transform, opacity;
 }
 
@@ -9867,11 +9899,18 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   opacity: 1 !important;
 }
 
-/* 3. Hiển thị ảnh bìa trong modal dịu mắt, bỏ 12+ animation con lồng nhau và bỏ animation cho 300 nút tập gây khựng */
-.detail-modal-sheet.ps5-modal-anim .player-cover-preview,
-.detail-modal-backdrop.open .player-cover-preview {
-  animation: none !important;
-  will-change: auto;
+/* 3. Chỉ 3 lớp GPU nhẹ đặc trưng PS5 trong Modal (Ảnh bìa pull-back + Tiêu đề/Nút bấm trượt lên), KHÔNG animate 300 nút tập */
+.detail-modal-sheet.ps5-modal-anim .player-cover-preview {
+  animation: ps5ModalCoverZoom 0.52s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .player-cover-content h2 {
+  animation: ps5HeroTextSlideUp 0.36s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both !important;
+}
+
+.detail-modal-sheet.ps5-modal-anim .hero-actions,
+.detail-modal-sheet.ps5-modal-anim .modal-top-controls {
+  animation: ps5HeroTextSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both !important;
 }
 
 .detail-modal-sheet.ps5-modal-anim .episodes-grid .ep-pill-btn {
@@ -9881,7 +9920,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 /* 4. Tương Tác Nhẹ Nhàng Cho Nút Phát & Nút Điều Khiển Trong Modal */
 .btn-primary-play {
   transition:
-    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.2s cubic-bezier(0.2, 0.9, 0.25, 1.08),
     background-color 0.18s ease !important;
 }
 
