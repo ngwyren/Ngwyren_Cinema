@@ -3325,14 +3325,14 @@ body {
   will-change: transform;
 }
 
-/* Spatial Stage: Full-Screen Edge-to-Edge Toàn Màn Hình */
+/* Spatial Stage: Full-Screen Edge-to-Edge Toàn Màn Hình (Không Khung Viền Ngoài) */
 .vision-stage {
   position: relative;
   z-index: 2;
   width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: 16px 20px 32px 20px !important;
+  padding: 0 !important;
   min-height: 100vh;
 }
 
@@ -3523,11 +3523,11 @@ body {
   }
 }
 
-/* Main Spatial Glass Window (Full Width & Height - Siêu Tối Ưu GPU 120fps, Không Giật Lag) */
+/* Main Spatial Window (Full-Bleed Tràn Viền 100%, Không Khung Viền Ngoài) */
 .vision-window {
   width: 100%;
-  min-height: calc(100vh - 16px);
-  border-radius: var(--window-radius, 30px) !important;
+  min-height: 100vh;
+  border-radius: 0 !important;
   background-clip: padding-box !important;
   -webkit-background-clip: padding-box !important;
   overflow: clip !important;
@@ -3535,11 +3535,9 @@ body {
   background: #0d0f14;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.16),
-    0 32px 80px rgba(0, 0, 0, 0.65);
-  padding: 20px 24px 96px;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 20px 28px 96px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -7445,21 +7443,18 @@ html.dragging-glass .vision-left-dock {
 }
 
 /* --------------------------------------------------------------------------
-   APPLE visionOS UNIFIED FLUID GLASS ENGINE (ZERO-GLITCH 0% -> 100% CONTINUOUS LERP)
+   APPLE visionOS UNIFIED FLUID GLASS ENGINE (FRAMELESS EDGE-TO-EDGE)
    -------------------------------------------------------------------------- */
 .vision-window {
-  border-radius: var(--window-radius, 30px) !important;
+  border-radius: 0 !important;
   background-clip: padding-box !important;
   -webkit-background-clip: padding-box !important;
   overflow: clip !important;
   isolation: isolate;
   backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
   -webkit-backdrop-filter: blur(var(--glass-dyn-blur, 28px)) saturate(160%) !important;
-  border-color: rgba(255, 255, 255, var(--glass-border-alpha, 0.28)) !important;
-  box-shadow:
-    inset 0 1.5px 1px rgba(255, 255, 255, var(--glass-rim-alpha, 0.45)),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.12),
-    0 24px var(--glass-shadow-blur, 50px) rgba(0, 0, 0, var(--glass-shadow-alpha, 0.55)) !important;
+  border: none !important;
+  box-shadow: none !important;
   background: linear-gradient(
     145deg,
     rgba(82, 86, 96, var(--glass-dyn-alpha, 0.55)) 0%,
@@ -7474,10 +7469,8 @@ html.dragging-glass .vision-left-dock {
     rgba(30, 27, 75, var(--glass-dyn-alpha, 0.65)) 0%,
     rgba(15, 23, 42, calc(var(--glass-dyn-alpha, 0.65) * 1.1)) 100%
   ) !important;
-  border-color: rgba(168, 85, 247, var(--glass-border-alpha, 0.38)) !important;
-  box-shadow:
-    inset 0 1.5px 1px rgba(216, 180, 254, var(--glass-rim-alpha, 0.45)),
-    0 24px var(--glass-shadow-blur, 50px) rgba(76, 29, 149, var(--glass-shadow-alpha, 0.45)) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 [data-theme="amber"] .vision-window {
@@ -7486,10 +7479,8 @@ html.dragging-glass .vision-left-dock {
     rgba(45, 30, 24, var(--glass-dyn-alpha, 0.65)) 0%,
     rgba(26, 19, 16, calc(var(--glass-dyn-alpha, 0.65) * 1.1)) 100%
   ) !important;
-  border-color: rgba(245, 158, 11, var(--glass-border-alpha, 0.35)) !important;
-  box-shadow:
-    inset 0 1.5px 1px rgba(253, 230, 138, var(--glass-rim-alpha, 0.45)),
-    0 24px var(--glass-shadow-blur, 50px) rgba(180, 83, 9, var(--glass-shadow-alpha, 0.45)) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 [data-theme="emerald"] .vision-window {
@@ -7498,15 +7489,14 @@ html.dragging-glass .vision-left-dock {
     rgba(6, 38, 31, var(--glass-dyn-alpha, 0.65)) 0%,
     rgba(4, 26, 21, calc(var(--glass-dyn-alpha, 0.65) * 1.1)) 100%
   ) !important;
-  border-color: rgba(16, 185, 129, var(--glass-border-alpha, 0.35)) !important;
-  box-shadow:
-    inset 0 1.5px 1px rgba(110, 231, 183, var(--glass-rim-alpha, 0.45)),
-    0 24px var(--glass-shadow-blur, 50px) rgba(4, 120, 87, var(--glass-shadow-alpha, 0.45)) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 [data-theme="midnight"] .vision-window {
   background: rgba(10, 10, 14, calc(var(--glass-dyn-alpha, 0.7) * 1.15)) !important;
-  border-color: rgba(255, 255, 255, var(--glass-border-alpha, 0.14)) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .vision-settings-card,
@@ -12763,5 +12753,28 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-radius: 16px !important;
   }
 }
+
+/* ==========================================================================
+   FRAMELESS FULL-BLEED SHELL OVERRIDE (BỎ HOÀN TOÀN VIỀN & KHUNG NGOÀI CÙNG)
+   ========================================================================== */
+.vision-stage {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.vision-window,
+[data-theme="midnight"] .vision-window,
+[data-theme="aurora"] .vision-window,
+[data-theme="amber"] .vision-window,
+[data-theme="emerald"] .vision-window {
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  min-height: 100vh !important;
+  -webkit-clip-path: none !important;
+  clip-path: none !important;
+}
+
 
 
