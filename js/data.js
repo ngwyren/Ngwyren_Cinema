@@ -3553,6 +3553,7 @@ class PhimmoiService {
       "ke-tao-mua": "nguoi-tao-mua",
       "love-class-phan-3": "lop-hoc-tinh-yeu-phan-3",
       "sieu-trom-lupin-phan-4": "lupin-phan-4",
+      "wednesday": "thu-tu-phan-1",
       "tham-tu-lung-danh-conan-1-qua-bom-choc-troi": "tham-tu-lung-danh-conan-qua-bom-choc-troi"
     };
     Object.entries(KNOWN_SLUG_ALIASES).forEach(([alias, target]) => {
@@ -3708,6 +3709,7 @@ class PhimmoiService {
       "ke-tao-mua": "nguoi-tao-mua",
       "love-class-phan-3": "lop-hoc-tinh-yeu-phan-3",
       "sieu-trom-lupin-phan-4": "lupin-phan-4",
+      "wednesday": "thu-tu-phan-1",
       "tham-tu-lung-danh-conan-1-qua-bom-choc-troi": "tham-tu-lung-danh-conan-qua-bom-choc-troi"
     };
     Object.entries(KNOWN_SLUG_ALIASES).forEach(([alias, target]) => {

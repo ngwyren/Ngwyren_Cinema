@@ -241,8 +241,8 @@
       movie._cachedBackdrop = b;
       return b;
     } else if (movie.slug === "ban-linh-ky-hieu-lam-phan-4" || movie.slug === "ban-linh-ky-hieu-lam-4") {
-      b = "https://img.nguonc.com/images/img-95db5bbf863899390eff71301736a73ef281b64c8403f2362d71952f711ad1dc.jpg";
-      movie.poster = "https://phimimg.com/upload/vod/20250311-1/daa6987fd387aa8c17f0814322016b7a.jpg";
+      b = "https://phimimg.com/upload/vod/20250311-1/daa6987fd387aa8c17f0814322016b7a.jpg";
+      movie.poster = b;
       movie.backdrop = b;
       movie._cachedBackdrop = b;
       return b;
