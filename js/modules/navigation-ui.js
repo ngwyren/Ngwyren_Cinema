@@ -318,6 +318,9 @@
     const seenKeys = new Set();
     const keyToMovieMap = new Map();
     const result = [];
+    const canMerge = this.service && typeof this.service.canMergeMovies === "function"
+      ? (a, b) => this.service.canMergeMovies(a, b)
+      : () => true;
     const getKeys = this.service && typeof this.service.getCanonicalMovieKeys === "function"
       ? (m) => m._canonKeys || (m._canonKeys = this.service.getCanonicalMovieKeys(m))
       : (m) => m._canonKeys || (m._canonKeys = [this.getCanonicalMovieKey(m)]);
@@ -329,7 +332,7 @@
       let matchedKey = null;
       for (let ki = 0; ki < keys.length; ki++) {
         const k = keys[ki];
-        if (k && seenKeys.has(k)) {
+        if (k && seenKeys.has(k) && canMerge(keyToMovieMap.get(k), m)) {
           matchedKey = k;
           break;
         }
@@ -337,7 +340,7 @@
       if (isSlugSeen || matchedKey) {
         if (this.service && typeof this.service.mergeBestQualityMovie === "function") {
           const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || (this.service.slugMap && this.service.slugMap.get(m.slug));
-          if (existing && existing !== m) {
+          if (existing && existing !== m && canMerge(existing, m)) {
             this.service.mergeBestQualityMovie(existing, m);
           }
         }

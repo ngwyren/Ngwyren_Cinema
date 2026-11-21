@@ -2486,12 +2486,12 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/squid-game-3-765752/",
     synopsis: "Hồi kết sinh tử của Seong Gi-hun (Người chơi 456) khi anh đối mặt trực diện với Front Man và những kẻ quyền lực đứng sau trò chơi tàn khốc. Những vòng chơi mới tàn nhẫn hơn buộc từng người chơi phải đưa ra lựa chọn giữa nhân tính và mạng sống.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 3", slug: "tap-03", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" },
-      { name: "Tập 4", slug: "tap-04", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 5", slug: "tap-05", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 6 (End)", slug: "tap-06", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20250627/hMizT5jx/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20250627/TO2A0YDD/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20250627/iOxGrkAx/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20250627/68hN3Ezw/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20250627/MAHw1l33/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20250627/LcmEDqk9/index.m3u8" }
     ]
   },
   {
@@ -2522,10 +2522,22 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/tai-xe-an-danh-phan-3/",
     synopsis: "Kim Do-gi và đội ngũ Hãng Taxi Cầu Vồng chính thức tái xuất trong Phần 3, thực thi công lý ngầm cho những nạn nhân tuyệt vọng mà pháp luật không thể bảo vệ trước các tập đoàn tội phạm xuyên quốc gia.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" },
-      { name: "Tập 3", slug: "tap-03", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 4", slug: "tap-04", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20251121/N716QPFM/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20251122/yavkt77F/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20251129/C0Gd9aIW/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20251201/47ufXutA/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20251206/Bc6CMjNL/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20251207/YzARaBer/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20251213/NfXpZF0e/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20251215/krN8HMNG/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20251220/nz68y4X5/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20251221/WmZfnI0e/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20251227/bfnQAlHC/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20251228/vionpD96/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://s6.kkphimplayer6.com/20260103/2eSy2nLP/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://s6.kkphimplayer6.com/20260104/DbvjnEOx/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://s6.kkphimplayer6.com/20260110/Nk2ryoYX/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://s6.kkphimplayer6.com/20260111/GZyb9Tjr/index.m3u8" }
     ]
   },
   {
@@ -2556,9 +2568,36 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/pham-nhan-tu-tien-truyen/",
     synopsis: "Hàn Lập – một thiếu niên nghèo xuất thân phàm trần tình cờ bước chân vào con đường tu tiên đầy hiểm ác. Không có tư chất trác tuyệt, Hàn Lập dựa vào sự cẩn trọng, trí mưu và chiếc bình nhỏ bí ẩn để từng bước nghịch thiên tu hành.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 3", slug: "tap-03", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20250728/ze3orC91/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20250728/UPNOtqUJ/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20250728/1RHpdavK/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20250728/1g10PeJ4/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20250729/a90QdLjo/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20250729/P2d2u9dR/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20250729/e9le4eKM/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20250729/DND7Ovej/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20250730/UXz8XZ7z/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20250730/pNPY1BzG/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20250731/GdxHD1MM/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20250801/G80ADFAr/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://s6.kkphimplayer6.com/20250801/awOuXwhE/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://s6.kkphimplayer6.com/20250802/gNLL3tB0/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://s6.kkphimplayer6.com/20250802/Xat88LtA/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://s6.kkphimplayer6.com/20250803/t2ELy1MH/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://s6.kkphimplayer6.com/20250804/J9zvk6fJ/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://s6.kkphimplayer6.com/20250805/yHgz6IoD/index.m3u8" },
+      { name: "Tập 19", slug: "tap-19", source: "https://s6.kkphimplayer6.com/20250805/6OtPPAtV/index.m3u8" },
+      { name: "Tập 20", slug: "tap-20", source: "https://s6.kkphimplayer6.com/20250807/M1disZmN/index.m3u8" },
+      { name: "Tập 21", slug: "tap-21", source: "https://s6.kkphimplayer6.com/20250807/3vliYVbi/index.m3u8" },
+      { name: "Tập 22", slug: "tap-22", source: "https://s6.kkphimplayer6.com/20250807/xjS85WCZ/index.m3u8" },
+      { name: "Tập 23", slug: "tap-23", source: "https://s6.kkphimplayer6.com/20250809/XfiLrMFC/index.m3u8" },
+      { name: "Tập 24", slug: "tap-24", source: "https://s6.kkphimplayer6.com/20250809/sFoJj4oz/index.m3u8" },
+      { name: "Tập 25", slug: "tap-25", source: "https://s6.kkphimplayer6.com/20250811/zoAqc1YM/index.m3u8" },
+      { name: "Tập 26", slug: "tap-26", source: "https://s6.kkphimplayer6.com/20250811/aHbjyGH9/index.m3u8" },
+      { name: "Tập 27", slug: "tap-27", source: "https://s6.kkphimplayer6.com/20250813/kXoUnTmg/index.m3u8" },
+      { name: "Tập 28", slug: "tap-28", source: "https://s6.kkphimplayer6.com/20250813/B8H4JSRr/index.m3u8" },
+      { name: "Tập 29", slug: "tap-29", source: "https://s6.kkphimplayer6.com/20250813/jLqVHzXr/index.m3u8" },
+      { name: "Tập 30", slug: "tap-30", source: "https://s6.kkphimplayer6.com/20250813/Lz2IVpgr/index.m3u8" }
     ]
   },
   {
@@ -2589,8 +2628,18 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/luat-su-cong-ich/",
     synopsis: "Một thẩm phán tài danh bất ngờ mất tất cả sau một biến cố chấn động và buộc phải gia nhập đội ngũ luật sư công ích với mức phí 0 đồng, nơi anh khám phá ra những góc khuất nhức nhối của xã hội hiện đại.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20251207/x8vOfUmK/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20251208/U76MV85s/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20251215/hiTqmwV3/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20251215/TDn1RonL/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20251221/rcEOhkTt/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20251222/2F8zAUlV/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20251228/Vd7GUBpO/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20251229/CDk8xPB4/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20260105/3Et3TvaK/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20260105/o5j3eiie/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20260111/MpUkeuUP/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20260111/J3H3Epl8/index.m3u8" }
     ]
   },
   {
@@ -2621,8 +2670,34 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/yet-hi/",
     synopsis: "Giữa một trò chơi nhập vai kịch bản sát nhân lấy bối cảnh Dân Quốc đầy mê hoặc và thế giới kiến trúc hiện đại, hai con người mang vết thương lòng vô tình tháo gỡ chiếc mặt nạ của đối phương.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20260109/HLPH86VP/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20260109/eBjTvuhY/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20260109/igotompu/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20260109/cRNHqqUK/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20260110/G22AO1GS/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20260110/RtZI9g9b/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20260112/w71pKZ7e/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20260112/KB54ST5j/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20260112/WFUSupod/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20260112/EQkqkYrq/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20260113/fRKRU6yA/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20260113/m8RO4vqV/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://s6.kkphimplayer6.com/20260114/PqjDKJdP/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://s6.kkphimplayer6.com/20260114/d4gkmEIz/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://s6.kkphimplayer6.com/20260115/l1hZT2YO/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://s6.kkphimplayer6.com/20260115/TShf8KRW/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://s6.kkphimplayer6.com/20260116/99vxV2SF/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://s6.kkphimplayer6.com/20260117/dYcF37K8/index.m3u8" },
+      { name: "Tập 19", slug: "tap-19", source: "https://s6.kkphimplayer6.com/20260117/NQoai5TJ/index.m3u8" },
+      { name: "Tập 20", slug: "tap-20", source: "https://s6.kkphimplayer6.com/20260118/qFEuISWG/index.m3u8" },
+      { name: "Tập 21", slug: "tap-21", source: "https://s6.kkphimplayer6.com/20260120/KlfHdOnR/index.m3u8" },
+      { name: "Tập 22", slug: "tap-22", source: "https://s6.kkphimplayer6.com/20260120/7rWzHo8P/index.m3u8" },
+      { name: "Tập 23", slug: "tap-23", source: "https://s6.kkphimplayer6.com/20260120/5ZPdg0hP/index.m3u8" },
+      { name: "Tập 24", slug: "tap-24", source: "https://s6.kkphimplayer6.com/20260120/bqJkMdOa/index.m3u8" },
+      { name: "Tập 25", slug: "tap-25", source: "https://s6.kkphimplayer6.com/20260120/xKb2dpgl/index.m3u8" },
+      { name: "Tập 26", slug: "tap-26", source: "https://s6.kkphimplayer6.com/20260120/eZq2Ip6p/index.m3u8" },
+      { name: "Tập 27", slug: "tap-27", source: "https://s6.kkphimplayer6.com/20260120/0AYLxrAd/index.m3u8" },
+      { name: "Tập 28", slug: "tap-28", source: "https://s6.kkphimplayer6.com/20260120/3tHnY39y/index.m3u8" }
     ]
   },
   {
@@ -2653,7 +2728,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/nhiem-vu-bat-kha-thi-nghiep-bao-phan-2-1/",
     synopsis: "Đặc vụ Ethan Hunt và tổ chức IMF bước vào nhiệm vụ sinh tử cuối cùng nhằm truy tìm chiếc tàu ngầm Sevastopol và vô hiệu hóa siêu trí tuệ nhân tạo Thực Thể (The Entity) trước khi nó kiểm soát kho vũ khí hạt nhân toàn cầu.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s6.kkphimplayer6.com/20250818/5dNgqyZD/index.m3u8" }
     ]
   },
   {
@@ -2684,7 +2759,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/mua-do/",
     synopsis: "Bộ phim điện ảnh lịch sử hào hùng tái hiện 81 ngày đêm chiến đấu kiên cường bảo vệ Thành cổ Quảng Trị mùa hè đỏ lửa năm 1972 với những thước phim bi tráng, xúc động.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s6.kkphimplayer6.com/20251118/obSmOjv7/index.m3u8" }
     ]
   },
   {
@@ -2715,7 +2790,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/dia-dao-mat-troi-trong-bong-toi/",
     synopsis: "Năm 1967, tại căn cứ địa đạo Củ Chi, đội du kích 21 người do Bảy Theo (Thái Hòa) chỉ huy phải bám trụ dưới lòng đất nghẹt thở để bảo vệ nhóm tình báo chiến lược trước cuộc càn quét khốc liệt.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s4.phim1280.tv/20250519/1eZFjqYo/index.m3u8" }
     ]
   },
   {
@@ -2746,7 +2821,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/nha-gia-tien/",
     synopsis: "Mỹ Tiên – một nhà sáng tạo nội dung Gen Z trở về căn nhà cổ của gia đình để quay video triệu view và bất ngờ nhìn thấy linh hồn người anh trai đã khuất Gia Minh, mở ra những bí mật truyền thống đầy cảm xúc.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s6.kkphimplayer6.com/20250710/0Du10Bcc/index.m3u8" }
     ]
   },
   {
@@ -2777,13 +2852,13 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/tham-tu-kien-ky-an-khong-dau/",
     synopsis: "Thám tử Kiên bước vào cuộc điều tra chuỗi án mạng kỳ bí nơi vùng sơn cước cổ xưa, nơi lời đồn về oán linh không đầu che đậy một âm mưu thâm độc.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s6.kkphimplayer6.com/20251010/86AEDncn/index.m3u8" }
     ]
   },
   {
     id: "pm-14",
     slug: "good-boy-18",
-    crawlSlug: "good-boy",
+    crawlSlug: "kien-tuong",
     title: "Good Boy: Kiện Tướng Nắm Đấm",
     originTitle: "Good Boy",
     poster: "https://phimimg.com/upload/vod/20250601-1/f3bbb466904489c0eb475f89bf6e3166.jpg",
@@ -2808,14 +2883,28 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/good-boy-18/",
     synopsis: "Nhóm cựu vận động viên từng giành huy chương vàng Olympic được tuyển dụng đặc biệt vào lực lượng cảnh sát, dùng kỹ năng thể thao thượng thừa để trấn áp tội phạm bạo lực.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20250618/hRS5sPDj/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20250618/xxvp7yZZ/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20250618/MgHkQBwa/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20250624/bdqIIkbQ/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20250618/xkguwxLs/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20250620/tdIYTddA/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20250623/i3ZbWmh3/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20250624/bk5Db22T/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20250702/0PdbjscV/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20250703/LA5EIR6w/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20250708/o4tTqK9v/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20250714/Om1NUuOK/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://s6.kkphimplayer6.com/20250721/LRGoa9X4/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://s6.kkphimplayer6.com/20250721/iEmYrk9a/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://s6.kkphimplayer6.com/20250722/wgdbt7ts/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://s6.kkphimplayer6.com/20250722/xVgLpnpi/index.m3u8" }
     ]
   },
   {
     id: "pm-15",
     slug: "head-over-heels-24",
-    crawlSlug: "head-over-heels",
+    crawlSlug: "nguu-lang-chuc-nu",
     title: "Ngưu Lang Chức Nữ",
     originTitle: "Head Over Heels",
     poster: "https://phimimg.com/upload/vod/20250624-1/6295cf08845cf14b511410c7547d336a.jpg",
@@ -2840,8 +2929,18 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/head-over-heels-24/",
     synopsis: "Nữ sinh trung học ban ngày đi học, ban đêm là pháp sư tài năng tìm mọi cách giải cứu mối tình đầu của mình khỏi vận mệnh tử thần đã được định đoạt.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20250624/FxmAZH83/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20250625/4rdDIfLu/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20250706/gpg4uuj4/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20250706/4O76kiqo/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20250716/1rDRDTFu/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20250716/M1ihu9Y4/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20250716/bSvfUnJp/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20250717/cstPe9nW/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20250725/bFtLNpRh/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20250725/fLUZtn24/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20250731/b2na1ZrP/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20250808/Pyk1UCUW/index.m3u8" }
     ]
   },
   {
@@ -2872,8 +2971,14 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/cau-be-mat-tich-phan-5/",
     synopsis: "Trận chiến cuối cùng bảo vệ thị trấn Hawkins trước sự xâm lăng toàn diện của Thế Giới Ngược (Upside Down) và Vecna. Eleven cùng những người bạn phải hợp sức cho trận quyết chiến vĩ đại nhất.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20251127/NoUDNYzy/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20251127/8am8mw20/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20251127/4rtaCnZ2/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20251127/ffY9H7GS/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20251226/J2r4ZGpL/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20251226/3d08cFWL/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20251226/Rx89muZ4/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20260101/rLJU40AB/index.m3u8" }
     ]
   },
   {
@@ -2904,13 +3009,20 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/sup-do-phan-2/",
     synopsis: "Lucy và The Ghoul tiếp tục hành trình băng qua vùng đất hoang tàn hậu tận thế tiến về New Vegas để truy tìm sự thật đằng sau tập đoàn Vault-Tec.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20251218/cYE0ahfU/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20251226/Yx8SyXG1/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20260101/fzfqPmF8/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20260108/mjOmC1Hs/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20260116/HNQf8gZh/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20260122/CRxBNuRT/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20260129/ipRVMzGp/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20260205/G7cntTgh/index.m3u8" }
     ]
   },
   {
     id: "pm-18",
     slug: "thanh-guom-diet-quy-lang-tho-ren",
-    crawlSlug: "thanh-guom-diet-quy-lang-tho-ren",
+    crawlSlug: "thanh-guom-diet-quy-phan-4-lang-tho-ren",
     title: "Thanh Gươm Diệt Quỷ: Làng Thợ Rèn",
     originTitle: "Demon Slayer (Season 4) (Swordsmith Village Arc)",
     poster: "https://phimimg.com/upload/vod/20250427-1/c1ed81199e77a349d236c842953c9c6a.jpg",
@@ -2935,14 +3047,23 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/thanh-guom-diet-quy-lang-tho-ren/",
     synopsis: "Tanjiro tìm đến Làng Thợ Rèn bí mật để rèn lại thanh Nhật Luân Kiếm và sát cánh cùng Luyến Trụ Mitsuri, Hà Trụ Muichiro chống lại sự tấn công bất ngờ của hai Thượng Huyền Quỷ.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s5.phim1280.tv/20250427/7aK7vnZo/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s5.phim1280.tv/20250427/USgu7fBQ/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s5.phim1280.tv/20250427/1xT6IrMZ/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s5.phim1280.tv/20250427/JpaofnA3/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s5.phim1280.tv/20250427/8FuhnuMe/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s5.phim1280.tv/20250427/RxHqbtcG/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s5.phim1280.tv/20250427/KUWxJJAg/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s5.phim1280.tv/20250427/HlsAwFBi/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s5.phim1280.tv/20250427/EoHJaO7Y/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s5.phim1280.tv/20250427/1QizZ6Q3/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s5.phim1280.tv/20250427/y2lsICh1/index.m3u8" }
     ]
   },
   {
     id: "pm-19",
     slug: "thanh-guom-diet-quy-ky-vien-tran",
-    crawlSlug: "thanh-guom-diet-quy-ky-vien-tran",
+    crawlSlug: "thanh-guom-diet-quy-phan-3-ky-vien-tran",
     title: "Thanh Gươm Diệt Quỷ: Kỹ Viện Trấn",
     originTitle: "Demon Slayer (Season 3) (Entertainment District Arc)",
     poster: "https://phimimg.com/upload/vod/20250427-1/ba01d82e006a7d9c2fb3aca49a0a8b1e.jpg",
@@ -2967,7 +3088,17 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/thanh-guom-diet-quy-ky-vien-tran/",
     synopsis: "Âm Trụ Uzui Tengen dẫn dắt bộ ba Tanjiro, Zenitsu và Inosuke thâm nhập Kỹ Viện Trấn Yoshiwara hoa lệ để điều tra sự mất tích bí ẩn và đối đầu Thượng Huyền Lục Daki & Gyutaro.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s5.phim1280.tv/20250427/zxn9tgpD/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s5.phim1280.tv/20250427/l0Dkeba4/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s5.phim1280.tv/20250427/kKgSNSQk/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s5.phim1280.tv/20250427/VvUT7Yos/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s5.phim1280.tv/20250427/sL19s4wj/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s5.phim1280.tv/20250427/FXoayT2y/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s5.phim1280.tv/20250427/LIoWkgkj/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s5.phim1280.tv/20250427/Gvx1lVNH/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s5.phim1280.tv/20250427/4vgkcI90/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s5.phim1280.tv/20250427/O5h7hT2X/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s5.phim1280.tv/20250427/yoopRzR8/index.m3u8" }
     ]
   },
   {
@@ -2998,7 +3129,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/chainsaw-man-the-movie-chuong-reze/",
     synopsis: "Cuộc gặp gỡ định mệnh dưới cơn mưa giữa Denji và cô gái làm thêm tại quán cà phê tên Reze mở ra một câu chuyện tình lãng mạn nhưng cũng đẫm máu và bùng nổ bậc nhất.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s6.kkphimplayer6.com/20251215/nHBp5YlN/index.m3u8" }
     ]
   },
   {
@@ -3029,7 +3160,11 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/chu-thuat-hoi-chien-hoai-ngoc-ngoc-chiet-the-movie/",
     synopsis: "Thời thanh xuân rực rỡ nhưng bi thương của bộ đôi mạnh nhất Satoru Gojo và Suguru Geto trong nhiệm vụ hộ tống Tinh Tương Thể Riko Amanai trước sát thủ Toji Fushiguro.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s4.phim1280.tv/20241110/AtmjbrBk/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s4.phim1280.tv/20241110/hoMNvwJ9/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s4.phim1280.tv/20241110/I4VdX7Ns/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s4.phim1280.tv/20241110/Ie3zaR3B/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s4.phim1280.tv/20241110/rMFqCSLj/index.m3u8" }
     ]
   },
   {
@@ -3060,7 +3195,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/phi-vu-dong-troi-2/",
     synopsis: "Cặp bài trùng cảnh sát thỏ Judy Hopps và cáo Nick Wilde tái hợp trong một vụ án bí ẩn liên quan đến cư dân bò sát mới xuất hiện làm đảo lộn thành phố Zootopia.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://s6.kkphimplayer6.com/20260127/mK4C03bs/index.m3u8" }
     ]
   },
   {
@@ -3091,10 +3226,18 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/100-ngay-lua-doi/",
     synopsis: "Bản hợp đồng hôn nhân 100 ngày đầy những lời nói dối tinh vi giữa hai kẻ mang mục tiêu trả thù riêng, nhưng lại dẫn đến rung động thật sự không thể kiểm soát.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" },
-      { name: "Tập 3", slug: "tap-03", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" },
-      { name: "Tập 4", slug: "tap-04", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://a.kvp726.com/20261010/B9EF5CgO/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://a.kvp726.com/20261011/sZyaJ3YB/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://a.kvp726.com/20261017/Rig0e5hF/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://a.kvp726.com/20261018/pQ7S2FCd/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://a.kvp726.com/20261024/klziRtPi/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://a.kvp726.com/20261025/DUGCAW46/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://a.kvp726.com/20261101/Aoo4MLtQ/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://a.kvp726.com/20261102/xN5hEbOX/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://a.kvp726.com/20261108/Pfz7iBAs/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://a.kvp726.com/20261109/Mm1pchEQ/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://a.kvp726.com/20261115/iysU4zyZ/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://a.kvp726.com/20261117/8II2N6fD/index.m3u8" }
     ]
   },
   {
@@ -3125,8 +3268,46 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/ngoc-diem-thu/",
     synopsis: "Câu chuyện tình yêu đầy bi thương và quyền mưu giữa thời loạn thế, nơi lòng trung thành và tình yêu bị đặt lên bàn cân sinh tử.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" },
-      { name: "Tập 2", slug: "tap-02", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://a.kvp726.com/20261012/569x0bWN/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://a.kvp726.com/20261012/vicUv73G/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://a.kvp726.com/20261012/9Qb4VloN/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://a.kvp726.com/20261013/7b8qVmvR/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://a.kvp726.com/20261013/vdg47y2s/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://a.kvp726.com/20261014/Jq0pUKfy/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://a.kvp726.com/20261014/2XJRCm65/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://a.kvp726.com/20261015/yuz3b77L/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://a.kvp726.com/20261015/7AGAEG3O/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://a.kvp726.com/20261018/gGy0kEYl/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://a.kvp726.com/20261018/ksUNozgc/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://a.kvp726.com/20261018/baeX1FJy/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://a.kvp726.com/20261020/v8I7ca2i/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://a.kvp726.com/20261020/ju0G3D4C/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://a.kvp726.com/20261020/IUdcYcSG/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://a.kvp726.com/20261020/RjoKMwFw/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://a.kvp726.com/20261021/4ynsaD64/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://a.kvp726.com/20261021/xvx6PuKA/index.m3u8" },
+      { name: "Tập 19", slug: "tap-19", source: "https://a.kvp726.com/20261022/n48mI2rP/index.m3u8" },
+      { name: "Tập 20", slug: "tap-20", source: "https://a.kvp726.com/20261022/hSAKVZyy/index.m3u8" },
+      { name: "Tập 21", slug: "tap-21", source: "https://a.kvp726.com/20261023/rdesFcQB/index.m3u8" },
+      { name: "Tập 22", slug: "tap-22", source: "https://a.kvp726.com/20261024/6mwCBTz1/index.m3u8" },
+      { name: "Tập 23", slug: "tap-23", source: "https://a.kvp726.com/20261025/myX7mUqs/index.m3u8" },
+      { name: "Tập 24", slug: "tap-24", source: "https://a.kvp726.com/20261026/l7Mu1QXp/index.m3u8" },
+      { name: "Tập 25", slug: "tap-25", source: "https://a.kvp726.com/20261026/beAV3mc3/index.m3u8" },
+      { name: "Tập 26", slug: "tap-26", source: "https://a.kvp726.com/20261027/ilGdgPAC/index.m3u8" },
+      { name: "Tập 27", slug: "tap-27", source: "https://a.kvp726.com/20261027/TCHo89vV/index.m3u8" },
+      { name: "Tập 28", slug: "tap-28", source: "https://a.kvp726.com/20261028/czlUCoK2/index.m3u8" },
+      { name: "Tập 29", slug: "tap-29", source: "https://a.kvp726.com/20261028/ZiJlavXO/index.m3u8" },
+      { name: "Tập 30", slug: "tap-30", source: "https://a.kvp726.com/20261029/zJD7EokM/index.m3u8" },
+      { name: "Tập 31", slug: "tap-31", source: "https://a.kvp726.com/20261031/sTNCE73T/index.m3u8" },
+      { name: "Tập 32", slug: "tap-32", source: "https://a.kvp726.com/20261101/xokuRiXi/index.m3u8" },
+      { name: "Tập 33", slug: "tap-33", source: "https://a.kvp726.com/20261101/QhCLecbk/index.m3u8" },
+      { name: "Tập 34", slug: "tap-34", source: "https://a.kvp726.com/20261101/k9dv5Ka7/index.m3u8" },
+      { name: "Tập 35", slug: "tap-35", source: "https://a.kvp726.com/20261102/mQxvWthJ/index.m3u8" },
+      { name: "Tập 36", slug: "tap-36", source: "https://a.kvp726.com/20261103/bwI5XUvA/index.m3u8" },
+      { name: "Tập 37", slug: "tap-37", source: "https://a.kvp726.com/20261105/E5kk0zJH/index.m3u8" },
+      { name: "Tập 38", slug: "tap-38", source: "https://a.kvp726.com/20261105/dtrmOo65/index.m3u8" },
+      { name: "Tập 39", slug: "tap-39", source: "https://a.kvp726.com/20261106/bvnG61bF/index.m3u8" },
+      { name: "Tập 40", slug: "tap-40", source: "https://a.kvp726.com/20261107/2SgrGwgi/index.m3u8" }
     ]
   },
   {
@@ -3157,7 +3338,34 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/my-nhan-du/",
     synopsis: "Hành trình tìm lại bản ngã và vạch trần sự thật đằng sau những hào quang giả tạo của bốn người phụ nữ có số phận gắn kết chặt chẽ.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://a.kvp726.com/20261009/DOayayaG/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://a.kvp726.com/20261009/IOxU28i9/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://a.kvp726.com/20261009/OT76MbxV/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://a.kvp726.com/20261010/iNawC2v0/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://a.kvp726.com/20261010/TxRFI76J/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://a.kvp726.com/20261011/RDSGvhaH/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://a.kvp726.com/20261011/TJ0MYUYi/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://a.kvp726.com/20261012/UVA1bqYW/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://a.kvp726.com/20261012/xxJ7KyzI/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://a.kvp726.com/20261013/TJLicwvx/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://a.kvp726.com/20261013/ExKNUnW7/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://a.kvp726.com/20261014/ps83IG2M/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://a.kvp726.com/20261014/NqNVnj2y/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://a.kvp726.com/20261015/XHGxrgtt/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://a.kvp726.com/20261015/LK7TayvQ/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://a.kvp726.com/20261016/dhqrnjLH/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://a.kvp726.com/20261016/g88OaViv/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://a.kvp726.com/20261018/9YFCqTMo/index.m3u8" },
+      { name: "Tập 19", slug: "tap-19", source: "https://a.kvp726.com/20261018/MZFcWDzd/index.m3u8" },
+      { name: "Tập 20", slug: "tap-20", source: "https://a.kvp726.com/20261018/kA00QrQv/index.m3u8" },
+      { name: "Tập 21", slug: "tap-21", source: "https://a.kvp726.com/20261018/sbyDVl82/index.m3u8" },
+      { name: "Tập 22", slug: "tap-22", source: "https://a.kvp726.com/20261020/dGCYv6q5/index.m3u8" },
+      { name: "Tập 23", slug: "tap-23", source: "https://a.kvp726.com/20261020/avQXBJJG/index.m3u8" },
+      { name: "Tập 24", slug: "tap-24", source: "https://a.kvp726.com/20261024/MuWpcCWY/index.m3u8" },
+      { name: "Tập 25", slug: "tap-25", source: "https://a.kvp726.com/20261025/QneDGv1S/index.m3u8" },
+      { name: "Tập 26", slug: "tap-26", source: "https://a.kvp726.com/20261026/DytEYO6Y/index.m3u8" },
+      { name: "Tập 27", slug: "tap-27", source: "https://a.kvp726.com/20261027/OyiqMWma/index.m3u8" },
+      { name: "Tập 28", slug: "tap-28", source: "https://a.kvp726.com/20261028/OjXUV8wL/index.m3u8" }
     ]
   },
   {
@@ -3188,7 +3396,24 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/cuoc-goi-khan-cap-9-1-1-phan-9/",
     synopsis: "Những người lính cứu hỏa, cảnh sát và nhân viên tổng đài cứu hộ Los Angeles tiếp tục đối mặt với những thảm họa nghẹt thở và căng thẳng tột độ.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://v7.kkphimplayer7.com/20260817/ZTJCTraD/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://v7.kkphimplayer7.com/20260817/5GxP9WCT/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://v7.kkphimplayer7.com/20260818/g8lskctB/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://v7.kkphimplayer7.com/20260818/RF660rwc/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://v7.kkphimplayer7.com/20260822/j4uscNO2/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://v7.kkphimplayer7.com/20260822/DKzf7YNn/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://v7.kkphimplayer7.com/20260822/F0NSyJr0/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://v7.kkphimplayer7.com/20260822/JYcySxaW/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://v7.kkphimplayer7.com/20260827/WvW649UA/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://v7.kkphimplayer7.com/20260827/ETqoaFJJ/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://v7.kkphimplayer7.com/20260906/HceH5M78/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://v7.kkphimplayer7.com/20260917/PmRI4Esy/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://a.kvp726.com/20261014/jFLOv2sk/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://a.kvp726.com/20261016/8JeEzH4W/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://a.kvp726.com/20261106/kuSC8M3J/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://a.kvp726.com/20261106/iNmkAx0Z/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://a.kvp726.com/20261106/r8bEJ5DP/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://a.kvp726.com/20261106/gP9hJEOl/index.m3u8" }
     ]
   },
   {
@@ -3219,7 +3444,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/cu-roi-tu-than-2-diem-chet/",
     synopsis: "Tiếp nối nỗi ám ảnh độ cao nghẹt thở, phần 2 đưa người xem lên một cấu trúc chọc trời cô lập giữa thiên nhiên khắc nghiệt nơi một sai lầm nhỏ đồng nghĩa với cái chết.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://a.kvp726.com/20261009/hB5CqPfh/index.m3u8" }
     ]
   },
   {
@@ -3250,7 +3475,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/pha-dam-sinh-nhat-me/",
     synopsis: "Buổi tiệc sinh nhật tưởng chừng ấm cúng của người mẹ bất ngờ trở thành tâm điểm của hàng loạt tình huống dở khóc dở cười khi những bí mật giấu kín của các thành viên trong gia đình bị phơi bày.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://a.kvp726.com/20261001/Iw5yJa3S/index.m3u8" }
     ]
   },
   {
@@ -3281,7 +3506,42 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/cam-nguyet-nhu-ca/",
     synopsis: "Nữ tướng quân Hòa Yến cải trang nam nhi ra trận lập chiến công hiển hách nhưng bị gia tộc phản bội. Sống lại dưới thân phận mới, nàng một lần nữa khoác chiến giáp đòi lại công đạo cùng Tiêu Giác.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20250806/gI65ZsMW/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20250806/V6zFVgon/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20250806/x6orbc6O/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20250806/3V0Km7T2/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20250807/34tHr4Vq/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20250810/PIzWPH2L/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20250808/50OhG5zW/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20250808/W6iMjSSU/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20250809/Ro57ogvu/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20250809/1Hg0zM0I/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20250809/NhZgDtfi/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20250810/3Z9mOV53/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://s6.kkphimplayer6.com/20250810/P1SlKGGx/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://s6.kkphimplayer6.com/20250811/0LWNUFZj/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://s6.kkphimplayer6.com/20250811/eB3da40y/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://s6.kkphimplayer6.com/20250812/mhoT3BNY/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://s6.kkphimplayer6.com/20250812/UQhGPzIR/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://s6.kkphimplayer6.com/20250813/6h2IiiXI/index.m3u8" },
+      { name: "Tập 19", slug: "tap-19", source: "https://s6.kkphimplayer6.com/20250813/Or6GRZDV/index.m3u8" },
+      { name: "Tập 20", slug: "tap-20", source: "https://s6.kkphimplayer6.com/20250814/7a2eWkAI/index.m3u8" },
+      { name: "Tập 21", slug: "tap-21", source: "https://s6.kkphimplayer6.com/20250814/J1m3ORGm/index.m3u8" },
+      { name: "Tập 22", slug: "tap-22", source: "https://s6.kkphimplayer6.com/20250815/Dp1BV9Yx/index.m3u8" },
+      { name: "Tập 23", slug: "tap-23", source: "https://s6.kkphimplayer6.com/20250815/dzV3xdZx/index.m3u8" },
+      { name: "Tập 24", slug: "tap-24", source: "https://s6.kkphimplayer6.com/20250816/CotkDNw6/index.m3u8" },
+      { name: "Tập 25", slug: "tap-25", source: "https://s6.kkphimplayer6.com/20250816/6FiGOnBy/index.m3u8" },
+      { name: "Tập 26", slug: "tap-26", source: "https://s6.kkphimplayer6.com/20250817/CKgsbdNk/index.m3u8" },
+      { name: "Tập 27", slug: "tap-27", source: "https://s6.kkphimplayer6.com/20250818/b4b82j2N/index.m3u8" },
+      { name: "Tập 28", slug: "tap-28", source: "https://s6.kkphimplayer6.com/20250818/rDAgJRqn/index.m3u8" },
+      { name: "Tập 29", slug: "tap-29", source: "https://s6.kkphimplayer6.com/20250819/dBJcMoMB/index.m3u8" },
+      { name: "Tập 30", slug: "tap-30", source: "https://s6.kkphimplayer6.com/20250819/Qdc6g7aN/index.m3u8" },
+      { name: "Tập 31", slug: "tap-31", source: "https://s6.kkphimplayer6.com/20250820/Gmmp73jF/index.m3u8" },
+      { name: "Tập 32", slug: "tap-32", source: "https://s6.kkphimplayer6.com/20250820/UgeTXoDU/index.m3u8" },
+      { name: "Tập 33", slug: "tap-33", source: "https://s6.kkphimplayer6.com/20250820/YL5exfxA/index.m3u8" },
+      { name: "Tập 34", slug: "tap-34", source: "https://s6.kkphimplayer6.com/20250820/flLFl9CQ/index.m3u8" },
+      { name: "Tập 35", slug: "tap-35", source: "https://s6.kkphimplayer6.com/20250820/jkGvJcvp/index.m3u8" },
+      { name: "Tập 36", slug: "tap-36", source: "https://s6.kkphimplayer6.com/20250820/U0POd0Bo/index.m3u8" }
     ]
   },
   {
@@ -3312,7 +3572,44 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/trieu-tuyet-luc/",
     synopsis: "Nữ ngỗ tác tài ba Thẩm Hoàn dùng y thuật và khả năng nghiệm thi sắc bén phối hợp cùng Thế tử Yên Trì giải mã hàng loạt vụ kỳ án chấn động triều đình.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/cSOFRRA3/index.m3u8" }
+      { name: "Tập 01", slug: "tap-01", source: "https://s6.kkphimplayer6.com/20250713/FRfQyIST/index.m3u8" },
+      { name: "Tập 02", slug: "tap-02", source: "https://s6.kkphimplayer6.com/20250713/6hENZeKh/index.m3u8" },
+      { name: "Tập 03", slug: "tap-03", source: "https://s6.kkphimplayer6.com/20250713/gpOMLu7z/index.m3u8" },
+      { name: "Tập 04", slug: "tap-04", source: "https://s6.kkphimplayer6.com/20250713/0HxRAqUY/index.m3u8" },
+      { name: "Tập 05", slug: "tap-05", source: "https://s6.kkphimplayer6.com/20250713/WQDpJlun/index.m3u8" },
+      { name: "Tập 06", slug: "tap-06", source: "https://s6.kkphimplayer6.com/20250713/St0PzIOf/index.m3u8" },
+      { name: "Tập 07", slug: "tap-07", source: "https://s6.kkphimplayer6.com/20250714/pd6Wdi5R/index.m3u8" },
+      { name: "Tập 08", slug: "tap-08", source: "https://s6.kkphimplayer6.com/20250714/zXVHGiQl/index.m3u8" },
+      { name: "Tập 09", slug: "tap-09", source: "https://s6.kkphimplayer6.com/20250715/JsVi4mpi/index.m3u8" },
+      { name: "Tập 10", slug: "tap-10", source: "https://s6.kkphimplayer6.com/20250715/oapn51Fp/index.m3u8" },
+      { name: "Tập 11", slug: "tap-11", source: "https://s6.kkphimplayer6.com/20250716/gUvqZApG/index.m3u8" },
+      { name: "Tập 12", slug: "tap-12", source: "https://s6.kkphimplayer6.com/20250716/858o8ht2/index.m3u8" },
+      { name: "Tập 13", slug: "tap-13", source: "https://s6.kkphimplayer6.com/20250717/MRE4HcK5/index.m3u8" },
+      { name: "Tập 14", slug: "tap-14", source: "https://s6.kkphimplayer6.com/20250717/RaZYvmds/index.m3u8" },
+      { name: "Tập 15", slug: "tap-15", source: "https://s6.kkphimplayer6.com/20250718/QxHOf44K/index.m3u8" },
+      { name: "Tập 16", slug: "tap-16", source: "https://s6.kkphimplayer6.com/20250718/HUkcztml/index.m3u8" },
+      { name: "Tập 17", slug: "tap-17", source: "https://s6.kkphimplayer6.com/20250719/Ds7rsaYc/index.m3u8" },
+      { name: "Tập 18", slug: "tap-18", source: "https://s6.kkphimplayer6.com/20250719/RwTuN3EV/index.m3u8" },
+      { name: "Tập 19", slug: "tap-19", source: "https://s6.kkphimplayer6.com/20250720/geHaVKgI/index.m3u8" },
+      { name: "Tập 20", slug: "tap-20", source: "https://s6.kkphimplayer6.com/20250720/tOsOgKDt/index.m3u8" },
+      { name: "Tập 21", slug: "tap-21", source: "https://s6.kkphimplayer6.com/20250721/2P5MEjkL/index.m3u8" },
+      { name: "Tập 22", slug: "tap-22", source: "https://s6.kkphimplayer6.com/20250721/hulQmx0I/index.m3u8" },
+      { name: "Tập 23", slug: "tap-23", source: "https://s6.kkphimplayer6.com/20250722/NhwAzJUT/index.m3u8" },
+      { name: "Tập 24", slug: "tap-24", source: "https://s6.kkphimplayer6.com/20250722/SZ9Ziqqu/index.m3u8" },
+      { name: "Tập 25", slug: "tap-25", source: "https://s6.kkphimplayer6.com/20250723/7cLTaws7/index.m3u8" },
+      { name: "Tập 26", slug: "tap-26", source: "https://s6.kkphimplayer6.com/20250723/TksphK2n/index.m3u8" },
+      { name: "Tập 27", slug: "tap-27", source: "https://s6.kkphimplayer6.com/20250724/AkL7hF5s/index.m3u8" },
+      { name: "Tập 28", slug: "tap-28", source: "https://s6.kkphimplayer6.com/20250724/3ICX95VQ/index.m3u8" },
+      { name: "Tập 29", slug: "tap-29", source: "https://s6.kkphimplayer6.com/20250725/CXha9GQW/index.m3u8" },
+      { name: "Tập 30", slug: "tap-30", source: "https://s6.kkphimplayer6.com/20250725/EZVpFkQn/index.m3u8" },
+      { name: "Tập 31", slug: "tap-31", source: "https://s6.kkphimplayer6.com/20250726/zwuLSDQq/index.m3u8" },
+      { name: "Tập 32", slug: "tap-32", source: "https://s6.kkphimplayer6.com/20250726/ooM59FMf/index.m3u8" },
+      { name: "Tập 33", slug: "tap-33", source: "https://s6.kkphimplayer6.com/20250727/UOB0J0LB/index.m3u8" },
+      { name: "Tập 34", slug: "tap-34", source: "https://s6.kkphimplayer6.com/20250727/eVFwj0p8/index.m3u8" },
+      { name: "Tập 35", slug: "tap-35", source: "https://s6.kkphimplayer6.com/20250727/amAyuDIY/index.m3u8" },
+      { name: "Tập 36", slug: "tap-36", source: "https://s6.kkphimplayer6.com/20250727/zGOu4ND0/index.m3u8" },
+      { name: "Tập 37", slug: "tap-37", source: "https://s6.kkphimplayer6.com/20250727/HqT5RNZE/index.m3u8" },
+      { name: "Tập 38", slug: "tap-38", source: "https://s6.kkphimplayer6.com/20250727/8DStkmeo/index.m3u8" }
     ]
   },
   {
@@ -3343,7 +3640,7 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/tham-tu-lung-danh-conan-28-du-anh-cua-doc-nhan/",
     synopsis: "Tại vùng núi tuyết Nagano lạnh giá, thanh tra độc nhãn Kansuke Yamato đối mặt với ký ức bị chôn vùi trong vụ lở tuyết năm xưa cùng sự trợ giúp phá án của Conan và Kogoro Mori.",
     episodes: [
-      { name: "Full FHD", slug: "full", source: "https://v7.kkphimplayer7.com/20260729/a8XUKTef/index.m3u8" }
+      { name: "Full", slug: "full", source: "https://v7.kkphimplayer7.com/20260803/1Wvdz3zK/index.m3u8" }
     ]
   },
   {
@@ -3374,7 +3671,132 @@ const PHIMMOI_SEED_MOVIES = [
     link: "https://phimmoiz.one/gia-dinh-la-so-1-phan-2/",
     synopsis: "Tượng đài sitcom huyền thoại Hàn Quốc với bản lồng tiếng Việt kinh điển xoay quanh đại gia đình ông Lee Soon-jae và cô bé Heri đanh đá.",
     episodes: [
-      { name: "Tập 1", slug: "tap-01", source: "https://a.kvp726.com/20261011/XdpIV8L5/index.m3u8" }
+      { name: "Tập 001", slug: "tap-001", source: "https://s3.phim1280.tv/20240829/IBlZKlxy/index.m3u8" },
+      { name: "Tập 002", slug: "tap-002", source: "https://s3.phim1280.tv/20240829/ZMXuGhPv/index.m3u8" },
+      { name: "Tập 003", slug: "tap-003", source: "https://s3.phim1280.tv/20240829/SGgjmE86/index.m3u8" },
+      { name: "Tập 004", slug: "tap-004", source: "https://s3.phim1280.tv/20240829/sODWYfF5/index.m3u8" },
+      { name: "Tập 005", slug: "tap-005", source: "https://s3.phim1280.tv/20240829/brawD78r/index.m3u8" },
+      { name: "Tập 006", slug: "tap-006", source: "https://s3.phim1280.tv/20240829/OSylHwPo/index.m3u8" },
+      { name: "Tập 007", slug: "tap-007", source: "https://s3.phim1280.tv/20240829/ADo3LnBN/index.m3u8" },
+      { name: "Tập 008", slug: "tap-008", source: "https://s3.phim1280.tv/20240829/WARUV59e/index.m3u8" },
+      { name: "Tập 009", slug: "tap-009", source: "https://s3.phim1280.tv/20240829/vLYh6wG5/index.m3u8" },
+      { name: "Tập 010", slug: "tap-010", source: "https://s3.phim1280.tv/20240829/URGcR3dF/index.m3u8" },
+      { name: "Tập 011", slug: "tap-011", source: "https://s3.phim1280.tv/20240829/4F9aO4FY/index.m3u8" },
+      { name: "Tập 012", slug: "tap-012", source: "https://s3.phim1280.tv/20240829/eRbwFbUQ/index.m3u8" },
+      { name: "Tập 013", slug: "tap-013", source: "https://s3.phim1280.tv/20240829/eXTNMBso/index.m3u8" },
+      { name: "Tập 014", slug: "tap-014", source: "https://s3.phim1280.tv/20240829/SIoLmMme/index.m3u8" },
+      { name: "Tập 015", slug: "tap-015", source: "https://s3.phim1280.tv/20240829/YCbGCVPR/index.m3u8" },
+      { name: "Tập 016", slug: "tap-016", source: "https://s3.phim1280.tv/20240829/xme0wvcl/index.m3u8" },
+      { name: "Tập 017", slug: "tap-017", source: "https://s3.phim1280.tv/20240829/2QTtPVDS/index.m3u8" },
+      { name: "Tập 018", slug: "tap-018", source: "https://s3.phim1280.tv/20240829/XCMo8Nn4/index.m3u8" },
+      { name: "Tập 019", slug: "tap-019", source: "https://s3.phim1280.tv/20240829/zLArYkdg/index.m3u8" },
+      { name: "Tập 020", slug: "tap-020", source: "https://s3.phim1280.tv/20240829/XLgDhLHQ/index.m3u8" },
+      { name: "Tập 021", slug: "tap-021", source: "https://s3.phim1280.tv/20240829/AaVSmtVl/index.m3u8" },
+      { name: "Tập 022", slug: "tap-022", source: "https://s3.phim1280.tv/20240829/tnd6w1eU/index.m3u8" },
+      { name: "Tập 023", slug: "tap-023", source: "https://s3.phim1280.tv/20240829/THC3AhQM/index.m3u8" },
+      { name: "Tập 024", slug: "tap-024", source: "https://s3.phim1280.tv/20240829/Omwhn1uI/index.m3u8" },
+      { name: "Tập 025", slug: "tap-025", source: "https://s3.phim1280.tv/20240829/zspqDOLj/index.m3u8" },
+      { name: "Tập 026", slug: "tap-026", source: "https://s3.phim1280.tv/20240829/WbLFFyCW/index.m3u8" },
+      { name: "Tập 027", slug: "tap-027", source: "https://s3.phim1280.tv/20240829/vdh9Ezty/index.m3u8" },
+      { name: "Tập 028", slug: "tap-028", source: "https://s3.phim1280.tv/20240829/KAbcoFEE/index.m3u8" },
+      { name: "Tập 029", slug: "tap-029", source: "https://s3.phim1280.tv/20240829/csVsqD1U/index.m3u8" },
+      { name: "Tập 030", slug: "tap-030", source: "https://s3.phim1280.tv/20240829/qd2O1AWV/index.m3u8" },
+      { name: "Tập 031", slug: "tap-031", source: "https://s3.phim1280.tv/20240829/ifJWYsDJ/index.m3u8" },
+      { name: "Tập 032", slug: "tap-032", source: "https://s3.phim1280.tv/20240829/sCKrOkY0/index.m3u8" },
+      { name: "Tập 033", slug: "tap-033", source: "https://s3.phim1280.tv/20240829/1M2qFzLD/index.m3u8" },
+      { name: "Tập 034", slug: "tap-034", source: "https://s3.phim1280.tv/20240829/jwgQwBIj/index.m3u8" },
+      { name: "Tập 035", slug: "tap-035", source: "https://s3.phim1280.tv/20240829/bt8Ui7qm/index.m3u8" },
+      { name: "Tập 036", slug: "tap-036", source: "https://s3.phim1280.tv/20240829/fypd6FNJ/index.m3u8" },
+      { name: "Tập 037", slug: "tap-037", source: "https://s3.phim1280.tv/20240829/v5SGldXI/index.m3u8" },
+      { name: "Tập 038", slug: "tap-038", source: "https://s3.phim1280.tv/20240829/26gM1Wbb/index.m3u8" },
+      { name: "Tập 039", slug: "tap-039", source: "https://s3.phim1280.tv/20240829/amGyQpez/index.m3u8" },
+      { name: "Tập 040", slug: "tap-040", source: "https://s3.phim1280.tv/20240829/Cl7m4pq8/index.m3u8" },
+      { name: "Tập 041", slug: "tap-041", source: "https://s3.phim1280.tv/20240829/tLDPWTLL/index.m3u8" },
+      { name: "Tập 042", slug: "tap-042", source: "https://s3.phim1280.tv/20240829/2aOOxxYB/index.m3u8" },
+      { name: "Tập 043", slug: "tap-043", source: "https://s3.phim1280.tv/20240829/9l8jkfjt/index.m3u8" },
+      { name: "Tập 044", slug: "tap-044", source: "https://s3.phim1280.tv/20240829/E6pBalUr/index.m3u8" },
+      { name: "Tập 045", slug: "tap-045", source: "https://s3.phim1280.tv/20240829/8YEUZlPU/index.m3u8" },
+      { name: "Tập 046", slug: "tap-046", source: "https://s3.phim1280.tv/20240829/vgerGOWj/index.m3u8" },
+      { name: "Tập 047", slug: "tap-047", source: "https://s3.phim1280.tv/20240829/f8a514YI/index.m3u8" },
+      { name: "Tập 048", slug: "tap-048", source: "https://s3.phim1280.tv/20240829/nlVMJIkd/index.m3u8" },
+      { name: "Tập 049", slug: "tap-049", source: "https://s3.phim1280.tv/20240829/cixG5ixt/index.m3u8" },
+      { name: "Tập 050", slug: "tap-050", source: "https://s3.phim1280.tv/20240829/yyBBsUTU/index.m3u8" },
+      { name: "Tập 051", slug: "tap-051", source: "https://s3.phim1280.tv/20240829/AdglOicb/index.m3u8" },
+      { name: "Tập 052", slug: "tap-052", source: "https://s3.phim1280.tv/20240829/1xvwYpKd/index.m3u8" },
+      { name: "Tập 053", slug: "tap-053", source: "https://s3.phim1280.tv/20240829/ilzPnCQY/index.m3u8" },
+      { name: "Tập 054", slug: "tap-054", source: "https://s3.phim1280.tv/20240829/YXhstVOe/index.m3u8" },
+      { name: "Tập 055", slug: "tap-055", source: "https://s3.phim1280.tv/20240829/gBhJMIm1/index.m3u8" },
+      { name: "Tập 056", slug: "tap-056", source: "https://s3.phim1280.tv/20240829/zzRCRwEW/index.m3u8" },
+      { name: "Tập 057", slug: "tap-057", source: "https://s3.phim1280.tv/20240829/IbGVSXhI/index.m3u8" },
+      { name: "Tập 058", slug: "tap-058", source: "https://s3.phim1280.tv/20240829/PUhs62XI/index.m3u8" },
+      { name: "Tập 059", slug: "tap-059", source: "https://s3.phim1280.tv/20240829/zkv8G4va/index.m3u8" },
+      { name: "Tập 060", slug: "tap-060", source: "https://s3.phim1280.tv/20240829/EXgrSz1R/index.m3u8" },
+      { name: "Tập 061", slug: "tap-061", source: "https://s3.phim1280.tv/20240829/jaZJvfX9/index.m3u8" },
+      { name: "Tập 062", slug: "tap-062", source: "https://s3.phim1280.tv/20240829/0sd4BrmW/index.m3u8" },
+      { name: "Tập 063", slug: "tap-063", source: "https://s3.phim1280.tv/20240829/51Nyf3jl/index.m3u8" },
+      { name: "Tập 064", slug: "tap-064", source: "https://s3.phim1280.tv/20240829/lN4BwwM7/index.m3u8" },
+      { name: "Tập 065", slug: "tap-065", source: "https://s3.phim1280.tv/20240829/KxE5Ou5E/index.m3u8" },
+      { name: "Tập 066", slug: "tap-066", source: "https://s3.phim1280.tv/20240829/Gpnv7NF6/index.m3u8" },
+      { name: "Tập 067", slug: "tap-067", source: "https://s3.phim1280.tv/20240829/DjrwL5nt/index.m3u8" },
+      { name: "Tập 068", slug: "tap-068", source: "https://s3.phim1280.tv/20240829/gPQeltfw/index.m3u8" },
+      { name: "Tập 069", slug: "tap-069", source: "https://s3.phim1280.tv/20240829/qk05oJAF/index.m3u8" },
+      { name: "Tập 070", slug: "tap-070", source: "https://s3.phim1280.tv/20240829/7dnVFh1l/index.m3u8" },
+      { name: "Tập 071", slug: "tap-071", source: "https://s3.phim1280.tv/20240829/v7WzefL2/index.m3u8" },
+      { name: "Tập 072", slug: "tap-072", source: "https://s3.phim1280.tv/20240829/B0oUjvXd/index.m3u8" },
+      { name: "Tập 073", slug: "tap-073", source: "https://s3.phim1280.tv/20240829/tCcmUqcW/index.m3u8" },
+      { name: "Tập 074", slug: "tap-074", source: "https://s3.phim1280.tv/20240829/NTlhQ49m/index.m3u8" },
+      { name: "Tập 075", slug: "tap-075", source: "https://s3.phim1280.tv/20240829/QsK8sWXd/index.m3u8" },
+      { name: "Tập 076", slug: "tap-076", source: "https://s3.phim1280.tv/20240829/70xIlP2f/index.m3u8" },
+      { name: "Tập 077", slug: "tap-077", source: "https://s3.phim1280.tv/20240829/KbTAFR0O/index.m3u8" },
+      { name: "Tập 078", slug: "tap-078", source: "https://s3.phim1280.tv/20240829/dsvzDADA/index.m3u8" },
+      { name: "Tập 079", slug: "tap-079", source: "https://s3.phim1280.tv/20240829/ghEabius/index.m3u8" },
+      { name: "Tập 080", slug: "tap-080", source: "https://s3.phim1280.tv/20240829/NonPEswh/index.m3u8" },
+      { name: "Tập 081", slug: "tap-081", source: "https://s3.phim1280.tv/20240829/5I0AlUSx/index.m3u8" },
+      { name: "Tập 082", slug: "tap-082", source: "https://s3.phim1280.tv/20240829/ssVSMSUr/index.m3u8" },
+      { name: "Tập 083", slug: "tap-083", source: "https://s3.phim1280.tv/20240829/d0Xb79Qn/index.m3u8" },
+      { name: "Tập 084", slug: "tap-084", source: "https://s3.phim1280.tv/20240829/Zu9F9GgY/index.m3u8" },
+      { name: "Tập 085", slug: "tap-085", source: "https://s3.phim1280.tv/20240829/YjvTemXJ/index.m3u8" },
+      { name: "Tập 086", slug: "tap-086", source: "https://s3.phim1280.tv/20240829/Lv6vAvvV/index.m3u8" },
+      { name: "Tập 087", slug: "tap-087", source: "https://s3.phim1280.tv/20240829/UDHWNXQz/index.m3u8" },
+      { name: "Tập 088", slug: "tap-088", source: "https://s3.phim1280.tv/20240829/ugffABJg/index.m3u8" },
+      { name: "Tập 089", slug: "tap-089", source: "https://s3.phim1280.tv/20240829/SGOB4VKa/index.m3u8" },
+      { name: "Tập 090", slug: "tap-090", source: "https://s3.phim1280.tv/20240829/gYtL8uOd/index.m3u8" },
+      { name: "Tập 091", slug: "tap-091", source: "https://s3.phim1280.tv/20240829/6063OLMp/index.m3u8" },
+      { name: "Tập 092", slug: "tap-092", source: "https://s3.phim1280.tv/20240829/5IKD6qLY/index.m3u8" },
+      { name: "Tập 093", slug: "tap-093", source: "https://s3.phim1280.tv/20240829/PfQzoeQT/index.m3u8" },
+      { name: "Tập 094", slug: "tap-094", source: "https://s3.phim1280.tv/20240829/TzIex0it/index.m3u8" },
+      { name: "Tập 095", slug: "tap-095", source: "https://s3.phim1280.tv/20240829/YZNhO44R/index.m3u8" },
+      { name: "Tập 096", slug: "tap-096", source: "https://s3.phim1280.tv/20240829/ZfdQ3DPC/index.m3u8" },
+      { name: "Tập 097", slug: "tap-097", source: "https://s3.phim1280.tv/20240829/oDBtTkrJ/index.m3u8" },
+      { name: "Tập 098", slug: "tap-098", source: "https://s3.phim1280.tv/20240829/oDyDfXfh/index.m3u8" },
+      { name: "Tập 099", slug: "tap-099", source: "https://s3.phim1280.tv/20240829/0NhcpLdM/index.m3u8" },
+      { name: "Tập 100", slug: "tap-100", source: "https://s3.phim1280.tv/20240829/7KiQWbzV/index.m3u8" },
+      { name: "Tập 101", slug: "tap-101", source: "https://s3.phim1280.tv/20240829/zrnca47d/index.m3u8" },
+      { name: "Tập 102", slug: "tap-102", source: "https://s3.phim1280.tv/20240829/Fva3LB9w/index.m3u8" },
+      { name: "Tập 103", slug: "tap-103", source: "https://s3.phim1280.tv/20240829/2yGfbCqL/index.m3u8" },
+      { name: "Tập 104", slug: "tap-104", source: "https://s3.phim1280.tv/20240829/MCLPjjS3/index.m3u8" },
+      { name: "Tập 105", slug: "tap-105", source: "https://s3.phim1280.tv/20240829/HyzXOlCt/index.m3u8" },
+      { name: "Tập 106", slug: "tap-106", source: "https://s3.phim1280.tv/20240829/VwJf0srN/index.m3u8" },
+      { name: "Tập 107", slug: "tap-107", source: "https://s3.phim1280.tv/20240829/RPZVskvE/index.m3u8" },
+      { name: "Tập 108", slug: "tap-108", source: "https://s3.phim1280.tv/20240829/fwdlfC4E/index.m3u8" },
+      { name: "Tập 109", slug: "tap-109", source: "https://s3.phim1280.tv/20240829/lsKcTPOD/index.m3u8" },
+      { name: "Tập 110", slug: "tap-110", source: "https://s3.phim1280.tv/20240829/3UyUL0vF/index.m3u8" },
+      { name: "Tập 111", slug: "tap-111", source: "https://s3.phim1280.tv/20240829/DTzoc409/index.m3u8" },
+      { name: "Tập 112", slug: "tap-112", source: "https://s3.phim1280.tv/20240829/bfPxGLqW/index.m3u8" },
+      { name: "Tập 113", slug: "tap-113", source: "https://s3.phim1280.tv/20240829/iZIjhJAs/index.m3u8" },
+      { name: "Tập 114", slug: "tap-114", source: "https://s3.phim1280.tv/20240829/s2tnpHTm/index.m3u8" },
+      { name: "Tập 115", slug: "tap-115", source: "https://s3.phim1280.tv/20240829/kGnwaBkU/index.m3u8" },
+      { name: "Tập 116", slug: "tap-116", source: "https://s3.phim1280.tv/20240829/09GBsdyV/index.m3u8" },
+      { name: "Tập 117", slug: "tap-117", source: "https://s3.phim1280.tv/20240829/qn5Ig0wG/index.m3u8" },
+      { name: "Tập 118", slug: "tap-118", source: "https://s3.phim1280.tv/20240829/AgjSUVoA/index.m3u8" },
+      { name: "Tập 119", slug: "tap-119", source: "https://s3.phim1280.tv/20240829/NZzS2Bo8/index.m3u8" },
+      { name: "Tập 120", slug: "tap-120", source: "https://s3.phim1280.tv/20240829/E3sdJyRe/index.m3u8" },
+      { name: "Tập 121", slug: "tap-121", source: "https://s3.phim1280.tv/20240829/MlcQxO6W/index.m3u8" },
+      { name: "Tập 122", slug: "tap-122", source: "https://s3.phim1280.tv/20240829/hgzf87Qp/index.m3u8" },
+      { name: "Tập 123", slug: "tap-123", source: "https://s3.phim1280.tv/20240829/hSwGlDhL/index.m3u8" },
+      { name: "Tập 124", slug: "tap-124", source: "https://s3.phim1280.tv/20240829/tdECzUQZ/index.m3u8" },
+      { name: "Tập 125", slug: "tap-125", source: "https://s3.phim1280.tv/20240829/7iINnFEE/index.m3u8" },
+      { name: "Tập 126", slug: "tap-126", source: "https://s3.phim1280.tv/20240829/71kx0aOY/index.m3u8" }
     ]
   }
 ];
@@ -3667,13 +4089,16 @@ class PhimmoiService {
         for (let ki = 0; ki < keys.length; ki++) {
           const k = keys[ki];
           if (k && this.canonicalKeyMap.has(k)) {
-            existing = this.canonicalKeyMap.get(k);
-            break;
+            const candidateMatch = this.canonicalKeyMap.get(k);
+            if (this.canMergeMovies(candidateMatch, item)) {
+              existing = candidateMatch;
+              break;
+            }
           }
         }
       }
 
-      if (existing) {
+      if (existing && this.canMergeMovies(existing, item)) {
         this.mergeBestQualityMovie(existing, item);
         this.slugMap.set(item.slug, existing);
         if (item.crawlSlug) this.slugMap.set(item.crawlSlug, existing);
@@ -3936,12 +4361,90 @@ class PhimmoiService {
   }
 
   /**
+   * Kiểm tra xem luồng .m3u8 có phải link mẫu tạm thời (placeholder) hay không
+   */
+  isPlaceholderStream(src, movieSlug = "") {
+    if (!src || typeof src !== "string") return true;
+    const s = String(movieSlug || "").toLowerCase();
+    if (src.includes("a8XUKTef") && !s.includes("vo-han-thanh")) return true;
+    if (src.includes("XdpIV8L5") && !s.includes("matchbox")) return true;
+    if (src.includes("cSOFRRA3") && !s.includes("dich-nhan-kiet")) return true;
+    return false;
+  }
+
+  /**
+   * Kiểm tra an toàn xem 2 bản ghi phim có thực sự là cùng 1 bộ phim/mùa phim hay không
+   * Tuyệt đối ngăn chặn việc gộp nhầm 2 phim khác năm, khác định dạng (phim lẻ vs phim bộ), hoặc chỉ trùng tên tiếng Anh ngắn.
+   */
+  canMergeMovies(existing, candidate) {
+    if (!existing || !candidate) return false;
+    if (existing === candidate) return true;
+    const s1 = (existing.slug || "").toLowerCase();
+    const s2 = (candidate.slug || "").toLowerCase();
+    const c1 = (existing.crawlSlug || s1).toLowerCase();
+    const c2 = (candidate.crawlSlug || s2).toLowerCase();
+
+    // 1. Trùng khớp slug hoặc crawlSlug trực tiếp
+    if ((s1 && s1 === s2) || (c1 && c1 === c2) || (s1 && s1 === c2) || (c1 && c1 === s2)) {
+      return true;
+    }
+
+    // 2. Không bao giờ gộp phim lẻ (1-2 tập) với phim bộ nhiều tập (> 2 tập) khi khác slug
+    const eps1 = Array.isArray(existing.episodes) ? existing.episodes.length : 1;
+    const eps2 = Array.isArray(candidate.episodes) ? candidate.episodes.length : 1;
+    const isSingle1 = existing.type === "single" && eps1 <= 2;
+    const isSingle2 = candidate.type === "single" && eps2 <= 2;
+    const isMultiSeries1 = existing.type === "series" || eps1 > 2;
+    const isMultiSeries2 = candidate.type === "series" || eps2 > 2;
+    if ((isSingle1 && isMultiSeries2) || (isSingle2 && isMultiSeries1)) {
+      return false;
+    }
+
+    // 3. Kiểm tra tag bản làm lại (Bản Nhật, Bản Hàn, Bản Anime, Live Action...)
+    const remakeRe = /\b(ban\s+nhat|japan\s+version|ban\s+han|korea\s+version|ban\s+thai|ban\s+trung|ban\s+my|us\s+version|ban\s+anime|live\s+action)\b/i;
+    const raw1 = `${existing.title || ""} ${existing.originTitle || ""} ${s1}`.replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const raw2 = `${candidate.title || ""} ${candidate.originTitle || ""} ${s2}`.replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const rm1 = (raw1.match(remakeRe) || [""])[0].toLowerCase();
+    const rm2 = (raw2.match(remakeRe) || [""])[0].toLowerCase();
+    if (rm1 !== rm2) return false;
+
+    // 4. Khi khác slug: Bắt buộc tựa tiếng Việt chuẩn hóa phải khớp nhau (hoặc cùng tmdbId)
+    if (existing.tmdbId && candidate.tmdbId && String(existing.tmdbId) === String(candidate.tmdbId)) {
+      return true;
+    }
+    const vi1 = this.normalizeTitleForMatch(existing.title || "");
+    const vi2 = this.normalizeTitleForMatch(candidate.title || "");
+    if (vi1 && vi2 && vi1 !== vi2) {
+      const stripped1 = vi1.replace(/\b(?:the\s+)?movie\s*\d*\b/g, "").replace(/\s+/g, " ").trim();
+      const stripped2 = vi2.replace(/\b(?:the\s+)?movie\s*\d*\b/g, "").replace(/\s+/g, " ").trim();
+      const isGodzillaM1 =
+        (vi1.includes("godzilla tru") || vi1.includes("godzilla minus")) &&
+        (vi2.includes("godzilla tru") || vi2.includes("godzilla minus"));
+      if (stripped1 !== stripped2 && !isGodzillaM1) {
+        return false;
+      }
+    }
+
+    // 5. Khi khác slug: Kiểm tra năm phát hành (không gộp 2 bản phim cách nhau > 1 năm)
+    const y1 = parseInt(existing.year, 10);
+    const y2 = parseInt(candidate.year, 10);
+    if (!isNaN(y1) && !isNaN(y2) && y1 > 1900 && y2 > 1900) {
+      if (Math.abs(y1 - y2) > 1) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Hàm lọc trùng lặp tự sửa chữa toàn diện cho toàn bộ kho phim:
    * Giữ lại phiên bản chất lượng cao nhất (4K, nhiều tập, HLS chuẩn, ảnh nền đẹp) và loại bỏ hoàn toàn các bản sao.
    */
   deduplicateCatalog() {
     const seenSlugs = new Set();
     const seenKeys = new Set();
+    const keyOwnerMap = new Map();
     const unique = [];
 
     for (let i = 0; i < this.movies.length; i++) {
@@ -3949,28 +4452,36 @@ class PhimmoiService {
       if (!m || !m.slug) continue;
       const keys = this.getCanonicalMovieKeys(m);
       const isSlugSeen = seenSlugs.has(m.slug) || (m.crawlSlug && seenSlugs.has(m.crawlSlug));
-      const isKeySeen = keys.some((k) => k && seenKeys.has(k));
+      let existing = isSlugSeen
+        ? (this.slugMap.get(m.slug) || (m.crawlSlug && this.slugMap.get(m.crawlSlug)))
+        : null;
 
-      if (isSlugSeen || isKeySeen) {
-        let existing = this.slugMap.get(m.slug) || (m.crawlSlug && this.slugMap.get(m.crawlSlug));
-        if (!existing) {
-          for (let ki = 0; ki < keys.length; ki++) {
-            const k = keys[ki];
-            if (k && this.canonicalKeyMap.has(k)) {
-              existing = this.canonicalKeyMap.get(k);
+      if (!existing) {
+        for (let ki = 0; ki < keys.length; ki++) {
+          const k = keys[ki];
+          if (k && seenKeys.has(k)) {
+            const owner = keyOwnerMap.get(k) || this.canonicalKeyMap.get(k);
+            if (owner && this.canMergeMovies(owner, m)) {
+              existing = owner;
               break;
             }
           }
         }
-        if (existing && existing !== m) {
-          this.mergeBestQualityMovie(existing, m);
-          this.slugMap.set(m.slug, existing);
-          if (m.crawlSlug) this.slugMap.set(m.crawlSlug, existing);
-          if (Array.isArray(m.aliasSlugs)) {
-            m.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
-          }
-          keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existing); });
+      }
+
+      if (existing && existing !== m && this.canMergeMovies(existing, m)) {
+        this.mergeBestQualityMovie(existing, m);
+        this.slugMap.set(m.slug, existing);
+        if (m.crawlSlug) this.slugMap.set(m.crawlSlug, existing);
+        if (Array.isArray(m.aliasSlugs)) {
+          m.aliasSlugs.forEach((a) => this.slugMap.set(a, existing));
         }
+        keys.forEach((k) => {
+          if (k) {
+            this.canonicalKeyMap.set(k, existing);
+            keyOwnerMap.set(k, existing);
+          }
+        });
         continue;
       }
 
@@ -3979,7 +4490,12 @@ class PhimmoiService {
       if (Array.isArray(m.aliasSlugs)) {
         m.aliasSlugs.forEach((a) => seenSlugs.add(a));
       }
-      keys.forEach((k) => { if (k) seenKeys.add(k); });
+      keys.forEach((k) => {
+        if (k) {
+          seenKeys.add(k);
+          keyOwnerMap.set(k, m);
+        }
+      });
       unique.push(m);
       this.slugMap.set(m.slug, m);
       if (m.crawlSlug) this.slugMap.set(m.crawlSlug, m);
@@ -4002,7 +4518,12 @@ class PhimmoiService {
     let score = 0;
     const eps = Array.isArray(m.episodes) ? m.episodes : [];
     const validM3u8Eps = eps.filter(
-      (e) => e && e.source && (e.source.includes(".m3u8") || e.source.includes("/hls/")) && !e.source.includes("opstream")
+      (e) =>
+        e &&
+        e.source &&
+        (e.source.includes(".m3u8") || e.source.includes("/hls/")) &&
+        !e.source.includes("opstream") &&
+        !this.isPlaceholderStream(e.source, m.slug)
     );
     if (validM3u8Eps.length > 0) {
       score += 1000 + Math.min(600, validM3u8Eps.length * 12);
@@ -4030,11 +4551,22 @@ class PhimmoiService {
    */
   mergeBestQualityMovie(existing, candidate) {
     if (!existing || !candidate) return existing;
+    if (!this.canMergeMovies(existing, candidate)) return existing;
     const existingValidEps = (existing.episodes || []).filter(
-      (e) => e && e.source && (e.source.includes(".m3u8") || e.source.includes("/hls/")) && !e.source.includes("opstream")
+      (e) =>
+        e &&
+        e.source &&
+        (e.source.includes(".m3u8") || e.source.includes("/hls/")) &&
+        !e.source.includes("opstream") &&
+        !this.isPlaceholderStream(e.source, existing.slug)
     );
     const candidateValidEps = (candidate.episodes || []).filter(
-      (e) => e && e.source && (e.source.includes(".m3u8") || e.source.includes("/hls/")) && !e.source.includes("opstream")
+      (e) =>
+        e &&
+        e.source &&
+        (e.source.includes(".m3u8") || e.source.includes("/hls/")) &&
+        !e.source.includes("opstream") &&
+        !this.isPlaceholderStream(e.source, candidate.slug)
     );
 
     if (
@@ -4501,13 +5033,16 @@ class PhimmoiService {
         for (let ki = 0; ki < keys.length; ki++) {
           const k = keys[ki];
           if (k && this.canonicalKeyMap.has(k)) {
-            existing = this.canonicalKeyMap.get(k);
-            break;
+            const owner = this.canonicalKeyMap.get(k);
+            if (this.canMergeMovies(owner, candidate)) {
+              existing = owner;
+              break;
+            }
           }
         }
       }
 
-      if (existing) {
+      if (existing && this.canMergeMovies(existing, candidate)) {
         const prevEpCur = existing.episodeCurrent;
         this.mergeBestQualityMovie(existing, candidate);
         if (candidate.episodeCurrent && candidate.episodeCurrent !== prevEpCur) {
@@ -4903,10 +5438,10 @@ class PhimmoiService {
       if (!movie || !movie.slug) continue;
       const keys = this.getCanonicalMovieKeys(movie);
       const isSlugSeen = seenSearchSlugs.has(movie.slug) || (movie.crawlSlug && seenSearchSlugs.has(movie.crawlSlug));
-      const matchedKey = keys.find((k) => k && seenSearchKeys.has(k));
+      const matchedKey = keys.find((k) => k && seenSearchKeys.has(k) && this.canMergeMovies(keyToMovieMap.get(k), movie));
       if (isSlugSeen || matchedKey) {
         const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || this.slugMap.get(movie.slug);
-        if (existing && existing !== movie) {
+        if (existing && existing !== movie && this.canMergeMovies(existing, movie)) {
           this.mergeBestQualityMovie(existing, movie);
         }
         continue;
@@ -5037,11 +5572,14 @@ class PhimmoiService {
         for (let ki = 0; ki < keys.length; ki++) {
           const k = keys[ki];
           if (k && this.canonicalKeyMap.has(k)) {
-            existingDup = this.canonicalKeyMap.get(k);
-            break;
+            const owner = this.canonicalKeyMap.get(k);
+            if (this.canMergeMovies(owner, newMovie)) {
+              existingDup = owner;
+              break;
+            }
           }
         }
-        if (existingDup) {
+        if (existingDup && this.canMergeMovies(existingDup, newMovie)) {
           this.mergeBestQualityMovie(existingDup, newMovie);
           this.slugMap.set(newMovie.slug, existingDup);
           keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
@@ -5123,11 +5661,14 @@ class PhimmoiService {
         for (let ki = 0; ki < keys.length; ki++) {
           const k = keys[ki];
           if (k && this.canonicalKeyMap.has(k)) {
-            existingDup = this.canonicalKeyMap.get(k);
-            break;
+            const owner = this.canonicalKeyMap.get(k);
+            if (this.canMergeMovies(owner, newMovie)) {
+              existingDup = owner;
+              break;
+            }
           }
         }
-        if (existingDup) {
+        if (existingDup && this.canMergeMovies(existingDup, newMovie)) {
           this.mergeBestQualityMovie(existingDup, newMovie);
           this.slugMap.set(newMovie.slug, existingDup);
           keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
@@ -5152,12 +5693,15 @@ class PhimmoiService {
           for (let ki = 0; ki < keys.length; ki++) {
             const k = keys[ki];
             if (k && this.canonicalKeyMap.has(k)) {
-              existingDup = this.canonicalKeyMap.get(k);
-              break;
+              const owner = this.canonicalKeyMap.get(k);
+              if (this.canMergeMovies(owner, normalizedF4k)) {
+                existingDup = owner;
+                break;
+              }
             }
           }
         }
-        if (existingDup) {
+        if (existingDup && this.canMergeMovies(existingDup, normalizedF4k)) {
           this.mergeBestQualityMovie(existingDup, normalizedF4k);
           this.slugMap.set(normalizedF4k.slug, existingDup);
           keys.forEach((k) => { if (k) this.canonicalKeyMap.set(k, existingDup); });
@@ -5209,10 +5753,10 @@ class PhimmoiService {
       if (!m || !m.slug) continue;
       const keys = this.getCanonicalMovieKeys(m);
       const isSlugSeen = seenSearchSlugs.has(m.slug) || (m.crawlSlug && seenSearchSlugs.has(m.crawlSlug));
-      const matchedKey = keys.find((k) => k && seenSearchKeys.has(k));
+      const matchedKey = keys.find((k) => k && seenSearchKeys.has(k) && this.canMergeMovies(keyToMovieMap.get(k), m));
       if (isSlugSeen || matchedKey) {
         const existing = (matchedKey && keyToMovieMap.get(matchedKey)) || this.slugMap.get(m.slug);
-        if (existing && existing !== m) {
+        if (existing && existing !== m && this.canMergeMovies(existing, m)) {
           this.mergeBestQualityMovie(existing, m);
         }
         continue;
@@ -5248,8 +5792,24 @@ class PhimmoiService {
     const hasYearSuffix = /-(19\d\d|20\d\d)$/.test(movie.slug);
     const slugToTry = movie.crawlSlug || (hasYearSuffix ? movie.slug : movie.slug.replace(/-(?!(19\d\d|20\d\d)$)\d+$/, ""));
 
-    // Slug Aliases Map để tự động liên kết đa nguồn chuẩn xác cho các phim điện ảnh lớn (Godzilla, Ramayana...)
+    // Slug Aliases Map để tự động liên kết đa nguồn chuẩn xác cho các phim điện ảnh lớn (Godzilla, Ramayana, Mai...)
     const SLUG_ALIASES = {
+      "mai": { phimApi: "mai-2024", nguonc: "mai-2024", film4k: "mai-2024" },
+      "mai-2024": { phimApi: "mai-2024", nguonc: "mai-2024", film4k: "mai-2024" },
+      "tro-choi-nghin-ty": { phimApi: "tro-choi-nghin-ty-2025", nguonc: "tro-choi-nghin-ty-2025", film4k: "trillion-game-the-movie" },
+      "ke-xau": { phimApi: "ke-xau-2025", nguonc: "ke-xau-2025", film4k: "bad-man" },
+      "bi-mat-sau-bua-tiec": { phimApi: "bi-mat-sau-bua-tiec-2025", nguonc: "bi-mat-sau-bua-tiec-2025", film4k: "anniversary" },
+      "buoc-duong-cung": { phimApi: "buoc-duong-cung-2025", nguonc: "buoc-duong-cung-2025", film4k: "no-other-choice" },
+      "goc-khuat": { phimApi: "goc-khuat-phim-le-2025", nguonc: "goc-khuat-phim-le-2025", film4k: "sharp-corner" },
+      "nhat-ky-tinh-yeu": { phimApi: "nhat-ky-tinh-yeu-2004", nguonc: "nhat-ky-tinh-yeu-2004", film4k: "the-notebook" },
+      "duoc-an-ca-nga-ve-khong": { phimApi: "duoc-an-ca-nga-ve-khong-2023", nguonc: "duoc-an-ca-nga-ve-khong-2023", film4k: "no-more-bets" },
+      "toi-ac-kinh-hoang": { phimApi: "toi-ac-kinh-hoang-2023", nguonc: "toi-ac-kinh-hoang-2023", film4k: "the-worst-of-evil" },
+      "dai-chien-robot": { phimApi: "transformers-robot-dai-chien", nguonc: "transformers-robot-dai-chien", film4k: "transformers" },
+      "biet-doi-huy-diet": { phimApi: "biet-doi-dap-pha", nguonc: "biet-doi-dap-pha", film4k: "the-wrecking-crew" },
+      "made-in-korea": { phimApi: "de-che-dai-han-phan-1", nguonc: "de-che-dai-han-phan-1", film4k: "made-in-korea" },
+      "lanh-dia-tu-chien": { phimApi: "lanh-dia-tu-chien-phan-1", nguonc: "lanh-dia-tu-chien-phan-1", film4k: "mobland" },
+      "good-boy-18": { phimApi: "kien-tuong", nguonc: "kien-tuong", film4k: "good-boy" },
+      "head-over-heels-24": { phimApi: "nguu-lang-chuc-nu", nguonc: "nguu-lang-chuc-nu", film4k: "head-over-heels" },
       "godzilla-minus-one": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
       "godzilla-tru-mot": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
       "godzilla-tru-khong": { phimApi: "godzilla-tru-mot", nguonc: "godzilla-minus-one", film4k: "godzilla-minus-one" },
@@ -5312,9 +5872,13 @@ class PhimmoiService {
 
           if (it.slug === movie.slug || it.slug === slugToTry) score += 200;
           if (cleanEn && itEn === cleanEn) score += 100;
-          else if (cleanEn && cleanEn.length >= 3 && itEn.includes(cleanEn)) score += 45;
+          else if (cleanEn && cleanEn.length >= 8 && itEn.includes(cleanEn)) score += 35;
           if (cleanVi && itVi === cleanVi) score += 100;
-          else if (cleanVi && cleanVi.length >= 3 && itVi.includes(cleanVi)) score += 45;
+          else if (cleanVi && cleanVi.length >= 8 && itVi.includes(cleanVi)) score += 35;
+
+          const itIsSer = it.mediaType === "tv" || it.mediaType === "series" || Boolean(it.totalSeasons);
+          const movIsSingle = movie.type === "single" && (movie.episodes?.length || 1) <= 2;
+          if (movIsSingle && itIsSer) score -= 500;
 
           if (score > 0 && !isNaN(movYear) && !isNaN(itYr)) {
             const diff = Math.abs(movYear - itYr);
@@ -5328,7 +5892,7 @@ class PhimmoiService {
           }
         });
 
-        if (bestF4k && bestF4kScore >= 80 && bestF4k.slug) {
+        if (bestF4k && bestF4kScore >= 180 && bestF4k.slug) {
           movie.film4kSlug = bestF4k.slug;
           film4kRes = await this.smartFetchJson(
             `${PHIMMOI_CONFIG.film4kApiWatch}${encodeURIComponent(bestF4k.slug)}`,
@@ -5361,9 +5925,9 @@ class PhimmoiService {
 
           if (it.slug === movie.slug || it.slug === slugToTry) score += 200;
           if (itName === cleanTarget) score += 60;
-          else if (cleanTarget && cleanTarget.length >= 3 && itName.includes(cleanTarget)) score += 25;
+          else if (cleanTarget && cleanTarget.length >= 6 && itName.includes(cleanTarget)) score += 25;
           if (originTarget && itOrigin === originTarget) score += 60;
-          else if (originTarget && originTarget.length >= 3 && itOrigin.includes(originTarget)) score += 20;
+          else if (originTarget && originTarget.length >= 6 && itOrigin.includes(originTarget)) score += 20;
 
           if (score > 0 && !isNaN(movieYear) && !isNaN(itYear)) {
             const yearDiff = Math.abs(movieYear - itYear);
@@ -5383,7 +5947,7 @@ class PhimmoiService {
           }
         });
 
-        if (bestHit && highestScore > 0 && bestHit.slug) {
+        if (bestHit && highestScore >= 120 && bestHit.slug) {
           movie.crawlSlug = bestHit.slug;
           phimApiRes = await this.smartFetchJson(`${PHIMMOI_CONFIG.phimApiBase}${encodeURIComponent(bestHit.slug)}`, 5000);
         }
@@ -5413,7 +5977,7 @@ class PhimmoiService {
 
           if (it.slug === movie.slug || it.slug === slugToTry) score += 200;
           if (itName === cleanTarget) score += 60;
-          else if (cleanTarget && cleanTarget.length >= 3 && itName.includes(cleanTarget)) score += 25;
+          else if (cleanTarget && cleanTarget.length >= 6 && itName.includes(cleanTarget)) score += 25;
           if (originTarget && itOrigin === originTarget) score += 60;
 
           if (score > 0 && !isNaN(movieYear) && !isNaN(itYear)) {
@@ -5429,19 +5993,28 @@ class PhimmoiService {
           }
         });
 
-        if (bestNc && highestNcScore > 0 && bestNc.slug) {
+        if (bestNc && highestNcScore >= 120 && bestNc.slug) {
           nguoncRes = await this.smartFetchJson(`${PHIMMOI_CONFIG.nguoncApiBase}${encodeURIComponent(bestNc.slug)}`, 4500);
         }
       }
     }
+
+    const isExpectingSingle = movie.type === "single" && (movie.episodes?.length || 1) <= 2;
 
     // 1. Nguồn PhimAPI (Netflix / KKPhim Vietsub #1 + Lồng Tiếng / Thuyết Minh + Các luồng Server phụ)
     if (phimApiRes && Array.isArray(phimApiRes.episodes) && phimApiRes.episodes.length > 0) {
       const resYear = parseInt(phimApiRes.movie?.year, 10);
       const movYear = parseInt(movie.year, 10);
       const isYearCompatible = isNaN(resYear) || isNaN(movYear) || Math.abs(resYear - movYear) <= 1;
+      const apiCountries = Array.isArray(phimApiRes.movie?.country) ? phimApiRes.movie.country : [];
+      const isCountryCompatible =
+        movie.countrySlug !== "viet-nam" ||
+        apiCountries.length === 0 ||
+        apiCountries.some((c) => c && c.slug === "viet-nam");
+      const firstSrvLen = phimApiRes.episodes[0]?.server_data?.length || 0;
+      const isTypeCompatible = !isExpectingSingle || firstSrvLen <= 2;
 
-      if (isYearCompatible) {
+      if (isYearCompatible && isCountryCompatible && isTypeCompatible) {
         const allServers = phimApiRes.episodes;
         // Sắp xếp các server để ưu tiên server VIP, 4K, FHD có tốc độ cao nhất
         const sortedServers = [...allServers].sort((a, b) => {
@@ -5555,8 +6128,10 @@ class PhimmoiService {
       const ncYear = parseInt(nguoncRes.movie.year, 10);
       const movYear = parseInt(movie.year, 10);
       const isNcYearCompatible = isNaN(ncYear) || isNaN(movYear) || Math.abs(ncYear - movYear) <= 1;
+      const ncEpCount = nguoncRes.movie.episodes[0]?.items?.length || 0;
+      const isNcTypeCompatible = !isExpectingSingle || ncEpCount <= 2;
 
-      if (isNcYearCompatible) {
+      if (isNcYearCompatible && isNcTypeCompatible) {
         const ncServers = nguoncRes.movie.episodes;
         if (ncServers[0] && Array.isArray(ncServers[0].items) && ncServers[0].items.length > 0) {
           movie.nguoncEpisodes = ncServers[0].items.map((item, idx) => ({
@@ -5579,8 +6154,8 @@ class PhimmoiService {
               }
             }
           });
-          // Nếu nguồn chính chỉ có 1 tập mẫu mà NguonC có nhiều tập hơn thì cập nhật luôn
-          if (movie.nguoncEpisodes.length > (movie.episodes ? movie.episodes.length : 0)) {
+          // Nếu nguồn chính chỉ có 1 tập mẫu mà NguonC có nhiều tập hơn thì cập nhật luôn (chỉ áp dụng cho phim bộ)
+          if (!isExpectingSingle && movie.nguoncEpisodes.length > (movie.episodes ? movie.episodes.length : 0)) {
             movie.episodes = movie.nguoncEpisodes.map((ep, i) => {
               const prevEp = movie.episodes?.[i];
               const prevSource =
@@ -5613,8 +6188,10 @@ class PhimmoiService {
       const f4kYear = parseInt(f4kMov.year, 10);
       const movYear = parseInt(movie.year, 10);
       const isF4kYearOk = isNaN(f4kYear) || isNaN(movYear) || Math.abs(f4kYear - movYear) <= 1;
+      const f4kEpLen = Array.isArray(film4kRes.episodes) ? film4kRes.episodes.length : 0;
+      const isF4kTypeOk = !isExpectingSingle || f4kEpLen <= 2;
 
-      if (isF4kYearOk) {
+      if (isF4kYearOk && isF4kTypeOk) {
         movie.film4kSlug = f4kMov.slug || movie.film4kSlug;
         if (f4kMov.overview?.en && !movie.overviewEn) movie.overviewEn = f4kMov.overview.en;
         if (f4kMov.overview?.vi && !movie.overviewVi) movie.overviewVi = f4kMov.overview.vi;
