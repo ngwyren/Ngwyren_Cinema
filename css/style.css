@@ -13475,6 +13475,19 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-feature-card,
+.continue-shelf-card,
+.schedule-card-glass {
+  border: 3px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+.movie-card .movie-poster-wrap {
+  border: 3px solid rgba(255, 255, 255, 0.14) !important;
+  transition:
+    border-color 0.24s ease,
+    box-shadow 0.36s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.vision-feature-card,
 .movie-card,
 .continue-shelf-card,
 .vision-trailer-card,
@@ -13485,7 +13498,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transition:
     transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.28s ease !important;
+    border-color 0.24s ease !important;
 }
 
 @media (hover: hover) {
@@ -13493,8 +13506,9 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:focus-visible,
   .vision-feature-card.is-hero-previewing {
     transform: translate3d(0, -6px, 0) scale(1.022) !important;
-    border-color: rgba(255, 255, 255, 0.28) !important;
-    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.52) !important;
+    border: 3px solid #ffffff !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.55) !important;
     z-index: 10 !important;
   }
 
@@ -13512,30 +13526,46 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   .movie-card:hover .movie-poster-wrap {
-    border-color: rgba(255, 255, 255, 0.28) !important;
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5) !important;
+    border: 3px solid #ffffff !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.52) !important;
   }
 
   .continue-shelf-card:hover,
-  .continue-shelf-card:focus-visible {
+  .continue-shelf-card:focus-visible,
+  .schedule-card-glass:hover,
+  .schedule-card-glass:focus-visible {
     transform: translate3d(0, -4px, 0) scale(1.015) !important;
-    border: 1.5px solid rgba(255, 255, 255, 0.28) !important;
+    border: 3px solid #ffffff !important;
+    border-color: #ffffff !important;
     background: rgba(255, 255, 255, 0.06) !important;
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45) !important;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.48) !important;
     z-index: 5 !important;
   }
 }
 
-/* Chạm/nhấn vào thẻ phim êm mượt, không giật cục và không chớp sáng */
+/* Chạm/nhấn vào thẻ phim trên điện thoại & máy tính: hiện viền trắng 3px sắc nét, không chớp nháy */
 .vision-feature-card:active,
-.movie-card:active,
 .continue-shelf-card:active,
 .vision-trailer-card:active,
 .schedule-card-glass:active {
   transform: translate3d(0, -1px, 0) scale(0.986) !important;
-  border-color: rgba(255, 255, 255, 0.24) !important;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45) !important;
+  border: 3px solid #ffffff !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48) !important;
+  transition:
+    transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.12s ease !important;
+}
+
+.movie-card:active {
+  transform: translate3d(0, -1px, 0) scale(0.986) !important;
   transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.movie-card:active .movie-poster-wrap {
+  border: 3px solid #ffffff !important;
+  border-color: #ffffff !important;
 }
 
 /* 2. Chuyển động Crossfade 120fps siêu mượt giữa các slide Hero Banner */
