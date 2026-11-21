@@ -137,17 +137,15 @@
   },
 
   setNavigation(navKey, customTitle = null, force = false) {
-    if (navKey === "tim-kiem" || navKey === "search") {
-      if (typeof this.focusSearch === "function") {
-        this.focusSearch();
-      } else {
-        document.getElementById("topSearchInput")?.focus();
-      }
-      return;
+    if (navKey === "search") {
+      navKey = "tim-kiem";
     }
     this.ensureFullCatalogLoaded();
     if (!force && this.currentNav === navKey && !customTitle && !this.customFilterTitle && this.activeGenreFilter === "Tất cả") {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      if (navKey === "tim-kiem") {
+        document.getElementById("dedicatedSearchInput")?.focus();
+      }
       return;
     }
 
@@ -158,6 +156,12 @@
     this.activeGenreFilter = "Tất cả";
     this.currentSegment = "all";
     this.visibleGridLimit = 24;
+
+    const dropdown = document.getElementById("searchDropdown");
+    if (dropdown) {
+      dropdown.classList.remove("open");
+      dropdown.innerHTML = "";
+    }
 
     // 1. Phản hồi nhấp nháy: Cập nhật active pill & nút topbar
     document.querySelectorAll("[data-nav]").forEach((el) => {
@@ -171,6 +175,11 @@
     this.transitionView(() => {
       this.renderMainView();
       this.attachHeroSwipeHandlers();
+      if (navKey === "tim-kiem") {
+        setTimeout(() => {
+          document.getElementById("dedicatedSearchInput")?.focus();
+        }, 40);
+      }
     });
   },
 
@@ -219,27 +228,62 @@
 
   syncLeftDockIndicator(navKey) {
     const dockEl = document.getElementById("appleSidebar");
-    const indicator = document.getElementById("visionDockIndicator");
-    if (!dockEl) return;
-    const dockMap = {
-      "kham-pha": 0,
-      "phim-le": 0,
-      "phim-bo": 0,
-      "netflix": 0,
-      "vietsub": 0,
-      "moi-cap-nhat": 0,
-      "yeu-thich": 1,
-      "lich-su": 1,
-      "anime": 2,
-      "lich-chieu": 3,
-      "cai-dat": 4
-    };
-    const targetIdx = dockMap[navKey] !== undefined ? dockMap[navKey] : 0;
+    if (dockEl) {
+      const dockMap = {
+        "kham-pha": 0,
+        "phim-le": 0,
+        "phim-bo": 0,
+        "netflix": 0,
+        "vietsub": 0,
+        "moi-cap-nhat": 0,
+        "yeu-thich": 1,
+        "lich-su": 1,
+        "anime": 2,
+        "lich-chieu": 3,
+        "cai-dat": 4
+      };
+      const targetIdx = dockMap[navKey] !== undefined ? dockMap[navKey] : 0;
 
-    dockEl.style.setProperty("--dock-idx", String(targetIdx));
-    document.querySelectorAll(".vision-dock-icon").forEach((btn) => {
-      btn.classList.toggle("active", Number(btn.dataset.dockIdx) === targetIdx);
-    });
+      dockEl.style.setProperty("--dock-idx", String(targetIdx));
+      document.querySelectorAll(".vision-dock-icon").forEach((btn) => {
+        btn.classList.toggle("active", Number(btn.dataset.dockIdx) === targetIdx);
+      });
+    }
+
+    // Đồng bộ hiệu ứng thanh điều hướng dưới điện thoại kiểu iPhone (Liquid Glider + Bottom Indicator + Spring Bounce)
+    const mobileDock = document.getElementById("liquidMobileDock");
+    if (mobileDock) {
+      const mobileMap = {
+        "kham-pha": 0,
+        "phim-le": 0,
+        "phim-bo": 0,
+        "moi-cap-nhat": 0,
+        "vietsub": 0,
+        "tim-kiem": 1,
+        "search-results": 1,
+        "filter-results": 1,
+        "anime": 2,
+        "netflix": 3,
+        "yeu-thich": 4,
+        "lich-su": 4
+      };
+      const mIdx = mobileMap[navKey] !== undefined ? mobileMap[navKey] : 0;
+      const prevIdx = mobileDock._activeIdx;
+      mobileDock._activeIdx = mIdx;
+      mobileDock.style.setProperty("--mobile-dock-idx", String(mIdx));
+      mobileDock.querySelectorAll(".dock-tab-btn").forEach((btn, i) => {
+        const btnIdx = btn.dataset.mobileIdx !== undefined ? Number(btn.dataset.mobileIdx) : i;
+        const isAct = btnIdx === mIdx;
+        btn.classList.toggle("active", isAct);
+        if (isAct && prevIdx !== mIdx) {
+          btn.classList.remove("ios-tab-bounce");
+          void btn.offsetWidth;
+          btn.classList.add("ios-tab-bounce");
+        } else if (!isAct) {
+          btn.classList.remove("ios-tab-bounce");
+        }
+      });
+    }
   },
 
   triggerPageTransition() {
@@ -698,6 +742,281 @@
     this.renderMainView();
   },
 
+  renderDedicatedSearchViewHTML() {
+    this.ensureFullCatalogLoaded();
+    const query = (this.dedicatedSearchQuery || "").trim();
+    const activeChip = this.dedicatedSearchChip || "trending";
+    const chips = [
+      { key: "trending", label: "Xu Hướng Hot", icon: "fa-fire" },
+      { key: "chieu-rap", label: "Chiếu Rạp", icon: "fa-ticket" },
+      { key: "viet-nam", label: "Việt Nam", icon: "fa-star" },
+      { key: "han-quoc", label: "Hàn Quốc", icon: "fa-heart" },
+      { key: "trung-quoc", label: "Trung Quốc", icon: "fa-dragon" },
+      { key: "anime", label: "Anime", icon: "fa-wand-magic-sparkles" },
+      { key: "hanh-dong", label: "Hành Động", icon: "fa-bolt" },
+      { key: "kinh-di", label: "Kinh Dị", icon: "fa-ghost" },
+      { key: "tinh-cam", label: "Tình Cảm", icon: "fa-champagne-glasses" }
+    ];
+
+    const chipsHTML = chips
+      .map(
+        (c) => `
+          <button type="button" class="dedicated-search-chip ${!query && activeChip === c.key ? "active" : ""}" onclick="app.selectDedicatedSearchChip('${c.key}')">
+            <i class="fas ${c.icon}"></i>
+            <span>${c.label}</span>
+          </button>
+        `
+      )
+      .join("");
+
+    const initialList = query
+      ? (this.dedicatedSearchResults || this.searchCatalogLocal(query))
+      : this.getDedicatedSearchChipMovies(activeChip);
+
+    return `
+      <div class="cinema-dedicated-search-layout">
+        <section class="dedicated-search-hero">
+          <div class="dedicated-search-header">
+            <h1 class="dedicated-search-title">Tìm Kiếm Phim</h1>
+            <p class="dedicated-search-subtitle">Khám phá nhanh hơn ${this.service.movies.length}+ bộ phim điện ảnh, phim bộ & Anime 4K/Full HD</p>
+          </div>
+
+          <form class="dedicated-search-bar-wrap" onsubmit="event.preventDefault(); app.handleDedicatedSearchInput(document.getElementById('dedicatedSearchInput')?.value || '', true);">
+            <div class="dedicated-search-capsule">
+              <i class="fas fa-magnifying-glass dedicated-search-icon"></i>
+              <input
+                type="text"
+                id="dedicatedSearchInput"
+                class="dedicated-search-input"
+                value="${query.replace(/"/g, "&quot;")}"
+                placeholder="Nhập tên phim, tên tiếng Anh, diễn viên, đạo diễn..."
+                autocomplete="off"
+                oninput="app.handleDedicatedSearchInput(this.value)"
+              />
+              <button
+                type="button"
+                id="dedicatedSearchClearBtn"
+                class="dedicated-search-clear ${query ? "visible" : ""}"
+                onclick="app.clearDedicatedSearch()"
+                title="Xóa từ khóa"
+                aria-label="Xóa từ khóa"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="dedicated-search-chips" id="dedicatedSearchChips">
+            ${chipsHTML}
+          </div>
+        </section>
+
+        <section class="vision-shelf-section" id="dedicatedSearchResultsContainer">
+          ${this.renderDedicatedSearchResultsInnerHTML(query, initialList, true, activeChip)}
+        </section>
+      </div>
+    `;
+  },
+
+  searchCatalogLocal(query) {
+    const q = (query || "").trim().toLowerCase();
+    if (!q) return [];
+    const qNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(q) : q;
+    const qTokens = qNorm ? qNorm.split(" ").filter(Boolean) : [];
+    const scored = [];
+    const movies = this.service.movies;
+    for (let i = 0; i < movies.length; i++) {
+      const m = movies[i];
+      if (!m) continue;
+      const t = m._titleLower || (m._titleLower = (m.title || "").toLowerCase());
+      const o = m._originLower || (m._originLower = (m.originTitle || "").toLowerCase());
+      const tNorm = m._titleNorm || (m._titleNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(m.title) : t);
+      const oNorm = m._originNorm || (m._originNorm = this.service.normalizeSearchText ? this.service.normalizeSearchText(m.originTitle) : o);
+      let score = 0;
+      if (t === q || o === q || (qNorm && (tNorm === qNorm || oNorm === qNorm))) score = 250;
+      else if (t.startsWith(q) || (qNorm && tNorm.startsWith(qNorm))) score = 180;
+      else if (o.startsWith(q) || (qNorm && oNorm.startsWith(qNorm))) score = 150;
+      else if (t.includes(q) || (qNorm && tNorm.includes(qNorm))) score = 110;
+      else if (o.includes(q) || (qNorm && oNorm.includes(qNorm))) score = 90;
+      else if (qTokens.length > 1 && qTokens.every((tk) => `${tNorm} ${oNorm}`.includes(tk))) score = 80;
+      else {
+        const meta = m._metaSearch || (m._metaSearch = `${(m.genres || []).join(" ")} ${(m.cast || []).join(" ")} ${m.director || ""}`.toLowerCase());
+        if (meta.includes(q)) score = 25;
+      }
+      if (score > 0) scored.push({ movie: m, score });
+    }
+    scored.sort((a, b) => b.score - a.score || (b.movie.year || 0) - (a.movie.year || 0));
+    return this.dedupeMovieList(scored.map((it) => it.movie));
+  },
+
+  getDedicatedSearchChipMovies(chipKey = "trending") {
+    this.ensureFullCatalogLoaded();
+    let list = [];
+    switch (chipKey) {
+      case "chieu-rap":
+        list = this.service.movies.filter((m) => (m.sectionTags && m.sectionTags.includes("chieu-rap")) || m.type === "single");
+        break;
+      case "viet-nam":
+        list = this.getMoviesByCountry("viet-nam");
+        break;
+      case "han-quoc":
+        list = this.getMoviesByCountry("han-quoc");
+        break;
+      case "trung-quoc":
+        list = this.getMoviesByCountry("trung-quoc");
+        break;
+      case "anime":
+        list = this.getMoviesByTag("anime");
+        break;
+      case "hanh-dong":
+        list = this.service.movies.filter((m) => (m.genres || []).some((g) => /hành động/i.test(g)));
+        break;
+      case "kinh-di":
+        list = this.service.movies.filter((m) => (m.genres || []).some((g) => /kinh dị|bí ẩn/i.test(g)));
+        break;
+      case "tinh-cam":
+        list = this.service.movies.filter((m) => (m.genres || []).some((g) => /tình cảm|lãng mạn|chính kịch/i.test(g)));
+        break;
+      default:
+        list = [...this.getRealtimeTrendingMovies(null, 12), ...this.service.movies.slice(0, 24)];
+        break;
+    }
+    return this.dedupeMovieList(list).slice(0, 24);
+  },
+
+  renderDedicatedSearchResultsInnerHTML(query, results, isOnlineDone = true, activeChip = "trending") {
+    const q = (query || "").trim();
+    const list = Array.isArray(results) ? results : [];
+    const chipTitles = {
+      "trending": "Xu Hướng Tìm Kiếm & Đề Xuất Hôm Nay",
+      "chieu-rap": "Phim Chiếu Rạp & Điện Ảnh Nổi Bật",
+      "viet-nam": "Điện Ảnh Việt Nam Đặc Sắc",
+      "han-quoc": "Phim Hàn Quốc Thịnh Hành",
+      "trung-quoc": "Phim Trung Quốc Tuyển Chọn",
+      "anime": "Anime & Hoạt Hình Đỉnh Cao",
+      "hanh-dong": "Bom Tấn Hành Động Kịch Tính",
+      "kinh-di": "Phim Kinh Dị & Bí Ẩn Hấp Dẫn",
+      "tinh-cam": "Phim Tình Cảm & Tâm Lý Đặc Sắc"
+    };
+
+    if (!q) {
+      const heading = chipTitles[activeChip] || chipTitles.trending;
+      return `
+        <div class="vision-shelf-header">
+          <h2 class="vision-shelf-title"><i class="fas fa-sparkles" style="margin-right: 8px;"></i>${heading}</h2>
+        </div>
+        <div class="vision-cards-grid-4">
+          ${list.slice(0, 24).map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}
+        </div>
+      `;
+    }
+
+    return `
+      <div class="vision-shelf-header">
+        <h2 class="vision-shelf-title">
+          Kết quả cho "${q.replace(/"/g, "&quot;")}" (${list.length} phim)
+        </h2>
+        <span style="font-size: 0.82rem; color: rgba(255,255,255,0.6);">
+          ${isOnlineDone ? '<i class="fas fa-check-circle" style="color:#34c759;margin-right:4px;"></i>Đã đồng bộ toàn kho' : '<i class="fas fa-circle-notch fa-spin" style="margin-right:4px;"></i>Đang mở rộng tìm kiếm...'}
+        </span>
+      </div>
+      ${
+        list.length > 0
+          ? `<div class="vision-cards-grid-4">${list.slice(0, 36).map((m, idx) => this.renderVisionFeatureCardHTML(m, idx)).join("")}</div>`
+          : ""
+      }
+      ${this.renderMovieRequestCardHTML(q, list.length > 0)}
+    `;
+  },
+
+  handleDedicatedSearchInput(rawValue, immediate = false) {
+    this.ensureFullCatalogLoaded();
+    const query = (rawValue || "").trim();
+    this.dedicatedSearchQuery = query;
+    this.lastSearchQuery = query;
+
+    const clearBtn = document.getElementById("dedicatedSearchClearBtn");
+    if (clearBtn) clearBtn.classList.toggle("visible", query.length > 0);
+
+    const chipsWrap = document.getElementById("dedicatedSearchChips");
+    if (chipsWrap) {
+      chipsWrap.querySelectorAll(".dedicated-search-chip").forEach((btn) => {
+        if (query) btn.classList.remove("active");
+      });
+    }
+
+    if (this._dedicatedSearchTimer) {
+      clearTimeout(this._dedicatedSearchTimer);
+      this._dedicatedSearchTimer = null;
+    }
+
+    const container = document.getElementById("dedicatedSearchResultsContainer");
+    if (!container) return;
+
+    if (!query) {
+      const chipKey = this.dedicatedSearchChip || "trending";
+      const defaultMovies = this.getDedicatedSearchChipMovies(chipKey);
+      container.innerHTML = this.renderDedicatedSearchResultsInnerHTML("", defaultMovies, true, chipKey);
+      return;
+    }
+
+    const localMatches = this.searchCatalogLocal(query);
+    this.dedicatedSearchResults = localMatches;
+    this.lastSearchResults = localMatches;
+    container.innerHTML = this.renderDedicatedSearchResultsInnerHTML(query, localMatches, false);
+
+    const delay = immediate ? 0 : 140;
+    this._dedicatedSearchTimer = setTimeout(async () => {
+      try {
+        const fullMatches = await this.service.searchMovies(query);
+        if (this.currentNav === "tim-kiem" && (this.dedicatedSearchQuery || "").trim() === query) {
+          const deduped = this.dedupeMovieList(fullMatches);
+          this.dedicatedSearchResults = deduped;
+          this.lastSearchResults = deduped;
+          const liveContainer = document.getElementById("dedicatedSearchResultsContainer");
+          if (liveContainer) {
+            liveContainer.innerHTML = this.renderDedicatedSearchResultsInnerHTML(query, deduped, true);
+          }
+        }
+      } catch (e) {
+        console.warn("[DedicatedSearch] online search error:", e);
+      }
+    }, delay);
+  },
+
+  clearDedicatedSearch() {
+    this.dedicatedSearchQuery = "";
+    this.dedicatedSearchResults = null;
+    const input = document.getElementById("dedicatedSearchInput");
+    if (input) {
+      input.value = "";
+      input.focus();
+    }
+    const clearBtn = document.getElementById("dedicatedSearchClearBtn");
+    if (clearBtn) clearBtn.classList.remove("visible");
+    this.selectDedicatedSearchChip(this.dedicatedSearchChip || "trending");
+  },
+
+  selectDedicatedSearchChip(chipKey) {
+    this.dedicatedSearchChip = chipKey || "trending";
+    this.dedicatedSearchQuery = "";
+    const input = document.getElementById("dedicatedSearchInput");
+    if (input) input.value = "";
+    const clearBtn = document.getElementById("dedicatedSearchClearBtn");
+    if (clearBtn) clearBtn.classList.remove("visible");
+
+    const chips = ["trending", "chieu-rap", "viet-nam", "han-quoc", "trung-quoc", "anime", "hanh-dong", "kinh-di", "tinh-cam"];
+    document.querySelectorAll("#dedicatedSearchChips .dedicated-search-chip").forEach((btn, idx) => {
+      btn.classList.toggle("active", chips[idx] === this.dedicatedSearchChip);
+    });
+
+    const container = document.getElementById("dedicatedSearchResultsContainer");
+    if (container) {
+      const list = this.getDedicatedSearchChipMovies(this.dedicatedSearchChip);
+      container.innerHTML = this.renderDedicatedSearchResultsInnerHTML("", list, true, this.dedicatedSearchChip);
+    }
+  },
+
   applyGlassDynamics(percent) {
     const p = Math.max(0, Math.min(100, Number(percent)));
     const t = p / 100;
@@ -895,6 +1214,12 @@
     // Trang Lịch Chiếu Phim (Hoạt Hình 3D & Anime Showtimes)
     if (this.currentNav === "lich-chieu") {
       container.innerHTML = this.renderScheduleViewHTML();
+      return;
+    }
+
+    // Trang Tìm Kiếm Riêng Biệt (Dedicated Search Page)
+    if (this.currentNav === "tim-kiem") {
+      container.innerHTML = this.renderDedicatedSearchViewHTML();
       return;
     }
 
@@ -1834,18 +2159,20 @@
             </div>
           </div>
 
-          <div class="cinema-hero-thumbnails" aria-label="Phim nổi bật">
-            ${thumbMovies.map((hm, i) => {
-              const isActive = customMovie ? hm.slug === movie.slug : hm.slug === movie.slug || i === this.heroIndex;
-              const thumbUrl = this.getMovieBackdrop(hm) || this.getMoviePoster(hm);
-              const fallbackUrl = this.getMoviePoster(hm) || thumbUrl;
-              return `
-                <div class="cinema-thumb-card ${isActive ? "active" : ""}" onclick="app.setHeroSlide(${i})" title="${hm.title}">
-                  <img src="${thumbUrl}" alt="${hm.title}" fetchpriority="high" decoding="async"
-                       onerror="if(this.src!=='${fallbackUrl}'){this.src='${fallbackUrl}';}else{this.onerror=null;this.src='https://phimimg.com/upload/vod/20241229-1/309e1f1623755fa993140a83167f577b.jpg';}" />
-                </div>
-              `;
-            }).join("")}
+          <div class="cinema-hero-thumbnails cinema-hero-pager" aria-label="Điều hướng slide phim nổi bật">
+            <button type="button" class="hero-pager-arrow" onclick="event.stopPropagation(); app.stepHeroSlide(-1)" title="Phim trước" aria-label="Phim trước">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="hero-pager-dots">
+              ${thumbMovies.map((hm, i) => {
+                const isActive = customMovie ? hm.slug === movie.slug : hm.slug === movie.slug || i === this.heroIndex;
+                const safeTitle = (hm.title || "").replace(/"/g, "&quot;");
+                return `<button type="button" class="hero-pager-dot ${isActive ? "active" : ""}" onclick="event.stopPropagation(); app.setHeroSlide(${i})" title="${safeTitle}" aria-label="Slide ${i + 1}: ${safeTitle}"></button>`;
+              }).join("")}
+            </div>
+            <button type="button" class="hero-pager-arrow" onclick="event.stopPropagation(); app.stepHeroSlide(1)" title="Phim tiếp" aria-label="Phim tiếp">
+              <i class="fas fa-chevron-right"></i>
+            </button>
           </div>
         </div>
       </section>
@@ -2145,6 +2472,13 @@
 
   resumeHeroAutoRotate() {
     this.isHeroPaused = false;
+  },
+
+  stepHeroSlide(delta = 1) {
+    const heroList = this.getActiveHeroMovies();
+    if (!heroList || heroList.length === 0) return;
+    const nextIdx = ((this.heroIndex + delta) % heroList.length + heroList.length) % heroList.length;
+    this.setHeroSlide(nextIdx);
   },
 
   setHeroSlide(index) {

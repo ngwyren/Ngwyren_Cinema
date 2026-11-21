@@ -49,7 +49,7 @@
   <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 
   <!-- Preload Critical CSS & Hero Image for Sub-50ms Instant FCP/LCP -->
-  <link rel="preload" href="css/style.css?v=2.8.3" as="style" />
+  <link rel="preload" href="css/style.css?v=2.8.6" as="style" />
   <link rel="preload" as="image" href="https://phimimg.com/upload/vod/20251010-1/1f1c6b6ff250e556050b9263967174d2.jpg" fetchpriority="high" />
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -59,7 +59,7 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 
   <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2.8.3" />
+  <link rel="stylesheet" href="css/style.css?v=2.8.6" />
 </head>
 <body>
 
@@ -114,7 +114,7 @@
           </button>
           <div class="topbar-search-container">
             <div class="vision-search-pill" onclick="app.focusSearch()">
-              <i class="fas fa-magnifying-glass"></i>
+              <i class="fas fa-magnifying-glass" onclick="event.stopPropagation(); app.setNavigation('tim-kiem')" style="cursor: pointer;" title="Mở trang tìm kiếm riêng biệt"></i>
               <input
                 type="text"
                 id="topSearchInput"
@@ -289,20 +289,21 @@
   <!-- ========================================================================
        MOBILE & TABLET FLOATING BOTTOM DOCK (CHỈ HIỆN ICON TINH GỌN CHUẨN APPLE)
        ======================================================================== -->
-  <nav class="liquid-mobile-dock" id="liquidMobileDock" aria-label="Điều hướng nhanh">
-    <button class="dock-tab-btn active" data-nav="kham-pha" onclick="app.resetAllFilters()" title="Khám Phá" aria-label="Khám Phá">
+  <nav class="liquid-mobile-dock" id="liquidMobileDock" aria-label="Điều hướng nhanh" style="--mobile-dock-idx: 0;">
+    <span class="mobile-dock-glider" id="mobileDockGlider" aria-hidden="true"></span>
+    <button class="dock-tab-btn active" data-nav="kham-pha" data-mobile-idx="0" onclick="app.resetAllFilters()" title="Khám Phá" aria-label="Khám Phá">
       <i class="fas fa-house"></i>
     </button>
-    <button class="dock-tab-btn" data-nav="tim-kiem" onclick="app.focusSearch()" title="Tìm Kiếm" aria-label="Tìm Kiếm">
+    <button class="dock-tab-btn" data-nav="tim-kiem" data-mobile-idx="1" onclick="app.setNavigation('tim-kiem')" title="Tìm Kiếm" aria-label="Tìm Kiếm">
       <i class="fas fa-magnifying-glass"></i>
     </button>
-    <button class="dock-tab-btn" data-nav="anime" onclick="app.setNavigation('anime')" title="Anime" aria-label="Anime">
+    <button class="dock-tab-btn" data-nav="anime" data-mobile-idx="2" onclick="app.setNavigation('anime')" title="Anime" aria-label="Anime">
       <i class="anime-konoha-icon"></i>
     </button>
-    <button class="dock-tab-btn" data-nav="netflix" onclick="app.setNavigation('netflix')" title="Netflix" aria-label="Netflix">
+    <button class="dock-tab-btn" data-nav="netflix" data-mobile-idx="3" onclick="app.setNavigation('netflix')" title="Netflix" aria-label="Netflix">
       <i class="fas fa-circle-play"></i>
     </button>
-    <button class="dock-tab-btn" data-nav="yeu-thich" onclick="app.setNavigation('yeu-thich')" title="Đã Lưu" aria-label="Đã Lưu">
+    <button class="dock-tab-btn" data-nav="yeu-thich" data-mobile-idx="4" onclick="app.setNavigation('yeu-thich')" title="Đã Lưu" aria-label="Đã Lưu">
       <i class="fas fa-star"></i>
     </button>
   </nav>
@@ -343,17 +344,17 @@
   </svg>
 
   <!-- High-Performance Deferred Scripts (Fast boot under 30ms, catalog streamed non-blocking) -->
-  <script src="js/auth-config.js?v=2.8.5" defer></script>
-  <script src="js/data.js?v=2.8.5" defer></script>
-  <script src="js/air-schedule.js?v=2.8.5" defer></script>
-  <script src="js/core/system-bus.js?v=2.8.5" defer></script>
-  <script src="js/app.js?v=2.8.5" defer></script>
-  <script src="js/modules/navigation-ui.js?v=2.8.5" defer></script>
-  <script src="js/modules/movie-modal.js?v=2.8.5" defer></script>
-  <script src="js/modules/video-player.js?v=2.8.5" defer></script>
-  <script src="js/modules/search-filter.js?v=2.8.5" defer></script>
-  <script src="js/modules/user-cloud-sync.js?v=2.8.5" defer></script>
-  <script src="js/bootstrap.js?v=2.8.5" defer></script>
-  <script src="js/movies-catalog.js?v=2.8.5" defer></script>
+  <script src="js/auth-config.js?v=2.8.6" defer></script>
+  <script src="js/data.js?v=2.8.6" defer></script>
+  <script src="js/air-schedule.js?v=2.8.6" defer></script>
+  <script src="js/core/system-bus.js?v=2.8.6" defer></script>
+  <script src="js/app.js?v=2.8.6" defer></script>
+  <script src="js/modules/navigation-ui.js?v=2.8.6" defer></script>
+  <script src="js/modules/movie-modal.js?v=2.8.6" defer></script>
+  <script src="js/modules/video-player.js?v=2.8.6" defer></script>
+  <script src="js/modules/search-filter.js?v=2.8.6" defer></script>
+  <script src="js/modules/user-cloud-sync.js?v=2.8.6" defer></script>
+  <script src="js/bootstrap.js?v=2.8.6" defer></script>
+  <script src="js/movies-catalog.js?v=2.8.6" defer></script>
 </body>
 </html>

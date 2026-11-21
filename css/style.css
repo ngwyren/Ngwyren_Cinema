@@ -11470,14 +11470,13 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95) !important;
   }
 
-  /* Tinh gọn Hero Card trên mobile: chỉ hiển thị tên phim + nút xem + nút lưu theo yêu cầu người dùng */
+  /* Tinh gọn Hero Card trên mobile: chỉ hiển thị tên phim + nút xem + nút lưu + chấm điều hướng nhỏ */
   .cinema-hero-sub,
   .cinema-genre-pills,
   .cinema-hero-desc,
   .cinema-meta-badges,
   .ps5-hero-saves-strip,
   .cinema-ps5-saves-row,
-  .cinema-hero-thumbnails,
   .badge-tmdb,
   .badge-res {
     display: none !important;
@@ -12850,6 +12849,594 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     scroll-behavior: auto !important;
   }
 }
+
+/* ==========================================================================
+   v2.8.6: AIRY DESKTOP SPACING, HERO CIRCULAR DOTS PAGER, DEDICATED SEARCH
+   PAGE & IPHONE LIQUID MOBILE DOCK ANIMATION
+   ========================================================================== */
+
+/* 1. Thoáng đãng bố cục Desktop & cân đối tỷ lệ chữ trong Hero Banner */
+@media (min-width: 920px) {
+  .vision-window {
+    padding: 22px 32px 96px !important;
+    gap: 26px !important;
+  }
+
+  .cinema-home-layout,
+  .cinema-category-layout,
+  .cinema-dedicated-search-layout {
+    gap: 34px !important;
+  }
+
+  .vision-shelf-section {
+    gap: 14px !important;
+  }
+
+  .vision-shelf-header {
+    margin-bottom: 4px !important;
+    padding: 0 2px !important;
+  }
+
+  .vision-cards-grid-4 {
+    padding: 6px 0 18px 0 !important;
+    gap: 22px !important;
+  }
+
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: clamp(460px, 54vh, 550px) !important;
+    min-height: 460px !important;
+    max-height: 550px !important;
+  }
+
+  .cinema-hero-content {
+    padding: 38px 46px 46px !important;
+  }
+
+  .cinema-hero-info {
+    max-width: 600px !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(1.85rem, 2.45vw, 2.55rem) !important;
+    line-height: 1.14 !important;
+    letter-spacing: 0.025em !important;
+  }
+
+  .cinema-hero-sub {
+    font-size: 0.94rem !important;
+    margin-top: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .cinema-meta-badges {
+    margin-bottom: 10px !important;
+  }
+
+  .cinema-genre-pills {
+    margin-bottom: 12px !important;
+  }
+
+  .cinema-hero-desc {
+    font-size: 0.9rem !important;
+    line-height: 1.56 !important;
+    max-width: 540px !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    margin-bottom: 18px !important;
+  }
+}
+
+@media (min-width: 1181px) {
+  .vision-window {
+    padding: 26px clamp(38px, 3.6vw, 60px) 110px !important;
+    gap: 30px !important;
+  }
+
+  .vision-cards-grid-4 {
+    gap: 24px !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: clamp(500px, 56vh, 600px) !important;
+    min-height: 500px !important;
+    max-height: 600px !important;
+  }
+
+  .cinema-hero-content {
+    padding: 46px 56px 52px !important;
+  }
+
+  .cinema-hero-info {
+    max-width: 680px !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(2.05rem, 2.65vw, 2.95rem) !important;
+    line-height: 1.14 !important;
+  }
+
+  .cinema-hero-desc {
+    max-width: 600px !important;
+    font-size: 0.96rem !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    margin-bottom: 20px !important;
+  }
+
+  .cinema-play-glow-btn,
+  .cinema-fav-circle-btn {
+    width: 54px !important;
+    height: 54px !important;
+    min-width: 54px !important;
+    max-width: 54px !important;
+    font-size: 1.28rem !important;
+  }
+}
+
+@media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
+  .cinema-showcase-hero,
+  .vision-hero-banner {
+    height: clamp(540px, 58vh, 650px) !important;
+    min-height: 540px !important;
+    max-height: 650px !important;
+  }
+
+  .cinema-hero-content {
+    padding: 54px 64px 58px !important;
+  }
+
+  .cinema-hero-info {
+    max-width: 740px !important;
+  }
+
+  .cinema-hero-title {
+    font-size: clamp(2.3rem, 2.85vw, 3.35rem) !important;
+    line-height: 1.13 !important;
+  }
+
+  .cinema-hero-desc {
+    max-width: 660px !important;
+    font-size: 1.02rem !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    margin-bottom: 22px !important;
+  }
+
+  .cinema-play-glow-btn,
+  .cinema-fav-circle-btn {
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    font-size: 1.38rem !important;
+  }
+}
+
+@media (min-width: 2400px) {
+  .cinema-hero-title {
+    font-size: clamp(2.7rem, 3.1vw, 3.9rem) !important;
+  }
+}
+
+/* 2. Hero Banner Bottom Pager: Mũi tên nhỏ qua lại & Chấm tròn 3D (Thay thế hoàn toàn 8 thẻ ảnh thumbnail) */
+.cinema-hero-thumbnails.cinema-hero-pager {
+  position: absolute !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: 20px !important;
+  transform: translateX(-50%) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(14, 16, 22, 0.42) !important;
+  backdrop-filter: blur(12px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  z-index: 6 !important;
+  width: auto !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+.hero-pager-arrow {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  max-width: 24px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  background: radial-gradient(circle at 50% 35%, rgba(42, 46, 56, 0.92) 0%, rgba(22, 25, 32, 0.96) 100%) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.65rem !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    0 2px 6px rgba(0, 0, 0, 0.45) !important;
+  transition:
+    transform 0.18s var(--ease-clean),
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease !important;
+}
+
+.hero-pager-arrow:hover {
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.48) !important;
+  transform: scale(1.1) !important;
+}
+
+.hero-pager-arrow:active {
+  transform: scale(0.92) !important;
+}
+
+.hero-pager-dots {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+
+.hero-pager-dot {
+  width: 11px !important;
+  height: 11px !important;
+  min-width: 11px !important;
+  max-width: 11px !important;
+  min-height: 11px !important;
+  max-height: 11px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  border: 1.5px solid rgba(135, 142, 158, 0.45) !important;
+  background: linear-gradient(180deg, rgba(24, 26, 33, 0.96) 0%, rgba(64, 69, 82, 0.94) 100%) !important;
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.8),
+    inset 0 -1px 1.5px rgba(255, 255, 255, 0.22),
+    0 1px 4px rgba(0, 0, 0, 0.5) !important;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1.3, 0.36, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+.hero-pager-dot:hover {
+  border-color: rgba(255, 255, 255, 0.75) !important;
+  transform: scale(1.14) !important;
+}
+
+.hero-pager-dot.active {
+  background: radial-gradient(circle at 50% 35%, #ffffff 0%, #e4ecf7 70%, #b8c4d9 100%) !important;
+  border-color: #ffffff !important;
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.85),
+    0 2px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.95) !important;
+  transform: scale(1.22) !important;
+}
+
+@media (max-width: 768px) {
+  .cinema-hero-thumbnails.cinema-hero-pager {
+    left: auto !important;
+    right: 14px !important;
+    bottom: 18px !important;
+    transform: none !important;
+    gap: 7px !important;
+    padding: 4px 8px !important;
+  }
+
+  .hero-pager-arrow {
+    width: 21px !important;
+    height: 21px !important;
+    min-width: 21px !important;
+    max-width: 21px !important;
+    font-size: 0.56rem !important;
+  }
+
+  .hero-pager-dots {
+    gap: 6px !important;
+  }
+
+  .hero-pager-dot {
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px !important;
+    max-width: 8px !important;
+    min-height: 8px !important;
+    max-height: 8px !important;
+  }
+}
+
+/* 3. Hiệu ứng iPhone iOS Liquid Dock ở các icon tab bên dưới điện thoại */
+.liquid-mobile-dock {
+  position: fixed !important;
+  overflow: hidden !important;
+}
+
+.mobile-dock-glider {
+  position: absolute !important;
+  top: 5px !important;
+  bottom: 5px !important;
+  left: 6px !important;
+  width: calc((100% - 12px) / 5) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 255, 255, 0.14) 100%) !important;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.38) !important;
+  transform: translate3d(calc(var(--mobile-dock-idx, 0) * 100%), 0, 0) !important;
+  transition: transform 0.42s cubic-bezier(0.22, 1.25, 0.36, 1) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn {
+  position: relative !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn.active {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Thanh sáng nhỏ bên dưới icon tab đang chọn chuẩn kiểu iPhone iOS */
+.liquid-mobile-dock .dock-tab-btn::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 4px !important;
+  width: 14px !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  box-shadow:
+    0 0 8px rgba(255, 255, 255, 0.95),
+    0 0 14px rgba(255, 255, 255, 0.55) !important;
+  transform: translateX(-50%) scaleX(0.25) !important;
+  opacity: 0 !important;
+  transition:
+    transform 0.36s cubic-bezier(0.22, 1.35, 0.36, 1),
+    opacity 0.22s ease !important;
+  pointer-events: none !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn.active::after {
+  transform: translateX(-50%) scaleX(1) !important;
+  opacity: 1 !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn i,
+.liquid-mobile-dock .dock-tab-btn .anime-konoha-icon {
+  transition:
+    transform 0.34s cubic-bezier(0.22, 1.35, 0.36, 1),
+    color 0.2s ease,
+    opacity 0.2s ease !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn.active i,
+.liquid-mobile-dock .dock-tab-btn.active .anime-konoha-icon {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  transform: translateY(-2px) scale(1.12) !important;
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.45)) !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn.ios-tab-bounce i,
+.liquid-mobile-dock .dock-tab-btn.ios-tab-bounce .anime-konoha-icon {
+  animation: iosDockIconBounce 0.44s cubic-bezier(0.22, 1.35, 0.36, 1) both !important;
+}
+
+@keyframes iosDockIconBounce {
+  0% {
+    transform: translateY(0) scale(0.88);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.22);
+  }
+  100% {
+    transform: translateY(-2px) scale(1.12);
+  }
+}
+
+/* 4. Trang Tìm Kiếm Riêng Biệt (Dedicated Search Page) */
+.cinema-dedicated-search-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+
+.dedicated-search-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+  padding: 32px 24px 26px;
+  border-radius: 26px;
+  background: linear-gradient(165deg, rgba(26, 30, 42, 0.72) 0%, rgba(14, 16, 24, 0.85) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.22),
+    0 18px 44px rgba(0, 0, 0, 0.45);
+}
+
+.dedicated-search-title {
+  font-size: clamp(1.5rem, 2.4vw, 2.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.dedicated-search-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 6px 0 0;
+}
+
+.dedicated-search-bar-wrap {
+  width: 100%;
+  max-width: 680px;
+}
+
+.dedicated-search-capsule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 52px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: rgba(10, 12, 18, 0.78);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.55),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dedicated-search-capsule:focus-within {
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.12),
+    0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.dedicated-search-icon {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.dedicated-search-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+.dedicated-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.dedicated-search-clear {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+}
+
+.dedicated-search-clear.visible {
+  display: inline-flex;
+}
+
+.dedicated-search-chips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  max-width: 820px;
+}
+
+.dedicated-search-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.18s var(--ease-clean),
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.dedicated-search-chip:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.dedicated-search-chip.active {
+  background: #ffffff;
+  color: #0b0d13;
+  border-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.28);
+}
+
+@media (max-width: 768px) {
+  .dedicated-search-hero {
+    padding: 20px 14px 18px;
+    border-radius: 20px;
+    gap: 14px;
+  }
+
+  .dedicated-search-capsule {
+    height: 46px;
+    padding: 0 14px;
+  }
+
+  .dedicated-search-input {
+    font-size: 0.92rem;
+  }
+
+  .dedicated-search-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .dedicated-search-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dedicated-search-chip {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 0.76rem;
+  }
+}
+
 
 
 
