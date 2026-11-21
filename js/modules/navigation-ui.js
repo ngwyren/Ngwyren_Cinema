@@ -2107,9 +2107,7 @@
     );
   },
 
-  renderHeroHTML(customMovie = null, customKicker = "Thịnh Hành") {
-    const heroList = this.getActiveHeroMovies();
-    const movie = customMovie || heroList[this.heroIndex % heroList.length] || heroList[0] || this.service.movies[0];
+  renderHeroInfoInnerHTML(movie) {
     if (!movie) return "";
     const inMyList = this.isInMyList(movie);
     const cleanSynopsis = (movie.synopsis || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -2120,7 +2118,40 @@
     const primaryPlayLabel = saveSlot ? `Tiếp Tục ${saveSlot.epLabel}` : "Xem Ngay";
     const statusText = movie.type === "series" ? (movie.episodeCurrent || "Phim Bộ") : (movie.duration || "Full");
 
-    // Danh sách thumbnail phim cho dải trượt góc dưới bên phải - LẤY 100% TỪ DANH MỤC HIỆN TẠI (ĐÚNG PHIM - ĐÚNG CHỖ)
+    return `
+      <h1 class="cinema-hero-title">${movie.title}</h1>
+      ${movie.originTitle && movie.originTitle.toLowerCase() !== (movie.title || "").toLowerCase() ? `<div class="cinema-hero-sub">${movie.originTitle}</div>` : ""}
+
+      <div class="cinema-meta-badges">
+        <span class="cinema-badge badge-imdb"><i class="fab fa-imdb"></i> ${imdbScore}</span>
+        ${(movie.quality === "4K" || movie.has4k) ? `<span class="cinema-badge badge-res badge-4k">4K</span>` : ""}
+        <span class="cinema-badge badge-year">${movie.year || 2026}</span>
+        <span class="cinema-badge badge-status">${statusText}</span>
+      </div>
+
+      ${Array.isArray(movie.genres) && movie.genres.length > 0 ? `<div class="cinema-genre-pills">${movie.genres.slice(0, 2).map((g) => `<span class="cinema-genre-pill">${g}</span>`).join("")}</div>` : ""}
+
+      ${this.renderPs5HeroSavesHTML(movie)}
+
+      <p class="cinema-hero-desc">${cleanSynopsis}</p>
+
+      <div class="cinema-hero-actions">
+        <button class="cinema-play-glow-btn" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})" title="${primaryPlayLabel}">
+          <i class="fas fa-play"></i>
+        </button>
+        <button class="cinema-fav-circle-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu Phim" : "Lưu Phim Yêu Thích"}">
+          <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
+        </button>
+      </div>
+    `;
+  },
+
+  renderHeroHTML(customMovie = null, customKicker = "Thịnh Hành") {
+    const heroList = this.getActiveHeroMovies();
+    const movie = customMovie || heroList[this.heroIndex % heroList.length] || heroList[0] || this.service.movies[0];
+    if (!movie) return "";
+
+    // Danh sách slide phim cho cụm điều hướng bên dưới - LẤY 100% TỪ DANH MỤC HIỆN TẠI (ĐÚNG PHIM - ĐÚNG CHỖ)
     const thumbMovies = heroList.slice(0, 8);
     const mainBackdrop = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
     const mainPosterFallback = this.getMoviePoster(movie) || mainBackdrop;
@@ -2133,30 +2164,7 @@
 
         <div class="cinema-hero-content">
           <div class="cinema-hero-info">
-            <h1 class="cinema-hero-title">${movie.title}</h1>
-            ${movie.originTitle && movie.originTitle.toLowerCase() !== (movie.title || "").toLowerCase() ? `<div class="cinema-hero-sub">${movie.originTitle}</div>` : ""}
-
-            <div class="cinema-meta-badges">
-              <span class="cinema-badge badge-imdb"><i class="fab fa-imdb"></i> ${imdbScore}</span>
-              ${(movie.quality === "4K" || movie.has4k) ? `<span class="cinema-badge badge-res badge-4k">4K</span>` : ""}
-              <span class="cinema-badge badge-year">${movie.year || 2026}</span>
-              <span class="cinema-badge badge-status">${statusText}</span>
-            </div>
-
-            ${Array.isArray(movie.genres) && movie.genres.length > 0 ? `<div class="cinema-genre-pills">${movie.genres.slice(0, 2).map((g) => `<span class="cinema-genre-pill">${g}</span>`).join("")}</div>` : ""}
-
-            ${this.renderPs5HeroSavesHTML(movie)}
-
-            <p class="cinema-hero-desc">${cleanSynopsis}</p>
-
-            <div class="cinema-hero-actions">
-              <button class="cinema-play-glow-btn" onclick="app.openMovieModal('${movie.slug}', true, ${primaryPlayEp})" title="${primaryPlayLabel}">
-                <i class="fas fa-play"></i>
-              </button>
-              <button class="cinema-fav-circle-btn ${inMyList ? "favorited" : ""}" onclick="app.toggleMyList('${movie.slug}', event)" title="${inMyList ? "Đã Lưu Phim" : "Lưu Phim Yêu Thích"}">
-                <i class="${inMyList ? "fas fa-star" : "far fa-star"}"></i>
-              </button>
-            </div>
+            ${this.renderHeroInfoInnerHTML(movie)}
           </div>
 
           <div class="cinema-hero-thumbnails cinema-hero-pager" aria-label="Điều hướng slide phim nổi bật">
@@ -2484,14 +2492,62 @@
   setHeroSlide(index) {
     const heroList = this.getActiveHeroMovies();
     if (!heroList || heroList.length === 0) return;
-    this.heroIndex = ((index % heroList.length) + heroList.length) % heroList.length;
+    const nextIdx = ((index % heroList.length) + heroList.length) % heroList.length;
+    this.heroIndex = nextIdx;
     document.querySelectorAll(".is-hero-previewing").forEach((el) => el.classList.remove("is-hero-previewing"));
     const heroEl = document.getElementById("heroShowcase");
-    if (heroEl) {
-      // renderHeroHTML đã gắn sẵn class ps5-hero-morph-anim trên phần tử mới -> không xóa/gắn lại sau 1 frame để tránh chớp màn hình
-      heroEl.outerHTML = this.renderHeroHTML();
-      this.attachHeroSwipeHandlers();
+    const movie = heroList[nextIdx] || heroList[0];
+    if (!heroEl || !movie) return;
+
+    const infoEl = typeof heroEl.querySelector === "function" ? heroEl.querySelector(".cinema-hero-info") : null;
+    const overlayEl = typeof heroEl.querySelector === "function" ? heroEl.querySelector(".vision-hero-overlay") : null;
+
+    // Nếu DOM đầy đủ trên trình duyệt: Crossfade mượt 120fps ngay tại chỗ, giữ nguyên thanh chấm tròn không bị giật/tạo lại DOM
+    if (infoEl && overlayEl && typeof document.createElement === "function") {
+      heroEl.setAttribute("data-hero-slug", movie.slug);
+      const mainBackdrop = this.getMovieBackdrop(movie) || this.getMoviePoster(movie);
+      const mainPosterFallback = this.getMoviePoster(movie) || mainBackdrop;
+
+      const oldImgs = Array.from(heroEl.querySelectorAll(".vision-hero-bg"));
+      const newImg = document.createElement("img");
+      newImg.className = "vision-hero-bg hero-bg-crossfade-in";
+      newImg.src = mainBackdrop;
+      newImg.alt = movie.title || "";
+      newImg.decoding = "async";
+      newImg.onerror = function () {
+        this.onerror = null;
+        this.src = mainPosterFallback;
+      };
+      heroEl.insertBefore(newImg, overlayEl);
+
+      setTimeout(() => {
+        oldImgs.forEach((img) => {
+          if (img && img.parentNode === heroEl) {
+            heroEl.removeChild(img);
+          }
+        });
+      }, 540);
+
+      infoEl.classList.remove("hero-info-smooth-glide");
+      infoEl.innerHTML = this.renderHeroInfoInnerHTML(movie);
+      void infoEl.offsetWidth;
+      infoEl.classList.add("hero-info-smooth-glide");
+
+      heroEl.querySelectorAll(".hero-pager-dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === nextIdx);
+      });
+
+      // Preload trước ảnh nền của slide kế tiếp để lần bấm tiếp theo phản hồi 0ms
+      const upcoming = heroList[(nextIdx + 1) % heroList.length];
+      if (upcoming && typeof Image !== "undefined") {
+        const pre = new Image();
+        pre.src = this.getMovieBackdrop(upcoming) || this.getMoviePoster(upcoming);
+      }
+      return;
     }
+
+    heroEl.outerHTML = this.renderHeroHTML();
+    this.attachHeroSwipeHandlers();
   },
 
   scrollTrack(trackId, direction) {

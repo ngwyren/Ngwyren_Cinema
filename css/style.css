@@ -13453,6 +13453,138 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
+/* ==========================================================================
+   v2.8.8: ULTRA-SMOOTH CARD-TO-CARD MOTION & ZERO FLASH/BLINK ON MOVIE CARDS
+   ========================================================================== */
+
+/* 1. Loại bỏ hoàn toàn hiệu ứng nhấp nháy vệt sáng chéo (::before) và viền trắng chói khi chạm/rê chuột vào thẻ phim */
+.vision-feature-card::before,
+.vision-feature-card::after,
+.vision-feature-card:hover::before,
+.vision-feature-card:focus-visible::before,
+.vision-feature-card:active::before,
+.movie-card .movie-poster-wrap::before,
+.movie-card .movie-poster-wrap::after,
+.continue-shelf-card::before,
+.continue-shelf-card::after {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+.vision-feature-card,
+.movie-card,
+.continue-shelf-card,
+.vision-trailer-card,
+.schedule-card-glass {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  will-change: transform;
+  transition:
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.28s ease !important;
+}
+
+@media (hover: hover) {
+  .vision-feature-card:hover,
+  .vision-feature-card:focus-visible,
+  .vision-feature-card.is-hero-previewing {
+    transform: translate3d(0, -6px, 0) scale(1.022) !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.52) !important;
+    z-index: 10 !important;
+  }
+
+  .vision-feature-card:hover .vision-card-play-white {
+    transform: scale(1.08) !important;
+    background: #ffffff !important;
+    color: #0b0c10 !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.38) !important;
+  }
+
+  .movie-card:hover,
+  .movie-card:focus-visible {
+    transform: translate3d(0, -6px, 0) scale(1.022) !important;
+    z-index: 6 !important;
+  }
+
+  .movie-card:hover .movie-poster-wrap {
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .continue-shelf-card:hover,
+  .continue-shelf-card:focus-visible {
+    transform: translate3d(0, -4px, 0) scale(1.015) !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.28) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45) !important;
+    z-index: 5 !important;
+  }
+}
+
+/* Chạm/nhấn vào thẻ phim êm mượt, không giật cục và không chớp sáng */
+.vision-feature-card:active,
+.movie-card:active,
+.continue-shelf-card:active,
+.vision-trailer-card:active,
+.schedule-card-glass:active {
+  transform: translate3d(0, -1px, 0) scale(0.986) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45) !important;
+  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* 2. Chuyển động Crossfade 120fps siêu mượt giữa các slide Hero Banner */
+.vision-hero-bg.hero-bg-crossfade-in {
+  animation: heroBgSmoothCrossfade 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+@keyframes heroBgSmoothCrossfade {
+  0% {
+    opacity: 0;
+    transform: scale(1.035) translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+.cinema-hero-info.hero-info-smooth-glide .cinema-hero-title {
+  animation: heroInfoSmoothSlide 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.01s both !important;
+}
+
+.cinema-hero-info.hero-info-smooth-glide .cinema-hero-sub,
+.cinema-hero-info.hero-info-smooth-glide .cinema-meta-badges,
+.cinema-hero-info.hero-info-smooth-glide .cinema-genre-pills {
+  animation: heroInfoSmoothSlide 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both !important;
+}
+
+.cinema-hero-info.hero-info-smooth-glide .cinema-hero-desc,
+.cinema-hero-info.hero-info-smooth-glide .ps5-hero-saves-strip {
+  animation: heroInfoSmoothSlide 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.07s both !important;
+}
+
+.cinema-hero-info.hero-info-smooth-glide .cinema-hero-actions {
+  animation: heroInfoSmoothSlide 0.44s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both !important;
+}
+
+@keyframes heroInfoSmoothSlide {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+
 
 
 
