@@ -3067,7 +3067,7 @@ const PHIMMOI_SEED_MOVIES = [
     title: "Thanh Gươm Diệt Quỷ: Kỹ Viện Trấn",
     originTitle: "Demon Slayer (Season 3) (Entertainment District Arc)",
     poster: "https://phimimg.com/upload/vod/20250427-1/ba01d82e006a7d9c2fb3aca49a0a8b1e.jpg",
-    backdrop: "https://phimimg.com/upload/vod/20240302-1/495167573eb3f65d09652933e64327c0.jpg",
+    backdrop: "https://phimimg.com/upload/vod/20250427-1/ba01d82e006a7d9c2fb3aca49a0a8b1e.jpg",
     type: "series",
     sectionTags: ["de-cu", "anime", "phim-bo"],
     quality: "1080",

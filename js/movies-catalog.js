@@ -21842,7 +21842,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Tuổi Trẻ Ả Rập (Phần 3)",
     "originTitle": "Takki (Season 3)",
     "poster": "https://phimimg.com/uploads/movies/20261002/tuoi-tre-a-rap-phan-3-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261002/tuoi-tre-a-rap-phan-3-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261002/tuoi-tre-a-rap-phan-3-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -22200,7 +22200,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Cánh Buồm Đen (Phần 3)",
     "originTitle": "Black Sails (Season 3)",
     "poster": "https://phimimg.com/uploads/movies/20260818/canh-buom-den-phan-3-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20260818/canh-buom-den-phan-3-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20260818/canh-buom-den-phan-3-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -22550,7 +22550,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Drew Binsky Lữ Khách Bốn Phương Trời (Phần 2)",
     "originTitle": "Drew Binsky: Ultimate Traveler (Season 2)",
     "poster": "https://phimimg.com/uploads/movies/20260923/drew-binsky-lu-khach-bon-phuong-troi-phan-2-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20260923/drew-binsky-lu-khach-bon-phuong-troi-phan-2-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20260923/drew-binsky-lu-khach-bon-phuong-troi-phan-2-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -24926,7 +24926,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Medusa (Phần 1)​",
     "originTitle": "Medusa (Season 1)",
     "poster": "https://phimimg.com/upload/vod/20250307-1/a1cebb5906b74751b8036a3c2df2a20f.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250307-1/a6de8c188a1810a6f36874f141086147.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250307-1/a1cebb5906b74751b8036a3c2df2a20f.jpg",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -29892,7 +29892,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Gạo Nếp Gạo Tẻ (Phần 2)",
     "originTitle": "Sticky Rice And Plain Rice (Season 2)",
     "poster": "https://phimimg.com/upload/vod/20241113-1/be2d65b4098dcf2d0a1f631ad319f9a1.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20241113-1/3f39bb4003b2092c7c6aea6e0393d3a7.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20241113-1/be2d65b4098dcf2d0a1f631ad319f9a1.jpg",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -36514,7 +36514,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Chị Mẹ Học Yêu (Phần 1)",
     "originTitle": "Honey We Need To Talk (Season 1)",
     "poster": "https://phimimg.com/upload/vod/20240916-1/46bbf2ae7ad1d866aef89b5e519ff46e.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20240916-1/4faf7bc31898b62b18dfa70bf0d063e9.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20240916-1/46bbf2ae7ad1d866aef89b5e519ff46e.jpg",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -39393,7 +39393,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Ông Trùm Giang Hồ (Phần 1)",
     "originTitle": "Tulsa King (Season 1)",
     "poster": "https://phimimg.com/uploads/movies/20261103/ong-trum-giang-ho-phan-1-poster.webp",
-    "backdrop": "https://phimimg.com/upload/vod/20250226-1/9d88c3455ebe45fb1b496bf138b2d42d.jpg",
+    "backdrop": "https://phimimg.com/uploads/movies/20261103/ong-trum-giang-ho-phan-1-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -46620,7 +46620,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Trận Chiến Xuyên Vũ Trụ (Phần 2)",
     "originTitle": "Stargate Atlantis (Season 2)",
     "poster": "https://phimimg.com/uploads/movies/20261031/tran-chien-xuyen-vu-tru-phan-2-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261031/tran-chien-xuyen-vu-tru-phan-2-poster.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261031/tran-chien-xuyen-vu-tru-phan-2-thumb.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -47371,7 +47371,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Trận Chiến Xuyên Vũ Trụ (Phần 4)",
     "originTitle": "Stargate Atlantis (Season 4)",
     "poster": "https://phimimg.com/uploads/movies/20261031/tran-chien-xuyen-vu-tru-phan-4-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261031/tran-chien-xuyen-vu-tru-phan-4-poster.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261031/tran-chien-xuyen-vu-tru-phan-4-thumb.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -53706,7 +53706,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Chạy Án (Phần 2)",
     "originTitle": "Chay An (Season 2)",
     "poster": "https://phimimg.com/upload/vod/20250604-1/b1d10d5127107259dce4b987463111d9.gif",
-    "backdrop": "https://phimimg.com/upload/vod/20250604-1/2f769bf85f18a81a33cf95bce18fe5d5.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250604-1/b1d10d5127107259dce4b987463111d9.gif",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -69483,7 +69483,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Chiến Tranh Giữa Các Vì Sao: Andor (Phần 2)",
     "originTitle": "Star Wars: Andor (Season 2)",
     "poster": "https://phimimg.com/upload/vod/20250427-1/7acf0b50e6f9372e12ab6fc335cbd4af.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250427-1/52ddf64f9ab170c18b832b4b1114fa3d.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250427-1/7acf0b50e6f9372e12ab6fc335cbd4af.jpg",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -69793,7 +69793,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Chiến Tranh Giữa Các Vì Sao: Tầm Nhìn (Phần 3)",
     "originTitle": "Star Wars: Visions (Season 3)",
     "poster": "https://phimimg.com/uploads/movies/20260719/chien-tranh-giua-cac-vi-sao-tam-nhin-phan-3-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20260719/chien-tranh-giua-cac-vi-sao-tam-nhin-phan-3-poster.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20260719/chien-tranh-giua-cac-vi-sao-tam-nhin-phan-3-thumb.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -70201,7 +70201,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Star Wars: Skywalker Trỗi Dậy",
     "originTitle": "Star Wars: The Rise of Skywalker",
     "poster": "https://phimimg.com/upload/vod/20231018-1/d962be812b5cf55e3466bcdbbaa70c81.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20231018-1/779f3b098ced2d05b48f4fc3c4293937.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20231018-1/d962be812b5cf55e3466bcdbbaa70c81.jpg",
     "type": "single",
     "sectionTags": [
       "moi-cap-nhat",
@@ -73880,7 +73880,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Làng Tình Yêu (Phần 1)",
     "originTitle": "Love Village (Season 1)",
     "poster": "https://phimimg.com/uploads/movies/20261021/lang-tinh-yeu-phan-1-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261021/lang-tinh-yeu-phan-1-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261021/lang-tinh-yeu-phan-1-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -73986,7 +73986,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Làng Tình Yêu (Phần 3)",
     "originTitle": "Love Village (Season 3)",
     "poster": "https://phimimg.com/uploads/movies/20261021/lang-tinh-yeu-phan-3-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261021/lang-tinh-yeu-phan-3-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261021/lang-tinh-yeu-phan-3-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -77406,7 +77406,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Những Người Mẹ Của Bầy Cánh Cụt (Phần 2)",
     "originTitle": "The Mothers Of Penguins (Season 2)",
     "poster": "https://phimimg.com/uploads/movies/20261022/nhung-nguoi-me-cua-bay-canh-cut-phan-2-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261022/nhung-nguoi-me-cua-bay-canh-cut-phan-2-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261022/nhung-nguoi-me-cua-bay-canh-cut-phan-2-poster.webp",
     "type": "series",
     "sectionTags": [
       "moi-cap-nhat",
@@ -78797,7 +78797,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Cậu Bé Mất Tích: Chuyện Năm 85 (Phần 1)",
     "originTitle": "Stranger Things: Tales From '85 (Season 1)",
     "poster": "https://phimimg.com/upload/vod/20260428-1/420d39137d52c9438683e550bd8fd629.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20260428-1/b13c9349c92630c22e6d5b14c42882fd.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20260428-1/420d39137d52c9438683e550bd8fd629.jpg",
     "type": "series",
     "sectionTags": [
       "netflix",
@@ -81847,7 +81847,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20250427-1/f6a0dabb17cd90e280bf8543b9089d8f.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20240514-1/067d03e151d819be3d3d60f2b1eaea42.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250427-1/f6a0dabb17cd90e280bf8543b9089d8f.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=rq1tllAUS1I",
     "synopsis": "Tanjiro đến gặp Nham Trụ Himejima Gyoumei, người sẽ huấn luyện cậu chuẩn bị cho các trận chiến sắp tới. Quá trình đào tạo để trở thành Trụ Cột tương lai của Quân Đoàn Diệt Quỷ vô cùng căng thẳng và khắt khe. Có được...",
     "sectionTags": [
@@ -82051,7 +82051,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20250427-1/ba01d82e006a7d9c2fb3aca49a0a8b1e.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20240302-1/495167573eb3f65d09652933e64327c0.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250427-1/ba01d82e006a7d9c2fb3aca49a0a8b1e.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=a9tq0aS5Zu8",
     "synopsis": "Nhiều phụ nữ ở phố đèn đỏ Yoshiwara, nơi có nhiều quỷ dữ và tội phạm hoành hành nhất, mất tích một cách bí ẩn. Lần này, Tanjirou, Zenitsu và Inosuke với sự hỗ trợ của Âm Trụ sẽ đến Yoshiwara để bảo vệ con người và...",
     "sectionTags": [
@@ -83260,7 +83260,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20250102-1/9393d319957a2cf6e6aa962da1432766.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250102-1/1bdb885de0d372dd58eeb9bf1f22d85b.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250102-1/9393d319957a2cf6e6aa962da1432766.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=Auw1Qy5k5nM",
     "synopsis": "Năm 2018, Nhật Bản đã để thua top 16 tại World Cup, để chiêu mộ những “mũi tấn công” có thể phá vỡ thế bế tắc này, Liên đoàn bóng đá Nhật Bản đã quyết định áp dụng một kế hoạch táo bạo: triệu tập 300 học sinh trung...",
     "sectionTags": [
@@ -84902,7 +84902,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/uploads/movies/20261004/the-gioi-phep-thuat-phan-1-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261004/the-gioi-phep-thuat-phan-1-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261004/the-gioi-phep-thuat-phan-1-poster.webp",
     "trailerUrl": "https://www.youtube.com/watch?v=QwNWY6z93O4",
     "synopsis": "Hai đứa trẻ mồ côi được nuôi dạy như anh em trở thành đối thủ trong cuộc chiến tranh giành ngôi vị Ma pháp Vương – thứ hạng phép thuật cao nhất nơi đây.",
     "sectionTags": [
@@ -87185,7 +87185,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20250406-1/7c259f8434916aab21ba0cd7c3a9d8c9.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250406-1/6533bef16c005cc0b3c5370b64ea7b7c.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250406-1/7c259f8434916aab21ba0cd7c3a9d8c9.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=pT1oq-wIA-I",
     "synopsis": "Bộ Phim Hội Pháp Sư có nội dung chính về Lucy, cô gái trẻ 17 tuổi với mong ước trở thành một pháp sư đầy quyền năng. Trên đường phiêu lưu thực hiện ước mơ, Lucy tình cờ gặp được một bộ đôi quái gở - Natsu và Happy...",
     "sectionTags": [
@@ -92664,7 +92664,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20250515-1/72c8cf098055aac784ca17519e96749e.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250515-1/b719842835775113fc6e0d93f96467e1.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250515-1/72c8cf098055aac784ca17519e96749e.jpg",
     "synopsis": "Sasaki là một nhân viên văn phòng trung niên sống tại Nhật Bản. Cảm thấy kiệt sức và mệt mỏi bởi môi trường công sở tẻ nhạt, anh tìm đến một cửa hàng thú cưng để tìm kiếm một người bạn đồng hành mới. Tại đây, anh chú...",
     "sectionTags": [
       "anime",
@@ -92733,7 +92733,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/uploads/movies/20261006/khach-san-sat-thu-phan-1-poster.webp",
-    "backdrop": "https://phimimg.com/upload/vod/20250711-1/111b2b7653d7ff5fa530f96d73fb84a0.jpg",
+    "backdrop": "https://phimimg.com/uploads/movies/20261006/khach-san-sat-thu-phan-1-poster.webp",
     "trailerUrl": "https://www.youtube.com/watch?v=zfthL1m2GFg",
     "synopsis": "Các khách sạn tốt nhất phải đáp ứng một số tiêu chuẩn nhất định, bao gồm ẩm thực hảo hạng, các phương pháp thư giãn và giải trí. Tất nhiên, chúng cũng cần có kho vũ khí tốt nhất, cách làm giả danh tính đáng tin cậy và...",
     "sectionTags": [
@@ -94155,7 +94155,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/uploads/movies/20261002/chuyen-sinh-thanh-kiem-phan-1-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20261002/chuyen-sinh-thanh-kiem-phan-1-thumb.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20261002/chuyen-sinh-thanh-kiem-phan-1-poster.webp",
     "trailerUrl": "https://www.youtube.com/watch?v=nY7vu0EKWZI",
     "synopsis": "Được tái sinh như một vũ khí có tri giác với ký ức về tiền kiếp, nhưng không phải tên của anh ta, một thanh kiếm ma thuật cứu một nữ thú nhân trẻ khỏi cuộc sống nô lệ. Fran, cô gái tai mèo, trở thành chủ nhân của anh...",
     "sectionTags": [
@@ -97194,7 +97194,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20240924-1/465a823dd9558fd0bac53582f6dc8836.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20240924-1/54f30d38018df0a6838e31d6e515d9d1.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20240924-1/465a823dd9558fd0bac53582f6dc8836.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=iXdEeRBh9Zk",
     "synopsis": "Sau trận chiến thảm khốc tàn phá Eternia, Teela và một đồng minh bất đắc dĩ phải ngăn vũ trụ sụp đổ trong phần sau của phim kinh điển thập niên 80 này.",
     "sectionTags": [
@@ -99464,7 +99464,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/upload/vod/20241206-1/87eb86c2fb5e73f3738f460dddded6c9.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20241206-1/516980012bc4fe5c62c89c53c1984351.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20241206-1/87eb86c2fb5e73f3738f460dddded6c9.jpg",
     "trailerUrl": "https://www.youtube.com/watch?v=gH_pYLYjXng",
     "synopsis": "Các đặc vụ Sam và Kit vi vu khắp thế giới cùng kỹ năng trinh thám, kiến thức khoa học và thiết bị hay ho để phá giải vô số bí ẩn của vương quốc động vật.",
     "sectionTags": [
@@ -99532,7 +99532,7 @@ window.NGWYREN_FULL_CATALOG=[
       "Anime Studio"
     ],
     "poster": "https://phimimg.com/uploads/movies/20260901/tham-tu-dong-vat-phan-3-poster.webp",
-    "backdrop": "https://phimimg.com/uploads/movies/20260901/tham-tu-dong-vat-phan-3-poster.webp",
+    "backdrop": "https://phimimg.com/uploads/movies/20260901/tham-tu-dong-vat-phan-3-thumb.webp",
     "trailerUrl": "https://www.youtube.com/watch?v=gH_pYLYjXng",
     "synopsis": "Các đặc vụ Sam và Kit vi vu khắp thế giới cùng kỹ năng trinh thám, kiến thức khoa học và thiết bị hay ho để phá giải vô số bí ẩn của vương quốc động vật.",
     "sectionTags": [
@@ -100320,7 +100320,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Sinh Vật Gyeongseong (Phần 1)",
     "originTitle": "Gyeongseong Creature (Season 1)",
     "poster": "https://phimimg.com/upload/vod/20240919-1/07cf148cfe8592f962e55bc681aad147.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20240919-1/879e3c981011a5eecb567ae5f56af9c0.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20240919-1/07cf148cfe8592f962e55bc681aad147.jpg",
     "type": "series",
     "sectionTags": [
       "netflix",
@@ -131848,7 +131848,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Thiên Thần Khát Máu (Phần 6)",
     "originTitle": "Dexter (Season 6)",
     "poster": "https://phimimg.com/upload/vod/20241010-1/fa07243ed3f7df518dcff91954972467.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20241010-1/a95ca09d9f088a695a170317a99c79ad.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20241010-1/fa07243ed3f7df518dcff91954972467.jpg",
     "type": "series",
     "sectionTags": [
       "hot",
@@ -137333,7 +137333,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Đồn Brooklyn Số 99 (Phần 8)",
     "originTitle": "Brooklyn Nine-Nine (Season 8)",
     "poster": "https://phimimg.com/upload/vod/20250306-1/418b280acb3c9f59e4f43e993beaba36.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250306-1/2f21612b185b6790dc81e6c2e6e11a36.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250306-1/418b280acb3c9f59e4f43e993beaba36.jpg",
     "type": "series",
     "sectionTags": [
       "hot",
@@ -138425,7 +138425,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Đại Chiến Xích Bích 2",
     "originTitle": "Red Cliff II",
     "poster": "https://phimimg.com/upload/vod/20250915-1/9d415337e3168a1862c589d96677e505.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20250915-1/9198b64700b4eb819a343b579fdf1b6a.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20250915-1/9d415337e3168a1862c589d96677e505.jpg",
     "type": "single",
     "sectionTags": [
       "hot",
@@ -145019,7 +145019,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Thiên Thần Khát Máu (Phần 7)",
     "originTitle": "Dexter (Season 7)",
     "poster": "https://phimimg.com/upload/vod/20241010-1/a510a015f833d2aa442247e996ade889.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20241010-1/7c547c203c9e1b8d7fbb3fe11b4060f7.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20241010-1/a510a015f833d2aa442247e996ade889.jpg",
     "type": "series",
     "sectionTags": [
       "hot",
@@ -161946,7 +161946,7 @@ window.NGWYREN_FULL_CATALOG=[
     "title": "Sát Thủ John Wick: Phần 3 – Chuẩn Bị Chiến Tranh",
     "originTitle": "John Wick: Chapter 3 - Parabellum",
     "poster": "https://phimimg.com/upload/vod/20231018-1/d4878333467d621e5f2373f294a711c2.jpg",
-    "backdrop": "https://phimimg.com/upload/vod/20231018-1/72e545b71bf7cd4f09ffcd7b28de1852.jpg",
+    "backdrop": "https://phimimg.com/upload/vod/20231018-1/d4878333467d621e5f2373f294a711c2.jpg",
     "type": "single",
     "sectionTags": [
       "hot",
