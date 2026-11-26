@@ -81,9 +81,256 @@
     };
   },
 
+  /**
+   * Phân tích playlist HLS (media playlist) để tìm quảng cáo do nhà cung cấp API ghép vào luồng.
+   *
+   * 1) Clip quảng cáo chèn giữa phim (~phút 15, dài ~35s): các đoạn có đường dẫn TUYỆT ĐỐI dạng
+   *    /v9/<hash 32 hex>/segment_0001.ts, nằm giữa 2 thẻ #EXT-X-DISCONTINUITY. Đây là clip riêng,
+   *    KHÔNG chứa cảnh phim → cắt bỏ an toàn.
+   * 2) Cảnh phim bị in chữ quảng cáo (~phút 3): các đoạn tương đối "convertv9/xxx.ts". Đây LÀ cảnh phim
+   *    (cắt đi sẽ mất cảnh, nhảy cảnh) → KHÔNG cắt, chỉ trả về khoảng thời gian để che dải chữ phía trên.
+   *
+   * @returns {{cleanedText:string, adRanges:Array<[number,number]>, sponsorRangesOriginal:Array<[number,number]>,
+   *            sponsorRangesCleaned:Array<[number,number]>, removedSeconds:number}|null}
+   */
+  analyzeHlsAdLayout(playlistText) {
+    if (!playlistText || typeof playlistText !== "string" || !playlistText.includes("#EXTINF")) return null;
+
+    const AD_SEGMENT_RE = /^(?:https?:\/\/[^/]+)?\/v\d+\/[a-f0-9]{32}\/segment_\d+\.ts(?:\?.*)?$/i;
+    // Thư mục có thể là "convertv9/", "convertv9i999/"…
+    const SPONSOR_SEGMENT_RE = /(?:^|\/)convertv[a-z0-9_-]*\/[^/]+\.ts(?:\?.*)?$/i;
+
+    const lines = playlistText.split(/\r?\n/);
+    const header = [];
+    const units = []; // { tags: [], extinf, uri, dur, isAd, isSponsor }
+    let pendingTags = [];
+    let pendingExtinf = null;
+    let seenFirstSegment = false;
+
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+      if (line.startsWith("#EXTINF:")) {
+        pendingExtinf = raw;
+        seenFirstSegment = true;
+        continue;
+      }
+      if (line.startsWith("#")) {
+        if (!seenFirstSegment && !line.startsWith("#EXT-X-DISCONTINUITY") && !line.startsWith("#EXT-X-KEY")) {
+          header.push(raw);
+        } else {
+          pendingTags.push(raw);
+        }
+        continue;
+      }
+      // Dòng URI của phân đoạn
+      const dur = pendingExtinf ? parseFloat(pendingExtinf.slice(8)) || 0 : 0;
+      units.push({
+        tags: pendingTags,
+        extinf: pendingExtinf,
+        uri: raw,
+        dur,
+        isAd: AD_SEGMENT_RE.test(line),
+        isSponsor: SPONSOR_SEGMENT_RE.test(line) && !/^(?:https?:)?\//i.test(line)
+      });
+      pendingTags = [];
+      pendingExtinf = null;
+      seenFirstSegment = true;
+    }
+    const trailingTags = pendingTags;
+
+    const mergeRanges = (ranges, gap = 6) => {
+      const out = [];
+      for (const r of ranges) {
+        const last = out[out.length - 1];
+        if (last && r[0] - last[1] <= gap) last[1] = Math.max(last[1], r[1]);
+        else out.push([r[0], r[1]]);
+      }
+      return out;
+    };
+
+    // Thời gian theo luồng gốc & theo luồng đã cắt quảng cáo
+    let tOrig = 0;
+    let tClean = 0;
+    const adRaw = [];
+    const sponsorOrigRaw = [];
+    const sponsorCleanRaw = [];
+    let removedSeconds = 0;
+    for (const u of units) {
+      if (u.isAd) {
+        adRaw.push([tOrig, tOrig + u.dur]);
+        removedSeconds += u.dur;
+      } else {
+        if (u.isSponsor) {
+          sponsorOrigRaw.push([tOrig, tOrig + u.dur]);
+          sponsorCleanRaw.push([tClean, tClean + u.dur]);
+        }
+        tClean += u.dur;
+      }
+      tOrig += u.dur;
+    }
+
+    const adRanges = mergeRanges(adRaw, 0.5);
+    const result = {
+      cleanedText: playlistText,
+      adRanges,
+      sponsorRangesOriginal: mergeRanges(sponsorOrigRaw),
+      sponsorRangesCleaned: mergeRanges(sponsorCleanRaw),
+      removedSeconds: 0
+    };
+
+    // Chốt an toàn: chỉ cắt khi phần quảng cáo ngắn (≤ 2 phút) và không chiếm quá 20% luồng
+    const adCount = units.filter((u) => u.isAd).length;
+    if (!adCount || removedSeconds > 120 || removedSeconds > tOrig * 0.2) {
+      if (adCount) result.sponsorRangesCleaned = result.sponsorRangesOriginal;
+      return result;
+    }
+
+    // Dựng lại playlist: bỏ các đoạn quảng cáo, giữ đúng 1 thẻ DISCONTINUITY tại chỗ nối
+    const out = [...header];
+    let inAdBlock = false;
+    let joinDiscontinuityEmitted = false;
+    for (const u of units) {
+      if (u.isAd) {
+        if (!inAdBlock) {
+          inAdBlock = true;
+          joinDiscontinuityEmitted = false;
+          // Giữ các thẻ trước clip quảng cáo, trừ thẻ KEY riêng của quảng cáo (METHOD=NONE)
+          for (const tag of u.tags) {
+            const tt = tag.trim();
+            if (tt.startsWith("#EXT-X-KEY") && /METHOD=NONE/i.test(tt)) continue;
+            if (tt === "#EXT-X-DISCONTINUITY") {
+              if (joinDiscontinuityEmitted) continue;
+              joinDiscontinuityEmitted = true;
+            }
+            out.push(tag);
+          }
+        }
+        continue;
+      }
+      if (inAdBlock) {
+        inAdBlock = false;
+        for (const tag of u.tags) {
+          const tt = tag.trim();
+          if (tt === "#EXT-X-DISCONTINUITY" && joinDiscontinuityEmitted) continue;
+          out.push(tag);
+        }
+      } else {
+        out.push(...u.tags);
+      }
+      if (u.extinf) out.push(u.extinf);
+      out.push(u.uri);
+    }
+    if (inAdBlock) {
+      // Quảng cáo nằm cuối tập (post-roll): bỏ luôn thẻ ngắt thừa ở chỗ nối và ở cuối playlist
+      if (joinDiscontinuityEmitted) {
+        const lastIdx = out.length - 1;
+        if (lastIdx >= 0 && out[lastIdx].trim() === "#EXT-X-DISCONTINUITY") out.pop();
+      }
+      out.push(...trailingTags.filter((tag) => tag.trim() !== "#EXT-X-DISCONTINUITY"));
+    } else {
+      out.push(...trailingTags);
+    }
+
+    result.cleanedText = out.join("\n");
+    result.removedSeconds = removedSeconds;
+    return result;
+  },
+
   cleanHlsAdSegments(playlistText) {
-    // GIỮ NGUYÊN GỐC 100% LUỒNG PHIM - TUYỆT ĐỐI KHÔNG CẮT BỎ BẤT KỲ ĐOẠN HOẶC PHÂN ĐOẠN VIDEO NÀO
-    return playlistText;
+    // Chỉ cắt clip quảng cáo tách biệt (/v9/<hash>/segment_*.ts); KHÔNG cắt bất kỳ cảnh phim nào
+    try {
+      const info = this.analyzeHlsAdLayout(playlistText);
+      if (!info) return playlistText;
+      this._sponsorMaskRanges = info.sponsorRangesCleaned;
+      // Không cắt được (vượt chốt an toàn) → vẫn tự tua qua clip quảng cáo khi phát tới
+      if (info.removedSeconds === 0 && info.adRanges.length) this.detectedAdRanges = info.adRanges;
+      if (info.removedSeconds > 0) {
+        console.info(`[AdFilter] Đã cắt ${info.removedSeconds.toFixed(1)}s quảng cáo chèn trong luồng phim`);
+      }
+      return info.cleanedText;
+    } catch (err) {
+      console.warn("[AdFilter] Giữ nguyên playlist do lỗi phân tích:", err);
+      return playlistText;
+    }
+  },
+
+  /**
+   * iPhone/iPad dùng trình phát HLS gốc của Apple nên không sửa được playlist trước khi phát.
+   * → Tự đọc playlist để biết vị trí clip quảng cáo, khi phát tới thì tự tua qua.
+   */
+  async prepareNativeAdSkip(streamUrl) {
+    const token = (this._nativeAdSkipToken = (this._nativeAdSkipToken || 0) + 1);
+    try {
+      const fetchText = async (url) => {
+        const res = await fetch(url, { cache: "force-cache" });
+        return res.ok ? res.text() : "";
+      };
+      let url = streamUrl;
+      let text = await fetchText(url);
+      if (text.includes("#EXT-X-STREAM-INF")) {
+        const sub = text.split(/\r?\n/).find((l) => l.trim() && !l.startsWith("#"));
+        if (!sub) return;
+        url = new URL(sub.trim(), url).href;
+        text = await fetchText(url);
+      }
+      if (token !== this._nativeAdSkipToken) return; // đã chuyển sang phim/tập khác
+      const info = this.analyzeHlsAdLayout(text);
+      if (!info) return;
+      this.detectedAdRanges = info.adRanges;
+      this._sponsorMaskRanges = info.sponsorRangesOriginal;
+    } catch (_) {
+      // Không đọc được playlist (CORS/mạng) → phát bình thường, không ảnh hưởng xem phim
+    }
+  },
+
+  /** Gọi mỗi lần timeupdate: tự tua qua clip quảng cáo (trình phát gốc) & bật/tắt dải che chữ quảng cáo */
+  updateAdGuards(videoEl) {
+    if (!videoEl) return;
+    const t = videoEl.currentTime || 0;
+
+    const ads = this.detectedAdRanges;
+    if (ads && ads.length && !videoEl.seeking) {
+      for (const [s, e] of ads) {
+        if (t >= s - 0.25 && t < e - 0.2) {
+          videoEl.currentTime = e + 0.05;
+          return;
+        }
+      }
+    }
+
+    const sponsor = this._sponsorMaskRanges;
+    const inSponsor = Boolean(sponsor && sponsor.some(([s, e]) => t >= s - 0.6 && t <= e + 0.6));
+    const container = document.getElementById("activeVideoContainer");
+    if (!container) return;
+    let mask = container.querySelector(".sponsor-text-mask");
+    if (!inSponsor) {
+      if (mask) mask.classList.remove("is-visible");
+      return;
+    }
+    if (!mask) {
+      mask = document.createElement("div");
+      mask.className = "sponsor-text-mask";
+      mask.setAttribute("aria-hidden", "true");
+      container.appendChild(mask);
+    }
+    // Đặt dải che đúng phần trên của khung hình thật (trừ viền đen do object-fit)
+    const cRect = container.getBoundingClientRect();
+    const vRect = videoEl.getBoundingClientRect();
+    const vw = videoEl.videoWidth || 16;
+    const vh = videoEl.videoHeight || 9;
+    const fit = getComputedStyle(videoEl).objectFit;
+    const scale = fit === "cover" ? Math.max(vRect.width / vw, vRect.height / vh) : Math.min(vRect.width / vw, vRect.height / vh);
+    const contentW = vw * scale;
+    const contentH = vh * scale;
+    const left = vRect.left - cRect.left + (vRect.width - contentW) / 2;
+    const top = vRect.top - cRect.top + (vRect.height - contentH) / 2;
+    const visTop = Math.max(top, vRect.top - cRect.top);
+    mask.style.left = `${Math.max(left, vRect.left - cRect.left)}px`;
+    mask.style.width = `${Math.min(contentW, vRect.width)}px`;
+    mask.style.top = `${visTop}px`;
+    mask.style.height = `${Math.max(0, top + contentH * 0.17 - visTop)}px`;
+    mask.classList.add("is-visible");
   },
 
   async readFirstVideoPtsFromTs(segUrl) {
@@ -739,6 +986,8 @@
     this._hlsNetworkRetryCount = 0;
     this.detectedHlsLevels = [];
     this.detectedAdRanges = [];
+    this._sponsorMaskRanges = [];
+    this._nativeAdSkipToken = (this._nativeAdSkipToken || 0) + 1;
     this.actualVideoRes = { width: 0, height: 0, bitrateMbps: 0 };
 
     const savedProg = this.getPlaybackProgress(movie.slug, epIndex);
@@ -911,6 +1160,7 @@
     const requiresHlsCustomLoader = streamUrl.includes("film4k.net/api/hls/");
     if (isAppleTouchDevice && canPlayNativeHls && !requiresHlsCustomLoader) {
       videoEl.src = streamUrl;
+      this.prepareNativeAdSkip(streamUrl);
       let hasNativeResume = false;
       const doNativeResume = () => {
         if (hasNativeResume || targetResumeTime <= 5) return;
@@ -949,6 +1199,7 @@
       videoEl.play().catch(() => {});
     } else if (!startHlsJsEngine() && canPlayNativeHls) {
       videoEl.src = streamUrl;
+      this.prepareNativeAdSkip(streamUrl);
       let hasNativeResume2 = false;
       const doNativeResume2 = () => {
         if (hasNativeResume2 || targetResumeTime <= 5) return;
@@ -1023,6 +1274,7 @@
 
     // Đồng bộ thanh thời gian siêu nhẹ (Throttle 250ms, không chạm DOM nền khi đang mở rạp phim, không rebuild HTML mỗi 3s)
     videoEl.ontimeupdate = () => {
+      this.updateAdGuards(videoEl);
       if (this._streamWatchdogTimer && videoEl.currentTime > 0.3) {
         clearTimeout(this._streamWatchdogTimer);
         this._streamWatchdogTimer = null;
