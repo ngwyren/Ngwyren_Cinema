@@ -144,13 +144,13 @@
               .map(
                 (m, idx) => `
             <div class="search-suggestion-item" style="--item-stagger: ${idx};" onclick="app.selectSearchResult('${m.slug}')">
-              <img src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async" />
+              <img src="${m.poster}" alt="${esc(m.title)}" loading="lazy" decoding="async" />
               <div class="search-suggestion-info">
-                <div class="search-suggestion-title">${m.title}</div>
+                <div class="search-suggestion-title">${esc(m.title)}</div>
                 <div class="search-suggestion-meta">
                   <span class="badge-mini">${m.quality === "4K" ? "4K" : "Full HD"}</span>
                   <span class="badge-mini">${m.year || 2026}</span>
-                  <span class="search-genre-tag">${(m.genres && m.genres[0]) || m.country || "Phim"}</span>
+                  <span class="search-genre-tag">${esc((m.genres && m.genres[0]) || m.country || "Phim")}</span>
                 </div>
               </div>
               <i class="fas fa-play-circle" style="font-size: 1.25rem; color: rgba(255, 255, 255, 0.85); flex-shrink: 0;"></i>

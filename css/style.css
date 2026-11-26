@@ -13619,3 +13619,171 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 
 
+
+/* ==========================================================================
+   v2.9.1: THẺ PHIM HOVER MƯỢT & ẢNH PHỦ KÍN THẺ
+   - Bỏ will-change / mask-image / backface-visibility thường trực trên 88 thẻ
+     (tạo ~180 lớp GPU → ảnh không được vẽ, hở mép, hover giật)
+   - Viền trắng vẽ bằng lớp phủ ::after nằm trên ảnh → ảnh phủ sát mép bo góc
+   - Thẻ nâng nhẹ + ảnh zoom chậm bên trong, cùng một đường cong easing
+   ========================================================================== */
+.vision-feature-card.vision-feature-card {
+  border: 0 !important;
+  overflow: hidden;
+  isolation: isolate;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  will-change: auto !important;
+  contain: layout style;
+  transform: translate3d(0, 0, 0);
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+/* Hiệu ứng xuất hiện chỉ chạy lúc đầu, không giữ transform sau khi xong → hover chuyển động liền mạch */
+.vision-feature-card.vision-feature-card.ps5-wave-card {
+  animation-fill-mode: backwards !important;
+}
+
+.vision-feature-card.vision-feature-card .vision-feature-img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 0 !important;
+  transform: scale(1.001);
+  transform-origin: center 40%;
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.vision-feature-card.vision-feature-card .vision-feature-shade {
+  border-radius: 0 !important;
+}
+
+/* Viền 3px vẽ phía trên ảnh, đổi màu mượt khi rê chuột */
+article.vision-feature-card.vision-feature-card::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: inherit;
+  border: 3px solid rgba(255, 255, 255, 0.14);
+  pointer-events: none;
+  opacity: 1 !important;
+  animation: none !important;
+  transition: border-color 0.35s ease !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vision-feature-card.vision-feature-card:hover,
+  .vision-feature-card.vision-feature-card:focus-visible {
+    transform: translate3d(0, -6px, 0) scale(1.02) !important;
+    border: 0 !important;
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.5) !important;
+    z-index: 10 !important;
+  }
+
+  .vision-feature-card.vision-feature-card:hover .vision-feature-img,
+  .vision-feature-card.vision-feature-card:focus-visible .vision-feature-img {
+    transform: scale(1.07) !important;
+  }
+
+  article.vision-feature-card.vision-feature-card:hover::after,
+  article.vision-feature-card.vision-feature-card:focus-visible::after {
+    display: block !important;
+    border-color: rgba(255, 255, 255, 0.95);
+  }
+
+  .vision-feature-card.vision-feature-card:hover .vision-card-play-white {
+    transform: scale(1.08) !important;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease !important;
+  }
+}
+
+.vision-feature-card.vision-feature-card:active {
+  transform: translate3d(0, -2px, 0) scale(0.985) !important;
+  border: 0 !important;
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+article.vision-feature-card.vision-feature-card:active::after {
+  border-color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vision-feature-card.vision-feature-card,
+  .vision-feature-card.vision-feature-card .vision-feature-img {
+    transition: none !important;
+  }
+}
+
+/* Không vẽ thẻ phim nằm ngoài màn hình → giải phóng bộ nhớ ảnh 4K, tránh thẻ bị trống ảnh.
+   Đặt trên từng thẻ (không đặt trên cả hàng) để hiệu ứng nâng/phóng to khi hover không bị cắt mép. */
+.vision-feature-card.vision-feature-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 175px;
+}
+
+/* Phim chỉ có poster dọc: cắt bỏ khung viền tối của poster khi hiển thị trong thẻ ngang */
+.vision-feature-card.vision-feature-card .vision-feature-img.is-portrait-src {
+  object-position: center 22% !important;
+  transform: scale(1.12);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vision-feature-card.vision-feature-card:hover .vision-feature-img.is-portrait-src,
+  .vision-feature-card.vision-feature-card:focus-visible .vision-feature-img.is-portrait-src {
+    transform: scale(1.18) !important;
+  }
+}
+
+/* Dock điện thoại: icon tab đang chọn nằm đúng tâm viên glider (bỏ đẩy lên 2px & vạch sáng thừa bên dưới) */
+.liquid-mobile-dock .dock-tab-btn.active::after {
+  opacity: 0 !important;
+  transform: translateX(-50%) scaleX(0.25) !important;
+}
+
+.liquid-mobile-dock .dock-tab-btn.active i,
+.liquid-mobile-dock .dock-tab-btn.active .anime-konoha-icon {
+  transform: translateY(0) scale(1.1) !important;
+}
+
+/* Kính lúp: phần tròn nằm lệch góc trên-trái → bù quang học để trông cân giữa */
+.liquid-mobile-dock .dock-tab-btn .fa-magnifying-glass {
+  translate: 1px 1px;
+}
+
+@keyframes iosDockIconBounce {
+  0% {
+    transform: translateY(0) scale(0.88);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.2);
+  }
+  100% {
+    transform: translateY(0) scale(1.1);
+  }
+}
+
+/* ≤1180px: khung nội dung dùng overflow-x: clip để chặn cuộn ngang → cho phép thẻ ở mép
+   tràn ra 24px khi hover (nâng/phóng to/bóng) mà vẫn không tạo thanh cuộn ngang */
+@media (max-width: 1180px) {
+  .vision-main-area,
+  .vision-content-scroll,
+  #mainContentWrapper,
+  .cinema-home-layout,
+  .cinema-category-layout {
+    overflow-clip-margin: 24px;
+  }
+}
+
+/* Đường mảnh tối ngay bên trong viền → viền trắng vẫn rõ khi ảnh/poster có nền sáng */
+article.vision-feature-card.vision-feature-card::after {
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35) !important;
+}

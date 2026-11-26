@@ -660,10 +660,10 @@
              style="background-image: url('${backdropUrl}'); ${isPlayingNow ? "display:none;" : ""}">
           <div class="player-cover-content">
             <h2 style="font-size: clamp(1.6rem, 2.8vw, 2.5rem); font-weight: 800; line-height: 1.12; margin-bottom: 6px;">
-              ${movie.title}
+              ${esc(movie.title)}
             </h2>
             <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 18px;">
-              ${movie.originTitle} (${movie.year}) • ${movie.duration}
+              ${esc(movie.originTitle)} (${movie.year}) • ${esc(movie.duration)}
             </p>
             <div class="hero-actions">
               <button class="btn-primary-play" onclick="app.startVideoPlayback(app.selectedMovie, ${this.currentEpisodeIndex}, 'hls-1')">
@@ -712,7 +712,7 @@
 
             <!-- Thanh đỉnh Apple: Chỉ hiển thị tên phim -->
             <div class="apple-player-topbar" id="applePlayerTopbar">
-              <span class="apple-player-movie-name" title="${movie.title}">${movie.title}</span>
+              <span class="apple-player-movie-name" title="${esc(movie.title)}">${esc(movie.title)}</span>
             </div>
 
             <!-- Thanh đáy Apple: Timeline Scrubber + Cụm điều khiển Kính mờ -->
@@ -864,7 +864,7 @@
                 const isBoilerplate = syn.includes("được cập nhật liên tục tại Ngwyren Cinema") ||
                                       syn.includes("tác phẩm Anime hấp dẫn đang phát sóng");
                 if (!syn || isBoilerplate) return "";
-                return `<p class="modal-synopsis">${syn}</p>`;
+                return `<p class="modal-synopsis">${esc(syn)}</p>`;
               })()
             }
           </div>
@@ -872,14 +872,14 @@
           <div class="modal-cast-meta">
             <div class="meta-line">
               <strong>Đạo diễn:</strong>
-              <span class="clickable-tag" onclick="app.filterByPerson('${this.getMovieDirectorLabel(movie).replace(/'/g, "\\'")}')">${this.getMovieDirectorLabel(movie)}</span>
+              <span class="clickable-tag" onclick="app.filterByPerson('${esc(this.getMovieDirectorLabel(movie).replace(/'/g, "\\'"))}')">${esc(this.getMovieDirectorLabel(movie))}</span>
             </div>
             <div class="meta-line">
               <strong>Diễn viên:</strong>
               ${movie.cast
                 .map(
                   (actor) =>
-                    `<span class="clickable-tag" onclick="app.filterByPerson('${actor.replace(/'/g, "\\'")}')">${actor}</span>`
+                    `<span class="clickable-tag" onclick="app.filterByPerson('${esc(actor.replace(/'/g, "\\'"))}')">${esc(actor)}</span>`
                 )
                 .join(", ")}
             </div>
@@ -888,13 +888,13 @@
               ${movie.genres
                 .map(
                   (g) =>
-                    `<span class="clickable-tag" onclick="app.filterByGenreFromModal('${g}')">${g}</span>`
+                    `<span class="clickable-tag" onclick="app.filterByGenreFromModal('${esc(g)}')">${esc(g)}</span>`
                 )
                 .join(", ")}
             </div>
             <div class="meta-line">
               <strong>Quốc gia:</strong>
-              <span class="clickable-tag" onclick="app.closeMovieModal(); app.setNavigation('${movie.countrySlug}')">${movie.country}</span>
+              <span class="clickable-tag" onclick="app.closeMovieModal(); app.setNavigation('${movie.countrySlug}')">${esc(movie.country)}</span>
             </div>
           </div>
         </div>
@@ -907,7 +907,7 @@
               Danh Sách Tập Phim (${movie.episodes.length} tập)
             </h3>
             <span style="font-size: 0.8rem; color: var(--text-tertiary);">
-              Trạng thái: <strong style="color: #ffffff;">${movie.episodeCurrent}</strong>
+              Trạng thái: <strong style="color: #ffffff;">${esc(movie.episodeCurrent)}</strong>
             </span>
           </div>
           <div class="episodes-grid" id="modalEpisodesGrid">

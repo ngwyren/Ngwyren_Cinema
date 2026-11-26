@@ -6758,9 +6758,9 @@ class PhimmoiService {
   }
 
   stripHtml(html) {
-    const tmp = document.createElement("div");
-    tmp.innerHTML = html || "";
-    return (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim();
+    // DOMParser tạo document "trơ": không tải ảnh, không chạy onerror/script từ HTML của API
+    const doc = new DOMParser().parseFromString(String(html || ""), "text/html");
+    return (doc.body.textContent || "").replace(/\s+/g, " ").trim();
   }
 
   decodeEntities(str) {

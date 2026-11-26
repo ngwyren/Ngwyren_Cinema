@@ -461,7 +461,7 @@
             return `
               <div class="continue-shelf-card" style="--card-stagger: ${idx};" onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})">
                 <div class="continue-shelf-thumb">
-                  <img src="${thumbImg}" alt="${movie.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
+                  <img src="${thumbImg}" alt="${esc(movie.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
                   <div class="continue-shelf-play"><i class="fas fa-play"></i></div>
                   ${isGenuineSeries && epLabel ? `<div class="continue-shelf-badge">${epLabel}</div>` : ""}
                   <div class="continue-shelf-bar">
@@ -469,7 +469,7 @@
                   </div>
                 </div>
                 <div class="continue-shelf-info">
-                  <div class="continue-shelf-title">${movie.title}</div>
+                  <div class="continue-shelf-title">${esc(movie.title)}</div>
                   <div class="continue-shelf-meta">
                     <span>${timeStr ? `Đã xem ${timeStr}` : (isGenuineSeries && epLabel ? epLabel : "Đang xem")}</span>
                     <span>${progress}%</span>
@@ -684,7 +684,7 @@
             return `
               <article class="schedule-card-glass" style="--card-stagger: ${idx};" onclick="app.openMovieModal('${m.slug}', true)">
                 <div class="schedule-card-media">
-                  <img src="${m.poster || m.backdrop}" alt="${m.title}" loading="lazy" decoding="async"
+                  <img src="${m.poster || m.backdrop}" alt="${esc(m.title)}" loading="lazy" decoding="async"
                        onerror="this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg'" />
                   <div class="schedule-card-top-badges">
                     <span class="sch-time-pill"><i class="far fa-clock"></i> ${m.airTime || "10:00 Sáng"}</span>
@@ -695,8 +695,8 @@
                   </div>
                 </div>
                 <div class="schedule-card-info">
-                  <h3 class="schedule-movie-title" title="${m.title}">${m.title}</h3>
-                  <div class="schedule-movie-sub">${m.originTitle || m.country}</div>
+                  <h3 class="schedule-movie-title" title="${esc(m.title)}">${esc(m.title)}</h3>
+                  <div class="schedule-movie-sub">${esc(m.originTitle || m.country)}</div>
                   <div class="schedule-movie-chips">
                     <span class="sch-ep-pill"><i class="fas fa-tv"></i> ${this.formatEpisodeLabel(m.currentEpisode || "Tập Mới", "Tập Mới")}</span>
                   </div>
@@ -2119,8 +2119,8 @@
     const statusText = movie.type === "series" ? (movie.episodeCurrent || "Phim Bộ") : (movie.duration || "Full");
 
     return `
-      <h1 class="cinema-hero-title">${movie.title}</h1>
-      ${movie.originTitle && movie.originTitle.toLowerCase() !== (movie.title || "").toLowerCase() ? `<div class="cinema-hero-sub">${movie.originTitle}</div>` : ""}
+      <h1 class="cinema-hero-title">${esc(movie.title)}</h1>
+      ${movie.originTitle && movie.originTitle.toLowerCase() !== (movie.title || "").toLowerCase() ? `<div class="cinema-hero-sub">${esc(movie.originTitle)}</div>` : ""}
 
       <div class="cinema-meta-badges">
         <span class="cinema-badge badge-imdb"><i class="fab fa-imdb"></i> ${imdbScore}</span>
@@ -2158,7 +2158,7 @@
 
     return `
       <section class="vision-hero-banner cinema-showcase-hero ps5-hero-morph-anim" id="heroShowcase" data-hero-slug="${movie.slug}" onmouseenter="app.pauseHeroAutoRotate()" onmouseleave="app.resumeHeroAutoRotate()">
-        <img class="vision-hero-bg" src="${mainBackdrop}" alt="${movie.title}" fetchpriority="high" decoding="async"
+        <img class="vision-hero-bg" src="${mainBackdrop}" alt="${esc(movie.title)}" fetchpriority="high" decoding="async"
              onerror="this.onerror=null;this.src='${mainPosterFallback}';" />
         <div class="vision-hero-overlay"></div>
 
@@ -2197,10 +2197,10 @@
                onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
-        <img src="${trailerImg}" alt="${movie.title}" loading="lazy" fetchpriority="low" decoding="async"
+        <img src="${trailerImg}" alt="${esc(movie.title)}" loading="lazy" fetchpriority="low" decoding="async"
              onerror="if(this.src!=='${trailerFallback}'){this.src='${trailerFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
         <div class="vision-trailer-overlay">
-          <div class="vision-trailer-title">${movie.title}</div>
+          <div class="vision-trailer-title">${esc(movie.title)}</div>
           <button class="vision-trailer-play" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" aria-label="Phát">
             <i class="fas fa-play"></i>
           </button>
@@ -2220,15 +2220,15 @@
            onpointerenter="app.handleCardPointerEnter('${movie.slug}', this, ${epIndex})"
            onpointerleave="app.handleCardPointerLeave(this)"
            onclick="app.openMovieModal('${movie.slug}', true, ${epIndex})"
-           title="Tiếp tục xem ${movie.title}">
+           title="Tiếp tục xem ${esc(movie.title)}">
         <div class="vision-continue-thumb-box">
-          <img class="vision-continue-thumb" src="${this.getMoviePoster(movie)}" alt="${movie.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
+          <img class="vision-continue-thumb" src="${this.getMoviePoster(movie)}" alt="${esc(movie.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
           <div class="vision-continue-progress-bg">
             <div class="vision-continue-progress-fill" style="width: ${pct}%;"></div>
           </div>
         </div>
         <div class="vision-continue-text">
-          <div class="vision-continue-title">${movie.title}</div>
+          <div class="vision-continue-title">${esc(movie.title)}</div>
           <div class="vision-continue-sub">${timeText}</div>
         </div>
         <button class="vision-continue-play" aria-label="Phát tiếp">
@@ -2255,15 +2255,16 @@
                onpointerenter="app.handleCardPointerEnter('${movie.slug}', this)"
                onpointerleave="app.handleCardPointerLeave(this)"
                onclick="app.openMovieModal('${movie.slug}', true)">
-        <img class="vision-feature-img" src="${cardImg}" alt="${movie.title}" ${loadAttr}
+        <img class="vision-feature-img" src="${cardImg}" alt="${esc(movie.title)}" ${loadAttr}
+             onload="this.classList.toggle('is-portrait-src', this.naturalHeight > this.naturalWidth)"
              onerror="if(this.src!=='${cardFallback}'){this.src='${cardFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
         <div class="vision-feature-shade"></div>
 
         <div class="vision-feature-bottom">
           <div class="vision-feature-meta">
-            <span class="vision-card-genre">${primaryGenre}</span>
-            <h3 class="vision-card-title" title="${movie.title}">${movie.title}</h3>
-            <p class="vision-card-desc">${movie.originTitle} (${movie.year}) • ${movie.episodeCurrent || movie.quality}</p>
+            <span class="vision-card-genre">${esc(primaryGenre)}</span>
+            <h3 class="vision-card-title" title="${esc(movie.title)}">${esc(movie.title)}</h3>
+            <p class="vision-card-desc">${esc(movie.originTitle)} (${movie.year}) • ${esc(movie.episodeCurrent || movie.quality)}</p>
           </div>
           <button class="vision-card-play-white" onclick="event.stopPropagation(); app.openMovieModal('${movie.slug}', true)" title="Xem ngay">
             <i class="fas fa-play"></i>
@@ -2345,10 +2346,10 @@
           (m, idx) => `
         <div class="chart-row-item" onclick="app.openMovieModal('${m.slug}', false)">
           <span class="chart-rank-num">${idx + 1}</span>
-          <img class="chart-thumb" src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
+          <img class="chart-thumb" src="${m.poster}" alt="${esc(m.title)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null; this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg';" />
           <div class="chart-info">
-            <div class="chart-title">${m.title}</div>
-            <div class="chart-sub">${m.originTitle} • ${m.country}</div>
+            <div class="chart-title">${esc(m.title)}</div>
+            <div class="chart-sub">${esc(m.originTitle)} • ${esc(m.country)}</div>
           </div>
           <span class="chart-ep-tag">${m.type === "series" ? m.episodeCurrent : m.duration}</span>
         </div>
@@ -2418,7 +2419,7 @@
                style="--card-stagger: ${staggerIdx};"
                onclick="app.openMovieModal('${movie.slug}', true)">
         <div class="movie-poster-wrap">
-          <img src="${posterImg}" alt="${movie.title}" loading="lazy" decoding="async"
+          <img src="${posterImg}" alt="${esc(movie.title)}" loading="lazy" decoding="async"
                onerror="if(this.src!=='${posterFallback}'){this.src='${posterFallback}';}else{this.onerror=null;app.handleImageFallback(this,'${movie.slug}');}" />
           <div class="poster-badges-top">
             ${qualityBadge}
@@ -2449,8 +2450,8 @@
         </div>
 
         <div class="movie-card-info">
-          <h3 class="movie-card-title" title="${movie.title}">${movie.title}</h3>
-          <div class="movie-card-sub">${movie.originTitle} • ${movie.year}</div>
+          <h3 class="movie-card-title" title="${esc(movie.title)}">${esc(movie.title)}</h3>
+          <div class="movie-card-sub">${esc(movie.originTitle)} • ${movie.year}</div>
         </div>
       </article>
     `;

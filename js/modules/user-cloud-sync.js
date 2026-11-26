@@ -801,10 +801,10 @@
       if (todayItems.length > 0) {
         bodyHTML = todayItems.slice(0, 10).map((m, idx) => `
           <div class="notif-movie-item" style="--item-stagger: ${idx};" onclick="app.openMovieModal('${m.slug}', true); app.closeNotificationCenter();">
-            <img class="notif-movie-thumb" src="${m.poster || m.backdrop}" alt="${m.title}" loading="lazy"
+            <img class="notif-movie-thumb" src="${m.poster || m.backdrop}" alt="${esc(m.title)}" loading="lazy"
                  onerror="this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg'" />
             <div class="notif-movie-info">
-              <div class="notif-movie-title" title="${m.title}">${m.title}</div>
+              <div class="notif-movie-title" title="${esc(m.title)}">${esc(m.title)}</div>
               <div class="notif-movie-meta">
                 <span class="notif-badge-new"><i class="fas fa-tv"></i> ${m.currentEpisode || "Tập Mới"}</span>
                 <span class="notif-badge-time"><i class="far fa-clock"></i> ${m.airTime || "Hôm nay"}</span>
@@ -843,10 +843,10 @@
           </div>
         ` + tomorrowItems.slice(0, 10).map((m, idx) => `
           <div class="notif-movie-item" style="--item-stagger: ${idx};" onclick="app.openMovieModal('${m.slug}', true); app.closeNotificationCenter();">
-            <img class="notif-movie-thumb" src="${m.poster || m.backdrop}" alt="${m.title}" loading="lazy"
+            <img class="notif-movie-thumb" src="${m.poster || m.backdrop}" alt="${esc(m.title)}" loading="lazy"
                  onerror="this.src='https://phimimg.com/upload/vod/20251229-1/d7f24b91fd95fb7cf353e1369e2318b7.jpg'" />
             <div class="notif-movie-info">
-              <div class="notif-movie-title" title="${m.title}">${m.title}</div>
+              <div class="notif-movie-title" title="${esc(m.title)}">${esc(m.title)}</div>
               <div class="notif-movie-meta">
                 <span class="notif-badge-new"><i class="fas fa-clock"></i> ${m.airTime || "Sắp chiếu"}</span>
                 <span>${(m.genres || []).slice(0, 2).join(", ")}</span>
@@ -896,12 +896,12 @@
               <div style="width: 42px; height: 56px; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; margin-top: 2px; border: 1px solid rgba(255,255,255,0.1);">
                 ${
                   req.image
-                    ? `<img src="${req.image}" alt="${req.title}" style="width: 100%; height: 100%; object-fit: cover;" />`
+                    ? `<img src="${req.image}" alt="${esc(req.title)}" style="width: 100%; height: 100%; object-fit: cover;" />`
                     : `<i class="fas fa-clapperboard" style="font-size: 1.15rem; color: ${isReady ? '#34c759' : '#0a84ff'};"></i>`
                 }
               </div>
               <div class="notif-movie-info" style="flex: 1; min-width: 0; padding-left: 2px;">
-                <div class="notif-movie-title" style="font-weight: 700; color: #ffffff; font-size: 0.88rem;" title="${req.title}">${req.title}</div>
+                <div class="notif-movie-title" style="font-weight: 700; color: #ffffff; font-size: 0.88rem;" title="${esc(req.title)}">${esc(req.title)}</div>
                 <div style="display: flex; gap: 6px; align-items: center; margin: 4px 0; flex-wrap: wrap;">
                   ${
                     isReady
@@ -910,8 +910,8 @@
                   }
                   ${timeStr ? `<span style="font-size: 0.72rem; color: rgba(255,255,255,0.45);"><i class="far fa-clock"></i> ${timeStr}</span>` : ""}
                 </div>
-                ${req.note ? `<div style="font-size: 0.74rem; color: rgba(255,255,255,0.65); margin-bottom: 2px;">📝 ${req.note}</div>` : ""}
-                ${req.email ? `<div style="font-size: 0.72rem; color: rgba(10,132,255,0.9);"><i class="far fa-envelope"></i> ${req.email}</div>` : ""}
+                ${req.note ? `<div style="font-size: 0.74rem; color: rgba(255,255,255,0.65); margin-bottom: 2px;">📝 ${esc(req.note)}</div>` : ""}
+                ${req.email ? `<div style="font-size: 0.72rem; color: rgba(10,132,255,0.9);"><i class="far fa-envelope"></i> ${esc(req.email)}</div>` : ""}
               </div>
               <div style="display: flex; align-items: center; align-self: center; margin-left: 8px;">
                 ${
@@ -1016,7 +1016,7 @@
             }
           </div>
           <div class="auth-logged-details">
-            <div class="auth-logged-name">${this.userProfile.name}</div>
+            <div class="auth-logged-name">${esc(this.userProfile.name)}</div>
             <div class="auth-logged-email">${this.userProfile.handle}</div>
             <span class="auth-verified-badge"><i class="fas fa-check-circle"></i> Đang hoạt động • Kênh Realtime</span>
           </div>

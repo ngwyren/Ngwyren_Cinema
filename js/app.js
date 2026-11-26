@@ -1,4 +1,18 @@
 /**
+ * Escape chuỗi trước khi chèn vào HTML hoặc thuộc tính (alt, title...).
+ * Dữ liệu phim đến từ API bên ngoài: tên có dấu " làm vỡ thẻ, thẻ <script>/<img onerror> có thể bị thực thi.
+ */
+window.esc = function esc(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+};
+
+/**
  * Ngwyren Cinema - Core Application Shell & State Coordinator (v2.4.0)
  * Domain features live cleanly in js/modules/*.js via NgwyrenSystem.attachModule.
  */
@@ -852,13 +866,13 @@ class AppleCinemaApp {
 
     toast.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px; max-width: 440px; padding: 12px 16px; background: rgba(22, 24, 32, 0.94); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); border: 1px solid rgba(52, 199, 89, 0.4); border-radius: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.6); color: #fff; pointer-events: auto;">
-        <img src="${movie.poster || movie.backdrop || ''}" alt="${movie.title}" style="width: 44px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" onerror="this.style.display='none'" />
+        <img src="${movie.poster || movie.backdrop || ''}" alt="${esc(movie.title)}" style="width: 44px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0;" onerror="this.style.display='none'" />
         <div style="flex: 1; min-width: 0;">
           <div style="font-size: 0.72rem; font-weight: 700; color: #34c759; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
             <i class="fas fa-circle-check"></i> Đã Nạp Phim Thành Công
           </div>
           <div style="font-size: 0.88rem; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            ${movie.title}
+            ${esc(movie.title)}
           </div>
           <div style="font-size: 0.76rem; color: rgba(255,255,255,0.7);">
             Phim đã có sẵn luồng phát HD Vietsub
