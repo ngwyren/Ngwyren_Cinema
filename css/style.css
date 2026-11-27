@@ -13173,3 +13173,25 @@ article.vision-feature-card.vision-feature-card.vision-feature-card::after {
     transition: none !important;
   }
 }
+
+/* v2.9.9 — Hết rung khi rê chuột ở mép thẻ.
+   Trước: thẻ nhấc lên 4–6px nên mép dưới rời khỏi con trỏ → hover tắt → thẻ rơi xuống → hover bật lại (rung).
+   Thẻ "Tiếp Tục Xem" còn co giãn cả khối chữ nên chữ bị giật nhẹ khi thu về. */
+@media (hover: hover) and (pointer: fine) {
+  /* Thẻ phim: phóng 3% và dịch lên đúng 1.5% chiều cao → mép dưới đứng yên, thẻ chỉ nở lên trên và sang hai bên */
+  .vision-feature-card.vision-feature-card.vision-feature-card:hover,
+  .vision-feature-card.vision-feature-card.vision-feature-card:focus-visible {
+    transform: translate3d(0, -1.5%, 0) scale(1.03) !important;
+  }
+
+  /* Thẻ "Tiếp Tục Xem": không di chuyển, không co giãn chữ; nổi bật bằng viền, nền, bóng và ảnh phóng nhẹ */
+  .continue-shelf-card.continue-shelf-card.continue-shelf-card:hover,
+  .continue-shelf-card.continue-shelf-card.continue-shelf-card:focus-visible {
+    transform: none !important;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+.continue-shelf-card.continue-shelf-card.continue-shelf-card:active {
+  transform: scale(0.99) !important;
+}
