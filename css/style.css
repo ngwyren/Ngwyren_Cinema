@@ -13805,3 +13805,45 @@ article.vision-feature-card.vision-feature-card::after {
 .sponsor-text-mask.is-visible {
   opacity: 1;
 }
+
+/* v2.9.4 — Thẻ "Tiếp Tục Xem": rê chuột mượt như thẻ phim (một nhịp easing chung, không đổi màu giật cục) */
+.continue-shelf-card.continue-shelf-card {
+  will-change: auto;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+  animation-fill-mode: backwards;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.continue-shelf-card.continue-shelf-card .continue-shelf-thumb img {
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.continue-shelf-card.continue-shelf-card .continue-shelf-play {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(0, 0, 0, 0.6);
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.35s ease,
+    color 0.35s ease,
+    opacity 0.35s ease,
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .continue-shelf-card.continue-shelf-card:hover .continue-shelf-thumb img {
+    transform: scale(1.05) !important;
+  }
+}
+
+.continue-shelf-card.continue-shelf-card:active {
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s ease,
+    background-color 0.15s ease !important;
+}
