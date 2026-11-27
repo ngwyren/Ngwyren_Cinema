@@ -13847,3 +13847,42 @@ article.vision-feature-card.vision-feature-card::after {
     border-color 0.15s ease,
     background-color 0.15s ease !important;
 }
+
+/* v2.9.5 — iPad dọc (768–919px): sửa thanh dock đáy bị vỡ (5 nút chồng lên nhau do display:grid) và các hàng thẻ bị lẻ */
+@media (min-width: 768px) and (max-width: 919px) {
+  .liquid-mobile-dock.liquid-mobile-dock {
+    display: flex !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: min(360px, calc(100vw - 32px)) !important;
+    max-width: 360px !important;
+    height: 54px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
+  }
+
+  /* Trang chủ hiển thị 4 thẻ mỗi kệ → 4 cột cho vừa một hàng (trước là 3 cột, thừa 1 thẻ lẻ) */
+  .cinema-home-layout .vision-cards-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
+
+/* Kệ "Tiếp Tục Xem" trên iPad: tối đa 4 thẻ nằm gọn một hàng */
+@media (min-width: 768px) and (max-width: 1180px) {
+  .vision-continue-shelf-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
+
+/* iPad ngang (920–1180px): trang chủ cũng 4 cột để kệ 4/8 thẻ không bị lẻ hàng */
+@media (min-width: 920px) and (max-width: 1180px) {
+  .cinema-home-layout .vision-cards-grid-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
