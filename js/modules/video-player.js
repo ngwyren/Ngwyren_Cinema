@@ -96,7 +96,8 @@
   analyzeHlsAdLayout(playlistText) {
     if (!playlistText || typeof playlistText !== "string" || !playlistText.includes("#EXTINF")) return null;
 
-    const AD_SEGMENT_RE = /^(?:https?:\/\/[^/]+)?\/v\d+\/[a-f0-9]{32}\/segment_\d+\.ts(?:\?.*)?$/i;
+    // Mẫu 1: /v9/<hash>/segment_0001.ts — Mẫu 2 (luồng cũ 2023–2024): /adjump/<ngày>/<hash>/000001.ts
+    const AD_SEGMENT_RE = /^(?:https?:\/\/[^/]+)?\/(?:v\d+\/[a-f0-9]{32}\/segment_\d+|adjump\/(?:[^/?#]+\/)+\d+)\.ts(?:\?.*)?$/i;
     // Thư mục có thể là "convertv9/", "convertv9i999/"…
     const SPONSOR_SEGMENT_RE = /(?:^|\/)convertv[a-z0-9_-]*\/[^/]+\.ts(?:\?.*)?$/i;
 
