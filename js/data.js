@@ -4420,7 +4420,18 @@ class PhimmoiService {
       const isGodzillaM1 =
         (vi1.includes("godzilla tru") || vi1.includes("godzilla minus")) &&
         (vi2.includes("godzilla tru") || vi2.includes("godzilla minus"));
-      if (stripped1 !== stripped2 && !isGodzillaM1) {
+      // Hai nguồn đặt ngược tên: tựa Việt của bản này nằm ở ô "tên gốc" của bản kia
+      // (vd: "Hàng Xóm Của Tôi Là Totoro" ↔ "Tonari No Totoro" / tên gốc "Hàng xóm của tôi là Totoro").
+      // Chỉ chấp nhận khi cả hai là phim lẻ và trùng đúng năm.
+      const stripYear = (t) => String(t || "").replace(/\s*[(\[]\s*(?:19|20)\d{2}\s*[)\]]\s*$/, "");
+      const o1 = this.normalizeTitleForMatch(stripYear(existing.originTitle));
+      const o2 = this.normalizeTitleForMatch(stripYear(candidate.originTitle));
+      const yA = parseInt(existing.year, 10);
+      const yB = parseInt(candidate.year, 10);
+      const isSwappedTitle =
+        isSingle1 && isSingle2 && yA > 1900 && yA === yB &&
+        ((o1 && o1.length >= 8 && o1 === vi2) || (o2 && o2.length >= 8 && o2 === vi1));
+      if (stripped1 !== stripped2 && !isGodzillaM1 && !isSwappedTitle) {
         return false;
       }
     }

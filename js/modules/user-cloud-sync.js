@@ -640,8 +640,12 @@
     const backdrop = document.getElementById("visionNotifBackdrop");
     const bellBtn = document.getElementById("notifBellBtn");
     if (!flyout) return;
-    const isClosed = flyout.style.display === "none" || !flyout.style.display;
+    // Đang thu lại mà bấm chuông lần nữa → coi như đang đóng, mở lại ngay
+    const isClosing = flyout.classList.contains("is-closing");
+    const isClosed = isClosing || flyout.style.display === "none" || !flyout.style.display;
     if (isClosed) {
+      clearTimeout(this._notifCloseTimer);
+      flyout.classList.remove("is-closing");
       this.renderNotificationFlyout(this.activeNotifTab || "today");
       this.positionNotificationFlyout();
       flyout.classList.add("ps5-flyout-anim");
@@ -704,15 +708,30 @@
     const flyout = document.getElementById("visionNotifFlyout");
     const backdrop = document.getElementById("visionNotifBackdrop");
     const bellBtn = document.getElementById("notifBellBtn");
-    if (flyout) {
-      flyout.style.display = "none";
-      flyout.classList.remove("ps5-flyout-anim");
-    }
-    if (backdrop) {
-      backdrop.classList.remove("open");
-      backdrop.style.display = "none";
-    }
     if (bellBtn) bellBtn.classList.remove("active");
+    if (backdrop) backdrop.classList.remove("open"); // nền mờ tan dần theo transition opacity
+    const isOpen = flyout && flyout.style.display && flyout.style.display !== "none";
+    const finish = () => {
+      if (flyout) {
+        flyout.style.display = "none";
+        flyout.classList.remove("ps5-flyout-anim", "is-closing");
+      }
+      if (backdrop && !backdrop.classList.contains("open")) backdrop.style.display = "none";
+    };
+    clearTimeout(this._notifCloseTimer);
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!isOpen || reduceMotion || flyout.classList.contains("is-closing") === false && !flyout.classList.contains("ps5-flyout-anim")) {
+      finish();
+      return;
+    }
+    // Hiệu ứng thu lại về phía nút chuông rồi mới ẩn hẳn
+    flyout.classList.remove("ps5-flyout-anim");
+    flyout.classList.add("is-closing");
+    if (backdrop) backdrop.style.pointerEvents = "none";
+    this._notifCloseTimer = setTimeout(() => {
+      finish();
+      if (backdrop) backdrop.style.pointerEvents = "";
+    }, 260);
   },
 
   switchNotifTab(tab) {

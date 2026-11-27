@@ -53,8 +53,8 @@
   --ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-in-out-sine: cubic-bezier(0.37, 0, 0.63, 1);
   --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: var(--ease-ramp);
+  --ease-spring: var(--ease-ramp);
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Blur & Shadows */
@@ -1259,7 +1259,7 @@ body::-webkit-scrollbar {
   box-shadow: none !important;
   isolation: isolate;
   box-sizing: border-box;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease !important;
+  transition: transform 0.28s var(--ease-ramp), border-color 0.24s ease !important;
 }
 
 /* Ẩn hoàn toàn pseudo-element để tránh subpixel lệch trục */
@@ -1283,7 +1283,7 @@ body::-webkit-scrollbar {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
   transform: scale(1);
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.45s var(--ease-ramp);
 }
 
 .movie-card:hover .movie-poster-wrap img {
@@ -1693,7 +1693,7 @@ body.modal-open .ambient-canvas {
   z-index: 60;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s var(--ease-ramp), background-color 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
 }
 
@@ -1809,7 +1809,7 @@ body.modal-open .ambient-canvas {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s var(--ease-ramp);
   font-size: 0.8rem;
   user-select: none;
 }
@@ -1941,7 +1941,7 @@ body.modal-open .ambient-canvas {
   font-size: 0.76rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+  transition: all 0.2s var(--ease-ramp);
   font-family: inherit;
   display: inline-flex;
   align-items: center;
@@ -2802,7 +2802,7 @@ html {
   -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.35s var(--ease-ramp);
 }
 
 .sidebar-mobile-backdrop.open {
@@ -2820,7 +2820,7 @@ html {
   mask: url("../assets/anime-konoha-white.png") no-repeat center / contain;
   vertical-align: -0.15em;
   flex-shrink: 0;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+  transition: transform 0.28s var(--ease-ramp), opacity 0.25s ease;
 }
 
 .vision-shelf-title .anime-konoha-icon {
@@ -2878,7 +2878,7 @@ html {
   border-radius: 999px;
   cursor: pointer;
   padding: 0;
-  transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.28s var(--ease-ramp);
 }
 
 .dock-tab-btn span {
@@ -2890,7 +2890,7 @@ html {
   font-size: 1.15rem;
   color: #ffffff;
   opacity: 0.65;
-  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+  transition: transform 0.28s var(--ease-ramp), opacity 0.25s ease;
 }
 
 .dock-tab-btn.active {
@@ -2947,7 +2947,7 @@ html {
     width: 280px;
     z-index: 95;
     transform: translate3d(-104%, 0, 0);
-    transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 0.42s var(--ease-ramp);
   }
 
   .apple-sidebar.mobile-open {
@@ -3203,14 +3203,14 @@ body {
   font-size: 0.98rem;
   cursor: pointer;
   /* Outro transition: Chậm rãi, êm ái khi icon bỏ chọn về lại trạng thái ban đầu */
-  transition: color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.5s var(--ease-ramp),
+              opacity 0.5s var(--ease-ramp),
+              transform 0.5s var(--ease-ramp);
 }
 
 .vision-dock-icon i {
   /* Outro transition: Ánh sáng halo và độ phóng to thu nhỏ từ từ tan biến (0.55s) */
-  transition: transform 0.52s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: transform 0.52s var(--ease-ramp),
               text-shadow 0.55s cubic-bezier(0.2, 0.8, 0.25, 1),
               filter 0.55s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
@@ -3230,8 +3230,8 @@ body {
   opacity: 1;
   box-shadow: none;
   /* Intro transition: Bật sáng êm ái và nhạy bén khi được chọn */
-  transition: color 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: color 0.32s var(--ease-ramp),
+              opacity 0.32s var(--ease-ramp),
               transform 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.2);
 }
 
@@ -3290,11 +3290,11 @@ body {
 }
 
 .vision-hero-slide-anim {
-  animation: visionHeroSlideFade 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: visionHeroSlideFade 0.38s var(--ease-ramp) both;
 }
 
 .modal-movie-switch {
-  animation: appleSpatialScaleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: appleSpatialScaleIn 0.32s var(--ease-ramp) both;
 }
 
 @keyframes appleSpatialScaleIn {
@@ -3383,7 +3383,7 @@ body {
 .topbar-search-container {
   width: clamp(200px, 17vw, 270px);
   position: relative;
-  transition: width 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.26s var(--ease-ramp);
 }
 
 .topbar-search-container:focus-within {
@@ -4700,7 +4700,7 @@ body {
   gap: 8px;
   cursor: pointer;
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, box-shadow 0.22s ease !important;
+  transition: transform 0.22s var(--ease-ramp), background-color 0.22s ease, box-shadow 0.22s ease !important;
   transform: translate3d(0, 0, 0) scale(1);
   will-change: transform;
 }
@@ -4750,7 +4750,7 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, border-color 0.22s ease !important;
+  transition: transform 0.22s var(--ease-ramp), background-color 0.22s ease, border-color 0.22s ease !important;
   transform: translate3d(0, 0, 0) scale(1);
   will-change: transform;
 }
@@ -5082,8 +5082,8 @@ body {
   opacity: 1;
   pointer-events: auto;
   transform: translate3d(0, 0, 0);
-  transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.28s var(--ease-ramp),
+              transform 0.36s var(--ease-ramp);
 }
 
 .apple-player-bar .player-now-info {
@@ -5328,8 +5328,8 @@ body {
   opacity: 0;
   pointer-events: none;
   transform: translate3d(0, 10px, 0) scale(0.97);
-  transition: opacity 0.38s cubic-bezier(0.16, 1, 0.28, 1) 0.08s,
-              transform 0.44s cubic-bezier(0.16, 1, 0.28, 1) 0.06s;
+  transition: opacity 0.38s var(--ease-ramp) 0.08s,
+              transform 0.44s var(--ease-ramp) 0.06s;
 }
 
 /* Màn hình phim 16:9 thu nhỏ */
@@ -5350,7 +5350,7 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  transition: transform 0.45s var(--ease-ramp), filter 0.3s ease;
 }
 
 .mini-screen-display:hover .mini-screen-backdrop {
@@ -5383,7 +5383,7 @@ body {
   justify-content: center;
   color: #ffffff;
   font-size: 1rem;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
+  transition: transform 0.25s var(--ease-ramp), background 0.25s ease;
 }
 
 .mini-screen-display:hover .mini-screen-play-pulse {
@@ -5852,7 +5852,7 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   cursor: grab;
   border: none;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.22s var(--ease-ramp), box-shadow 0.22s var(--ease-ramp) !important;
   transform: translate3d(0, 0, 0) scale(1);
   will-change: transform;
 }
@@ -5877,7 +5877,7 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   cursor: grab;
   border: none;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.22s var(--ease-ramp), box-shadow 0.22s var(--ease-ramp) !important;
   transform: translate3d(0, 0, 0) scale(1);
   will-change: transform;
 }
@@ -6467,7 +6467,7 @@ body.modal-open .apple-player-bar {
   border: none;
   cursor: pointer;
   padding: 0;
-  transition: all 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.32s var(--ease-ramp);
 }
 
 .vision-hero-dot:hover {
@@ -6923,11 +6923,11 @@ body.modal-open .apple-player-bar {
 .vision-settings-card,
 .vision-left-dock {
   transition:
-    backdrop-filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    -webkit-backdrop-filter 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter 0.35s var(--ease-ramp),
+    -webkit-backdrop-filter 0.35s var(--ease-ramp),
+    background 0.35s var(--ease-ramp),
+    box-shadow 0.35s var(--ease-ramp),
+    border-color 0.35s var(--ease-ramp);
 }
 
 /* Tắt transition khi kéo tay trực tiếp trên slider để phản hồi tức thì 120fps không giật */
@@ -7196,7 +7196,7 @@ html.dragging-glass .vision-left-dock {
 .vision-btn-watch:active,
 .vision-circle-btn:active {
   transform: scale(0.95) !important;
-  transition: transform 0.08s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+  transition: transform 0.08s var(--ease-ramp) !important;
 }
 
 /* ==========================================================================
@@ -7249,7 +7249,7 @@ html.dragging-glass .vision-left-dock {
    FIX: TRIỆT TIÊU HOÀN TOÀN NHẢY SHAPE KHI RÊ CHUỘT (ZERO POSITION JUMP)
    ========================================================================== */
 .segment-btn {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease !important;
+  transition: transform 0.22s var(--ease-ramp), background-color 0.22s ease, color 0.22s ease, box-shadow 0.22s ease !important;
   transform: translate3d(0, 0, 0) scale(1);
 }
 
@@ -7859,7 +7859,7 @@ iframe:focus-within,
 }
 
 .apple-video-hud.hud-active {
-  animation: appleHudPop 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: appleHudPop 0.55s var(--ease-ramp) forwards;
 }
 
 @keyframes appleHudPop {
@@ -8109,7 +8109,7 @@ body.video-cursor-hidden *,
   height: 4px;
   background: rgba(255, 255, 255, 0.24);
   border-radius: 999px;
-  transition: height 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: height 0.2s var(--ease-ramp);
   overflow: visible;
 }
 
@@ -8209,7 +8209,7 @@ body.video-cursor-hidden *,
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s var(--ease-ramp);
   user-select: none;
 }
 
@@ -8261,7 +8261,7 @@ body.video-cursor-hidden *,
 .apple-vol-slider-wrap {
   width: 0;
   overflow: hidden;
-  transition: width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.25s var(--ease-ramp);
 }
 
 .apple-volume-cluster:hover .apple-vol-slider-wrap,
@@ -8337,7 +8337,7 @@ body.video-cursor-hidden *,
   width: 96vw !important;
   border-color: rgba(255, 255, 255, 0.25) !important;
   box-shadow: 0 40px 120px rgba(0, 0, 0, 0.95) !important;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.4s var(--ease-ramp) !important;
 }
 
 .detail-modal-sheet.apple-theater-mode .modal-player-stage {
@@ -8404,8 +8404,8 @@ body.video-cursor-hidden *,
   pointer-events: none;
   transform: translate3d(0, 8px, 0) scale(0.96);
   transition:
-    opacity 0.24s cubic-bezier(0.2, 0.9, 0.3, 1),
-    transform 0.24s cubic-bezier(0.2, 0.9, 0.3, 1),
+    opacity 0.24s var(--ease-ramp),
+    transform 0.24s var(--ease-ramp),
     visibility 0.24s ease,
     background 0.2s ease,
     border-color 0.2s ease,
@@ -8497,7 +8497,7 @@ body.video-cursor-hidden *,
    và tắt bộ lọc ma trận SVG nặng trên thiết bị cảm ứng để iPad/iPhone chạy 120Hz ProMotion
    ========================================================================== */
 .vision-view-enter {
-  animation: visionViewSnappyIn 0.15s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation: visionViewSnappyIn 0.15s var(--ease-ramp) forwards !important;
 }
 
 @keyframes visionViewSnappyIn {
@@ -8515,7 +8515,7 @@ body.video-cursor-hidden *,
 .vision-side-rec-card,
 .vision-continue-item,
 .schedule-card-glass {
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+  transition: transform 0.2s var(--ease-ramp),
               border-color 0.2s ease,
               box-shadow 0.2s ease !important;
 }
@@ -8784,8 +8784,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   box-sizing: border-box !important;
   margin-bottom: 0 !important;
   transition:
-    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-color 0.35s var(--ease-ramp),
+    box-shadow 0.4s var(--ease-ramp);
 }
 
 .ps5-hero-meta-row {
@@ -8853,7 +8853,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     inset 0 1px 0.5px rgba(255, 255, 255, 0.35),
     0 10px 24px rgba(0, 0, 0, 0.42);
   transition:
-    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s var(--ease-ramp),
     background 0.22s ease,
     border-color 0.22s ease,
     box-shadow 0.24s ease;
@@ -8936,7 +8936,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s var(--ease-ramp),
     background 0.2s ease,
     border-color 0.2s ease,
     color 0.2s ease;
@@ -8967,37 +8967,37 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 10C. ICONIC PS5 HERO BACKDROP PULL-BACK & STAGGERED WAVE --- */
 .ps5-hero-morph-anim .vision-hero-bg {
-  animation: ps5HeroBackdropZoom 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: ps5HeroBackdropZoom 0.58s var(--ease-ramp) forwards;
 }
 
 .ps5-hero-morph-anim .vision-hero-genres,
 .ps5-hero-morph-anim .cinema-genre-pills {
-  animation: ps5HeroTextSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.02s both;
+  animation: ps5HeroTextSlideUp 0.4s var(--ease-ramp) 0.02s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-title,
 .ps5-hero-morph-anim .cinema-hero-title {
-  animation: ps5HeroTextSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+  animation: ps5HeroTextSlideUp 0.44s var(--ease-ramp) 0.05s both;
 }
 
 .ps5-hero-morph-anim .ps5-hero-meta-row,
 .ps5-hero-morph-anim .cinema-hero-sub,
 .ps5-hero-morph-anim .cinema-meta-badges {
-  animation: ps5HeroTextSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  animation: ps5HeroTextSlideUp 0.46s var(--ease-ramp) 0.08s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-desc,
 .ps5-hero-morph-anim .cinema-hero-desc {
-  animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.11s both;
+  animation: ps5HeroTextSlideUp 0.48s var(--ease-ramp) 0.11s both;
 }
 
 .ps5-hero-morph-anim .ps5-hero-saves-strip {
-  animation: ps5HeroTextSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.13s both;
+  animation: ps5HeroTextSlideUp 0.48s var(--ease-ramp) 0.13s both;
 }
 
 .ps5-hero-morph-anim .vision-hero-actions,
 .ps5-hero-morph-anim .cinema-hero-actions {
-  animation: ps5HeroTextSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+  animation: ps5HeroTextSlideUp 0.5s var(--ease-ramp) 0.16s both;
 }
 
 @keyframes ps5HeroBackdropZoom {
@@ -9064,13 +9064,13 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transition:
     transform 0.24s cubic-bezier(0.2, 0.9, 0.25, 1.08),
     border-color 0.2s ease,
-    box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.24s var(--ease-ramp),
     background-color 0.2s ease !important;
 }
 
 .vision-feature-card.ps5-wave-card,
 .continue-shelf-card {
-  animation: ps5CardCascadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 28ms) both;
+  animation: ps5CardCascadeIn 0.38s var(--ease-ramp) calc(var(--card-stagger, 0) * 28ms) both;
 }
 
 /* Dải ánh sáng Specular Sheen đặc trưng PS5 quét chéo mặt thẻ khi hover (pure GPU transform) */
@@ -9211,7 +9211,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* 1. Backdrop tối không gian rạp nhanh & mượt */
 .detail-modal-backdrop {
-  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: opacity 0.22s var(--ease-ramp), visibility 0.22s var(--ease-ramp) !important;
 }
 
 /* 2. Cửa sổ Rạp Chiếu phóng vút từ chiều sâu chuẩn PS5 Game Hub (0ms delay khi bấm) */
@@ -9219,8 +9219,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transform: translate3d(0, 48px, 0) scale(0.91) !important;
   opacity: 0 !important;
   transition:
-    transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.36s var(--ease-ramp),
+    opacity 0.26s var(--ease-ramp) !important;
   will-change: transform, opacity;
 }
 
@@ -9232,16 +9232,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* 3. Chỉ 3 lớp GPU nhẹ đặc trưng PS5 trong Modal (Ảnh bìa pull-back + Tiêu đề/Nút bấm trượt lên), KHÔNG animate 300 nút tập */
 .detail-modal-sheet.ps5-modal-anim .player-cover-preview {
-  animation: ps5ModalCoverZoom 0.52s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  animation: ps5ModalCoverZoom 0.52s var(--ease-ramp) both !important;
 }
 
 .detail-modal-sheet.ps5-modal-anim .player-cover-content h2 {
-  animation: ps5HeroTextSlideUp 0.36s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both !important;
+  animation: ps5HeroTextSlideUp 0.36s var(--ease-ramp) 0.05s both !important;
 }
 
 .detail-modal-sheet.ps5-modal-anim .hero-actions,
 .detail-modal-sheet.ps5-modal-anim .modal-top-controls {
-  animation: ps5HeroTextSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both !important;
+  animation: ps5HeroTextSlideUp 0.38s var(--ease-ramp) 0.1s both !important;
 }
 
 .detail-modal-sheet.ps5-modal-anim .episodes-grid .ep-pill-btn {
@@ -9407,16 +9407,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 1. LỊCH CHIẾU PHIM (AIR SCHEDULE) --- */
 .schedule-hero-panel {
-  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ps5ModalItemSlideUp 0.44s var(--ease-ramp) both;
 }
 
 .schedule-tabs-bar {
-  animation: ps5ModalItemSlideUp 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+  animation: ps5ModalItemSlideUp 0.46s var(--ease-ramp) 0.05s both;
 }
 
 .schedule-tab-btn {
-  animation: ps5CardCascadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--tab-stagger, 0) * 28ms) both;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease !important;
+  animation: ps5CardCascadeIn 0.38s var(--ease-ramp) calc(var(--tab-stagger, 0) * 28ms) both;
+  transition: transform 0.22s var(--ease-ramp), background 0.2s ease, border-color 0.2s ease, box-shadow 0.22s ease !important;
   will-change: transform;
 }
 
@@ -9440,18 +9440,18 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* Thẻ Lịch Chiếu: Cascade PS5 + 3D Spring Hover Lift */
 .schedule-card-glass {
-  animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 32ms) both !important;
+  animation: ps5CardCascadeIn 0.42s var(--ease-ramp) calc(var(--card-stagger, 0) * 32ms) both !important;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .schedule-card-media img {
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
+  transition: transform 0.32s var(--ease-ramp) !important;
   will-change: transform;
 }
 
 .sch-play-icon {
-  transition: transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1), background 0.2s ease, box-shadow 0.28s ease !important;
+  transition: transform 0.32s var(--ease-ramp), background 0.2s ease, box-shadow 0.28s ease !important;
 }
 
 @media (hover: hover) {
@@ -9469,12 +9469,12 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .schedule-empty-state {
-  animation: ps5CardCascadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ps5CardCascadeIn 0.45s var(--ease-ramp) both;
 }
 
 /* --- 2. THÔNG BÁO (NOTIFICATION FLYOUT & ITEMS) --- */
 .vision-notif-flyout.ps5-flyout-anim {
-  animation: ps5FlyoutSmoothIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  animation: ps5FlyoutSmoothIn 0.28s var(--ease-ramp) both !important;
   transform-origin: top right;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
   box-shadow:
@@ -9519,7 +9519,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .notif-tab-btn {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+  transition: transform 0.2s var(--ease-ramp), background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
 }
 
 @media (hover: hover) {
@@ -9542,17 +9542,17 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .notif-movie-item,
 .notif-news-item {
-  animation: ps5ItemSlideUp 0.26s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--item-stagger, 0) * 18ms) both !important;
+  animation: ps5ItemSlideUp 0.26s var(--ease-ramp) calc(var(--item-stagger, 0) * 18ms) both !important;
   will-change: transform, opacity;
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s var(--ease-ramp),
     background 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.22s ease !important;
 }
 
 .notif-movie-thumb {
-  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.32s var(--ease-ramp) !important;
   will-change: transform;
 }
 
@@ -9576,7 +9576,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .notif-view-all-link {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+  transition: transform 0.2s var(--ease-ramp), color 0.2s ease !important;
 }
 
 .notif-view-all-link:hover {
@@ -9586,16 +9586,16 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 3. CÀI ĐẶT HỆ THỐNG (SETTINGS VIEW & TOGGLES) --- */
 .vision-settings-banner {
-  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: ps5ModalItemSlideUp 0.44s var(--ease-ramp) both;
   transform: translateZ(0) !important;
 }
 
 .vision-settings-card {
-  animation: ps5CardCascadeIn 0.48s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 80ms) both !important;
+  animation: ps5CardCascadeIn 0.48s var(--ease-ramp) calc(var(--card-stagger, 0) * 80ms) both !important;
   transition:
-    border-color 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    border-color 0.24s var(--ease-ramp),
+    box-shadow 0.24s var(--ease-ramp),
+    background-color 0.24s var(--ease-ramp) !important;
   transform: translateZ(0) !important;
   will-change: auto;
 }
@@ -9612,11 +9612,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .filter-chip {
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.22s var(--ease-ramp),
+    background-color 0.22s var(--ease-ramp),
+    border-color 0.22s var(--ease-ramp),
+    color 0.22s var(--ease-ramp),
+    box-shadow 0.22s var(--ease-ramp) !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
   backface-visibility: hidden;
@@ -9657,11 +9657,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .vision-toggle-btn {
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.22s var(--ease-ramp),
+    background-color 0.22s var(--ease-ramp),
+    border-color 0.22s var(--ease-ramp),
+    color 0.22s var(--ease-ramp),
+    box-shadow 0.22s var(--ease-ramp) !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
   backface-visibility: hidden;
@@ -9697,7 +9697,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .ios-slider-icon {
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s var(--ease-ramp),
     color 0.22s ease !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
@@ -9717,7 +9717,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 .vision-btn-outline {
   transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.22s var(--ease-ramp),
     background-color 0.22s ease,
     border-color 0.22s ease,
     color 0.22s ease,
@@ -9742,8 +9742,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 .auth-modal-sheet {
   transform: translate3d(0, 28px, 0) scale(0.95) !important;
   transition:
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform 0.4s var(--ease-ramp),
+    opacity 0.32s var(--ease-ramp) !important;
   will-change: transform, opacity;
 }
 
@@ -9753,32 +9753,32 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .auth-modal-sheet.ps5-modal-anim .auth-header {
-  animation: ps5ModalItemSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both !important;
+  animation: ps5ModalItemSlideUp 0.4s var(--ease-ramp) 0.04s both !important;
 }
 
 .auth-modal-sheet.ps5-modal-anim .auth-google-hero,
 .auth-modal-sheet.ps5-modal-anim .auth-logged-card {
-  animation: ps5ModalItemSlideUp 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both !important;
+  animation: ps5ModalItemSlideUp 0.44s var(--ease-ramp) 0.08s both !important;
 }
 
 .auth-modal-sheet.ps5-modal-anim .btn-google-login-main,
 .auth-modal-sheet.ps5-modal-anim .google-btn-wrapper {
-  animation: ps5ModalItemSlideUp 0.48s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both !important;
+  animation: ps5ModalItemSlideUp 0.48s var(--ease-ramp) 0.12s both !important;
 }
 
 .auth-modal-sheet.ps5-modal-anim .google-project-connect-card,
 .auth-modal-sheet.ps5-modal-anim .google-quick-email-login {
-  animation: ps5ModalItemSlideUp 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both !important;
+  animation: ps5ModalItemSlideUp 0.52s var(--ease-ramp) 0.16s both !important;
 }
 
 .auth-modal-sheet.ps5-modal-anim .auth-guest-notice,
 .auth-modal-sheet.ps5-modal-anim .btn-google-signout {
-  animation: ps5ModalItemSlideUp 0.56s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both !important;
+  animation: ps5ModalItemSlideUp 0.56s var(--ease-ramp) 0.2s both !important;
 }
 
 .btn-google-login-main {
   transition:
-    transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.24s var(--ease-ramp),
     box-shadow 0.24s ease,
     border-color 0.2s ease !important;
 }
@@ -9798,7 +9798,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .btn-google-signout {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.22s ease !important;
+  transition: transform 0.22s var(--ease-ramp), background 0.2s ease, box-shadow 0.22s ease !important;
 }
 
 @media (hover: hover) {
@@ -9813,7 +9813,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .btn-quick-save-client {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease !important;
+  transition: transform 0.2s var(--ease-ramp), box-shadow 0.2s ease !important;
 }
 
 @media (hover: hover) {
@@ -9828,7 +9828,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .btn-text-email-toggle {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+  transition: transform 0.2s var(--ease-ramp), color 0.2s ease !important;
 }
 
 .btn-text-email-toggle:hover {
@@ -9843,19 +9843,19 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.35),
     0 10px 24px rgba(0, 0, 0, 0.5) !important;
-  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: all 0.24s var(--ease-ramp) !important;
 }
 
 .search-dropdown.open {
-  animation: ps5FlyoutSpringIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: ps5FlyoutSpringIn 0.32s var(--ease-ramp) forwards !important;
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.8),
     inset 0 1px 1.5px rgba(255, 255, 255, 0.35) !important;
 }
 
 .search-suggestion-item {
-  animation: ps5ItemSlideUp 0.34s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--item-stagger, 0) * 28ms) both !important;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease, box-shadow 0.22s ease !important;
+  animation: ps5ItemSlideUp 0.34s var(--ease-ramp) calc(var(--item-stagger, 0) * 28ms) both !important;
+  transition: transform 0.22s var(--ease-ramp), background 0.2s ease, box-shadow 0.22s ease !important;
 }
 
 @media (hover: hover) {
@@ -9871,7 +9871,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .btn-sync-now {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease !important;
+  transition: transform 0.22s var(--ease-ramp), box-shadow 0.22s ease !important;
 }
 
 @media (hover: hover) {
@@ -9887,11 +9887,11 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 6. THANH NOW PLAYING & ĐIỀU KHIỂN DƯỚI CÙNG --- */
 .apple-player-bar {
-  transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease !important;
+  transition: transform 0.34s var(--ease-ramp), opacity 0.3s ease !important;
 }
 
 .mini-play-glow-btn {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, background 0.2s ease !important;
+  transition: transform 0.22s var(--ease-ramp), box-shadow 0.22s ease, background 0.2s ease !important;
 }
 
 @media (hover: hover) {
@@ -9906,7 +9906,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .mini-ctrl-btn {
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease !important;
+  transition: transform 0.2s var(--ease-ramp), color 0.2s ease !important;
 }
 
 @media (hover: hover) {
@@ -9921,7 +9921,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .mini-cinema-expand-btn {
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.22s ease !important;
+  transition: transform 0.22s var(--ease-ramp), border-color 0.2s ease, box-shadow 0.22s ease !important;
 }
 
 @media (hover: hover) {
@@ -10051,7 +10051,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: ps5FlyoutSmoothIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+  animation: ps5FlyoutSmoothIn 0.28s var(--ease-ramp) both !important;
   transform-origin: top left;
 }
 
@@ -10167,7 +10167,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   font-size: 0.84rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s var(--ease-ramp);
 }
 
 .filter-pill:hover {
@@ -10316,7 +10316,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   .vision-feature-card:active,
   .vision-trailer-card:active {
     transform: scale(0.975) translate3d(0, 0, 0) !important;
-    transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transition: transform 0.14s var(--ease-ramp) !important;
   }
 
   /* Touch Video Scrubber: vùng kéo 30px + khóa vuốt dọc + luôn hiện nút chấm tròn */
@@ -11082,7 +11082,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   justify-content: center;
   align-items: center;
   pointer-events: none;
-  transition: bottom 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+  transition: bottom 0.28s var(--ease-ramp), opacity 0.22s ease;
 }
 
 .active-video-container.controls-hidden .apple-bilingual-sub-overlay {
@@ -11146,7 +11146,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   background: transparent !important;
   border: none !important;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+  transition: transform 0.2s var(--ease-ramp), color 0.2s ease;
 }
 
 .apple-ctrl-btn.apple-setting-btn:hover {
@@ -11184,7 +11184,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   flex-direction: column;
   gap: 6px;
   z-index: 70;
-  animation: appleMenuFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: appleMenuFadeIn 0.2s var(--ease-ramp);
 }
 
 .apple-setting-menu.open {
@@ -11384,7 +11384,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   justify-content: center !important;
   font-size: 1rem !important;
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s var(--ease-ramp);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
 }
 
@@ -11420,7 +11420,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
   text-align: center;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s var(--ease-ramp);
 }
 
 .vision-request-panel::before {
@@ -11505,7 +11505,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 14px;
   padding: 4px 5px 4px 14px;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s var(--ease-ramp);
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -11560,7 +11560,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   font-size: 0.92rem;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s var(--ease-ramp);
 }
 
 .req-action-icon-btn:hover {
@@ -11592,7 +11592,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   cursor: pointer;
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(0, 122, 255, 0.4);
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.22s var(--ease-ramp);
 }
 
 .req-submit-btn:hover {
@@ -11739,7 +11739,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   text-align: left;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: toastSlideIn 0.3s var(--ease-ramp);
 }
 
 /* Responsive cho điện thoại */
@@ -11962,7 +11962,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
    SILKY 120FPS CLEAN MOTION SYSTEM (ZERO JANK, PURE GPU COMPOSITING)
    ========================================================================== */
 :root {
-  --ease-clean: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-clean: var(--ease-ramp);
 }
 
 /* Chuyển động mượt mà chỉ trên các thuộc tính GPU rẻ (loại bỏ transition: all gây repaint) */
@@ -12654,7 +12654,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   border: 3px solid rgba(255, 255, 255, 0.14) !important;
   transition:
     border-color 0.24s ease,
-    box-shadow 0.36s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow 0.36s var(--ease-ramp) !important;
 }
 
 .vision-feature-card,
@@ -12666,8 +12666,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   outline: none !important;
   will-change: transform;
   transition:
-    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s var(--ease-ramp),
+    box-shadow 0.38s var(--ease-ramp),
     border-color 0.24s ease !important;
 }
 
@@ -12724,13 +12724,13 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   border-color: #ffffff !important;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48) !important;
   transition:
-    transform 0.16s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.16s var(--ease-ramp),
     border-color 0.12s ease !important;
 }
 
 .movie-card:active {
   transform: translate3d(0, -1px, 0) scale(0.986) !important;
-  transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition: transform 0.16s var(--ease-ramp) !important;
 }
 
 .movie-card:active .movie-poster-wrap {
@@ -12740,7 +12740,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* 2. Chuyển động Crossfade 120fps siêu mượt giữa các slide Hero Banner */
 .vision-hero-bg.hero-bg-crossfade-in {
-  animation: heroBgSmoothCrossfade 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation: heroBgSmoothCrossfade 0.52s var(--ease-ramp) forwards !important;
 }
 
 @keyframes heroBgSmoothCrossfade {
@@ -12755,22 +12755,22 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .cinema-hero-info.hero-info-smooth-glide .cinema-hero-title {
-  animation: heroInfoSmoothSlide 0.38s cubic-bezier(0.22, 1, 0.36, 1) 0.01s both !important;
+  animation: heroInfoSmoothSlide 0.38s var(--ease-ramp) 0.01s both !important;
 }
 
 .cinema-hero-info.hero-info-smooth-glide .cinema-hero-sub,
 .cinema-hero-info.hero-info-smooth-glide .cinema-meta-badges,
 .cinema-hero-info.hero-info-smooth-glide .cinema-genre-pills {
-  animation: heroInfoSmoothSlide 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.04s both !important;
+  animation: heroInfoSmoothSlide 0.4s var(--ease-ramp) 0.04s both !important;
 }
 
 .cinema-hero-info.hero-info-smooth-glide .cinema-hero-desc,
 .cinema-hero-info.hero-info-smooth-glide .ps5-hero-saves-strip {
-  animation: heroInfoSmoothSlide 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.07s both !important;
+  animation: heroInfoSmoothSlide 0.42s var(--ease-ramp) 0.07s both !important;
 }
 
 .cinema-hero-info.hero-info-smooth-glide .cinema-hero-actions {
-  animation: heroInfoSmoothSlide 0.44s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both !important;
+  animation: heroInfoSmoothSlide 0.44s var(--ease-ramp) 0.1s both !important;
 }
 
 @keyframes heroInfoSmoothSlide {
@@ -12804,8 +12804,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transform: translate3d(0, 0, 0);
   box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
   transition:
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transform 0.5s var(--ease-ramp),
+    box-shadow 0.5s var(--ease-ramp) !important;
 }
 
 /* Hiệu ứng xuất hiện chỉ chạy lúc đầu, không giữ transform sau khi xong → hover chuyển động liền mạch */
@@ -12822,7 +12822,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   transform-origin: center 40%;
   -webkit-backface-visibility: visible !important;
   backface-visibility: visible !important;
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition: transform 0.7s var(--ease-ramp) !important;
 }
 
 .vision-feature-card.vision-feature-card .vision-feature-shade {
@@ -12866,14 +12866,14 @@ article.vision-feature-card.vision-feature-card::after {
 
   .vision-feature-card.vision-feature-card:hover .vision-card-play-white {
     transform: scale(1.08) !important;
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease !important;
+    transition: transform 0.4s var(--ease-ramp), background-color 0.2s ease !important;
   }
 }
 
 .vision-feature-card.vision-feature-card:active {
   transform: translate3d(0, -2px, 0) scale(0.985) !important;
   border: 0 !important;
-  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition: transform 0.15s var(--ease-ramp) !important;
 }
 
 article.vision-feature-card.vision-feature-card:active::after {
@@ -12977,14 +12977,14 @@ article.vision-feature-card.vision-feature-card::after {
   -webkit-backface-visibility: visible;
   animation-fill-mode: backwards;
   transition:
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    transform 0.5s var(--ease-ramp),
+    box-shadow 0.5s var(--ease-ramp),
+    border-color 0.4s var(--ease-ramp),
+    background-color 0.4s var(--ease-ramp) !important;
 }
 
 .continue-shelf-card.continue-shelf-card .continue-shelf-thumb img {
-  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  transition: transform 0.7s var(--ease-ramp) !important;
 }
 
 .continue-shelf-card.continue-shelf-card .continue-shelf-play {
@@ -12992,11 +12992,11 @@ article.vision-feature-card.vision-feature-card::after {
   backdrop-filter: none;
   background: rgba(0, 0, 0, 0.6);
   transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s var(--ease-ramp),
     background-color 0.35s ease,
     color 0.35s ease,
     opacity 0.35s ease,
-    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    box-shadow 0.45s var(--ease-ramp) !important;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -13007,7 +13007,7 @@ article.vision-feature-card.vision-feature-card::after {
 
 .continue-shelf-card.continue-shelf-card:active {
   transition:
-    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.18s var(--ease-ramp),
     border-color 0.15s ease,
     background-color 0.15s ease !important;
 }
@@ -13048,5 +13048,74 @@ article.vision-feature-card.vision-feature-card::after {
   .cinema-home-layout .vision-cards-grid-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 14px !important;
+  }
+}
+
+/* v2.9.7 — Màn hình ≤1180px: vùng nội dung bị cắt (overflow clip, chừa 24px cho hiệu ứng nâng thẻ),
+   nên bóng đổ 45px của banner bị cắt ngang thành một dải đen dưới banner → chỉ giữ viền sáng bên trong */
+@media (max-width: 1180px) {
+  #heroShowcase.vision-hero-banner {
+    box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.4) !important;
+  }
+}
+
+/* v2.9.7 — Hệ easing chung kiểu "Easy Ease" (ease in-out): vào êm, ra êm, không giật đầu/cuối.
+   Mọi chuyển động chính (thẻ phim, kệ, bảng nổi, cửa sổ phim, hero) dùng chung một đường cong. */
+:root {
+  --ease-ramp: cubic-bezier(0.45, 0, 0.2, 1);      /* in-out: dùng cho di chuyển / phóng / nâng */
+  --ease-ramp-in: cubic-bezier(0.5, 0, 0.75, 0.3); /* in: dùng khi thu lại / biến mất */
+}
+
+/* Bảng thông báo: hiệu ứng thu lại về phía nút chuông khi đóng (bấm ra ngoài, nút X, chọn phim) */
+@keyframes notifFlyoutOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.94) translate3d(0, -10px, 0);
+  }
+}
+
+.vision-notif-flyout.is-closing {
+  animation: notifFlyoutOut 0.24s var(--ease-ramp) both !important;
+  transform-origin: top right;
+  pointer-events: none !important;
+  will-change: transform, opacity;
+}
+
+.vision-notif-backdrop {
+  transition: opacity 0.26s var(--ease-ramp) !important;
+}
+
+@media (max-width: 640px) {
+  .vision-notif-flyout.is-closing {
+    transform-origin: top center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vision-notif-flyout.is-closing {
+    animation: none !important;
+  }
+}
+
+/* Thẻ ở cột ngoài cùng không còn bị khung nội dung cắt viền khi rê chuột:
+   khung cửa sổ bên ngoài (.vision-window) đã chặn cuộn ngang, nên khung trong không cần cắt nữa */
+#mainContentWrapper {
+  overflow-x: visible !important;
+}
+
+/* Màn cảm ứng: nới vùng bấm của nút chuyển banner (nút chỉ 18px, khó bấm trúng) mà không đổi hình dáng */
+@media (hover: none) {
+  .hero-pager-arrow {
+    position: relative;
+  }
+
+  .hero-pager-arrow::before {
+    content: "";
+    position: absolute;
+    inset: -13px -9px;
   }
 }
