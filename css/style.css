@@ -13119,3 +13119,57 @@ article.vision-feature-card.vision-feature-card::after {
     inset: -13px -9px;
   }
 }
+
+/* v2.9.8 — Hiệu ứng rê chuột nhanh hơn 30% (0.5s → 0.35s, ảnh 0.7s → 0.49s), vẫn dùng đường cong ease in-out chung */
+.vision-feature-card.vision-feature-card.vision-feature-card {
+  transition:
+    transform 0.35s var(--ease-ramp),
+    box-shadow 0.35s var(--ease-ramp) !important;
+}
+
+.vision-feature-card.vision-feature-card.vision-feature-card .vision-feature-img {
+  transition: transform 0.49s var(--ease-ramp) !important;
+}
+
+article.vision-feature-card.vision-feature-card.vision-feature-card::after {
+  transition: border-color 0.245s ease !important;
+}
+
+.continue-shelf-card.continue-shelf-card.continue-shelf-card {
+  transition:
+    transform 0.35s var(--ease-ramp),
+    box-shadow 0.35s var(--ease-ramp),
+    border-color 0.28s var(--ease-ramp),
+    background-color 0.28s var(--ease-ramp) !important;
+}
+
+.continue-shelf-card.continue-shelf-card.continue-shelf-card .continue-shelf-thumb img {
+  transition: transform 0.49s var(--ease-ramp) !important;
+}
+
+.continue-shelf-card.continue-shelf-card.continue-shelf-card .continue-shelf-play {
+  transition:
+    transform 0.315s var(--ease-ramp),
+    background-color 0.245s ease,
+    color 0.245s ease,
+    opacity 0.245s ease,
+    box-shadow 0.315s var(--ease-ramp) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vision-feature-card.vision-feature-card.vision-feature-card:hover .vision-card-play-white {
+    transition: transform 0.28s var(--ease-ramp), background-color 0.14s ease !important;
+  }
+}
+
+.vision-feature-card.vision-feature-card.vision-feature-card:active,
+.continue-shelf-card.continue-shelf-card.continue-shelf-card:active {
+  transition: transform 0.12s var(--ease-ramp), border-color 0.1s ease, background-color 0.1s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vision-feature-card.vision-feature-card.vision-feature-card,
+  .vision-feature-card.vision-feature-card.vision-feature-card .vision-feature-img {
+    transition: none !important;
+  }
+}
