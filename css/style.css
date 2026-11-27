@@ -74,15 +74,10 @@
 
 html {
   font-size: 16px;
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-base);
-  color: var(--text-primary);
   overflow-x: hidden;
   min-height: 100vh;
   line-height: 1.5;
@@ -189,9 +184,6 @@ body::-webkit-scrollbar {
   position: sticky;
   top: 0;
   height: 100vh;
-  background: var(--bg-sidebar);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
   border-right: 1px solid var(--border-subtle);
   display: flex;
   flex-direction: column;
@@ -499,7 +491,6 @@ body::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 0.25s var(--ease-in-out-smooth);
 }
 
 .btn-sync-now:hover {
@@ -523,9 +514,6 @@ body::-webkit-scrollbar {
   top: 0;
   height: var(--topbar-height);
   z-index: 25;
-  background: rgba(12, 12, 16, 0.65);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--border-subtle);
   padding: 0 32px;
   display: flex;
@@ -572,7 +560,6 @@ body::-webkit-scrollbar {
   padding: 6px 14px;
   border-radius: 7px;
   cursor: pointer;
-  transition: all 0.3s var(--ease-in-out-smooth);
   font-family: inherit;
 }
 
@@ -590,7 +577,6 @@ body::-webkit-scrollbar {
 .topbar-search-container {
   flex: 1;
   max-width: 480px;
-  position: relative;
 }
 
 .topbar-search-box {
@@ -663,20 +649,16 @@ body::-webkit-scrollbar {
   left: 0;
   width: min(480px, calc(100vw - 32px));
   min-width: 440px;
-  background: rgba(18, 18, 24, 0.96) !important;
   backdrop-filter: blur(40px) saturate(200%);
   -webkit-backdrop-filter: blur(40px) saturate(200%);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 20px;
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.88), inset 0 1px 1px rgba(255, 255, 255, 0.3) !important;
   padding: 14px 16px;
   max-height: 74vh;
   overflow-y: auto;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px) scale(0.98);
-  transform-origin: top left;
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 120;
 }
 
@@ -707,7 +689,6 @@ body::-webkit-scrollbar {
   padding: 10px 12px;
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .search-suggestion-item:hover {
@@ -949,7 +930,6 @@ body::-webkit-scrollbar {
   padding: 4px 10px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(8px);
   color: var(--text-primary);
 }
 
@@ -977,10 +957,6 @@ body::-webkit-scrollbar {
   box-shadow: 0 2px 10px rgba(255, 215, 0, 0.18);
 }
 
-.meta-pill.badge-1080 {
-  display: none !important;
-}
-
 .hero-desc {
   font-size: 0.94rem;
   color: var(--text-secondary);
@@ -1004,8 +980,6 @@ body::-webkit-scrollbar {
   align-items: center;
   gap: 10px;
   background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.48);
   padding: 13px 28px;
@@ -1014,19 +988,13 @@ body::-webkit-scrollbar {
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
-  transition: all 0.32s var(--ease-spring);
   font-family: inherit;
 }
 
 .btn-primary-play:hover {
   background: rgba(255, 255, 255, 0.28);
   border-color: #ffffff;
-  transform: scale(1.04) translateY(-2px);
   box-shadow: 0 14px 36px rgba(255, 255, 255, 0.14);
-}
-
-.btn-primary-play:active {
-  transform: scale(0.98);
 }
 
 .btn-glass-secondary {
@@ -1034,8 +1002,6 @@ body::-webkit-scrollbar {
   align-items: center;
   gap: 9px;
   background: rgba(255, 255, 255, 0.14);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 13px 22px;
@@ -1049,7 +1015,6 @@ body::-webkit-scrollbar {
 
 .btn-glass-secondary:hover {
   background: rgba(255, 255, 255, 0.24);
-  transform: translateY(-2px);
 }
 
 /* Hero Poster Card & Carousel Thumbnails */
@@ -1067,13 +1032,8 @@ body::-webkit-scrollbar {
   overflow: hidden;
   box-shadow: none !important;
   border: 1px solid rgba(255, 255, 255, 0.22);
-  transform: rotate(2deg);
   transition: transform 0.5s var(--ease-spring);
   cursor: pointer;
-}
-
-.hero-floating-poster:hover {
-  transform: rotate(0deg) scale(1.06);
 }
 
 .hero-floating-poster img {
@@ -1127,7 +1087,6 @@ body::-webkit-scrollbar {
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.28s var(--ease-in-out-smooth);
   font-family: inherit;
   line-height: 1;
   vertical-align: middle;
@@ -1156,13 +1115,6 @@ body::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.13);
   color: var(--text-primary);
   transform: none !important;
-}
-
-.filter-chip.active {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.55);
-  box-shadow: none;
 }
 
 /* ==========================================================================
@@ -1258,7 +1210,6 @@ body::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.2);
   border-color: #ffffff;
   color: #ffffff;
-  transform: scale(1.08);
 }
 
 /* Horizontal Track */
@@ -1291,8 +1242,6 @@ body::-webkit-scrollbar {
   gap: 10px;
   cursor: pointer;
   position: relative;
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
 }
 
 .movie-card:hover {
@@ -1460,7 +1409,6 @@ body::-webkit-scrollbar {
   height: 30px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #fff;
   display: flex;
@@ -1547,9 +1495,6 @@ body::-webkit-scrollbar {
 }
 
 .chart-column-card {
-  background: var(--bg-card);
-  backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 20px;
   display: flex;
@@ -1662,8 +1607,6 @@ body::-webkit-scrollbar {
   padding: 32px 20px 110px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 body.modal-open .vision-stage {
@@ -1688,28 +1631,14 @@ body.modal-open .ambient-canvas {
 .detail-modal-sheet {
   width: 100%;
   max-width: 1060px;
-  background: rgba(20, 20, 26, 0.94);
   border: 1px solid var(--border-highlight);
   border-radius: var(--radius-xl);
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85);
   overflow: hidden;
-  transform: translateY(36px) scale(0.96);
-  transition: transform 0.45s var(--ease-spring);
   position: relative;
-}
-
-.detail-modal-backdrop.open .detail-modal-sheet {
-  transform: translateY(0) scale(1);
 }
 
 /* Modal Top Floating Action Bar */
 .modal-top-controls {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  z-index: 20;
-  display: flex;
-  align-items: center;
   gap: 10px;
 }
 
@@ -1727,7 +1656,6 @@ body.modal-open .ambient-canvas {
   align-items: center;
   gap: 7px;
   cursor: pointer;
-  transition: all 0.25s var(--ease-in-out-smooth);
   font-family: inherit;
 }
 
@@ -1738,12 +1666,7 @@ body.modal-open .ambient-canvas {
 }
 
 .modal-ctrl-btn.icon-only {
-  width: 38px;
-  height: 38px;
   padding: 0;
-  justify-content: center;
-  border-radius: 50%;
-  font-size: 0.95rem;
 }
 
 .modal-ctrl-btn.icon-only#lightsOffBtn.active {
@@ -1869,48 +1792,7 @@ body.modal-open .ambient-canvas {
   pointer-events: none;
 }
 
-.quality-selector-group {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xs);
-  padding: 2px;
-  gap: 2px;
-}
-
-.quality-pill-btn {
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-secondary);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.22s var(--ease-in-out-smooth);
-  font-family: inherit;
-}
-
-.quality-pill-btn:hover {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.quality-pill-btn.active {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: #ffffff;
-  color: #ffffff;
-}
-
-.quality-pill-btn.is-4k-quality {
-  color: #38ef7d;
-}
-
 .quality-pill-btn.is-4k-quality.active {
-  background: linear-gradient(135deg, rgba(56, 239, 125, 0.28), rgba(17, 153, 142, 0.28)) !important;
-  border-color: #38ef7d !important;
-  color: #ffffff !important;
   box-shadow: 0 0 14px rgba(56, 239, 125, 0.45) !important;
   text-shadow: 0 0 8px rgba(56, 239, 125, 0.6) !important;
 }
@@ -2116,7 +1998,6 @@ body.modal-open .ambient-canvas {
 .continue-shelf-card {
   position: relative;
   background: rgba(255, 255, 255, 0.035) !important;
-  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 20px;
   padding: 8px;
   box-shadow: none !important;
@@ -2124,19 +2005,11 @@ body.modal-open .ambient-canvas {
   isolation: isolate;
   cursor: pointer;
   box-sizing: border-box;
-  will-change: transform;
-  transition:
-    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.24s ease,
-    background-color 0.24s ease !important;
   display: flex;
   flex-direction: column;
 }
 
 /* Ẩn hoàn toàn pseudo-element để tránh subpixel lệch trục */
-.continue-shelf-card::after {
-  display: none !important;
-}
 
 .continue-shelf-card:hover {
   transform: translate3d(0, -4px, 0) !important;
@@ -2311,7 +2184,6 @@ body.modal-open .ambient-canvas {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.25s var(--ease-in-out-smooth);
   font-family: inherit;
 }
 
@@ -2455,7 +2327,6 @@ body.modal-open .ambient-canvas {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all 0.25s var(--ease-in-out-smooth);
   font-family: inherit;
   box-sizing: border-box !important;
   outline: none !important;
@@ -2495,7 +2366,6 @@ body.modal-open .ambient-canvas {
 .netflix-related-card:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.22);
-  transform: translateY(-5px);
   box-shadow: var(--shadow-md);
 }
 
@@ -2516,16 +2386,11 @@ body.modal-open .ambient-canvas {
   transition: transform 0.5s var(--ease-in-out-cubic);
 }
 
-.netflix-related-card:hover .netflix-related-thumb img {
-  transform: none !important;
-}
-
 .netflix-related-duration {
   position: absolute;
   top: 10px;
   right: 10px;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(6px);
   padding: 2px 8px;
   border-radius: 5px;
   font-size: 0.72rem;
@@ -2594,25 +2459,9 @@ body.modal-open .ambient-canvas {
 }
 
 .apple-player-bar {
-  display: none !important;
-  position: fixed;
-  bottom: 14px;
-  left: calc(var(--sidebar-width) + 24px);
-  right: 24px;
-  height: 74px;
-  z-index: 60;
-  background: var(--bg-player-bar);
-  backdrop-filter: blur(40px) saturate(210%);
-  -webkit-backdrop-filter: blur(40px) saturate(210%);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-  padding: 0 22px;
-  display: grid;
   grid-template-columns: 1.1fr 1.4fr 1fr;
   align-items: center;
   gap: 18px;
-  transition: transform 0.45s var(--ease-spring), opacity 0.35s var(--ease-in-out-smooth);
 }
 
 .player-now-info {
@@ -2720,7 +2569,6 @@ body.modal-open .ambient-canvas {
 
 .transport-btn:hover {
   color: #ffffff;
-  transform: scale(1.12);
 }
 
 .transport-play-main {
@@ -2738,7 +2586,6 @@ body.modal-open .ambient-canvas {
 }
 
 .transport-play-main:hover {
-  transform: scale(1.1);
   background: rgba(255, 255, 255, 0.26);
   border-color: #ffffff;
   color: #ffffff;
@@ -2801,7 +2648,6 @@ body.modal-open .ambient-canvas {
   background: rgba(255, 255, 255, 0.22);
   border-color: #ffffff;
   color: #ffffff;
-  transform: translateY(-2px);
 }
 
 /* ==========================================================================
@@ -2828,7 +2674,6 @@ body.modal-open .ambient-canvas {
   box-shadow: var(--shadow-md);
   font-size: 0.85rem;
   font-weight: 600;
-  display: flex;
   align-items: center;
   gap: 10px;
   animation: toastSlideIn 0.4s var(--ease-spring) forwards;
@@ -3007,7 +2852,6 @@ html {
 
 .liquid-mobile-dock {
   display: none;
-  position: fixed;
   left: 50% !important;
   transform: translateX(-50%) !important;
   bottom: calc(10px + env(safe-area-inset-bottom, 0px));
@@ -3255,8 +3099,6 @@ html {
   }
 
   .modal-top-controls {
-    top: 10px;
-    right: 10px;
     gap: 6px;
   }
 
@@ -3296,9 +3138,6 @@ html {
 
 /* 4. Compact Phones (iPhone SE / Mini <= 390px) */
 @media (max-width: 390px) {
-  .movie-track {
-    grid-auto-columns: calc((100% - 10px) / 2.08);
-  }
   .dock-tab-btn {
     font-size: 0.6rem;
   }
@@ -3324,8 +3163,6 @@ body {
     radial-gradient(ellipse 60% 55% at 85% 22%, rgba(190, 195, 205, 0.24), transparent 72%),
     radial-gradient(ellipse 75% 60% at 50% 88%, rgba(95, 98, 106, 0.32), transparent 75%),
     linear-gradient(165deg, #56585e 0%, #37393f 42%, #23252a 100%);
-  transform: translateZ(0);
-  backface-visibility: hidden;
   will-change: transform;
 }
 
@@ -3335,8 +3172,6 @@ body {
   z-index: 2;
   width: 100%;
   max-width: 100%;
-  margin: 0;
-  padding: 0 !important;
   min-height: 100vh;
 }
 
@@ -3346,35 +3181,6 @@ body {
 }
 
 /* Sliding Liquid Glass Pill Indicator inside Dock (Silky Smooth 120fps Glide with Radiant White Halo Glow) */
-.vision-dock-indicator {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 28%,
-    rgba(255, 255, 255, 0.52) 0%,
-    rgba(255, 255, 255, 0.22) 55%,
-    rgba(255, 255, 255, 0.08) 100%
-  );
-  /* Viền trên dày hơn viền dưới đón hướng sáng specular liquid glass chuẩn visionOS */
-  border-top: 2.5px solid rgba(255, 255, 255, 0.95) !important;
-  border-bottom: 0.8px solid rgba(255, 255, 255, 0.22) !important;
-  border-left: 1.4px solid rgba(255, 255, 255, 0.45) !important;
-  border-right: 1.4px solid rgba(255, 255, 255, 0.45) !important;
-  box-shadow:
-    0 0 16px 2px rgba(255, 255, 255, 0.42),
-    inset 0 2px 1.5px rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.15),
-    0 4px 14px rgba(0, 0, 0, 0.35);
-  transform: translate3d(-50%, calc(var(--dock-idx, 0) * 54px), 0);
-  transition: transform 0.52s cubic-bezier(0.2, 0.9, 0.25, 1);
-  pointer-events: none;
-  z-index: 0;
-  will-change: transform;
-}
 
 /* Hiệu ứng thấu kính chất lỏng co giãn Apple Liquid Glass khi lướt chuyển icon */
 .vision-dock-indicator.is-morphing {
@@ -3476,7 +3282,6 @@ body {
 }
 
 .vision-view-enter {
-  animation: appleSpatialScaleIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   will-change: opacity, transform;
 }
 
@@ -3528,17 +3333,6 @@ body {
 /* Main Spatial Window (Full-Bleed Tràn Viền 100%, Không Khung Viền Ngoài) */
 .vision-window {
   width: 100%;
-  min-height: 100vh;
-  border-radius: 0 !important;
-  background-clip: padding-box !important;
-  -webkit-background-clip: padding-box !important;
-  overflow: clip !important;
-  isolation: isolate;
-  background: #0d0f14;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
-  box-shadow: none !important;
   padding: 20px 28px 96px;
   display: flex;
   flex-direction: column;
@@ -3575,7 +3369,6 @@ body {
   font-size: 1.05rem;
   cursor: pointer;
   flex-shrink: 0;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vision-topbar-home-btn:hover {
@@ -3585,10 +3378,6 @@ body {
   filter: none !important;
   transform: scale(1.08) !important;
   color: #ffffff !important;
-}
-
-.vision-topbar-home-btn:active {
-  transform: scale(0.95);
 }
 
 .topbar-search-container {
@@ -3616,7 +3405,6 @@ body {
   cursor: pointer;
   flex-shrink: 0;
   position: relative;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vision-topbar-filter-btn:hover {
@@ -3677,58 +3465,13 @@ body {
 }
 
 /* Center Category Pills */
-.vision-nav-pills {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 6px 4px;
-  overflow-x: auto;
-  overflow-y: visible;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
 .vision-nav-pills::-webkit-scrollbar {
   display: none;
-}
-
-.vision-nav-pill {
-  background: transparent;
-  border: 1px solid transparent;
-  color: rgba(255, 255, 255, 0.72);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  font-family: inherit;
-  white-space: nowrap;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  box-sizing: border-box;
-  line-height: 1.25;
-  transition:
-    background 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.25s ease,
-    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .vision-nav-pill:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-}
-
-.vision-nav-pill.active {
-  background: rgba(255, 255, 255, 0.16) !important;
-  border-color: rgba(255, 255, 255, 0.32) !important;
-  color: #ffffff !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.35) !important;
-  filter: none !important;
-  text-shadow: none !important;
-  transform: none;
 }
 
 .vision-count-tag {
@@ -3762,7 +3505,6 @@ body {
   font-size: 1.02rem;
   border-radius: 50% !important;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, background-color 0.2s ease;
   text-decoration: none;
 }
 
@@ -3773,10 +3515,6 @@ body {
   box-shadow: none !important;
   filter: none !important;
   transform: scale(1.08);
-}
-
-.vision-circle-btn:active {
-  transform: scale(0.92);
 }
 
 .vision-circle-btn.active {
@@ -3965,7 +3703,6 @@ body {
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
   text-align: center;
   white-space: nowrap;
 }
@@ -3973,12 +3710,6 @@ body {
 .notif-tab-btn:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
-}
-
-.notif-tab-btn.active {
-  background: rgba(0, 240, 255, 0.18);
-  border-color: rgba(0, 240, 255, 0.4);
-  color: #00f0ff;
 }
 
 /* Content List */
@@ -4005,7 +3736,6 @@ body {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.07);
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .notif-movie-item:hover {
@@ -4094,7 +3824,6 @@ body {
   flex-direction: column;
   gap: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .notif-news-item:hover {
@@ -4159,7 +3888,6 @@ body {
   gap: 10px;
   cursor: pointer;
   overflow: hidden;
-  transition: all 0.25s ease;
 }
 
 .vision-profile-pill:hover {
@@ -4242,9 +3970,7 @@ body {
 
 .vision-glass-panel {
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.24);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -4294,8 +4020,6 @@ body {
   padding: 6px 4px 6px 4px !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
   overscroll-behavior: contain;
   will-change: scroll-position;
   transform: translate3d(0, 0, 0);
@@ -4482,12 +4206,6 @@ body {
 
 .cinema-showcase-hero,
 .vision-hero-banner {
-  position: relative !important;
-  width: 100% !important;
-  height: clamp(440px, 52vh, 520px) !important;
-  min-height: 440px !important;
-  max-height: 520px !important;
-  box-sizing: border-box !important;
   border-radius: 26px;
   overflow: hidden;
   isolation: isolate;
@@ -4497,7 +4215,6 @@ body {
     0 24px 60px rgba(0, 0, 0, 0.65);
   background: #0d0f14;
   padding: 0 !important;
-  margin-bottom: 0 !important;
 }
 
 .vision-continue-watching-shelf {
@@ -4684,9 +4401,6 @@ body {
   box-shadow:
     0 0 28px rgba(255, 255, 255, 0.55),
     0 8px 24px rgba(0, 0, 0, 0.55) !important;
-  transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s ease !important;
 }
 
 .cinema-play-glow-btn:hover {
@@ -4718,7 +4432,6 @@ body {
   font-size: 1.15rem !important;
   cursor: pointer !important;
   box-sizing: border-box !important;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .cinema-fav-circle-btn:hover {
@@ -4815,10 +4528,6 @@ body {
   -webkit-clip-path: inset(0 round 10px);
   clip-path: inset(0 round 10px);
   transform: none !important;
-  transition:
-    opacity 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease !important;
 }
 
 .cinema-thumb-card img {
@@ -4864,9 +4573,6 @@ body {
 }
 
 .vision-hero-banner {
-  position: relative;
-  width: 100%;
-  height: 400px;
   border-radius: 28px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -5010,11 +4716,6 @@ body {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
 }
 
-.vision-btn-watch:active {
-  transform: translate3d(0, 0, 0) scale(0.96) !important;
-  transition-duration: 0.1s !important;
-}
-
 .vision-btn-outline {
   height: 42px;
   padding: 0 20px;
@@ -5029,8 +4730,6 @@ body {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease !important;
-  transform: translate3d(0, 0, 0) scale(1);
   will-change: transform;
 }
 
@@ -5038,11 +4737,6 @@ body {
   background: rgba(255, 255, 255, 0.18);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translate3d(0, -1.5px, 0) scale(1.025) !important;
-}
-
-.vision-btn-outline:active {
-  transform: translate3d(0, 0, 0) scale(0.96) !important;
-  transition-duration: 0.1s !important;
 }
 
 .vision-btn-dots {
@@ -5146,7 +4840,6 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease !important;
   transform: translate3d(0, 0, 0) scale(1);
   will-change: transform;
 }
@@ -5189,7 +4882,6 @@ body {
   border-radius: 20px;
   overflow: hidden;
   isolation: isolate;
-  border: 2px solid rgba(255, 255, 255, 0.16) !important;
   box-shadow: none !important;
   background: transparent;
   cursor: pointer;
@@ -5198,17 +4890,11 @@ body {
   justify-content: flex-end;
   padding: 14px 16px;
   transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
   box-sizing: border-box;
   -webkit-mask-image: -webkit-radial-gradient(white, black);
-  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease !important;
 }
 
 /* Ẩn hoàn toàn pseudo-element để tránh subpixel lệch trục */
-.vision-feature-card::after {
-  display: none !important;
-}
 
 .vision-feature-card:hover {
   transform: translate3d(0, -4px, 0) !important;
@@ -5305,22 +4991,6 @@ body {
   gap: 4px;
 }
 
-.vision-card-genre {
-  display: inline-flex !important;
-  align-items: center;
-  padding: 3px 10px;
-  margin-bottom: 2px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px) saturate(150%);
-  -webkit-backdrop-filter: blur(12px) saturate(150%);
-  font-size: 0.66rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.01em;
-}
-
 .vision-card-title {
   font-size: 0.92rem;
   font-weight: 800;
@@ -5391,11 +5061,6 @@ body {
     inset 0 1.5px 1px rgba(255, 255, 255, 0.42),
     0 14px 36px rgba(0, 0, 0, 0.58);
   /* Chuyển động Apple Fluid Motion: Mở rộng cả chiều ngang & dọc êm ái như Dynamic Island */
-  transition: width 0.5s cubic-bezier(0.16, 1, 0.28, 1),
-              height 0.52s cubic-bezier(0.16, 1, 0.28, 1),
-              border-radius 0.5s cubic-bezier(0.16, 1, 0.28, 1),
-              box-shadow 0.46s ease,
-              background 0.46s ease;
   overflow: hidden !important;
   z-index: 60;
   contain: layout paint;
@@ -5888,7 +5553,6 @@ body {
   font-size: 0.88rem;
   cursor: pointer;
   padding: 0;
-  transition: all 0.2s ease;
 }
 
 .mini-ctrl-btn:hover {
@@ -5910,7 +5574,6 @@ body {
   font-size: 0.9rem;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
-  transition: all 0.2s ease;
 }
 
 .mini-play-glow-btn:hover {
@@ -5968,7 +5631,6 @@ body {
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .mini-cinema-expand-btn:hover {
@@ -6034,9 +5696,7 @@ body {
 
 .vision-settings-card {
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.2);
   padding: 18px 22px;
   display: flex;
   flex-direction: column;
@@ -6108,14 +5768,12 @@ body {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .vision-toggle-btn.on {
   background: #ffffff;
   color: #0b0c0e !important;
   border-color: #ffffff;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .vision-setting-actions-row {
@@ -6157,7 +5815,6 @@ body {
   flex-shrink: 0;
   width: 22px;
   height: 22px;
-  transition: color 0.2s ease, transform 0.2s ease;
   user-select: none;
 }
 .ios-slider-icon:hover {
@@ -6295,12 +5952,8 @@ body.modal-open .apple-player-bar {
   pointer-events: none !important;
 }
 
-
 /* --- B. THIẾT BỊ 1: MÁY TÍNH BÀN / DESKTOP / MÀN HÌNH LỚN (> 1180px) --- */
 @media (min-width: 1181px) {
-  .vision-stage {
-    padding: 18px 24px 96px 24px !important;
-  }
   .vision-left-dock {
     display: none !important;
   }
@@ -6330,7 +5983,6 @@ body.modal-open .apple-player-bar {
   }
 }
 
-
 /* --- C. THIẾT BỊ 2: MÁY TÍNH BẢNG / iPAD (769px – 1180px) --- */
 
 /* C1. iPad Landscape (Nằm ngang: 920px – 1180px: iPad Pro, iPad Air, Galaxy Tab) */
@@ -6338,14 +5990,10 @@ body.modal-open .apple-player-bar {
   :root {
     --window-radius: 26px;
   }
-  .vision-stage {
-    padding: 16px 18px 90px 18px !important;
-  }
   .vision-left-dock {
     display: none !important;
   }
   .vision-window {
-    border-radius: var(--window-radius, 26px) !important;
     padding: 18px 20px 24px !important;
   }
   .vision-topbar {
@@ -6384,9 +6032,6 @@ body.modal-open .apple-player-bar {
     height: 56px !important;
     width: min(385px, calc(100vw - 32px)) !important;
   }
-  .cinema-showcase-hero {
-    height: 520px !important;
-  }
   .cinema-hero-content {
     padding: 34px 34px !important;
   }
@@ -6401,18 +6046,11 @@ body.modal-open .apple-player-bar {
   :root {
     --window-radius: 24px;
   }
-  .vision-stage {
-    padding: 14px 14px 140px 14px !important;
-  }
   .vision-left-dock {
     display: none !important;
   }
   .vision-window {
-    border-radius: var(--window-radius, 24px) !important;
     padding: 16px 16px 22px !important;
-  }
-  .cinema-showcase-hero {
-    height: 480px !important;
   }
   .cinema-hero-content {
     padding: 28px 24px !important;
@@ -6427,7 +6065,6 @@ body.modal-open .apple-player-bar {
   }
   .vision-nav-pills {
     grid-column: 1 / -1;
-    justify-content: flex-start;
     padding: 6px 4px !important;
   }
   .vision-dashboard-grid {
@@ -6473,52 +6110,16 @@ body.modal-open .apple-player-bar {
   }
 }
 
-
 /* --- D. THIẾT BỊ 3: ĐIỆN THOẠI DI ĐỘNG / SMARTPHONE (<= 767px: iPhone, Samsung, Xiaomi) --- */
 @media (max-width: 767px) {
   :root {
     --window-radius: 20px;
   }
-  .vision-stage {
-    padding: 6px 6px calc(146px + env(safe-area-inset-bottom, 0px)) 6px !important;
-  }
   .vision-left-dock {
     display: none !important;
   }
-  .vision-window {
-    border-radius: var(--window-radius, 20px) !important;
-    padding: 12px 10px 18px !important;
-  }
 
   /* Topbar trên Điện thoại: Gọn gàng 2 hàng */
-  .vision-topbar {
-    grid-template-columns: 1fr auto !important;
-    gap: 10px !important;
-    margin-bottom: 14px !important;
-  }
-  .topbar-search-container {
-    max-width: none !important;
-  }
-  .vision-search-pill {
-    height: 40px !important;
-    padding: 0 12px !important;
-  }
-  .vision-search-pill input {
-    font-size: 0.82rem !important;
-  }
-  .vision-topbar-right {
-    gap: 8px !important;
-  }
-  .vision-circle-btn {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-  }
-  .vision-topbar-home-btn {
-    width: 38px !important;
-    height: 38px !important;
-    min-width: 38px !important;
-  }
   .vision-profile-text,
   .vision-profile-arrow {
     display: none !important;
@@ -6530,42 +6131,14 @@ body.modal-open .apple-player-bar {
     width: 32px !important;
     height: 32px !important;
   }
-  .vision-circle-btn {
-    width: 38px !important;
-    height: 38px !important;
-  }
 
   /* Thanh danh mục cuộn ngang mượt mà trên Điện thoại */
   .vision-nav-pills {
-    grid-column: 1 / -1 !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    overflow: visible !important;
-    overflow-x: visible !important;
-    overflow-y: visible !important;
-    gap: 6px !important;
-    padding: 8px 0 !important;
     scrollbar-width: none !important;
-  }
-  .vision-nav-pills::-webkit-scrollbar {
-    display: none !important;
-  }
-  .vision-nav-pill {
-    flex: 1 1 0 !important;
-    padding: 7px 4px !important;
-    font-size: 0.78rem !important;
-    min-height: 34px !important;
-    box-sizing: border-box !important;
-    transform: none !important;
   }
 
   /* Dropdown tìm kiếm trên Điện thoại: phủ toàn chiều rộng nổi trên màn hình */
   .search-dropdown {
-    position: fixed !important;
-    left: 10px !important;
-    right: 10px !important;
-    top: 64px !important;
     max-height: calc(85vh - 64px) !important;
     border-radius: 18px !important;
     z-index: 100 !important;
@@ -6584,29 +6157,10 @@ body.modal-open .apple-player-bar {
 
   /* Hero Banner trên Điện thoại: Vừa vặn, nút bấm ngón tay dễ chạm */
   .vision-hero-banner {
-    height: clamp(280px, 44vh, 340px) !important;
     padding: 16px !important;
-    border-radius: 20px !important;
-    margin-bottom: 16px !important;
   }
 
   /* Cinema Showcase Hero trên Điện thoại */
-  .cinema-showcase-hero {
-    height: auto !important;
-    min-height: 440px !important;
-    border-radius: 20px !important;
-    -webkit-clip-path: inset(0 round 20px) !important;
-    clip-path: inset(0 round 20px) !important;
-    margin-bottom: 14px !important;
-  }
-  .cinema-hero-content {
-    padding: 24px 18px 20px !important;
-    justify-content: flex-end !important;
-  }
-  .cinema-hero-title {
-    font-size: clamp(1.4rem, 6vw, 1.85rem) !important;
-    line-height: 1.2 !important;
-  }
   .cinema-hero-sub {
     font-size: 0.8rem !important;
     margin-bottom: 8px !important;
@@ -6632,11 +6186,6 @@ body.modal-open .apple-player-bar {
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
     margin-bottom: 14px !important;
-  }
-  .cinema-play-glow-btn {
-    width: 48px !important;
-    height: 48px !important;
-    font-size: 1.15rem !important;
   }
   .cinema-action-capsule {
     height: 48px !important;
@@ -6766,8 +6315,6 @@ body.modal-open .apple-player-bar {
 
   /* Băng chuyền phim vuốt chạm có quán tính trên Điện thoại */
   .movie-track {
-    grid-auto-columns: calc((100% - 10px) / 2.3) !important;
-    gap: 10px !important;
     scroll-snap-type: x mandatory !important;
   }
   .carousel-nav-btn {
@@ -6776,19 +6323,6 @@ body.modal-open .apple-player-bar {
 
   /* THANH ĐIỀU HƯỚNG ĐÁY ĐIỆN THOẠI (Liquid Mobile Dock) */
   .liquid-mobile-dock {
-    display: flex !important;
-    justify-content: space-around !important;
-    align-items: center !important;
-    position: fixed !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    bottom: max(10px, env(safe-area-inset-bottom, 10px)) !important;
-    height: 50px !important;
-    width: min(290px, calc(100vw - 32px)) !important;
-    max-width: 320px !important;
-    margin: 0 !important;
-    padding: 0 6px !important;
     z-index: 75 !important;
     border-radius: 999px !important;
     background: rgba(18, 20, 28, 0.9) !important;
@@ -6832,12 +6366,6 @@ body.modal-open .apple-player-bar {
   /* THANH MINI PLAYER TRÊN ĐIỆN THOẠI — NẰM GỌN GÀNG TRÊN THANH DOCK, TUYỆT ĐỐI KHÔNG CHỒNG ĐÈ */
   .apple-player-bar {
     position: fixed !important;
-    left: 10px !important;
-    right: 10px !important;
-    bottom: calc(74px + env(safe-area-inset-bottom, 0px)) !important;
-    transform: none !important;
-    width: auto !important;
-    max-width: 500px !important;
     margin: 0 auto !important;
     height: 52px !important;
     border-radius: 16px !important;
@@ -6877,16 +6405,11 @@ body.modal-open .apple-player-bar {
 
   /* Modal Chi Tiết Phim Dạng Bottom Sheet trên Điện Thoại */
   .detail-modal-backdrop {
-    padding: 0 !important;
-    align-items: flex-end !important;
     z-index: 9999 !important;
   }
   .detail-modal-sheet {
-    border-radius: 20px 20px 0 0 !important;
     max-height: 94vh !important;
     border-bottom: none !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
   }
   .modal-top-controls {
     top: 10px !important;
@@ -6897,10 +6420,6 @@ body.modal-open .apple-player-bar {
     padding: 6px 10px !important;
     font-size: 0.74rem !important;
     min-height: 38px !important;
-  }
-  .modal-ctrl-btn.icon-only {
-    width: 38px !important;
-    height: 38px !important;
   }
 }
 
@@ -7094,7 +6613,6 @@ body.modal-open .apple-player-bar {
   justify-content: center;
   gap: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   margin-bottom: 14px;
 }
 
@@ -7153,7 +6671,6 @@ body.modal-open .apple-player-bar {
   font-size: 0.76rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .btn-quick-save-client:hover {
@@ -7200,11 +6717,9 @@ body.modal-open .apple-player-bar {
   gap: 5px;
   padding: 4px 8px;
   border-radius: 8px;
-  transition: all 0.2s ease;
 }
 
 .btn-text-email-toggle:hover {
-  color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -7319,7 +6834,6 @@ body.modal-open .apple-player-bar {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s ease;
 }
 
 .btn-google-signout:hover {
@@ -7348,10 +6862,6 @@ body.modal-open .apple-player-bar {
 [data-theme="midnight"] .spatial-room-bg {
   background: #000000 !important;
 }
-[data-theme="midnight"] .vision-window {
-  border-color: rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.88) !important;
-}
 
 /* 2. Theme: Cyber Aurora (Tím Cực Quang Tương Lai) */
 [data-theme="aurora"] .spatial-room-bg {
@@ -7360,10 +6870,6 @@ body.modal-open .apple-player-bar {
     radial-gradient(ellipse 65% 55% at 80% 25%, rgba(59, 130, 246, 0.3), transparent 72%),
     radial-gradient(ellipse 75% 60% at 50% 90%, rgba(236, 72, 153, 0.22), transparent 75%),
     linear-gradient(165deg, #1e1b4b 0%, #0f172a 45%, #020617 100%) !important;
-}
-[data-theme="aurora"] .vision-window {
-  border-color: rgba(168, 85, 247, 0.38) !important;
-  box-shadow: inset 0 1.5px 1px rgba(216, 180, 254, 0.4), 0 32px 80px rgba(76, 29, 149, 0.35) !important;
 }
 [data-theme="aurora"] .vision-nav-pill.active,
 [data-theme="aurora"] .filter-chip.active,
@@ -7379,10 +6885,6 @@ body.modal-open .apple-player-bar {
     radial-gradient(ellipse 65% 55% at 80% 25%, rgba(239, 68, 68, 0.24), transparent 72%),
     radial-gradient(ellipse 75% 60% at 50% 90%, rgba(120, 53, 15, 0.35), transparent 75%),
     linear-gradient(165deg, #2a1b14 0%, #1c1512 45%, #0f0b09 100%) !important;
-}
-[data-theme="amber"] .vision-window {
-  border-color: rgba(245, 158, 11, 0.35) !important;
-  box-shadow: inset 0 1.5px 1px rgba(253, 230, 138, 0.35), 0 32px 80px rgba(180, 83, 9, 0.3) !important;
 }
 [data-theme="amber"] .vision-nav-pill.active,
 [data-theme="amber"] .filter-chip.active,
@@ -7400,10 +6902,6 @@ body.modal-open .apple-player-bar {
     radial-gradient(ellipse 65% 55% at 80% 25%, rgba(6, 182, 212, 0.24), transparent 72%),
     radial-gradient(ellipse 75% 60% at 50% 90%, rgba(6, 78, 59, 0.35), transparent 75%),
     linear-gradient(165deg, #06261f 0%, #061e19 45%, #03100e 100%) !important;
-}
-[data-theme="emerald"] .vision-window {
-  border-color: rgba(168, 85, 247, 0.38) !important;
-  box-shadow: inset 0 1.5px 1px rgba(167, 243, 208, 0.35), 0 32px 80px rgba(5, 150, 105, 0.3) !important;
 }
 [data-theme="emerald"] .vision-btn-watch {
   background: linear-gradient(135deg, #10b981, #059669) !important;
@@ -7444,15 +6942,10 @@ html.dragging-glass .vision-left-dock {
    APPLE visionOS UNIFIED FLUID GLASS ENGINE (FRAMELESS EDGE-TO-EDGE — ZERO FULL-PAGE BLUR JANK)
    -------------------------------------------------------------------------- */
 .vision-window {
-  border-radius: 0 !important;
   background-clip: padding-box !important;
   -webkit-background-clip: padding-box !important;
   overflow: clip !important;
   isolation: isolate;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
-  box-shadow: none !important;
   background: linear-gradient(
     145deg,
     rgba(30, 33, 40, 0.94) 0%,
@@ -7467,8 +6960,6 @@ html.dragging-glass .vision-left-dock {
     rgba(30, 27, 75, var(--glass-dyn-alpha, 0.65)) 0%,
     rgba(15, 23, 42, calc(var(--glass-dyn-alpha, 0.65) * 1.1)) 100%
   ) !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 [data-theme="amber"] .vision-window {
@@ -7477,8 +6968,6 @@ html.dragging-glass .vision-left-dock {
     rgba(45, 30, 24, var(--glass-dyn-alpha, 0.65)) 0%,
     rgba(26, 19, 16, calc(var(--glass-dyn-alpha, 0.65) * 1.1)) 100%
   ) !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 [data-theme="emerald"] .vision-window {
@@ -7487,14 +6976,10 @@ html.dragging-glass .vision-left-dock {
     rgba(6, 38, 31, var(--glass-dyn-alpha, 0.65)) 0%,
     rgba(4, 26, 21, calc(var(--glass-dyn-alpha, 0.65) * 1.1)) 100%
   ) !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 [data-theme="midnight"] .vision-window {
   background: rgba(10, 10, 14, calc(var(--glass-dyn-alpha, 0.7) * 1.15)) !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 .vision-settings-card,
@@ -7555,14 +7040,6 @@ html.dragging-glass .vision-left-dock {
     0 4px 14px rgba(0, 0, 0, 0.35) !important;
 }
 
-[data-theme="emerald"] .vision-nav-pill.active {
-  background: linear-gradient(135deg, #10b981, #059669) !important;
-  border-color: rgba(110, 231, 183, 0.85) !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.45) !important;
-}
-
 [data-theme="emerald"] .filter-chip.active {
   background: linear-gradient(135deg, #10b981, #059669) !important;
   border-color: rgba(110, 231, 183, 0.9) !important;
@@ -7592,14 +7069,6 @@ html.dragging-glass .vision-left-dock {
     0 4px 14px rgba(0, 0, 0, 0.35) !important;
 }
 
-[data-theme="aurora"] .vision-nav-pill.active {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
-  border-color: rgba(192, 132, 252, 0.85) !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.45) !important;
-}
-
 [data-theme="aurora"] .filter-chip.active {
   background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
   border-color: rgba(192, 132, 252, 0.9) !important;
@@ -7627,14 +7096,6 @@ html.dragging-glass .vision-left-dock {
     inset 0 1px 1px rgba(254, 243, 199, 0.8),
     inset 0 -1px 0.8px rgba(245, 158, 11, 0.2),
     0 4px 14px rgba(0, 0, 0, 0.35) !important;
-}
-
-[data-theme="amber"] .vision-nav-pill.active {
-  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-  border-color: rgba(252, 211, 77, 0.85) !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.45) !important;
 }
 
 [data-theme="amber"] .filter-chip.active {
@@ -7680,9 +7141,6 @@ html.dragging-glass .vision-left-dock {
 .vision-nav-pill {
   position: relative;
   background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
   color: rgba(255, 255, 255, 0.72) !important;
   padding: 8px 18px;
   border-radius: 999px;
@@ -7697,13 +7155,6 @@ html.dragging-glass .vision-left-dock {
   gap: 6px;
   box-sizing: border-box;
   line-height: 1.25;
-  transform: scale(0.97);
-  transition:
-    transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.16s ease,
-    color 0.14s ease,
-    box-shadow 0.18s ease !important;
-  will-change: transform;
 }
 
 .vision-nav-pill:not(.active):hover {
@@ -7713,21 +7164,13 @@ html.dragging-glass .vision-left-dock {
 }
 
 .vision-nav-pill.active {
-  background: #ffffff !important;
-  border: none !important;
   outline: none !important;
-  color: #111216 !important;
   font-weight: 700 !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.32), inset 0 1px 0.5px rgba(255, 255, 255, 0.95) !important;
-  transform: none !important;
 }
 
 .filter-chip.active {
   background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: #111216 !important;
   font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.9), 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
 .filter-chip.active i,
@@ -7737,7 +7180,6 @@ html.dragging-glass .vision-left-dock {
 
 /* 5. TACTILE TOUCH PACK & HAPTIC PRESS (APPLE PHYSICAL FEEDBACK) */
 .vision-nav-pill:active {
-  transform: scale(0.94) !important;
   transition: transform 0.08s ease !important;
 }
 
@@ -7767,7 +7209,6 @@ html.dragging-glass .vision-left-dock {
   gap: 8px;
   padding: 6px 4px;
   overflow-x: auto;
-  overflow-y: visible;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
@@ -7790,30 +7231,18 @@ html.dragging-glass .vision-left-dock {
 }
 
 [data-theme="emerald"] .vision-nav-pill.active {
-  background: linear-gradient(135deg, #10b981, #059669) !important;
-  border: none !important;
   outline: none !important;
-  color: #ffffff !important;
   font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.45) !important;
 }
 
 [data-theme="aurora"] .vision-nav-pill.active {
-  background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
-  border: none !important;
   outline: none !important;
-  color: #ffffff !important;
   font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.45) !important;
 }
 
 [data-theme="amber"] .vision-nav-pill.active {
-  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
-  border: none !important;
   outline: none !important;
-  color: #ffffff !important;
   font-weight: 700 !important;
-  box-shadow: inset 0 1px 0.5px rgba(255, 255, 255, 0.45) !important;
 }
 
 /* ==========================================================================
@@ -7930,7 +7359,6 @@ html.dragging-glass .vision-left-dock {
   -webkit-backdrop-filter: blur(20px);
   color: rgba(255, 255, 255, 0.78);
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
@@ -7944,10 +7372,7 @@ html.dragging-glass .vision-left-dock {
 .schedule-tab-btn.active {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85)) !important;
   color: #111216 !important;
-  border-color: #ffffff !important;
-  box-shadow: inset 0 1px 1px #ffffff !important;
   filter: none !important;
-  transform: translateY(-2px);
 }
 
 .tab-day-label {
@@ -8137,12 +7562,9 @@ html.dragging-glass .vision-left-dock {
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.03);
-  border: 2px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  will-change: transform;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.24s ease, background-color 0.24s ease !important;
   box-shadow: none !important;
   contain: layout style paint;
   content-visibility: auto;
@@ -8172,7 +7594,6 @@ html.dragging-glass .vision-left-dock {
   image-rendering: high-quality !important;
   transform: translateZ(0);
   backface-visibility: hidden;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .schedule-card-glass:hover .schedule-card-media img {
@@ -8247,7 +7668,6 @@ html.dragging-glass .vision-left-dock {
   padding-left: 3px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   transform: scale(0.85);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .schedule-card-glass:hover .sch-play-icon {
@@ -9030,10 +8450,6 @@ body.video-cursor-hidden *,
 
 @media (max-width: 767px) {
   .apple-skip-intro-btn {
-    right: 14px;
-    bottom: 82px;
-    padding: 8px 15px;
-    font-size: 0.78rem;
     gap: 6px;
   }
 }
@@ -9093,16 +8509,6 @@ body.video-cursor-hidden *,
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }
-}
-
-.detail-modal-backdrop {
-  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
-}
-
-.detail-modal-sheet {
-  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-              opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 .vision-feature-card,
@@ -9223,12 +8629,6 @@ body.video-cursor-hidden *,
   }
 
   /* Tối ưu Safe Area cho Dynamic Island / Tai thỏ và Home Indicator trên iPhone */
-  .vision-stage {
-    padding-top: max(8px, env(safe-area-inset-top, 8px)) !important;
-    padding-left: max(6px, env(safe-area-inset-left, 6px)) !important;
-    padding-right: max(6px, env(safe-area-inset-right, 6px)) !important;
-    padding-bottom: calc(138px + env(safe-area-inset-bottom, 0px)) !important;
-  }
 
   /* Bảng Thông Báo (Notification Flyout) trên iPhone: Neo ngay dưới icon chuông */
   .vision-notif-flyout {
@@ -9252,19 +8652,11 @@ body.video-cursor-hidden *,
   }
 
   /* Modal Xem Phim dạng Bottom Sheet chuẩn iOS trên iPhone với khung Video ghim cố định (Sticky Player) */
-  .detail-modal-backdrop {
-    padding: 0 !important;
-    align-items: flex-end !important;
-  }
   .detail-modal-sheet {
-    width: 100vw !important;
-    max-width: 100vw !important;
     height: auto !important;
     max-height: 94dvh !important;
-    border-radius: 24px 24px 0 0 !important;
     overflow-y: auto !important;
     -webkit-overflow-scrolling: touch !important;
-    padding-bottom: env(safe-area-inset-bottom, 16px) !important;
   }
   .detail-modal-sheet .modal-player-stage {
     position: sticky !important;
@@ -9310,17 +8702,9 @@ body.video-cursor-hidden *,
     padding: 10px 12px 10px !important;
     gap: 6px !important;
   }
-  .apple-controls-row {
-    gap: 6px !important;
-  }
   .apple-controls-left,
   .apple-controls-right {
     gap: 4px !important;
-  }
-  .apple-ctrl-btn {
-    width: 34px !important;
-    height: 34px !important;
-    font-size: 0.85rem !important;
   }
   .apple-time-Readout {
     font-size: 0.72rem !important;
@@ -9354,9 +8738,6 @@ body.video-cursor-hidden *,
   }
 
   /* Nội dung chi tiết phim & Danh sách tập trên iPhone */
-  .modal-body-content {
-    padding: 14px 14px 24px !important;
-  }
   .modal-movie-title {
     font-size: 1.25rem !important;
   }
@@ -9375,10 +8756,6 @@ body.video-cursor-hidden *,
   .related-movies-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
-  }
-  .vision-settings-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
   }
 }
 
@@ -9698,7 +9075,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* Dải ánh sáng Specular Sheen đặc trưng PS5 quét chéo mặt thẻ khi hover (pure GPU transform) */
 .vision-feature-card::before {
-  content: "";
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -9711,7 +9087,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transparent 80%
   );
   transform: translate3d(-135%, 0, 0) skewX(-20deg);
-  transition: transform 0.62s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .vision-feature-card .vision-feature-img,
@@ -9724,16 +9099,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* 2. Hiệu ứng Nâng 3D Lơ Lửng PS5 Focus Halo & Quét Sáng Khi Rê Chuột / Focus */
 @media (hover: hover) {
-  .vision-feature-card:hover,
-  .vision-feature-card:focus-visible,
-  .vision-feature-card.is-hero-previewing {
-    transform: translate3d(0, -7px, 0) scale(1.032) !important;
-    border-color: rgba(255, 255, 255, 0.98) !important;
-    box-shadow:
-      0 14px 34px rgba(0, 0, 0, 0.58),
-      0 0 22px rgba(255, 255, 255, 0.26) !important;
-    z-index: 12 !important;
-  }
 
   .vision-feature-card:hover::before,
   .vision-feature-card:focus-visible::before {
@@ -9751,26 +9116,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: none !important;
   }
 
-  .vision-feature-card:hover .vision-card-play-white {
-    transform: scale(1.14) !important;
-    background: #ffffff !important;
-    color: #0b0c10 !important;
-    box-shadow: 0 6px 18px rgba(255, 255, 255, 0.35) !important;
-  }
-
   /* Movie Cards (Tìm Kiếm, Phim Liên Quan Modal, Bảng Xếp Hạng Top 10) */
-  .movie-card:hover,
-  .movie-card:focus-visible {
-    transform: translate3d(0, -7px, 0) scale(1.03) !important;
-    z-index: 6 !important;
-  }
-
-  .movie-card:hover .movie-poster-wrap {
-    border-color: rgba(255, 255, 255, 0.98) !important;
-    box-shadow:
-      0 12px 28px rgba(0, 0, 0, 0.55),
-      0 0 18px rgba(255, 255, 255, 0.24) !important;
-  }
 
   .movie-card:hover .movie-poster-wrap::after {
     display: none !important;
@@ -9786,14 +9132,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 
   /* Continue Watching Shelf Cards (Hàng Tiếp Tục Xem) */
-  .continue-shelf-card:hover,
-  .continue-shelf-card:focus-visible {
-    transform: translate3d(0, -4px, 0) !important;
-    border: 2px solid rgba(255, 255, 255, 0.95) !important;
-    background: rgba(255, 255, 255, 0.07) !important;
-    box-shadow: none !important;
-    z-index: 5 !important;
-  }
 
   .continue-shelf-card:hover::after,
   .continue-shelf-card:focus-visible::after {
@@ -9837,13 +9175,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 /* Phản hồi bấm 0ms tức thì chuẩn PS5 (Tactile Press) */
-.vision-feature-card:active,
-.movie-card:active,
-.continue-shelf-card:active,
-.vision-trailer-card:active {
-  transform: scale(0.955) translate3d(0, 0, 0) !important;
-  transition: transform 0.06s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
-}
 
 .vision-card-play-white {
   transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.25, 1.08), background-color 0.18s ease !important;
@@ -10049,7 +9380,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
   transform: translateZ(0);
   will-change: transform;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .explore-load-more-btn:hover {
@@ -10111,13 +9441,8 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 /* Thẻ Lịch Chiếu: Cascade PS5 + 3D Spring Hover Lift */
 .schedule-card-glass {
   animation: ps5CardCascadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--card-stagger, 0) * 32ms) both !important;
-  will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition:
-    transform 0.32s cubic-bezier(0.2, 0.9, 0.3, 1),
-    border-color 0.26s ease,
-    box-shadow 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) !important;
 }
 
 .schedule-card-media img {
@@ -10130,13 +9455,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 @media (hover: hover) {
-  .schedule-card-glass:hover,
-  .schedule-card-glass:focus-visible {
-    transform: translate3d(0, -6px, 0) scale(1.025) !important;
-    border-color: rgba(255, 255, 255, 0.75) !important;
-    box-shadow: none !important;
-    z-index: 5 !important;
-  }
 
   .schedule-card-glass:hover .schedule-card-media img {
     transform: none !important;
@@ -10148,10 +9466,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     color: #0b0c10 !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.6) !important;
   }
-}
-
-.schedule-card-glass:active {
-  transform: scale(0.97) !important;
 }
 
 .schedule-empty-state {
@@ -10624,12 +9938,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 /* --- 7. CÁC NÚT ĐIỀU HƯỚNG DANH MỤC & TOPBAR --- */
 .vision-nav-pill {
-  transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
   backface-visibility: hidden;
@@ -10646,11 +9954,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
-.vision-nav-pill:active {
-  transform: translate3d(0, 0, 0) scale(0.95) !important;
-  transition-duration: 0.1s !important;
-}
-
 .vision-nav-pill.active {
   background: rgba(255, 255, 255, 0.16) !important;
   color: #ffffff !important;
@@ -10662,12 +9965,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 }
 
 .vision-circle-btn {
-  transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
   backface-visibility: hidden;
@@ -10685,18 +9982,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
-.vision-circle-btn:active {
-  transform: translate3d(0, 0, 0) scale(0.92) !important;
-  transition-duration: 0.1s !important;
-}
-
 .vision-topbar-home-btn {
-  transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
   backface-visibility: hidden;
@@ -10714,17 +10000,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   }
 }
 
-.vision-topbar-home-btn:active {
-  transform: translate3d(0, 0, 0) scale(0.92) !important;
-  transition-duration: 0.1s !important;
-}
-
 .vision-profile-pill {
-  transition:
-    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
   transform: translate3d(0, 0, 0) scale(1) !important;
   will-change: transform;
   backface-visibility: hidden;
@@ -10737,11 +10013,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     border-color: rgba(255, 255, 255, 0.5) !important;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
   }
-}
-
-.vision-profile-pill:active {
-  transform: translate3d(0, 0, 0) scale(0.95) !important;
-  transition-duration: 0.1s !important;
 }
 
 /* ==========================================================================
@@ -10786,9 +10057,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
 @media (max-width: 767px) {
   .vision-filter-flyout {
-    left: 10px;
-    right: 10px;
-    width: auto;
     max-height: calc(100dvh - 120px - env(safe-area-inset-bottom, 16px) - 64px);
   }
 }
@@ -11162,16 +10430,7 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     box-sizing: border-box !important;
   }
 
-  .vision-stage {
-    padding: 0 !important;
-  }
-
   .vision-window {
-    border-radius: 0 !important;
-    -webkit-clip-path: none !important;
-    clip-path: none !important;
-    border-left: none !important;
-    border-right: none !important;
     padding: max(8px, env(safe-area-inset-top, 8px)) 12px 0 !important;
   }
 
@@ -11675,7 +10934,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     display: flex !important;
     justify-content: space-around !important;
     align-items: center !important;
-    position: fixed !important;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%) !important;
@@ -12075,7 +11333,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   font-size: 0.75rem !important;
   font-weight: 700 !important;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   font-family: inherit;
 }
 
@@ -12527,12 +11784,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
    khoảng hở và không cho hàng phim bên dưới bị lọt vào tầm nhìn trước khi cuộn
    ========================================================================== */
 @media (min-width: 920px) {
-  .cinema-showcase-hero,
-  .vision-hero-banner {
-    height: clamp(440px, 52vh, 520px) !important;
-    min-height: 440px !important;
-    max-height: 520px !important;
-  }
 
   /* Khoảng cách vàng thanh thoát giữa thẻ phim lớn và hàng phim/thẻ phim bên dưới */
   .cinema-home-layout > .cinema-showcase-hero {
@@ -12543,9 +11794,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1536px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: clamp(480px, 55vh, 580px) !important;
-    min-height: 480px !important;
-    max-height: 580px !important;
     border-radius: 30px !important;
   }
 
@@ -12555,38 +11803,13 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     clip-path: inset(0 round 30px) !important;
   }
 
-  .cinema-hero-content {
-    padding: 48px 52px !important;
-  }
-
-  .cinema-hero-info {
-    max-width: 760px !important;
-  }
-
-  .cinema-hero-title {
-    font-size: clamp(2.8rem, 3.8vw, 4.4rem) !important;
-    line-height: 1.12 !important;
-  }
-
   .cinema-hero-sub {
     font-size: 1.08rem !important;
   }
 
   .cinema-hero-desc {
-    max-width: 680px !important;
-    font-size: 1.05rem !important;
     line-height: 1.62 !important;
-    -webkit-line-clamp: 3 !important;
     line-clamp: 3 !important;
-    margin-bottom: 20px !important;
-  }
-
-  .cinema-play-glow-btn,
-  .cinema-fav-circle-btn {
-    width: 60px !important;
-    height: 60px !important;
-    min-width: 60px !important;
-    font-size: 1.45rem !important;
   }
 
   .cinema-meta-badges .cinema-badge,
@@ -12616,9 +11839,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 1920px), (min-height: 960px) and (min-width: 1400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: clamp(520px, 58vh, 640px) !important;
-    min-height: 520px !important;
-    max-height: 640px !important;
     border-radius: 34px !important;
   }
 
@@ -12628,39 +11848,14 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     clip-path: inset(0 round 34px) !important;
   }
 
-  .cinema-hero-content {
-    padding: 60px 64px !important;
-  }
-
-  .cinema-hero-info {
-    max-width: 860px !important;
-  }
-
-  .cinema-hero-title {
-    font-size: clamp(3.2rem, 4.2vw, 5.0rem) !important;
-    line-height: 1.1 !important;
-  }
-
   .cinema-hero-sub {
     font-size: 1.15rem !important;
     margin-bottom: 14px !important;
   }
 
   .cinema-hero-desc {
-    max-width: 780px !important;
-    font-size: 1.14rem !important;
     line-height: 1.68 !important;
-    -webkit-line-clamp: 3 !important;
     line-clamp: 3 !important;
-    margin-bottom: 24px !important;
-  }
-
-  .cinema-play-glow-btn,
-  .cinema-fav-circle-btn {
-    width: 66px !important;
-    height: 66px !important;
-    min-width: 66px !important;
-    font-size: 1.6rem !important;
   }
 
   .cinema-meta-badges .cinema-badge,
@@ -12690,9 +11885,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 @media (min-width: 2400px) {
   .cinema-showcase-hero,
   .vision-hero-banner {
-    height: clamp(580px, 62vh, 720px) !important;
-    min-height: 580px !important;
-    max-height: 720px !important;
     border-radius: 40px !important;
   }
 
@@ -12708,10 +11900,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 
   .cinema-hero-info {
     max-width: 980px !important;
-  }
-
-  .cinema-hero-title {
-    font-size: clamp(3.8rem, 4.5vw, 5.8rem) !important;
   }
 
   .cinema-hero-desc {
@@ -13230,11 +12418,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
   pointer-events: none !important;
 }
 
-.liquid-mobile-dock .dock-tab-btn.active::after {
-  transform: translateX(-50%) scaleX(1) !important;
-  opacity: 1 !important;
-}
-
 .liquid-mobile-dock .dock-tab-btn i,
 .liquid-mobile-dock .dock-tab-btn .anime-konoha-icon {
   transition:
@@ -13247,25 +12430,12 @@ html[data-ps5-motion="false"] .vision-card-seemore {
 .liquid-mobile-dock .dock-tab-btn.active .anime-konoha-icon {
   color: #ffffff !important;
   opacity: 1 !important;
-  transform: translateY(-2px) scale(1.12) !important;
   filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.45)) !important;
 }
 
 .liquid-mobile-dock .dock-tab-btn.ios-tab-bounce i,
 .liquid-mobile-dock .dock-tab-btn.ios-tab-bounce .anime-konoha-icon {
   animation: iosDockIconBounce 0.44s cubic-bezier(0.22, 1.35, 0.36, 1) both !important;
-}
-
-@keyframes iosDockIconBounce {
-  0% {
-    transform: translateY(0) scale(0.88);
-  }
-  50% {
-    transform: translateY(-4px) scale(1.22);
-  }
-  100% {
-    transform: translateY(-2px) scale(1.12);
-  }
 }
 
 /* 4. Trang Tìm Kiếm Riêng Biệt (Dedicated Search Page) */
@@ -13613,12 +12783,6 @@ html[data-ps5-motion="false"] .vision-card-seemore {
     transform: translate3d(0, 0, 0);
   }
 }
-
-
-
-
-
-
 
 /* ==========================================================================
    v2.9.1: THẺ PHIM HOVER MƯỢT & ẢNH PHỦ KÍN THẺ
